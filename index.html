@@ -916,18 +916,8 @@ function dayLabel(dk){
 }
 
 function renderOverview(body, days){
-  const todayStr = todayDateKey();
-  let latestDay = days[days.length-1];
-  let isPartialToday = false;
-  // If the most recent upload is for today, that day's sales are still coming in and
-  // will look artificially low (or zero) if the day isn't over yet -- so the headline
-  // "day" card falls back to the last full day instead. Today's partial numbers are
-  // still counted in month-to-date, just not used as the misleading "day" snapshot.
-  if(latestDay === todayStr && days.length > 1){
-    latestDay = days[days.length-2];
-    isPartialToday = true;
-  }
-  const storeTotalsMTD = computeStoreTotals(() => true);
+  const latestDay = days[days.length-1];
+  const storeTotalsMTD = computeStoreTotals(d => days.includes(d));
   const regionTotalsMTD = computeRegionTotals(storeTotalsMTD);
   const storeTotalsToday = computeStoreTotals(d => d === latestDay);
   const regionTotalsToday = computeRegionTotals(storeTotalsToday);
@@ -937,16 +927,7 @@ function renderOverview(body, days){
   const todayActual = Object.values(regionTotalsToday).reduce((s,r)=>s+r.actual,0);
   const todayTarget = Object.values(regionTotalsToday).reduce((s,r)=>s+r.target,0);
 
-  if(isPartialToday){
-    const partialNote = document.createElement('div');
-    partialNote.style.cssText = 'font-size:12px; color:var(--text-mute); margin-bottom:14px; padding:10px 14px; background:var(--panel); border-radius:8px;';
-    partialNote.innerHTML = '<i class="ti ti-clock" style="font-size:14px; vertical-align:-2px; margin-right:6px;" aria-hidden="true"></i>' +
-      'You\u2019ve uploaded data for today (' + dayLabel(days[days.length-1]) + '), but it\u2019s still an in-progress day, so the snapshot below shows ' + dayLabel(latestDay) + ' (the last full day) instead. ' +
-      'Today\u2019s partial numbers are still included in the month-to-date total.';
-    body.appendChild(partialNote);
-  }
-
-  const cardsRow = document.createElement('div');
+    const cardsRow = document.createElement('div');
   cardsRow.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:24px;';
   const cards = [
     {label: dayLabel(latestDay) + ' actual', val: fmtINR(todayActual), sub: 'vs target ' + fmtINR(todayTarget)},
@@ -999,7 +980,7 @@ function renderOverview(body, days){
   }
 
 function renderStores(body, days){
-  const dayFilter = () => true;
+  const dayFilter = d => days.includes(d);
   const totals = computeStoreTotals(dayFilter);
   const rowsArr = Object.keys(totals).map(store => {
     const t = totals[store];
@@ -1158,7 +1139,7 @@ function renderStores(body, days){
 }
 
 function renderRegions(body, days){
-  const totals = computeStoreTotals(() => true);
+  const totals = computeStoreTotals(d => days.includes(d));
   const regionTotals = computeRegionTotals(totals);
 
   const grid = document.createElement('div');
