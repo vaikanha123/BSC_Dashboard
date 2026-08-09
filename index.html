@@ -795,46 +795,14 @@ function render(){
       <div style="font-size:11px; letter-spacing:.12em; color:var(--brass); text-transform:uppercase; margin-bottom:3px;">Bombay Shirt Company</div>
       <div style="font-size:19px; font-weight:600; color:var(--text);">Daily performance console</div>
     </div>
-    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-      <span style="font-size:10.5px; color:var(--text-mute); padding:4px 8px; border:0.5px solid var(--line); border-radius:6px;">
-        <i class="ti ${storageBackend==='claude'?'ti-cloud':'ti-device-floppy'}" style="font-size:12px; vertical-align:-1px;" aria-hidden="true"></i>
-        ${storageBackend==='claude' ? 'Saved to Claude' : 'Saved in this browser'}
-      </span>
-      <button id="bsc-manage-btn" style="background:none; border:0.5px solid var(--line2); color:var(--text-dim); font-size:12.5px; font-weight:500; padding:8px 12px; border-radius:8px; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:5px;">
-        <i class="ti ti-database" style="font-size:14px;" aria-hidden="true"></i> Manage data
-      </button>
-      <button id="bsc-export-btn" style="background:none; border:0.5px solid var(--line2); color:var(--text-dim); font-size:12.5px; font-weight:500; padding:8px 12px; border-radius:8px; cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:5px;">
-        <i class="ti ti-download" style="font-size:14px;" aria-hidden="true"></i> Export data
-      </button>
-      <label style="cursor:pointer; background:none; border:0.5px solid var(--line2); color:var(--text-dim); font-size:12.5px; font-weight:500; padding:8px 12px; border-radius:8px; display:flex; align-items:center; gap:5px;">
-        <i class="ti ti-upload" style="font-size:14px;" aria-hidden="true"></i> Import data
-        <input type="file" id="bsc-import-input" accept=".json" style="display:none;">
-      </label>
-      <label style="cursor:pointer; background:var(--brass); color:#1a1408; font-size:13px; font-weight:600; padding:9px 16px; border-radius:8px; display:flex; align-items:center; gap:6px;">
-        <i class="ti ti-upload" style="font-size:16px;" aria-hidden="true"></i>
-        Upload sales CSV
-        <input type="file" id="bsc-file-input" accept=".csv" multiple style="display:none;">
-      </label>
-    </div>
+    <span style="font-size:10.5px; color:var(--text-mute); padding:4px 8px; border:0.5px solid var(--line); border-radius:6px;">
+      <i class="ti ti-lock" style="font-size:12px; vertical-align:-1px;" aria-hidden="true"></i>
+      View only \u2014 updated by the BSC analytics team
+    </span>
   `;
   root.appendChild(header);
 
-  if(state.showManagePanel){
-    root.appendChild(renderManageDataPanel());
-  }
-
-  const shareNote = document.createElement('div');
-  shareNote.style.cssText = 'padding:0 24px; font-size:11.5px; color:var(--text-mute); margin-top:2px;';
-  shareNote.innerHTML = storageBackend === 'claude'
-    ? 'Data here is saved to your Claude account. To open this file outside Claude (or share it with someone), click <strong>Export data</strong>, then <strong>Import data</strong> into the downloaded copy of this file.'
-    : 'Data here is saved only in this browser, on this device. Use <strong>Export data</strong> to back it up or move it to another device/browser \u2014 including back into Claude.';
-  root.appendChild(shareNote);
-
-  const statusRow = document.createElement('div');
-  statusRow.style.cssText = 'padding:0 24px; font-size:12.5px; min-height:20px; margin-top:10px;';
-  statusRow.innerHTML = '<span id="bsc-upload-status" style="color:var(--text-mute);"></span>';
-  root.appendChild(statusRow);
-
+  
   const cmk = currentMonthKey();
   const allDays = getSortedDays();
   const usingCustomRange = !!(state.dateRange && state.dateRange.start && state.dateRange.end);
@@ -890,7 +858,7 @@ function render(){
       empty.innerHTML = `
         <i class="ti ti-chart-bar" style="font-size:32px; color:var(--text-mute); margin-bottom:12px; display:block;" aria-hidden="true"></i>
         <div style="font-size:15px; color:var(--text-dim); margin-bottom:4px;">No data yet</div>
-        <div style="font-size:13px; color:var(--text-mute);">Upload a daily Shopify sales export CSV to get started, or check the Refunds &amp; CN tab below \u2014 it doesn\u2019t need an upload.</div>
+        <div style="font-size:13px; color:var(--text-mute);">This dashboard hasn\u2019t been updated with data for the current period yet \u2014 check back soon, or check the Refunds &amp; CN tab below.</div>
       `;
     }
     root.appendChild(empty);
@@ -1032,23 +1000,7 @@ function renderOverview(body, days){
   note.textContent = 'Targets are derived from each store\u2019s monthly target split into weekday/weekend daily figures using its own actual July performance ratio. ' + days.length + ' day(s) of data loaded.';
   body.appendChild(note);
 
-  const npsBox = document.createElement('div');
-  npsBox.style.cssText = 'background:var(--panel); border-radius:10px; padding:16px; margin-top:20px;';
-  npsBox.innerHTML = `
-    <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;">Upload NPS file</div>
-    <label style="cursor:pointer; background:var(--brass); color:#1a1408; font-size:13px; font-weight:600; padding:8px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
-      <i class="ti ti-upload" style="font-size:15px;" aria-hidden="true"></i>
-      Upload NPS CSV or Excel
-      <input type="file" id="bsc-nps-input" accept=".csv,.xlsx,.xls" style="display:none;">
-    </label>
-    <div style="font-size:11.5px; color:var(--text-mute); line-height:1.5; margin-top:8px;">
-      Needs a Store column and an NPS column (any header containing \u201cNPS\u201d). If a store appears on multiple rows, they\u2019re averaged.
-      NPS then shows here, on Store-wise, and on Region-wise.
-    </div>
-    <div id="bsc-nps-upload-status" style="font-size:12.5px; margin-top:8px; min-height:16px;"></div>
-  `;
-  body.appendChild(npsBox);
-}
+  }
 
 function renderStores(body, days){
   const dayFilter = () => true;
@@ -1649,27 +1601,7 @@ function renderRefunds(body){
   rangeNote.textContent = 'This tab always shows the current calendar month (' + cmk + ') and doesn\u2019t follow the date range picker above \u2014 refund/CN data is only tracked at month-level, not day-by-day.';
   body.appendChild(rangeNote);
 
-  // ---- Upload controls ----
-  const uploadBox = document.createElement('div');
-  uploadBox.style.cssText = 'background:var(--panel); border-radius:10px; padding:16px; margin-bottom:16px;';
-  uploadBox.innerHTML = `
-    <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;">Upload refund / credit note file</div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
-      <label style="cursor:pointer; background:var(--brass); color:#1a1408; font-size:13px; font-weight:600; padding:8px 14px; border-radius:8px; display:flex; align-items:center; gap:6px;">
-        <i class="ti ti-upload" style="font-size:15px;" aria-hidden="true"></i>
-        Upload refunds + CN file
-        <input type="file" id="bsc-refund-input" accept=".csv,.xlsx,.xls" style="display:none;">
-      </label>
-    </div>
-    <div style="font-size:11.5px; color:var(--text-mute); line-height:1.5;">
-      One file, .csv or .xlsx \u2014 the Refund_Tracker_CX export, with both the Refund Log and Credit Note tables in it.
-      The refund table and the credit note table are found automatically wherever they sit in the file (by their column headers),
-      so you don\u2019t need to split them yourself. Showing <strong style="color:var(--brass);">${cmk}</strong> only (today\u2019s month) \u2014 upload a fresh export any time to update it.
-    </div>
-    <div id="bsc-refund-upload-status" style="font-size:12.5px; margin-top:8px; min-height:16px;"></div>
-  `;
-  body.appendChild(uploadBox);
-
+  
   const refundMonth = state.refundsData && state.refundsData.byMonth ? state.refundsData.byMonth[cmk] : null;
   const cnMonth = state.cnData && state.cnData.byMonth ? state.cnData.byMonth[cmk] : null;
 
@@ -1887,22 +1819,6 @@ function attachRefundHandlers(){
 }
 
 function attachHandlers(){
-  const input = document.getElementById('bsc-file-input');
-  if(input){
-    input.addEventListener('change', (e) => {
-      if(e.target.files && e.target.files.length) handleFiles(e.target.files);
-    });
-  }
-  const exportBtn = document.getElementById('bsc-export-btn');
-  if(exportBtn) exportBtn.addEventListener('click', exportAllData);
-  const importInput = document.getElementById('bsc-import-input');
-  if(importInput) importInput.addEventListener('change', (e) => {
-    if(e.target.files && e.target.files[0]) importAllData(e.target.files[0]);
-  });
-  const manageBtn = document.getElementById('bsc-manage-btn');
-  if(manageBtn) manageBtn.addEventListener('click', () => { state.showManagePanel = !state.showManagePanel; render(); });
-  if(state.showManagePanel) attachManagePanelHandlers();
-
   const rangeApply = document.getElementById('bsc-range-apply');
   if(rangeApply) rangeApply.addEventListener('click', () => {
     const s = document.getElementById('bsc-range-start').value;
@@ -1916,10 +1832,6 @@ function attachHandlers(){
   if(rangeReset) rangeReset.addEventListener('click', () => {
     state.dateRange = null;
     render();
-  });
-  const npsInput = document.getElementById('bsc-nps-input');
-  if(npsInput) npsInput.addEventListener('change', (e) => {
-    if(e.target.files && e.target.files[0]) handleNPSFile(e.target.files[0]);
   });
 }
 
