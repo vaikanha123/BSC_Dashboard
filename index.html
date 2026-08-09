@@ -795,10 +795,6 @@ function render(){
       <div style="font-size:11px; letter-spacing:.12em; color:var(--brass); text-transform:uppercase; margin-bottom:3px;">Bombay Shirt Company</div>
       <div style="font-size:19px; font-weight:600; color:var(--text);">Daily performance console</div>
     </div>
-    <span style="font-size:10.5px; color:var(--text-mute); padding:4px 8px; border:0.5px solid var(--line); border-radius:6px;">
-      <i class="ti ti-lock" style="font-size:12px; vertical-align:-1px;" aria-hidden="true"></i>
-      View only \u2014 updated by the BSC analytics team
-    </span>
   `;
   root.appendChild(header);
 
@@ -1985,28 +1981,18 @@ async function importAllData(file){
 // ---------- init ----------
 async function init(){
   const root = document.getElementById('bsc-root');
-  storageBackend = detectStorageBackend();
-  if(storageBackend === 'none'){
-    root.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-mute); font-size:13px;">' +
-      'This browser will not allow any local storage (private/incognito mode, or storage disabled). ' +
-      'Try a normal browser window, or open this file inside Claude.ai.</div>';
-    return;
-  }
-  root.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-mute); font-size:13px;">Loading saved data...</div>';
-  await loadAllDays();
-  await loadRefundData();
-  await loadNPSData();
-  await loadSeedDataIfEmpty();
+  root.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-mute); font-size:13px;">Loading...</div>';
+  loadBakedInData();
   state.loading = false;
   render();
 }
 
-async function loadSeedDataIfEmpty(){
-  // Only runs the very first time this file is opened against a given storage backend
-  // (i.e. nothing uploaded there yet). Any real upload always takes precedence going
-  // forward -- this just avoids showing a blank dashboard before you've re-uploaded.
-  const noDaysYet = Object.keys(state.days).length === 0;
-  if(noDaysYet && typeof SEED_DAYS !== 'undefined'){
+function loadBakedInData(){
+  // This dashboard is read-only: everything it shows comes directly from the data
+  // baked into this file when it was last published -- never from browser storage.
+  // That guarantees every visitor always sees exactly the same, current numbers,
+  // with no risk of an old cached version lingering in someone's browser.
+  if(typeof SEED_DAYS !== 'undefined'){
     for(const dk of Object.keys(SEED_DAYS)){
       const d = SEED_DAYS[dk];
       state.days[dk] = d.stores;
@@ -2021,17 +2007,11 @@ async function loadSeedDataIfEmpty(){
       state.stylistBillDays[dk] = d.stylistBills || {};
       state.storeUnitDays[dk] = d.storeUnits || {};
       state.stylistStoreRevDays[dk] = d.stylistStoreRev || {};
-      await saveDay(dk, d.stores, d.bills, d.categories, d.newRev, d.repRev, d.newBills, d.repBills, d.categoryUnits, d.stylistRev, d.stylistBills, d.storeUnits, d.stylistStoreRev);
     }
   }
-  if(!state.refundsData && typeof SEED_REFUNDS !== 'undefined'){
-    state.refundsData = SEED_REFUNDS;
-    await db.set('refunds-summary', JSON.stringify(SEED_REFUNDS));
-  }
-  if(!state.cnData && typeof SEED_CN !== 'undefined'){
-    state.cnData = SEED_CN;
-    await db.set('cn-summary', JSON.stringify(SEED_CN));
-  }
+  if(typeof SEED_REFUNDS !== 'undefined') state.refundsData = SEED_REFUNDS;
+  if(typeof SEED_CN !== 'undefined') state.cnData = SEED_CN;
+  if(typeof SEED_NPS !== 'undefined') state.npsData = SEED_NPS;
 }
 init();
 
