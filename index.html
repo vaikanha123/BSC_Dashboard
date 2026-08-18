@@ -149,6 +149,8 @@ let state = {
   stylistStoreUnitsDays: {}, // 'YYYY-MM-DD' -> { stylist: { store: units } }
   stylistUnitDays: {}, // 'YYYY-MM-DD' -> { stylist: units }
   stylistFilterStore: 'all',
+  refundStoreFilterRegion: 'all',
+  refundStoreSortBy: 'refund', // 'refund' | 'cn' | 'revenue'
   stylistFilterRegion: 'all',
   npsData: null, // { byStore: {store: nps}, overall: nps }
   dateRange: null, // {start:'YYYY-MM-DD', end:'YYYY-MM-DD'} or null for "current month" default
@@ -1819,12 +1821,36 @@ function renderRefunds(body){
     if(refundMonth) Object.keys(refundMonth.byStore || {}).forEach(s => { if(offlineRegion(s)) allStores.add(s); });
     if(cnMonth) Object.keys(cnMonth.byStore || {}).forEach(s => { if(offlineRegion(s)) allStores.add(s); });
 
-    const stArr = Array.from(allStores).map(s => {
+    let stArr = Array.from(allStores).map(s => {
       const rev = storeRev[s] || 0;
       const rf = refundMonth && refundMonth.byStore ? (refundMonth.byStore[s] || 0) : 0;
       const cn = cnMonth && cnMonth.byStore ? (cnMonth.byStore[s] || 0) : 0;
       return {store:s, region: offlineRegion(s), rev, rf, cn, rfPct: rev?rf/rev*100:0, cnPct: rev?cn/rev*100:0};
-    }).sort((a,b) => (b.rfPct+b.cnPct)-(a.rfPct+a.cnPct));
+    });
+
+    // ---- Filter bar: region + sort ----
+    const availableRegions = ['North','South','West'].filter(reg => stArr.some(s => s.region === reg));
+    const stFilterBar = document.createElement('div');
+    stFilterBar.style.cssText = 'display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; align-items:center;';
+    stFilterBar.innerHTML = `
+      <span style="font-size:11.5px; color:var(--text-mute);">Filter:</span>
+      <select id="bsc-refund-store-region-filter" style="background:var(--panel); border:0.5px solid var(--line2); color:var(--text); font-size:12px; padding:6px 10px; border-radius:6px; font-family:inherit;">
+        <option value="all"${state.refundStoreFilterRegion==='all'?' selected':''}>All regions</option>
+        ${availableRegions.map(reg => `<option value="${reg}"${state.refundStoreFilterRegion===reg?' selected':''}>${reg}</option>`).join('')}
+      </select>
+      <span style="font-size:11.5px; color:var(--text-mute); margin-left:4px;">Sort by:</span>
+      <select id="bsc-refund-store-sort" style="background:var(--panel); border:0.5px solid var(--line2); color:var(--text); font-size:12px; padding:6px 10px; border-radius:6px; font-family:inherit;">
+        <option value="refund"${state.refundStoreSortBy==='refund'?' selected':''}>Refund % (high to low)</option>
+        <option value="cn"${state.refundStoreSortBy==='cn'?' selected':''}>CN % (high to low)</option>
+        <option value="revenue"${state.refundStoreSortBy==='revenue'?' selected':''}>Revenue (high to low)</option>
+      </select>
+    `;
+    body.appendChild(stFilterBar);
+
+    if(state.refundStoreFilterRegion !== 'all') stArr = stArr.filter(s => s.region === state.refundStoreFilterRegion);
+    if(state.refundStoreSortBy === 'cn') stArr.sort((a,b) => b.cnPct - a.cnPct);
+    else if(state.refundStoreSortBy === 'revenue') stArr.sort((a,b) => b.rev - a.rev);
+    else stArr.sort((a,b) => b.rfPct - a.rfPct);
 
     const stTable = document.createElement('table');
     stTable.style.cssText = 'font-size:13px; margin-bottom:16px;';
@@ -1832,7 +1858,11 @@ function renderRefunds(body){
       '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
       '<td style="padding:6px 10px; text-align:right;">Revenue</td><td style="padding:6px 10px; text-align:right;">Refund %</td>' +
       '<td style="padding:6px 10px; text-align:right;">CN %</td></tr>';
+    if(stArr.length === 0){
+      stRows += '<tr><td colspan="5" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No stores match this filter.</td></tr>';
+    }
     stArr.forEach(s => {
+      // Color coding is independent per column: refund% color only reflects refund%, CN% color only reflects CN%.
       stRows += `<tr style="border-top:1px solid var(--line);">
         <td style="padding:8px 10px; font-weight:500;">${s.store}</td>
         <td style="padding:8px 10px; color:var(--text-mute);">${s.region}</td>
@@ -1843,6 +1873,8 @@ function renderRefunds(body){
     });
     stTable.innerHTML = stRows;
     body.appendChild(stTable);
+
+    attachRefundStoreFilterHandlers();
   }
 
   function reasonTableByChannel(title, onlineObj, offlineObj){
@@ -1900,6 +1932,19 @@ function currentMonthKeyForDate(d){
 function attachRefundHandlers(){
   const ri = document.getElementById('bsc-refund-input');
   if(ri) ri.addEventListener('change', (e) => { if(e.target.files[0]) handleCombinedRefundFile(e.target.files[0]); });
+}
+
+function attachRefundStoreFilterHandlers(){
+  const regionSel = document.getElementById('bsc-refund-store-region-filter');
+  if(regionSel) regionSel.addEventListener('change', (e) => {
+    state.refundStoreFilterRegion = e.target.value;
+    render();
+  });
+  const sortSel = document.getElementById('bsc-refund-store-sort');
+  if(sortSel) sortSel.addEventListener('change', (e) => {
+    state.refundStoreSortBy = e.target.value;
+    render();
+  });
 }
 
 function attachHandlers(){
