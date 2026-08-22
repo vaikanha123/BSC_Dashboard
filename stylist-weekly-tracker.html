@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BSC Stylist Weekly Tracker — Aug vs July</title>
+<style>
+  :root{
+    --navy:#1a2332;
+    --navy-2:#242f42;
+    --cream:#f7f5f0;
+    --paper:#ffffff;
+    --line:#e2ddd2;
+    --ink:#22262b;
+    --muted:#767065;
+    --gold:#b9862f;
+    --gold-soft:#f2e6cc;
+    --green:#1f7a3f;
+    --green-bg:#e3f3e6;
+    --red:#b3261e;
+    --red-bg:#fbe4e2;
+    --amber:#8a6d1a;
+    --amber-bg:#faf1d9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .tabular{ font-variant-numeric: tabular-nums; font-family: 'Consolas','SFMono-Regular',Menlo,monospace; }
+
+  header{
+    background:var(--navy);
+    color:#f2efe8;
+    padding:28px 32px 22px;
+    border-bottom:3px solid var(--gold);
+  }
+  header .eyebrow{
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:24px;
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  header p{
+    margin:0;
+    font-size:13px;
+    color:#c4c9d4;
+    max-width:760px;
+    line-height:1.5;
+  }
+  .asof{
+    display:inline-block; margin-top:10px; font-size:11px; color:var(--gold);
+    border:1px solid rgba(185,134,47,.5); border-radius:4px; padding:3px 9px; letter-spacing:.03em;
+  }
+
+  .wrap{ max-width:1280px; margin:0 auto; padding:24px 32px 60px; }
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-bottom:24px;
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--metric-color, var(--gold));
+  }
+  .card .m-label{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); font-weight:600; margin-bottom:10px;
+  }
+  .card .compare{
+    display:flex; align-items:baseline; gap:8px; margin-bottom:4px; flex-wrap:wrap;
+  }
+  .card .compare .old-val{ font-size:15px; color:var(--muted); font-weight:600; }
+  .card .compare .arrow{ font-size:14px; color:var(--muted); }
+  .card .compare .new-val{ font-size:24px; font-weight:700; line-height:1; }
+  .card .compare .chg{ font-size:13px; font-weight:700; padding:1px 7px; border-radius:4px; }
+  .card .m-big{
+    font-size:26px; font-weight:700; line-height:1; margin-bottom:6px;
+  }
+  .card .m-sub{ font-size:12.5px; color:var(--muted); margin-top:6px; }
+  .card .m-sub b{ color:var(--ink); }
+  .card .caption{ font-size:10.5px; color:var(--muted); margin-top:2px;}
+
+  .controls{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .tabs{ display:flex; gap:4px; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px; }
+  .tab-btn{
+    border:none; background:transparent; padding:7px 16px; font-size:13px; font-weight:600;
+    color:var(--muted); border-radius:4px; cursor:pointer; letter-spacing:.02em;
+  }
+  .tab-btn.active{ background:var(--navy); color:#fff; }
+
+  select, input[type=text]{
+    border:1px solid var(--line); background:var(--paper); border-radius:6px;
+    padding:7px 10px; font-size:13px; color:var(--ink); font-family:inherit;
+  }
+  input[type=text]{ min-width:200px; }
+  .spacer{ flex:1; }
+  .check-label{
+    display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:7px 12px;
+    cursor:pointer; user-select:none;
+  }
+  .check-label input{ accent-color:var(--red); width:14px; height:14px; cursor:pointer; }
+  .legend{ display:flex; gap:14px; font-size:11.5px; color:var(--muted); align-items:center; }
+  .swatch{ display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; vertical-align:-1px;}
+
+  table{
+    width:100%; border-collapse:collapse; background:var(--paper);
+    border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    font-size:13px;
+  }
+  thead th{
+    background:var(--navy-2); color:#e9e6de; text-align:right; font-weight:600;
+    padding:10px 12px; font-size:11.5px; letter-spacing:.03em; text-transform:uppercase;
+    cursor:pointer; user-select:none; white-space:nowrap;
+    border-bottom:2px solid var(--gold);
+  }
+  thead th:first-child, thead th:nth-child(2), thead th:nth-child(3), thead th:nth-child(4){ text-align:left; }
+  thead th .arrow{ opacity:.5; font-size:10px; margin-left:3px; }
+  tbody tr{ border-bottom:1px solid var(--line); cursor:pointer; }
+  tbody tr:last-child{ border-bottom:none; }
+  tbody tr:hover{ background:#fbf9f5; }
+  tbody td{ padding:9px 12px; text-align:right; white-space:nowrap; }
+  tbody td:first-child, tbody td:nth-child(2), tbody td:nth-child(3), tbody td:nth-child(4){ text-align:left; }
+  .priority-pill{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.02em;
+    padding:2px 7px; border-radius:10px; text-transform:uppercase;
+  }
+  .p-P0{ background:var(--red-bg); color:var(--red); }
+  .p-P1{ background:var(--amber-bg); color:var(--amber); }
+  .p-P2{ background:#eef1e6; color:#5b6b3d; }
+  .p-Aug{ background:var(--green-bg); color:var(--green); }
+  .p-One{ background:#eee9e0; color:var(--muted); }
+  .p-Resigned{ background:#efece5; color:var(--muted); }
+  .p-Unclassified{ background:#efece5; color:var(--muted); }
+  .name-cell{ font-weight:600; }
+  .store-cell{ color:var(--muted); font-size:12px; }
+  .region-pill{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.03em;
+    padding:2px 7px; border-radius:10px; background:var(--gold-soft); color:var(--gold);
+    text-transform:uppercase;
+  }
+  .base-cell{ color:var(--muted); }
+
+  .delta-pill{
+    display:inline-block; min-width:64px; padding:3px 8px; border-radius:4px; font-weight:700; font-size:12.5px;
+  }
+  .pos{ background:var(--green-bg); color:var(--green); }
+  .neg{ background:var(--red-bg); color:var(--red); }
+  .na{ background:#efece5; color:var(--muted); font-weight:500; }
+  .low{ box-shadow: inset 0 0 0 1px var(--amber); }
+  .low::after{ content:" *"; }
+
+  .actual-sub{ display:block; font-size:10.5px; color:var(--muted); font-weight:500; margin-top:1px;}
+
+  .foot-note{ margin-top:10px; font-size:11.5px; color:var(--muted); line-height:1.6; }
+
+  /* detail panel */
+  .overlay{
+    display:none; position:fixed; inset:0; background:rgba(26,35,50,.55);
+    align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .overlay.show{ display:flex; }
+  .panel{
+    background:var(--paper); border-radius:10px; width:100%; max-width:640px;
+    padding:24px 26px; max-height:88vh; overflow:auto; border-top:4px solid var(--gold);
+  }
+  .panel-head{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
+  .panel-head h2{ margin:0; font-size:19px; }
+  .panel-head .close{ cursor:pointer; border:none; background:none; font-size:20px; color:var(--muted); line-height:1;}
+  .panel-sub{ font-size:12.5px; color:var(--muted); margin-bottom:18px; }
+  .panel-metric{ margin-bottom:20px; }
+  .panel-metric h3{ font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .metric-row{ display:flex; align-items:center; gap:10px; font-size:13px; margin-bottom:6px; }
+  .metric-row .wk-label{ width:110px; color:var(--muted); flex-shrink:0; }
+  .metric-row .bar-wrap{ flex:1; height:8px; background:#eee9dc; border-radius:4px; position:relative; }
+  .metric-row .bar{ position:absolute; top:0; bottom:0; left:0; border-radius:4px; }
+  .metric-row .val{ width:150px; text-align:right; flex-shrink:0; font-weight:600; }
+  .baseline-tag{ font-size:11px; color:var(--muted); margin-top:2px; }
+
+  @media (max-width:760px){
+    .cards{ grid-template-columns:1fr; }
+    header{ padding:20px; }
+    .wrap{ padding:18px 14px 40px; }
+    table{ font-size:12px; }
+    thead th, tbody td{ padding:8px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Bombay Shirt Company · Stylist Performance</div>
+  <h1>Weekly AOV / ASP / UPT Tracker — August vs July</h1>
+  <p>MTD and week-on-week movement for 43 stylists against their closed-July baseline (official DSR). Offline POS sales only. Wk1 is a 2-day partial week (Aug 1–2); Wk2 and Wk3 are full Mon–Sun weeks; Wk4 is a 4-day partial week (Aug 17–20); MTD covers Aug 1–20.</p>
+  <span class="asof">Data as of Aug 20, 2026</span>
+</header>
+
+<div class="wrap">
+
+  <div class="cards" id="summaryCards"></div>
+
+  <div class="controls">
+    <div class="tabs" id="metricTabs">
+      <button class="tab-btn active" data-metric="aov">AOV</button>
+      <button class="tab-btn" data-metric="asp">ASP</button>
+      <button class="tab-btn" data-metric="upt">UPT</button>
+    </div>
+    <select id="regionFilter">
+      <option value="">All regions</option>
+    </select>
+    <select id="storeFilter">
+      <option value="">All stores</option>
+    </select>
+    <select id="priorityFilter">
+      <option value="">All priorities</option>
+    </select>
+    <label class="check-label">
+      <input type="checkbox" id="noImproveFilter">
+      Not improved vs July (MTD)
+    </label>
+    <input type="text" id="searchBox" placeholder="Search stylist…">
+    <div class="spacer"></div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--green)"></span>Up vs July</span>
+      <span><span class="swatch" style="background:var(--red)"></span>Down vs July</span>
+      <span><span class="swatch" style="background:var(--amber);opacity:.7"></span>Low sample (&lt;3 bills)*</span>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr id="headerRow"></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div class="foot-note">
+    * Low-sample periods (fewer than 3 bills) are shown with an amber outline — treat those deltas as noisy, especially Wk1 (2-day week) and Wk4 (4-day week). AOV = Revenue ÷ Bills · ASP = Revenue ÷ Units · UPT = Units ÷ Bills. Revenue = Total Sales net of discounts and returns, POS channel only, excluding Corporate Orders/Virtual Stylist/Head Office. MTD = Aug 1–20 combined. Click any row for the weekly detail view. Stylist and store were matched together (not name alone) to correctly split cases where the same name appears at two stores in the training list. "Not improved vs July (MTD)" filters to stylists whose MTD figure for the active metric tab (AOV/ASP/UPT) is flat, down, or has no valid July baseline to compare against — switch tabs to check a different metric.
+  </div>
+
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+const RAW = [{"name": "ABHISHEK KUMAR", "store": "Gurugram", "region": "North", "priority": "P2", "jul_aov": 10091.0, "jul_asp": 4399.0, "jul_upt": 2.29, "mtd": {"aov": 12706.0, "asp": 3833.0, "upt": 3.31, "bills": 54, "revenue": 686135.0, "units": 179}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 17561.0, "asp": 3942.0, "upt": 4.45, "bills": 11, "revenue": 193171.0, "units": 49}, "Wk2 (Aug 3-9)": {"aov": 9367.0, "asp": 3011.0, "upt": 3.11, "bills": 18, "revenue": 168610.0, "units": 56}, "Wk3 (Aug 10-16)": {"aov": 14132.0, "asp": 4449.0, "upt": 3.18, "bills": 17, "revenue": 240240.0, "units": 54}, "Wk4 (Aug 17-20)": {"aov": 10514.0, "asp": 4206.0, "upt": 2.5, "bills": 8, "revenue": 84115.0, "units": 20}}}, {"name": "Abhishek Shukla", "store": "Oberoi Sky City", "region": "West", "priority": "P2", "jul_aov": 6805.0, "jul_asp": 4537.0, "jul_upt": 1.5, "mtd": {"aov": 7844.0, "asp": 3789.0, "upt": 2.07, "bills": 57, "revenue": 447107.0, "units": 118}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 6804.0, "asp": 3519.0, "upt": 1.93, "bills": 15, "revenue": 102060.0, "units": 29}, "Wk2 (Aug 3-9)": {"aov": 10876.0, "asp": 5625.0, "upt": 1.93, "bills": 15, "revenue": 163139.0, "units": 29}, "Wk3 (Aug 10-16)": {"aov": 8239.0, "asp": 3331.0, "upt": 2.47, "bills": 19, "revenue": 156550.0, "units": 47}, "Wk4 (Aug 17-20)": {"aov": 3170.0, "asp": 1951.0, "upt": 1.62, "bills": 8, "revenue": 25358.0, "units": 13}}}, {"name": "adnan zeri", "store": "Pali Hill, Bandra", "region": "West", "priority": "Aug AOV ok", "jul_aov": 9224.0, "jul_asp": 3543.0, "jul_upt": 2.6, "mtd": {"aov": 8646.0, "asp": 3959.0, "upt": 2.18, "bills": 49, "revenue": 423652.0, "units": 107}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 8824.0, "asp": 3610.0, "upt": 2.44, "bills": 9, "revenue": 79420.0, "units": 22}, "Wk2 (Aug 3-9)": {"aov": 15743.0, "asp": 4428.0, "upt": 3.56, "bills": 9, "revenue": 141690.0, "units": 32}, "Wk3 (Aug 10-16)": {"aov": 7126.0, "asp": 4192.0, "upt": 1.7, "bills": 20, "revenue": 142530.0, "units": 34}, "Wk4 (Aug 17-20)": {"aov": 5456.0, "asp": 3159.0, "upt": 1.73, "bills": 11, "revenue": 60012.0, "units": 19}}}, {"name": "Anas Asif Palwala", "store": "Pali Hill, Bandra", "region": "West", "priority": "Aug AOV ok", "jul_aov": 11232.0, "jul_asp": 4060.0, "jul_upt": 2.77, "mtd": {"aov": 15100.0, "asp": 4106.0, "upt": 3.68, "bills": 62, "revenue": 936226.0, "units": 228}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 22569.0, "asp": 4299.0, "upt": 5.25, "bills": 8, "revenue": 180553.0, "units": 42}, "Wk2 (Aug 3-9)": {"aov": 10366.0, "asp": 4146.0, "upt": 2.5, "bills": 26, "revenue": 269518.0, "units": 65}, "Wk3 (Aug 10-16)": {"aov": 17278.0, "asp": 3935.0, "upt": 4.39, "bills": 23, "revenue": 397391.0, "units": 101}, "Wk4 (Aug 17-20)": {"aov": 17753.0, "asp": 4438.0, "upt": 4.0, "bills": 5, "revenue": 88763.0, "units": 20}}}, {"name": "Anil Kumar", "store": "Phoenix Marketcity, Whitefield", "region": "South", "priority": "P2", "jul_aov": 6842.0, "jul_asp": 4025.0, "jul_upt": 1.7, "mtd": {"aov": 10720.0, "asp": 3350.0, "upt": 3.2, "bills": 30, "revenue": 321612.0, "units": 96}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 13989.0, "asp": 5381.0, "upt": 2.6, "bills": 5, "revenue": 69947.0, "units": 13}, "Wk2 (Aug 3-9)": {"aov": 4483.0, "asp": 2901.0, "upt": 1.55, "bills": 11, "revenue": 49310.0, "units": 17}, "Wk3 (Aug 10-16)": {"aov": 10701.0, "asp": 4077.0, "upt": 2.62, "bills": 8, "revenue": 85612.0, "units": 21}, "Wk4 (Aug 17-20)": {"aov": 19457.0, "asp": 2594.0, "upt": 7.5, "bills": 6, "revenue": 116743.0, "units": 45}}}, {"name": "Anjali Rana", "store": "Phoenix Marketcity, Whitefield", "region": "South", "priority": "P2", "jul_aov": 8411.0, "jul_asp": 4114.0, "jul_upt": 2.04, "mtd": {"aov": 16412.0, "asp": 3684.0, "upt": 4.45, "bills": 22, "revenue": 361069.0, "units": 98}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 5080.0, "asp": 2540.0, "upt": 2.0, "bills": 2, "revenue": 10160.0, "units": 4}, "Wk2 (Aug 3-9)": {"aov": 12251.0, "asp": 3500.0, "upt": 3.5, "bills": 12, "revenue": 147010.0, "units": 42}, "Wk3 (Aug 10-16)": {"aov": 24767.0, "asp": 4128.0, "upt": 6.0, "bills": 3, "revenue": 74300.0, "units": 18}, "Wk4 (Aug 17-20)": {"aov": 25920.0, "asp": 3812.0, "upt": 6.8, "bills": 5, "revenue": 129599.0, "units": 34}}}, {"name": "arif shaikhh", "store": "Kalaghoda, Fort", "region": "West", "priority": "P1", "jul_aov": 8731.0, "jul_asp": 3254.0, "jul_upt": 2.68, "mtd": {"aov": 11170.0, "asp": 3898.0, "upt": 2.87, "bills": 52, "revenue": 580854.0, "units": 149}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 7610.0, "asp": 3044.0, "upt": 2.5, "bills": 4, "revenue": 30440.0, "units": 10}, "Wk2 (Aug 3-9)": {"aov": 9596.0, "asp": 3445.0, "upt": 2.79, "bills": 14, "revenue": 134340.0, "units": 39}, "Wk3 (Aug 10-16)": {"aov": 13569.0, "asp": 3991.0, "upt": 3.4, "bills": 20, "revenue": 271374.0, "units": 68}, "Wk4 (Aug 17-20)": {"aov": 10336.0, "asp": 4522.0, "upt": 2.29, "bills": 14, "revenue": 144700.0, "units": 32}}}, {"name": "Arslaan Yousufi", "store": "Jubilee Hills", "region": "South", "priority": "P0", "jul_aov": 14900.0, "jul_asp": 4152.0, "jul_upt": 3.59, "mtd": {"aov": 15964.0, "asp": 3938.0, "upt": 4.05, "bills": 56, "revenue": 893990.0, "units": 227}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 9467.0, "asp": 2209.0, "upt": 4.29, "bills": 7, "revenue": 66270.0, "units": 30}, "Wk2 (Aug 3-9)": {"aov": 13972.0, "asp": 3645.0, "upt": 3.83, "bills": 18, "revenue": 251500.0, "units": 69}, "Wk3 (Aug 10-16)": {"aov": 18985.0, "asp": 4887.0, "upt": 3.88, "bills": 26, "revenue": 493600.0, "units": 101}, "Wk4 (Aug 17-20)": {"aov": 16524.0, "asp": 3060.0, "upt": 5.4, "bills": 5, "revenue": 82620.0, "units": 27}}}, {"name": "Azharuddin Khan", "store": "Oberoi Mall Store", "region": "West", "priority": "P1", "jul_aov": 14729.0, "jul_asp": 5194.0, "jul_upt": 2.84, "mtd": {"aov": 9281.0, "asp": 3700.0, "upt": 2.51, "bills": 61, "revenue": 566154.0, "units": 153}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 4193.0, "asp": 3261.0, "upt": 1.29, "bills": 7, "revenue": 29353.0, "units": 9}, "Wk2 (Aug 3-9)": {"aov": 12523.0, "asp": 3936.0, "upt": 3.18, "bills": 22, "revenue": 275495.0, "units": 70}, "Wk3 (Aug 10-16)": {"aov": 8049.0, "asp": 3689.0, "upt": 2.18, "bills": 22, "revenue": 177076.0, "units": 48}, "Wk4 (Aug 17-20)": {"aov": 8423.0, "asp": 3240.0, "upt": 2.6, "bills": 10, "revenue": 84230.0, "units": 26}}}, {"name": "Deborshi Dey", "store": "Shakespearesarani", "region": "North", "priority": "P1", "jul_aov": 13156.0, "jul_asp": 4435.0, "jul_upt": 2.97, "mtd": {"aov": 9384.0, "asp": 4022.0, "upt": 2.33, "bills": 36, "revenue": 337819.0, "units": 84}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 12526.0, "asp": 4175.0, "upt": 3.0, "bills": 5, "revenue": 62630.0, "units": 15}, "Wk2 (Aug 3-9)": {"aov": 11732.0, "asp": 4345.0, "upt": 2.7, "bills": 10, "revenue": 117319.0, "units": 27}, "Wk3 (Aug 10-16)": {"aov": 4790.0, "asp": 3193.0, "upt": 1.5, "bills": 10, "revenue": 47900.0, "units": 15}, "Wk4 (Aug 17-20)": {"aov": 9997.0, "asp": 4073.0, "upt": 2.45, "bills": 11, "revenue": 109970.0, "units": 27}}}, {"name": "Deepak Singh", "store": "Mall of India, Noida", "region": "North", "priority": "P2", "jul_aov": 7757.0, "jul_asp": 4213.0, "jul_upt": 1.84, "mtd": {"aov": 10556.0, "asp": 4747.0, "upt": 2.22, "bills": 67, "revenue": 707273.0, "units": 149}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 8492.0, "asp": 3860.0, "upt": 2.2, "bills": 10, "revenue": 84916.0, "units": 22}, "Wk2 (Aug 3-9)": {"aov": 8427.0, "asp": 5056.0, "upt": 1.67, "bills": 21, "revenue": 176970.0, "units": 35}, "Wk3 (Aug 10-16)": {"aov": 15033.0, "asp": 5609.0, "upt": 2.68, "bills": 25, "revenue": 375820.0, "units": 67}, "Wk4 (Aug 17-20)": {"aov": 6324.0, "asp": 2783.0, "upt": 2.27, "bills": 11, "revenue": 69567.0, "units": 25}}}, {"name": "Dileep Singh", "store": "Gurugram", "region": "North", "priority": "P2", "jul_aov": 3048.0, "jul_asp": 1905.0, "jul_upt": 1.6, "mtd": {"aov": 6549.0, "asp": 4366.0, "upt": 1.5, "bills": 8, "revenue": 52391.0, "units": 12}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 10341.0, "asp": 6894.0, "upt": 1.5, "bills": 2, "revenue": 20681.0, "units": 3}, "Wk2 (Aug 3-9)": {"aov": 3590.0, "asp": 3590.0, "upt": 1.0, "bills": 1, "revenue": 3590.0, "units": 1}, "Wk3 (Aug 10-16)": {"aov": 5624.0, "asp": 3515.0, "upt": 1.6, "bills": 5, "revenue": 28120.0, "units": 8}}}, {"name": "Hiten zakhariya", "store": "Sindhu Bhavan Marg", "region": "West", "priority": "P0", "jul_aov": 9118.0, "jul_asp": 3207.0, "jul_upt": 2.84, "mtd": {"aov": 9202.0, "asp": 3080.0, "upt": 2.99, "bills": 84, "revenue": 773010.0, "units": 251}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 8865.0, "asp": 2641.0, "upt": 3.36, "bills": 14, "revenue": 124110.0, "units": 47}, "Wk2 (Aug 3-9)": {"aov": 7292.0, "asp": 2962.0, "upt": 2.46, "bills": 26, "revenue": 189590.0, "units": 64}, "Wk3 (Aug 10-16)": {"aov": 11049.0, "asp": 3250.0, "upt": 3.4, "bills": 30, "revenue": 331470.0, "units": 102}, "Wk4 (Aug 17-20)": {"aov": 9131.0, "asp": 3364.0, "upt": 2.71, "bills": 14, "revenue": 127840.0, "units": 38}}}, {"name": "inderjit singh", "store": "Oberoi Sky City", "region": "West", "priority": "P2", "jul_aov": 6097.0, "jul_asp": 2927.0, "jul_upt": 2.08, "mtd": {"aov": 7576.0, "asp": 3182.0, "upt": 2.38, "bills": 21, "revenue": 159095.0, "units": 50}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 7388.0, "asp": 3057.0, "upt": 2.42, "bills": 12, "revenue": 88655.0, "units": 29}, "Wk2 (Aug 3-9)": {"aov": 8381.0, "asp": 3592.0, "upt": 2.33, "bills": 9, "revenue": 75430.0, "units": 21}, "Wk3 (Aug 10-16)": {"aov": null, "asp": null, "upt": null, "bills": 0, "revenue": -4990.0, "units": 0}}}, {"name": "Irfan Sayed", "store": "Pali Hill, Bandra", "region": "West", "priority": "P2", "jul_aov": 14121.0, "jul_asp": 4424.0, "jul_upt": 3.19, "mtd": {"aov": 11440.0, "asp": 4274.0, "upt": 2.68, "bills": 68, "revenue": 777918.0, "units": 182}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 10370.0, "asp": 3275.0, "upt": 3.17, "bills": 12, "revenue": 124436.0, "units": 38}, "Wk2 (Aug 3-9)": {"aov": 8413.0, "asp": 4464.0, "upt": 1.88, "bills": 26, "revenue": 218748.0, "units": 49}, "Wk3 (Aug 10-16)": {"aov": 17436.0, "asp": 4755.0, "upt": 3.67, "bills": 18, "revenue": 313842.0, "units": 66}, "Wk4 (Aug 17-20)": {"aov": 10074.0, "asp": 4169.0, "upt": 2.42, "bills": 12, "revenue": 120892.0, "units": 29}}}, {"name": "kaviya Palanisamy", "store": "Express Avenue", "region": "South", "priority": "Aug AOV ok", "jul_aov": 5428.0, "jul_asp": 3369.0, "jul_upt": 1.61, "mtd": {"aov": 10678.0, "asp": 4107.0, "upt": 2.6, "bills": 30, "revenue": 320344.0, "units": 78}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 10919.0, "asp": 4853.0, "upt": 2.25, "bills": 4, "revenue": 43674.0, "units": 9}, "Wk2 (Aug 3-9)": {"aov": 15525.0, "asp": 4283.0, "upt": 3.62, "bills": 8, "revenue": 124200.0, "units": 29}, "Wk3 (Aug 10-16)": {"aov": 8069.0, "asp": 3560.0, "upt": 2.27, "bills": 15, "revenue": 121030.0, "units": 34}, "Wk4 (Aug 17-20)": {"aov": 10480.0, "asp": 5240.0, "upt": 2.0, "bills": 3, "revenue": 31440.0, "units": 6}}}, {"name": "Krish Ayar", "store": "Oberoi Sky City", "region": "West", "priority": "P2", "jul_aov": 7998.0, "jul_asp": 3625.0, "jul_upt": 2.21, "mtd": {"aov": 9627.0, "asp": 3828.0, "upt": 2.52, "bills": 33, "revenue": 317690.0, "units": 83}, "weeks": {"Wk2 (Aug 3-9)": {"aov": 10800.0, "asp": 4320.0, "upt": 2.5, "bills": 14, "revenue": 151200.0, "units": 35}, "Wk3 (Aug 10-16)": {"aov": 6984.0, "asp": 3621.0, "upt": 1.93, "bills": 14, "revenue": 97770.0, "units": 27}, "Wk4 (Aug 17-20)": {"aov": 13744.0, "asp": 3272.0, "upt": 4.2, "bills": 5, "revenue": 68720.0, "units": 21}}}, {"name": "Manish Sharma", "store": "Jaipur Store", "region": "North", "priority": "P2", "jul_aov": 9737.0, "jul_asp": 3800.0, "jul_upt": 2.56, "mtd": {"aov": 10420.0, "asp": 3789.0, "upt": 2.75, "bills": 44, "revenue": 458494.0, "units": 121}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 7645.0, "asp": 3058.0, "upt": 2.5, "bills": 8, "revenue": 61160.0, "units": 20}, "Wk2 (Aug 3-9)": {"aov": 10315.0, "asp": 3379.0, "upt": 3.05, "bills": 19, "revenue": 195980.0, "units": 58}, "Wk3 (Aug 10-16)": {"aov": 12970.0, "asp": 4323.0, "upt": 3.0, "bills": 11, "revenue": 142673.0, "units": 33}, "Wk4 (Aug 17-20)": {"aov": 9780.0, "asp": 5868.0, "upt": 1.67, "bills": 6, "revenue": 58681.0, "units": 10}}}, {"name": "manohar pilla", "store": "Kemps Corner", "region": "West", "priority": "Aug AOV ok", "jul_aov": 15193.0, "jul_asp": 5120.0, "jul_upt": 2.97, "mtd": {"aov": 26343.0, "asp": 7317.0, "upt": 3.6, "bills": 30, "revenue": 790283.0, "units": 108}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 12575.0, "asp": 5240.0, "upt": 2.4, "bills": 5, "revenue": 62875.0, "units": 12}, "Wk2 (Aug 3-9)": {"aov": 50210.0, "asp": 8368.0, "upt": 6.0, "bills": 11, "revenue": 552308.0, "units": 66}, "Wk3 (Aug 10-16)": {"aov": 8776.0, "asp": 4827.0, "upt": 1.82, "bills": 11, "revenue": 96540.0, "units": 20}, "Wk4 (Aug 17-20)": {"aov": 26187.0, "asp": 7856.0, "upt": 3.33, "bills": 3, "revenue": 78560.0, "units": 10}}}, {"name": "Mohammed Baba", "store": "Sarath City-Hyderabad", "region": "South", "priority": "P0", "jul_aov": 11363.0, "jul_asp": 3714.0, "jul_upt": 3.06, "mtd": {"aov": 13301.0, "asp": 3854.0, "upt": 3.45, "bills": 51, "revenue": 678340.0, "units": 176}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 3826.0, "asp": 2126.0, "upt": 1.8, "bills": 5, "revenue": 19130.0, "units": 9}, "Wk2 (Aug 3-9)": {"aov": 11860.0, "asp": 3174.0, "upt": 3.74, "bills": 19, "revenue": 225340.0, "units": 71}, "Wk3 (Aug 10-16)": {"aov": 14869.0, "asp": 4866.0, "upt": 3.06, "bills": 18, "revenue": 267640.0, "units": 55}, "Wk4 (Aug 17-20)": {"aov": 18470.0, "asp": 4054.0, "upt": 4.56, "bills": 9, "revenue": 166230.0, "units": 41}}}, {"name": "Mohd Sadath", "store": "LakeShore Mall", "region": "South", "priority": "Aug AOV ok", "jul_aov": 10013.0, "jul_asp": 3309.0, "jul_upt": 3.03, "mtd": {"aov": 10632.0, "asp": 4801.0, "upt": 2.21, "bills": 28, "revenue": 297690.0, "units": 62}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 16720.0, "asp": 4777.0, "upt": 3.5, "bills": 6, "revenue": 100320.0, "units": 21}, "Wk2 (Aug 3-9)": {"aov": 13757.0, "asp": 5350.0, "upt": 2.57, "bills": 7, "revenue": 96300.0, "units": 18}, "Wk3 (Aug 10-16)": {"aov": 5128.0, "asp": 3945.0, "upt": 1.3, "bills": 10, "revenue": 51280.0, "units": 13}, "Wk4 (Aug 17-20)": {"aov": 9958.0, "asp": 4979.0, "upt": 2.0, "bills": 5, "revenue": 49790.0, "units": 10}}}, {"name": "Mohiz Shaikh", "store": "Kemps Corner", "region": "West", "priority": "P1", "jul_aov": 12792.0, "jul_asp": 4264.0, "jul_upt": 3.0, "mtd": {"aov": 13978.0, "asp": 4058.0, "upt": 3.44, "bills": 9, "revenue": 125801.0, "units": 31}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 22510.0, "asp": 4894.0, "upt": 4.6, "bills": 5, "revenue": 112552.0, "units": 23}, "Wk2 (Aug 3-9)": {"aov": 3985.0, "asp": 1992.0, "upt": 2.0, "bills": 4, "revenue": 15940.0, "units": 8}, "Wk3 (Aug 10-16)": {"aov": null, "asp": null, "upt": null, "bills": 0, "revenue": -2691.0, "units": 0}}}, {"name": "Naga Sathish", "store": "Jubilee Hills", "region": "South", "priority": "P0", "jul_aov": 16499.0, "jul_asp": 3763.0, "jul_upt": 4.38, "mtd": {"aov": 17660.0, "asp": 4196.0, "upt": 4.21, "bills": 24, "revenue": 423843.0, "units": 101}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 0.0, "asp": 0.0, "upt": 1.0, "bills": 3, "revenue": 0.0, "units": 3}, "Wk2 (Aug 3-9)": {"aov": 9635.0, "asp": 4014.0, "upt": 2.4, "bills": 5, "revenue": 48173.0, "units": 12}, "Wk3 (Aug 10-16)": {"aov": 25841.0, "asp": 4307.0, "upt": 6.0, "bills": 14, "revenue": 361770.0, "units": 84}, "Wk4 (Aug 17-20)": {"aov": 6950.0, "asp": 6950.0, "upt": 1.0, "bills": 2, "revenue": 13900.0, "units": 2}}}, {"name": "Neha Gaikar", "store": "Kalaghoda, Fort", "region": "West", "priority": "P1", "jul_aov": 11212.0, "jul_asp": 3534.0, "jul_upt": 3.17, "mtd": {"aov": 8969.0, "asp": 3340.0, "upt": 2.69, "bills": 54, "revenue": 484337.0, "units": 145}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 5458.0, "asp": 2729.0, "upt": 2.0, "bills": 5, "revenue": 27290.0, "units": 10}, "Wk2 (Aug 3-9)": {"aov": 8580.0, "asp": 3396.0, "upt": 2.53, "bills": 19, "revenue": 163020.0, "units": 48}, "Wk3 (Aug 10-16)": {"aov": 9124.0, "asp": 2903.0, "upt": 3.14, "bills": 21, "revenue": 191607.0, "units": 66}, "Wk4 (Aug 17-20)": {"aov": 11380.0, "asp": 4877.0, "upt": 2.33, "bills": 9, "revenue": 102420.0, "units": 21}}}, {"name": "Nibras Pathan", "store": "Kalaghoda, Fort", "region": "West", "priority": "P1", "jul_aov": 8810.0, "jul_asp": 3524.0, "jul_upt": 2.5, "mtd": {"aov": 11017.0, "asp": 3692.0, "upt": 2.98, "bills": 62, "revenue": 683034.0, "units": 185}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 13773.0, "asp": 4349.0, "upt": 3.17, "bills": 6, "revenue": 82640.0, "units": 19}, "Wk2 (Aug 3-9)": {"aov": 10924.0, "asp": 3213.0, "upt": 3.4, "bills": 25, "revenue": 273090.0, "units": 85}, "Wk3 (Aug 10-16)": {"aov": 11035.0, "asp": 4230.0, "upt": 2.61, "bills": 23, "revenue": 253804.0, "units": 60}, "Wk4 (Aug 17-20)": {"aov": 9188.0, "asp": 3500.0, "upt": 2.62, "bills": 8, "revenue": 73500.0, "units": 21}}}, {"name": "Niranjan N", "store": "Phoenix Marketcity, Whitefield", "region": "South", "priority": "P2", "jul_aov": 9686.0, "jul_asp": 4059.0, "jul_upt": 2.39, "mtd": {"aov": 11416.0, "asp": 3632.0, "upt": 3.14, "bills": 42, "revenue": 479453.0, "units": 132}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 9504.0, "asp": 3696.0, "upt": 2.57, "bills": 7, "revenue": 66530.0, "units": 18}, "Wk2 (Aug 3-9)": {"aov": 9341.0, "asp": 4396.0, "upt": 2.12, "bills": 16, "revenue": 149460.0, "units": 34}, "Wk3 (Aug 10-16)": {"aov": 14058.0, "asp": 4832.0, "upt": 2.91, "bills": 11, "revenue": 154640.0, "units": 32}, "Wk4 (Aug 17-20)": {"aov": 13603.0, "asp": 2267.0, "upt": 6.0, "bills": 8, "revenue": 108823.0, "units": 48}}}, {"name": "nitish sharma", "store": "DLF Midtown - Moti Nagar", "region": "North", "priority": "P1", "jul_aov": 3218.0, "jul_asp": 2340.0, "jul_upt": 1.38, "mtd": {"aov": 11077.0, "asp": 3525.0, "upt": 3.14, "bills": 7, "revenue": 77540.0, "units": 22}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 5085.0, "asp": 3390.0, "upt": 1.5, "bills": 2, "revenue": 10170.0, "units": 3}, "Wk2 (Aug 3-9)": {"aov": 15372.0, "asp": 3617.0, "upt": 4.25, "bills": 4, "revenue": 61490.0, "units": 17}, "Wk3 (Aug 10-16)": {"aov": 5880.0, "asp": 2940.0, "upt": 2.0, "bills": 1, "revenue": 5880.0, "units": 2}, "Wk4 (Aug 17-20)": {"aov": null, "asp": null, "upt": null, "bills": 0, "revenue": 0.0, "units": 0}}}, {"name": "omkar tambe", "store": "PMC Viman Nagar Pune", "region": "West", "priority": "P0", "jul_aov": 5225.0, "jul_asp": 3575.0, "jul_upt": 1.46, "mtd": {"aov": 5980.0, "asp": 3788.0, "upt": 1.58, "bills": 19, "revenue": 113626.0, "units": 30}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 4240.0, "asp": 3634.0, "upt": 1.17, "bills": 6, "revenue": 25440.0, "units": 7}, "Wk2 (Aug 3-9)": {"aov": 12435.0, "asp": 6218.0, "upt": 2.0, "bills": 4, "revenue": 49740.0, "units": 8}, "Wk3 (Aug 10-16)": {"aov": 4272.0, "asp": 2563.0, "upt": 1.67, "bills": 9, "revenue": 38446.0, "units": 15}}}, {"name": "panku iglesias", "store": "Vegas Dwarka", "region": "North", "priority": "P0", "jul_aov": 5972.0, "jul_asp": 3711.0, "jul_upt": 1.61, "mtd": {"aov": 7100.0, "asp": 3928.0, "upt": 1.81, "bills": 26, "revenue": 184593.0, "units": 47}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 9525.0, "asp": 5196.0, "upt": 1.83, "bills": 6, "revenue": 57152.0, "units": 11}, "Wk2 (Aug 3-9)": {"aov": 8261.0, "asp": 3813.0, "upt": 2.17, "bills": 12, "revenue": 99131.0, "units": 26}, "Wk3 (Aug 10-16)": {"aov": 3903.0, "asp": 3415.0, "upt": 1.14, "bills": 7, "revenue": 27320.0, "units": 8}, "Wk4 (Aug 17-20)": {"aov": 990.0, "asp": 495.0, "upt": 2.0, "bills": 1, "revenue": 990.0, "units": 2}}}, {"name": "Pradeep Pradeep", "store": "Ambience Vasant Kunj", "region": "North", "priority": "P0", "jul_aov": 7185.0, "jul_asp": 3653.0, "jul_upt": 1.97, "mtd": {"aov": 10266.0, "asp": 3562.0, "upt": 2.88, "bills": 17, "revenue": 174530.0, "units": 49}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 10942.0, "asp": 3367.0, "upt": 3.25, "bills": 4, "revenue": 43770.0, "units": 13}, "Wk2 (Aug 3-9)": {"aov": 16505.0, "asp": 3301.0, "upt": 5.0, "bills": 4, "revenue": 66020.0, "units": 20}, "Wk3 (Aug 10-16)": {"aov": 7681.0, "asp": 4097.0, "upt": 1.88, "bills": 8, "revenue": 61450.0, "units": 15}, "Wk4 (Aug 17-20)": {"aov": 3290.0, "asp": 3290.0, "upt": 1.0, "bills": 1, "revenue": 3290.0, "units": 1}}}, {"name": "Rahul Yadav (Andheri)", "store": "Andheri", "region": "West", "priority": "Aug AOV ok", "jul_aov": 10533.0, "jul_asp": 3749.0, "jul_upt": 2.81, "mtd": {"aov": 14092.0, "asp": 4158.0, "upt": 3.39, "bills": 18, "revenue": 253652.0, "units": 61}, "weeks": {"Wk2 (Aug 3-9)": {"aov": 14627.0, "asp": 5485.0, "upt": 2.67, "bills": 12, "revenue": 175529.0, "units": 32}, "Wk3 (Aug 10-16)": {"aov": 8681.0, "asp": 2894.0, "upt": 3.0, "bills": 5, "revenue": 43405.0, "units": 15}, "Wk4 (Aug 17-20)": {"aov": 34718.0, "asp": 2480.0, "upt": 14.0, "bills": 1, "revenue": 34718.0, "units": 14}}}, {"name": "rajesh nair", "store": "Inorbit Mall Malad West", "region": "West", "priority": "P0", "jul_aov": 8413.0, "jul_asp": 4207.0, "jul_upt": 2.0, "mtd": {"aov": 9750.0, "asp": 3517.0, "upt": 2.77, "bills": 22, "revenue": 214510.0, "units": 61}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 10280.0, "asp": 3427.0, "upt": 3.0, "bills": 2, "revenue": 20560.0, "units": 6}, "Wk2 (Aug 3-9)": {"aov": 9098.0, "asp": 3499.0, "upt": 2.6, "bills": 5, "revenue": 45490.0, "units": 13}, "Wk3 (Aug 10-16)": {"aov": 9616.0, "asp": 3472.0, "upt": 2.77, "bills": 13, "revenue": 125010.0, "units": 36}, "Wk4 (Aug 17-20)": {"aov": 11725.0, "asp": 3908.0, "upt": 3.0, "bills": 2, "revenue": 23450.0, "units": 6}}}, {"name": "Rajkumar Rajkumar", "store": "Indiranagar", "region": "South", "priority": "Aug AOV ok", "jul_aov": 20896.0, "jul_asp": 6447.0, "jul_upt": 3.24, "mtd": {"aov": 12973.0, "asp": 3697.0, "upt": 3.51, "bills": 55, "revenue": 713510.0, "units": 193}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 12884.0, "asp": 3608.0, "upt": 3.57, "bills": 7, "revenue": 90190.0, "units": 25}, "Wk2 (Aug 3-9)": {"aov": 13324.0, "asp": 3977.0, "upt": 3.35, "bills": 20, "revenue": 266470.0, "units": 67}, "Wk3 (Aug 10-16)": {"aov": 13217.0, "asp": 3568.0, "upt": 3.7, "bills": 27, "revenue": 356850.0, "units": 100}, "Wk4 (Aug 17-20)": {"aov": 0.0, "asp": 0.0, "upt": 1.0, "bills": 1, "revenue": 0.0, "units": 1}}}, {"name": "ritika dubey", "store": "Juhu Store", "region": "West", "priority": "P0", "jul_aov": 9016.0, "jul_asp": 3913.0, "jul_upt": 2.3, "mtd": {"aov": 11628.0, "asp": 3876.0, "upt": 3.0, "bills": 16, "revenue": 186040.0, "units": 48}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 6185.0, "asp": 3534.0, "upt": 1.75, "bills": 4, "revenue": 24740.0, "units": 7}, "Wk2 (Aug 3-9)": {"aov": 14735.0, "asp": 4210.0, "upt": 3.5, "bills": 8, "revenue": 117880.0, "units": 28}, "Wk3 (Aug 10-16)": {"aov": 17148.0, "asp": 5276.0, "upt": 3.25, "bills": 4, "revenue": 68590.0, "units": 13}, "Wk4 (Aug 17-20)": {"aov": null, "asp": null, "upt": null, "bills": 0, "revenue": -25170.0, "units": 0}}}, {"name": "S Nagasesha Reddy", "store": "Lavelle Road", "region": "South", "priority": "One off month", "jul_aov": 12635.0, "jul_asp": 3790.0, "jul_upt": 3.33, "mtd": {"aov": 19716.0, "asp": 5593.0, "upt": 3.52, "bills": 40, "revenue": 788641.0, "units": 141}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 17947.0, "asp": 3846.0, "upt": 4.67, "bills": 6, "revenue": 107680.0, "units": 28}, "Wk2 (Aug 3-9)": {"aov": 14213.0, "asp": 4536.0, "upt": 3.13, "bills": 15, "revenue": 213198.0, "units": 47}, "Wk3 (Aug 10-16)": {"aov": 33789.0, "asp": 7372.0, "upt": 4.58, "bills": 12, "revenue": 405473.0, "units": 55}, "Wk4 (Aug 17-20)": {"aov": 8899.0, "asp": 5663.0, "upt": 1.57, "bills": 7, "revenue": 62290.0, "units": 11}}}, {"name": "samir ansari", "store": "Andheri", "region": "West", "priority": "P0", "jul_aov": 5210.0, "jul_asp": 3721.0, "jul_upt": 1.4, "mtd": {"aov": 9500.0, "asp": 3492.0, "upt": 2.72, "bills": 25, "revenue": 237490.0, "units": 68}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 12730.0, "asp": 3744.0, "upt": 3.4, "bills": 5, "revenue": 63650.0, "units": 17}, "Wk2 (Aug 3-9)": {"aov": 7410.0, "asp": 3176.0, "upt": 2.33, "bills": 9, "revenue": 66690.0, "units": 21}, "Wk3 (Aug 10-16)": {"aov": 6753.0, "asp": 3377.0, "upt": 2.0, "bills": 6, "revenue": 40520.0, "units": 12}, "Wk4 (Aug 17-20)": {"aov": 13326.0, "asp": 3702.0, "upt": 3.6, "bills": 5, "revenue": 66630.0, "units": 18}}}, {"name": "Sarika Tyagi", "store": "South Ex.", "region": "North", "priority": "P2", "jul_aov": 14662.0, "jul_asp": 4422.0, "jul_upt": 3.32, "mtd": {"aov": 16357.0, "asp": 4411.0, "upt": 3.71, "bills": 24, "revenue": 392560.0, "units": 89}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 8320.0, "asp": 3120.0, "upt": 2.67, "bills": 3, "revenue": 24960.0, "units": 8}, "Wk2 (Aug 3-9)": {"aov": 28416.0, "asp": 5376.0, "upt": 5.29, "bills": 7, "revenue": 198910.0, "units": 37}, "Wk3 (Aug 10-16)": {"aov": 16018.0, "asp": 3661.0, "upt": 4.38, "bills": 8, "revenue": 128140.0, "units": 35}, "Wk4 (Aug 17-20)": {"aov": 6758.0, "asp": 4506.0, "upt": 1.5, "bills": 6, "revenue": 40550.0, "units": 9}}}, {"name": "Suchita Singh", "store": "Shakespearesarani", "region": "North", "priority": "P1", "jul_aov": 10629.0, "jul_asp": 4198.0, "jul_upt": 2.53, "mtd": {"aov": 11773.0, "asp": 3791.0, "upt": 3.11, "bills": 38, "revenue": 447393.0, "units": 118}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 17552.0, "asp": 4529.0, "upt": 3.88, "bills": 8, "revenue": 140413.0, "units": 31}, "Wk2 (Aug 3-9)": {"aov": 9864.0, "asp": 3541.0, "upt": 2.79, "bills": 14, "revenue": 138100.0, "units": 39}, "Wk3 (Aug 10-16)": {"aov": 10465.0, "asp": 3488.0, "upt": 3.0, "bills": 15, "revenue": 156970.0, "units": 45}, "Wk4 (Aug 17-20)": {"aov": 11910.0, "asp": 3970.0, "upt": 3.0, "bills": 1, "revenue": 11910.0, "units": 3}}}, {"name": "Sunil M", "store": "Lavelle Road", "region": "South", "priority": "One off month", "jul_aov": 34748.0, "jul_asp": 5487.0, "jul_upt": 6.33, "mtd": {"aov": 16835.0, "asp": 4688.0, "upt": 3.59, "bills": 44, "revenue": 740721.0, "units": 158}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 8630.0, "asp": 3236.0, "upt": 2.67, "bills": 6, "revenue": 51780.0, "units": 16}, "Wk2 (Aug 3-9)": {"aov": 9618.0, "asp": 3639.0, "upt": 2.64, "bills": 14, "revenue": 134645.0, "units": 37}, "Wk3 (Aug 10-16)": {"aov": 25374.0, "asp": 5382.0, "upt": 4.71, "bills": 21, "revenue": 532855.0, "units": 99}, "Wk4 (Aug 17-20)": {"aov": 7147.0, "asp": 3573.0, "upt": 2.0, "bills": 3, "revenue": 21440.0, "units": 6}}}, {"name": "suraj sarkar", "store": "LakeShore Mall", "region": "South", "priority": "P0", "jul_aov": 8401.0, "jul_asp": 4056.0, "jul_upt": 2.07, "mtd": {"aov": 8594.0, "asp": 3530.0, "upt": 2.43, "bills": 23, "revenue": 197670.0, "units": 56}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 7676.0, "asp": 3838.0, "upt": 2.0, "bills": 8, "revenue": 61410.0, "units": 16}, "Wk2 (Aug 3-9)": {"aov": 8534.0, "asp": 4016.0, "upt": 2.12, "bills": 8, "revenue": 68270.0, "units": 17}, "Wk3 (Aug 10-16)": {"aov": 4606.0, "asp": 3290.0, "upt": 1.4, "bills": 5, "revenue": 23030.0, "units": 7}, "Wk4 (Aug 17-20)": {"aov": 22480.0, "asp": 2810.0, "upt": 8.0, "bills": 2, "revenue": 44960.0, "units": 16}}}, {"name": "Thomas Vincent", "store": "Express Avenue", "region": "South", "priority": "P1", "jul_aov": 9224.0, "jul_asp": 3592.0, "jul_upt": 2.57, "mtd": {"aov": 11838.0, "asp": 5623.0, "upt": 2.11, "bills": 38, "revenue": 449826.0, "units": 80}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 4990.0, "asp": 4990.0, "upt": 1.0, "bills": 2, "revenue": 9980.0, "units": 2}, "Wk2 (Aug 3-9)": {"aov": 8846.0, "asp": 4304.0, "upt": 2.06, "bills": 18, "revenue": 159231.0, "units": 37}, "Wk3 (Aug 10-16)": {"aov": 10202.0, "asp": 5565.0, "upt": 1.83, "bills": 12, "revenue": 122420.0, "units": 22}, "Wk4 (Aug 17-20)": {"aov": 26366.0, "asp": 8326.0, "upt": 3.17, "bills": 6, "revenue": 158195.0, "units": 19}}}, {"name": "Yasin Sayyed", "store": "Kalaghoda, Fort", "region": "West", "priority": "Aug AOV ok", "jul_aov": 10455.0, "jul_asp": 3848.0, "jul_upt": 2.72, "mtd": {"aov": 13878.0, "asp": 4576.0, "upt": 3.03, "bills": 61, "revenue": 846532.0, "units": 185}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 24402.0, "asp": 4437.0, "upt": 5.5, "bills": 6, "revenue": 146410.0, "units": 33}, "Wk2 (Aug 3-9)": {"aov": 12109.0, "asp": 4359.0, "upt": 2.78, "bills": 18, "revenue": 217960.0, "units": 50}, "Wk3 (Aug 10-16)": {"aov": 15991.0, "asp": 4955.0, "upt": 3.23, "bills": 22, "revenue": 351813.0, "units": 71}, "Wk4 (Aug 17-20)": {"aov": 8690.0, "asp": 4205.0, "upt": 2.07, "bills": 15, "revenue": 130349.0, "units": 31}}}, {"name": "yogesh manawat", "store": "Jaipur Store", "region": "North", "priority": "P2", "jul_aov": 8306.0, "jul_asp": 3738.0, "jul_upt": 2.22, "mtd": {"aov": 11981.0, "asp": 3994.0, "upt": 3.0, "bills": 32, "revenue": 383385.0, "units": 96}, "weeks": {"Wk1 (Aug 1-2)": {"aov": 14450.0, "asp": 4046.0, "upt": 3.57, "bills": 7, "revenue": 101150.0, "units": 25}, "Wk2 (Aug 3-9)": {"aov": 10499.0, "asp": 3725.0, "upt": 2.82, "bills": 11, "revenue": 115485.0, "units": 31}, "Wk3 (Aug 10-16)": {"aov": 8547.0, "asp": 3287.0, "upt": 2.6, "bills": 10, "revenue": 85470.0, "units": 26}, "Wk4 (Aug 17-20)": {"aov": 20320.0, "asp": 5806.0, "upt": 3.5, "bills": 4, "revenue": 81280.0, "units": 14}}}];
+
+const METRIC_META = {
+  aov: { label: 'AOV', fmt: v => v==null? '—' : '₹'+Math.round(v).toLocaleString('en-IN'), color:'#b9862f' },
+  asp: { label: 'ASP', fmt: v => v==null? '—' : '₹'+Math.round(v).toLocaleString('en-IN'), color:'#1f7a3f' },
+  upt: { label: 'UPT', fmt: v => v==null? '—' : v.toFixed(2), color:'#3a5a9b' }
+};
+const WEEKS = ['Wk1 (Aug 1-2)','Wk2 (Aug 3-9)','Wk3 (Aug 10-16)','Wk4 (Aug 17-20)'];
+const WEEK_SHORT = ['Wk1','Wk2','Wk3','Wk4'];
+
+let currentMetric = 'aov';
+let sortCol = 'name';
+let sortDir = 1;
+
+function deltaPct(actual, base){
+  if(actual==null || base==null || base<=0) return null;
+  return (actual-base)/base*100;
+}
+
+function populateFilters(){
+  const regionSel = document.getElementById('regionFilter');
+  const storeSel = document.getElementById('storeFilter');
+  const prioritySel = document.getElementById('priorityFilter');
+  const regions = [...new Set(RAW.map(d=>d.region))].sort();
+  const stores = [...new Set(RAW.map(d=>d.store))].sort();
+  const priorityOrder = ['P0','P1','P2','Aug AOV ok','One off month','Resigned','Unclassified'];
+  const priorities = [...new Set(RAW.map(d=>d.priority))].sort((a,b)=>{
+    const ia = priorityOrder.indexOf(a), ib = priorityOrder.indexOf(b);
+    return (ia<0?99:ia) - (ib<0?99:ib);
+  });
+  regions.forEach(r=>{
+    const o = document.createElement('option'); o.value=r; o.textContent=r; regionSel.appendChild(o);
+  });
+  stores.forEach(s=>{
+    const o = document.createElement('option'); o.value=s; o.textContent=s; storeSel.appendChild(o);
+  });
+  priorities.forEach(p=>{
+    const o = document.createElement('option'); o.value=p; o.textContent=p; prioritySel.appendChild(o);
+  });
+}
+
+function currentRows(){
+  const region = document.getElementById('regionFilter').value;
+  const store = document.getElementById('storeFilter').value;
+  const priority = document.getElementById('priorityFilter').value;
+  const noImprove = document.getElementById('noImproveFilter').checked;
+  const q = document.getElementById('searchBox').value.trim().toLowerCase();
+  return RAW.filter(d=>{
+    if(region && d.region!==region) return false;
+    if(store && d.store!==store) return false;
+    if(priority && d.priority!==priority) return false;
+    if(q && !d.name.toLowerCase().includes(q)) return false;
+    if(noImprove){
+      const base = d['jul_'+currentMetric];
+      const val = d.mtd ? d.mtd[currentMetric] : null;
+      const dp = deltaPct(val, base);
+      if(dp!=null && dp > 0) return false; // improved -> exclude
+    }
+    return true;
+  });
+}
+
+function renderHeader(){
+  const tr = document.getElementById('headerRow');
+  const cols = [
+    {key:'name', label:'Stylist'},
+    {key:'store', label:'Store'},
+    {key:'region', label:'Region'},
+    {key:'priority', label:'Priority'},
+    {key:'jul_'+currentMetric, label:'Jul Baseline'},
+    {key:'mtd', label:'MTD vs Jul'},
+  ];
+  WEEKS.forEach((w,i)=> cols.push({key:'wk'+i, label: WEEK_SHORT[i]+' vs Jul'}));
+  tr.innerHTML = cols.map(c=>{
+    const arrow = sortCol===c.key ? (sortDir===1?'▲':'▼') : '';
+    return `<th data-col="${c.key}">${c.label} <span class="arrow">${arrow}</span></th>`;
+  }).join('');
+  tr.querySelectorAll('th').forEach(th=>{
+    th.onclick = ()=>{
+      const col = th.dataset.col;
+      if(sortCol===col) sortDir*=-1; else { sortCol=col; sortDir = col==='name'?1:-1; }
+      renderTable();
+    };
+  });
+}
+
+function sortValue(d, col){
+  if(col==='name') return d.name.toLowerCase();
+  if(col==='store') return d.store.toLowerCase();
+  if(col==='region') return d.region.toLowerCase();
+  if(col==='priority') return d.priority.toLowerCase();
+  if(col==='jul_'+currentMetric) return d['jul_'+currentMetric] ?? -Infinity;
+  if(col==='mtd'){
+    const base = d['jul_'+currentMetric];
+    const val = d.mtd ? d.mtd[currentMetric] : null;
+    const dp = deltaPct(val, base);
+    return dp==null? -Infinity : dp;
+  }
+  if(col.startsWith('wk')){
+    const idx = parseInt(col.slice(2));
+    const wk = d.weeks[WEEKS[idx]];
+    const base = d['jul_'+currentMetric];
+    const val = wk ? wk[currentMetric] : null;
+    const dp = deltaPct(val, base);
+    return dp==null? -Infinity : dp;
+  }
+  return 0;
+}
+
+function priorityClass(p){
+  if(p==='P0') return 'p-P0';
+  if(p==='P1') return 'p-P1';
+  if(p==='P2') return 'p-P2';
+  if(p==='Aug AOV ok') return 'p-Aug';
+  if(p==='One off month') return 'p-One';
+  if(p==='Resigned') return 'p-Resigned';
+  return 'p-Unclassified';
+}
+
+function renderTable(){
+  renderHeader();
+  const rows = currentRows().slice().sort((a,b)=>{
+    const va = sortValue(a, sortCol), vb = sortValue(b, sortCol);
+    if(va<vb) return -1*sortDir;
+    if(va>vb) return 1*sortDir;
+    return 0;
+  });
+  const meta = METRIC_META[currentMetric];
+  const base_key = 'jul_'+currentMetric;
+
+  const body = document.getElementById('tableBody');
+  body.innerHTML = rows.map(d=>{
+    const base = d[base_key];
+
+    function pillCell(val, bills){
+      const dp = deltaPct(val, base);
+      const lowSample = bills!=null && bills < 3;
+      let cls = 'na', text = 'N/A';
+      if(dp!=null){
+        cls = dp>=0 ? 'pos' : 'neg';
+        text = (dp>=0?'+':'') + dp.toFixed(1) + '%';
+      }
+      if(lowSample) cls += ' low';
+      return `<td><span class="delta-pill ${cls}">${text}</span><span class="actual-sub">${meta.fmt(val)}</span></td>`;
+    }
+
+    const mtdCell = pillCell(d.mtd ? d.mtd[currentMetric] : null, d.mtd ? d.mtd.bills : null);
+    let weekCells = '';
+    WEEKS.forEach(w=>{
+      const wk = d.weeks[w];
+      weekCells += pillCell(wk ? wk[currentMetric] : null, wk ? wk.bills : null);
+    });
+    return `<tr data-name="${d.name.replace(/"/g,'&quot;')}">
+      <td class="name-cell">${d.name}</td>
+      <td class="store-cell">${d.store}</td>
+      <td><span class="region-pill">${d.region}</span></td>
+      <td><span class="priority-pill ${priorityClass(d.priority)}">${d.priority}</span></td>
+      <td class="base-cell">${meta.fmt(base)}</td>
+      ${mtdCell}
+      ${weekCells}
+    </tr>`;
+  }).join('');
+
+  body.querySelectorAll('tr').forEach(tr=>{
+    tr.onclick = ()=> openPanel(tr.dataset.name);
+  });
+}
+
+function renderCards(){
+  const wrap = document.getElementById('summaryCards');
+  const rows = currentRows();
+  let html = '';
+  ['aov','asp','upt'].forEach(m=>{
+    const meta = METRIC_META[m];
+    let up=0, down=0, na=0;
+    const julVals=[], mtdVals=[];
+    rows.forEach(d=>{
+      const base = d['jul_'+m];
+      const val = d.mtd ? d.mtd[m] : null;
+      const dp = deltaPct(val, base);
+      if(dp==null) na++; else if(dp>=0) up++; else down++;
+      if(base!=null) julVals.push(base);
+      if(val!=null) mtdVals.push(val);
+    });
+    const total = up+down;
+    const pctUp = total? Math.round(up/total*100) : 0;
+    const avgJul = julVals.length? julVals.reduce((a,b)=>a+b,0)/julVals.length : null;
+    const avgMtd = mtdVals.length? mtdVals.reduce((a,b)=>a+b,0)/mtdVals.length : null;
+    const cohortDp = deltaPct(avgMtd, avgJul);
+    const chgCls = cohortDp==null ? 'na' : (cohortDp>=0?'pos':'neg');
+    const chgTxt = cohortDp==null ? 'N/A' : (cohortDp>=0?'+':'')+cohortDp.toFixed(1)+'%';
+    html += `<div class="card" style="--metric-color:${meta.color}">
+      <div class="m-label">${meta.label} — Cohort Avg, MTD vs July</div>
+      <div class="compare">
+        <span class="old-val">${meta.fmt(avgJul)}</span>
+        <span class="arrow">→</span>
+        <span class="new-val">${meta.fmt(avgMtd)}</span>
+        <span class="delta-pill ${chgCls}">${chgTxt}</span>
+      </div>
+      <div class="caption">July average → Aug 1–20 (MTD) average, this cohort</div>
+      <div class="m-sub"><b>${pctUp}%</b> of stylists (${up} of ${total}) up vs July on MTD ${meta.label}</div>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function openPanel(name){
+  const d = RAW.find(x=>x.name===name);
+  if(!d) return;
+  const panel = document.getElementById('panel');
+  let metricsHtml = '';
+  ['aov','asp','upt'].forEach(m=>{
+    const meta = METRIC_META[m];
+    const base = d['jul_'+m];
+    const mtdVal = d.mtd ? d.mtd[m] : null;
+    const vals = WEEKS.map(w=> d.weeks[w] ? d.weeks[w][m] : null);
+    const maxScale = Math.max(base||0, mtdVal||0, ...vals.filter(v=>v!=null)) * 1.15 || 1;
+    let rowsHtml = `<div class="metric-row">
+        <span class="wk-label">Jul (base)</span>
+        <div class="bar-wrap"><div class="bar" style="width:${(base||0)/maxScale*100}%; background:#c9c2b0;"></div></div>
+        <span class="val">${meta.fmt(base)}</span>
+      </div>`;
+    const mtdDp = deltaPct(mtdVal, base);
+    const mtdBarColor = mtdDp==null ? '#c9c2b0' : (mtdDp>=0 ? '#1f7a3f' : '#b3261e');
+    const mtdDTxt = mtdDp==null ? '' : ` (${mtdDp>=0?'+':''}${mtdDp.toFixed(1)}%)`;
+    rowsHtml += `<div class="metric-row">
+        <span class="wk-label" style="font-weight:700;color:var(--ink);">MTD</span>
+        <div class="bar-wrap"><div class="bar" style="width:${mtdVal!=null?(mtdVal/maxScale*100):0}%; background:${mtdBarColor};"></div></div>
+        <span class="val">${meta.fmt(mtdVal)}${mtdDTxt}</span>
+      </div>
+      <div class="baseline-tag" style="margin-left:120px;margin-top:-4px;margin-bottom:6px;">${d.mtd ? d.mtd.bills+' bills · Aug 1-20' : 'no data'}</div>`;
+    WEEKS.forEach((w,i)=>{
+      const wk = d.weeks[w];
+      const val = vals[i];
+      const dp = deltaPct(val, base);
+      const barColor = dp==null ? '#c9c2b0' : (dp>=0 ? '#1f7a3f' : '#b3261e');
+      const pctW = val!=null ? (val/maxScale*100) : 0;
+      const tag = wk ? `${wk.bills} bills` : 'no data';
+      const dTxt = dp==null ? '' : ` (${dp>=0?'+':''}${dp.toFixed(1)}%)`;
+      rowsHtml += `<div class="metric-row">
+        <span class="wk-label">${WEEK_SHORT[i]}${wk && wk.bills<3 ? ' *' : ''}</span>
+        <div class="bar-wrap"><div class="bar" style="width:${pctW}%; background:${barColor};"></div></div>
+        <span class="val">${meta.fmt(val)}${dTxt}</span>
+      </div>
+      <div class="baseline-tag" style="margin-left:120px;margin-top:-4px;margin-bottom:6px;">${tag}</div>`;
+    });
+    metricsHtml += `<div class="panel-metric"><h3>${meta.label}</h3>${rowsHtml}</div>`;
+  });
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <div>
+        <h2>${d.name}</h2>
+        <div class="panel-sub">${d.store} · ${d.region} region</div>
+      </div>
+      <button class="close" onclick="closePanel()">✕</button>
+    </div>
+    ${metricsHtml}
+  `;
+  document.getElementById('overlay').classList.add('show');
+}
+function closePanel(){ document.getElementById('overlay').classList.remove('show'); }
+document.getElementById('overlay').onclick = (e)=>{ if(e.target.id==='overlay') closePanel(); };
+
+document.getElementById('metricTabs').addEventListener('click', e=>{
+  if(e.target.classList.contains('tab-btn')){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentMetric = e.target.dataset.metric;
+    sortCol = 'name'; sortDir = 1;
+    renderTable();
+    renderCards();
+  }
+});
+['regionFilter','storeFilter','priorityFilter','searchBox','noImproveFilter'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>{ renderTable(); renderCards(); });
+});
+
+populateFilters();
+renderCards();
+renderTable();
+</script>
+</body>
+</html>
