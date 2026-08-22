@@ -1473,7 +1473,7 @@ function renderTrainingCohort(body, days){
       </div>`;
     }).join('');
     card.innerHTML = `<div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">${g.label}</div>
-      <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px;">${g.label==='Training cohort'?totals.training.bills:totals.rest.bills} bills \\u00b7 ${fmtINR(g.label==='Training cohort'?totals.training.rev:totals.rest.rev)} revenue</div>
+      <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px;">${g.label==='Training cohort'?totals.training.bills:totals.rest.bills} bills \u00b7 ${fmtINR(g.label==='Training cohort'?totals.training.rev:totals.rest.rev)} revenue</div>
       ${rows}`;
     grid.appendChild(card);
   });
