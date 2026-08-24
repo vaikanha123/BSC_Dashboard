@@ -1903,11 +1903,14 @@ function renderRefunds(body){
   let onlineRev = 0, offlineRev = 0;
   const regionRev = {North:0, South:0, West:0};
   const storeRev = {};
+  const storeBills = {};
   days.forEach(dk => {
     const revs = state.days[dk] || {};
+    const bills = state.billDays[dk] || {};
     Object.keys(revs).forEach(store => {
       const reg = offlineRegion(store);
       storeRev[store] = (storeRev[store] || 0) + revs[store];
+      storeBills[store] = (storeBills[store] || 0) + (bills[store] || 0);
       if(reg){ offlineRev += revs[store]; regionRev[reg] += revs[store]; }
       else { onlineRev += revs[store]; }
     });
@@ -2018,11 +2021,12 @@ function renderRefunds(body){
 
     let stArr = Array.from(allStores).map(s => {
       const rev = storeRev[s] || 0;
+      const bills = storeBills[s] || 0;
       const rf = refundMonth && refundMonth.byStore ? (refundMonth.byStore[s] || 0) : 0;
       const cn = cnMonth && cnMonth.byStore ? (cnMonth.byStore[s] || 0) : 0;
       const rfCount = refundMonth && refundMonth.byStoreCount ? (refundMonth.byStoreCount[s] || 0) : 0;
       const cnCount = cnMonth && cnMonth.byStoreCount ? (cnMonth.byStoreCount[s] || 0) : 0;
-      return {store:s, region: offlineRegion(s), rev, rf, cn, rfCount, cnCount, rfPct: rev?rf/rev*100:0, cnPct: rev?cn/rev*100:0};
+      return {store:s, region: offlineRegion(s), rev, bills, rf, cn, rfCount, cnCount, rfPct: rev?rf/rev*100:0, cnPct: rev?cn/rev*100:0};
     });
 
     // ---- Filter bar: region + sort ----
@@ -2053,11 +2057,11 @@ function renderRefunds(body){
     stTable.style.cssText = 'font-size:13px; margin-bottom:16px;';
     let stRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
       '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
-      '<td style="padding:6px 10px; text-align:right;">Revenue</td><td style="padding:6px 10px; text-align:right;">Refund %</td>' +
-      '<td style="padding:6px 10px; text-align:right;">Refund Bills</td>' +
+      '<td style="padding:6px 10px; text-align:right;">Revenue</td><td style="padding:6px 10px; text-align:right;">Total Bills</td>' +
+      '<td style="padding:6px 10px; text-align:right;">Refund %</td><td style="padding:6px 10px; text-align:right;">Refund Bills</td>' +
       '<td style="padding:6px 10px; text-align:right;">CN %</td><td style="padding:6px 10px; text-align:right;">CN Bills</td></tr>';
     if(stArr.length === 0){
-      stRows += '<tr><td colspan="7" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No stores match this filter.</td></tr>';
+      stRows += '<tr><td colspan="8" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No stores match this filter.</td></tr>';
     }
     stArr.forEach(s => {
       // Color coding is independent per column: refund% color only reflects refund%, CN% color only reflects CN%.
@@ -2065,6 +2069,7 @@ function renderRefunds(body){
         <td style="padding:8px 10px; font-weight:500;">${s.store}</td>
         <td style="padding:8px 10px; color:var(--text-mute);">${s.region}</td>
         <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(s.rev)}</td>
+        <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${s.bills || '\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:${achColor(100-s.rfPct*8)}; font-weight:600;" class="bsc-mono">${s.rev?fmtPct(s.rfPct):'\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${s.rfCount || '\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:${achColor(100-s.cnPct*3)}; font-weight:600;" class="bsc-mono">${s.rev?fmtPct(s.cnPct):'\u2014'}</td>
