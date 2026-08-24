@@ -1481,6 +1481,26 @@ function renderTrainingCohort(body, days){
   });
   body.appendChild(grid);
 
+  // ---- Revenue impact of training (Method 2: training's AOV vs a counterfactual where it
+  // moved with the same growth as rest-of-network -- isolates the training-specific effect
+  // from whatever the whole business experienced this period). ----
+  if(mRest.aov && JULY_COHORT_BASELINE.rest && JULY_COHORT_BASELINE.rest.aov){
+    const restGrowthPct = (mRest.aov - JULY_COHORT_BASELINE.rest.aov) / JULY_COHORT_BASELINE.rest.aov * 100;
+    const counterfactualAov = JULY_COHORT_BASELINE.training.aov * (1 + restGrowthPct/100);
+    const impactRev = (mTraining.aov - counterfactualAov) * totals.training.bills;
+    const impactColor = impactRev >= 0 ? 'var(--good)' : 'var(--bad)';
+    const impactCard = document.createElement('div');
+    impactCard.style.cssText = `background:var(--panel); border-radius:10px; padding:18px 20px; margin-bottom:24px; border-left:3px solid ${impactColor};`;
+    impactCard.innerHTML = `<div style="font-size:12px; color:var(--text-mute); margin-bottom:6px;">Estimated revenue impact of training vs rest-of-network trend</div>
+      <div style="font-size:28px; font-weight:700; color:${impactColor};" class="bsc-mono">${impactRev>=0?'+':''}${fmtINR(impactRev)}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:8px; line-height:1.6;">
+        Rest of network moved ${restGrowthPct>=0?'+':''}${restGrowthPct.toFixed(1)}% vs July. If training had followed that same trend, its AOV would have been ${fmtINR(counterfactualAov)} instead of its actual ${fmtINR(mTraining.aov)}.
+        Applied to ${totals.training.bills.toLocaleString('en-IN')} training-cohort bills this period, that gap is worth the figure above \u2014
+        this isolates the training-specific effect from whatever the whole business experienced this month, but is a correlation, not proof of causation.
+      </div>`;
+    body.appendChild(impactCard);
+  }
+
   // ---- Per-stylist "% individually improved" -- matches the same stat on the Stylist
   // Weekly Tracker exactly: each training-cohort stylist's own AOV/ASP/UPT, July vs this period.
   const stylistMtd = {}; // name (lowercase) -> {rev,bills,units}
