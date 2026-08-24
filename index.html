@@ -2060,10 +2060,10 @@ function renderRefunds(body){
     let stRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
       '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
       '<td style="padding:6px 10px; text-align:right;">Revenue</td><td style="padding:6px 10px; text-align:right;">Total Bills</td>' +
-      '<td style="padding:6px 10px; text-align:right;">Refund %</td><td style="padding:6px 10px; text-align:right;">Refund Bills</td><td style="padding:6px 10px; text-align:right;">Refund Bills %</td>' +
-      '<td style="padding:6px 10px; text-align:right;">CN %</td><td style="padding:6px 10px; text-align:right;">CN Bills</td><td style="padding:6px 10px; text-align:right;">CN Bills %</td></tr>';
+      '<td style="padding:6px 10px; text-align:right;">Refund %</td><td style="padding:6px 10px; text-align:right;">Refund Bills %</td>' +
+      '<td style="padding:6px 10px; text-align:right;">CN %</td><td style="padding:6px 10px; text-align:right;">CN Bills %</td></tr>';
     if(stArr.length === 0){
-      stRows += '<tr><td colspan="10" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No stores match this filter.</td></tr>';
+      stRows += '<tr><td colspan="8" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No stores match this filter.</td></tr>';
     }
     stArr.forEach(s => {
       // Color coding is independent per column: refund% color only reflects refund%, CN% color only reflects CN%.
@@ -2073,10 +2073,8 @@ function renderRefunds(body){
         <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(s.rev)}</td>
         <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${s.bills || '\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:${achColor(100-s.rfPct*8)}; font-weight:600;" class="bsc-mono">${s.rev?fmtPct(s.rfPct):'\u2014'}</td>
-        <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${s.rfCount || '\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:${achColor(100-s.rfBillPct*8)}; font-weight:600;" class="bsc-mono">${s.bills?fmtPct(s.rfBillPct):'\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:${achColor(100-s.cnPct*3)}; font-weight:600;" class="bsc-mono">${s.rev?fmtPct(s.cnPct):'\u2014'}</td>
-        <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${s.cnCount || '\u2014'}</td>
         <td style="padding:8px 10px; text-align:right; color:${achColor(100-s.cnBillPct*3)}; font-weight:600;" class="bsc-mono">${s.bills?fmtPct(s.cnBillPct):'\u2014'}</td>
       </tr>`;
     });
