@@ -287,10 +287,12 @@
     <select id="priorityFilter" style="display:none">
       <option value="">All priorities</option>
     </select>
-    <label class="check-label">
-      <input type="checkbox" id="growthFilter">
-      Not growing Aug → Sep
-    </label>
+    <select id="growthFilter">
+      <option value="all">All stylists</option>
+      <option value="julaug">Did not grow Jul → Aug</option>
+      <option value="augsep">Did not grow Aug → Sep</option>
+      <option value="julsep">Did not grow Jul → Sep</option>
+    </select>
     <input type="text" id="searchBox" placeholder="Search stylist…">
     <div class="spacer"></div>
     <div class="legend">
@@ -424,17 +426,28 @@ function updateStoreButtonLabel(){
 
 function currentRows(){
   const region = document.getElementById('regionFilter').value;
-  const growthNotGrowing = document.getElementById('growthFilter').checked;
+  const growthMode = document.getElementById('growthFilter').value;
   const q = document.getElementById('searchBox').value.trim().toLowerCase();
   return RAW.filter(d=>{
     if(region && d.region!==region) return false;
     if(selectedStores.size>0 && !selectedStores.has(d.store)) return false;
     if(q && !d.name.toLowerCase().includes(q)) return false;
-    if(growthNotGrowing){
-      // Fixed Aug -> Sep MTD comparison on the active metric tab.
+    if(growthMode==='julaug'){
+      const julVal = d.jul ? d.jul[currentMetric] : null;
+      const augVal = d.aug ? d.aug[currentMetric] : null;
+      const dp = deltaPct(augVal, julVal);
+      if(dp!=null && dp > 0) return false; // grew -> exclude
+    }
+    if(growthMode==='augsep'){
       const augVal = d.aug ? d.aug[currentMetric] : null;
       const sepVal = d.sep ? d.sep[currentMetric] : null;
       const dp = deltaPct(sepVal, augVal);
+      if(dp!=null && dp > 0) return false; // grew -> exclude
+    }
+    if(growthMode==='julsep'){
+      const julVal = d.jul ? d.jul[currentMetric] : null;
+      const sepVal = d.sep ? d.sep[currentMetric] : null;
+      const dp = deltaPct(sepVal, julVal);
       if(dp!=null && dp > 0) return false; // grew -> exclude
     }
     return true;
