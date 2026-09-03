@@ -284,13 +284,13 @@
         <div class="multiselect-list" id="storeMultiList"></div>
       </div>
     </div>
-    <select id="priorityFilter">
+    <select id="priorityFilter" style="display:none">
       <option value="">All priorities</option>
     </select>
-    <label class="check-label">
-      <input type="checkbox" id="noImproveFilter">
-      Not improved
-    </label>
+    <select id="growthFilter">
+      <option value="all">All stylists</option>
+      <option value="not-grown">Did not grow Jul → Aug</option>
+    </select>
     <input type="text" id="searchBox" placeholder="Search stylist…">
     <div class="spacer"></div>
     <div class="legend">
@@ -424,19 +424,20 @@ function updateStoreButtonLabel(){
 
 function currentRows(){
   const region = document.getElementById('regionFilter').value;
-  const priority = document.getElementById('priorityFilter').value;
-  const noImprove = document.getElementById('noImproveFilter').checked;
+  const growthMode = document.getElementById('growthFilter').value;
   const q = document.getElementById('searchBox').value.trim().toLowerCase();
   return RAW.filter(d=>{
     if(region && d.region!==region) return false;
     if(selectedStores.size>0 && !selectedStores.has(d.store)) return false;
-    if(priority && d.priority!==priority) return false;
     if(q && !d.name.toLowerCase().includes(q)) return false;
-    if(noImprove){
-      const base = getBase(d);
-      const val = getCurrent(d);
-      const dp = deltaPct(val, base);
-      if(dp!=null && dp > 0) return false; // improved -> exclude
+    if(growthMode==='not-grown'){
+      // Fixed Jul -> Aug comparison on the active metric tab, independent of the
+      // headline period-mode dropdown, so this group stays consistent while you
+      // switch between period views to track how they're doing.
+      const julVal = d.jul ? d.jul[currentMetric] : null;
+      const augVal = d.aug ? d.aug[currentMetric] : null;
+      const dp = deltaPct(augVal, julVal);
+      if(dp!=null && dp > 0) return false; // grew -> exclude
     }
     return true;
   });
@@ -444,16 +445,14 @@ function currentRows(){
 
 function renderHeader(){
   const tr = document.getElementById('headerRow');
-  const pm = PERIOD_META[periodMode];
   const cols = [
     {key:'name', label:'Stylist'},
     {key:'store', label:'Store'},
     {key:'region', label:'Region'},
-    {key:'priority', label:'Priority'},
-    {key:'base', label:pm.baseLabel},
-    {key:'cur', label:pm.curColLabel},
+    {key:'jul', label:'July'},
+    {key:'aug', label:'Aug vs Jul'},
+    {key:'sep', label:'Sep MTD vs Aug'},
   ];
-  if(pm.showWeeks) WEEKS.forEach((w,i)=> cols.push({key:'wk'+i, label: WEEK_SHORT[i]+' vs Jul'}));
   tr.innerHTML = cols.map(c=>{
     const arrow = sortCol===c.key ? (sortDir===1?'▲':'▼') : '';
     return `<th data-col="${c.key}">${c.label} <span class="arrow">${arrow}</span></th>`;
@@ -471,18 +470,13 @@ function sortValue(d, col){
   if(col==='name') return d.name.toLowerCase();
   if(col==='store') return d.store.toLowerCase();
   if(col==='region') return d.region.toLowerCase();
-  if(col==='priority') return d.priority.toLowerCase();
-  if(col==='base') return getBase(d) ?? -Infinity;
-  if(col==='cur'){
-    const dp = deltaPct(getCurrent(d), getBase(d));
+  if(col==='jul') return (d.jul ? d.jul[currentMetric] : null) ?? -Infinity;
+  if(col==='aug'){
+    const dp = deltaPct(d.aug ? d.aug[currentMetric] : null, d.jul ? d.jul[currentMetric] : null);
     return dp==null? -Infinity : dp;
   }
-  if(col.startsWith('wk') && PERIOD_META[periodMode].showWeeks){
-    const idx = parseInt(col.slice(2));
-    const wk = d.weeks[WEEKS[idx]];
-    const base = getBase(d);
-    const val = wk ? wk[currentMetric] : null;
-    const dp = deltaPct(val, base);
+  if(col==='sep'){
+    const dp = deltaPct(d.sep ? d.sep[currentMetric] : null, d.aug ? d.aug[currentMetric] : null);
     return dp==null? -Infinity : dp;
   }
   return 0;
@@ -500,7 +494,6 @@ function priorityClass(p){
 
 function renderTable(){
   renderHeader();
-  const pm = PERIOD_META[periodMode];
   const rows = currentRows().slice().sort((a,b)=>{
     const va = sortValue(a, sortCol), vb = sortValue(b, sortCol);
     if(va<vb) return -1*sortDir;
@@ -511,9 +504,10 @@ function renderTable(){
 
   const body = document.getElementById('tableBody');
   body.innerHTML = rows.map(d=>{
-    const base = getBase(d);
+    const julVal = d.jul ? d.jul[currentMetric] : null;
+    const julBills = d.jul ? d.jul.bills : null;
 
-    function pillCell(val, bills){
+    function pillCell(val, bills, base){
       const dp = deltaPct(val, base);
       const lowSample = bills!=null && bills < 3;
       let cls = 'na', text = 'N/A';
@@ -524,24 +518,19 @@ function renderTable(){
       if(lowSample) cls += ' low';
       return `<td><span class="delta-pill ${cls}">${text}</span><span class="actual-sub">${meta.fmt(val)}</span></td>`;
     }
+    // July is the anchor column: plain value, low-sample flagged, no delta pill (nothing to compare it to)
+    const julLowSample = julBills!=null && julBills < 3;
+    const julCell = `<td class="base-cell">${meta.fmt(julVal)}${julLowSample?' <span class="delta-pill low" style="padding:1px 5px;">*</span>':''}</td>`;
+    const augCell = pillCell(d.aug ? d.aug[currentMetric] : null, d.aug ? d.aug.bills : null, julVal);
+    const sepCell = pillCell(d.sep ? d.sep[currentMetric] : null, d.sep ? d.sep.bills : null, d.aug ? d.aug[currentMetric] : null);
 
-    const curObj = getCurrentObj(d);
-    const curCell = pillCell(getCurrent(d), curObj ? curObj.bills : null);
-    let weekCells = '';
-    if(pm.showWeeks){
-      WEEKS.forEach(w=>{
-        const wk = d.weeks[w];
-        weekCells += pillCell(wk ? wk[currentMetric] : null, wk ? wk.bills : null);
-      });
-    }
     return `<tr data-name="${d.name.replace(/"/g,'&quot;')}">
       <td class="name-cell">${d.name}</td>
       <td class="store-cell">${d.store}</td>
       <td><span class="region-pill">${d.region}</span></td>
-      <td><span class="priority-pill ${priorityClass(d.priority)}">${d.priority}</span></td>
-      <td class="base-cell">${meta.fmt(base)}</td>
-      ${curCell}
-      ${weekCells}
+      ${julCell}
+      ${augCell}
+      ${sepCell}
     </tr>`;
   }).join('');
 
@@ -605,48 +594,36 @@ function renderCards(){
 function openPanel(name){
   const d = RAW.find(x=>x.name===name);
   if(!d) return;
-  const pm = PERIOD_META[periodMode];
   const panel = document.getElementById('panel');
   let metricsHtml = '';
   ['aov','asp','upt'].forEach(m=>{
     const meta = METRIC_META[m];
-    const basePeriod = d[pm.baseKey], curPeriod = d[pm.curKey];
-    const base = basePeriod ? basePeriod[m] : null;
-    const curVal = curPeriod ? curPeriod[m] : null;
-    const weekVals = pm.showWeeks ? WEEKS.map(w=> d.weeks[w] ? d.weeks[w][m] : null) : [];
-    const maxScale = Math.max(base||0, curVal||0, ...weekVals.filter(v=>v!=null)) * 1.15 || 1;
-    let rowsHtml = `<div class="metric-row">
-        <span class="wk-label">${pm.baseLabel.replace(' Baseline','')} (base)</span>
-        <div class="bar-wrap"><div class="bar" style="width:${(base||0)/maxScale*100}%; background:#c9c2b0;"></div></div>
-        <span class="val">${meta.fmt(base)}</span>
-      </div>`;
-    const curDp = deltaPct(curVal, base);
-    const curBarColor = curDp==null ? '#c9c2b0' : (curDp>=0 ? '#1f7a3f' : '#b3261e');
-    const curDTxt = curDp==null ? '' : ` (${curDp>=0?'+':''}${curDp.toFixed(1)}%)`;
-    const curLabel = pm.curKey==='mtd' ? 'Aug' : (pm.curKey==='sep' ? 'Sep MTD' : pm.curKey);
-    rowsHtml += `<div class="metric-row">
-        <span class="wk-label" style="font-weight:700;color:var(--ink);">${curLabel}</span>
-        <div class="bar-wrap"><div class="bar" style="width:${curVal!=null?(curVal/maxScale*100):0}%; background:${curBarColor};"></div></div>
-        <span class="val">${meta.fmt(curVal)}${curDTxt}</span>
+    const julVal = d.jul ? d.jul[m] : null;
+    const augVal = d.aug ? d.aug[m] : null;
+    const sepVal = d.sep ? d.sep[m] : null;
+    const weekVals = WEEKS.map(w=> d.weeks[w] ? d.weeks[w][m] : null);
+    const maxScale = Math.max(julVal||0, augVal||0, sepVal||0, ...weekVals.filter(v=>v!=null)) * 1.15 || 1;
+
+    function row(label, val, base, bills, bold){
+      const dp = base!=null ? deltaPct(val, base) : null;
+      const barColor = base==null ? '#c9c2b0' : (dp==null ? '#c9c2b0' : (dp>=0 ? '#1f7a3f' : '#b3261e'));
+      const dTxt = dp==null ? '' : ` (${dp>=0?'+':''}${dp.toFixed(1)}%)`;
+      const tag = bills!=null ? `${bills} bills` : 'no data';
+      return `<div class="metric-row">
+        <span class="wk-label"${bold?' style="font-weight:700;color:var(--ink);"':''}>${label}</span>
+        <div class="bar-wrap"><div class="bar" style="width:${val!=null?(val/maxScale*100):0}%; background:${barColor};"></div></div>
+        <span class="val">${meta.fmt(val)}${dTxt}</span>
       </div>
-      <div class="baseline-tag" style="margin-left:120px;margin-top:-4px;margin-bottom:6px;">${curPeriod ? curPeriod.bills+' bills' : 'no data'}</div>`;
-    if(pm.showWeeks){
-      WEEKS.forEach((w,i)=>{
-        const wk = d.weeks[w];
-        const val = weekVals[i];
-        const dp = deltaPct(val, base);
-        const barColor = dp==null ? '#c9c2b0' : (dp>=0 ? '#1f7a3f' : '#b3261e');
-        const pctW = val!=null ? (val/maxScale*100) : 0;
-        const tag = wk ? `${wk.bills} bills` : 'no data';
-        const dTxt = dp==null ? '' : ` (${dp>=0?'+':''}${dp.toFixed(1)}%)`;
-        rowsHtml += `<div class="metric-row">
-          <span class="wk-label">${WEEK_SHORT[i]}${wk && wk.bills<3 ? ' *' : ''}</span>
-          <div class="bar-wrap"><div class="bar" style="width:${pctW}%; background:${barColor};"></div></div>
-          <span class="val">${meta.fmt(val)}${dTxt}</span>
-        </div>
-        <div class="baseline-tag" style="margin-left:120px;margin-top:-4px;margin-bottom:6px;">${tag}</div>`;
-      });
+      <div class="baseline-tag" style="margin-left:120px;margin-top:-4px;margin-bottom:6px;">${tag}</div>`;
     }
+
+    let rowsHtml = row('July', julVal, null, d.jul ? d.jul.bills : null, false);
+    rowsHtml += row('August', augVal, julVal, d.aug ? d.aug.bills : null, true);
+    WEEKS.forEach((w,i)=>{
+      const wk = d.weeks[w];
+      rowsHtml += row('&nbsp;&nbsp;'+WEEK_SHORT[i]+(wk && wk.bills<3 ? ' *' : ''), weekVals[i], julVal, wk ? wk.bills : null, false);
+    });
+    rowsHtml += row('Sep MTD', sepVal, augVal, d.sep ? d.sep.bills : null, true);
     metricsHtml += `<div class="panel-metric"><h3>${meta.label}</h3>${rowsHtml}</div>`;
   });
 
@@ -687,7 +664,7 @@ document.getElementById('periodMode').addEventListener('change', e=>{
   periodMode = e.target.value;
   applyPeriodMode();
 });
-['regionFilter','priorityFilter','searchBox','noImproveFilter'].forEach(id=>{
+['regionFilter','searchBox','growthFilter'].forEach(id=>{
   document.getElementById(id).addEventListener('input', ()=>{ renderTable(); renderCards(); });
 });
 
