@@ -289,7 +289,8 @@
     </select>
     <select id="growthFilter">
       <option value="all">All stylists</option>
-      <option value="not-grown">Did not grow Jul → Aug</option>
+      <option value="not-grown-julaug">Did not grow Jul → Aug</option>
+      <option value="not-grown-augsep">Did not grow Aug → Sep</option>
     </select>
     <input type="text" id="searchBox" placeholder="Search stylist…">
     <div class="spacer"></div>
@@ -430,13 +431,20 @@ function currentRows(){
     if(region && d.region!==region) return false;
     if(selectedStores.size>0 && !selectedStores.has(d.store)) return false;
     if(q && !d.name.toLowerCase().includes(q)) return false;
-    if(growthMode==='not-grown'){
+    if(growthMode==='not-grown-julaug'){
       // Fixed Jul -> Aug comparison on the active metric tab, independent of the
       // headline period-mode dropdown, so this group stays consistent while you
       // switch between period views to track how they're doing.
       const julVal = d.jul ? d.jul[currentMetric] : null;
       const augVal = d.aug ? d.aug[currentMetric] : null;
       const dp = deltaPct(augVal, julVal);
+      if(dp!=null && dp > 0) return false; // grew -> exclude
+    }
+    if(growthMode==='not-grown-augsep'){
+      // Fixed Aug -> Sep MTD comparison on the active metric tab.
+      const augVal = d.aug ? d.aug[currentMetric] : null;
+      const sepVal = d.sep ? d.sep[currentMetric] : null;
+      const dp = deltaPct(sepVal, augVal);
       if(dp!=null && dp > 0) return false; // grew -> exclude
     }
     return true;
