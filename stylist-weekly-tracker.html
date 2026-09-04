@@ -703,17 +703,7 @@ function renderCompareCards(){
     return `<span class="cc-delta ${cls}">${dp>=0?'+':''}${dp.toFixed(1)}%</span>`;
   }
 
-  let html = currentBatch==='batch2' ? '' : `<div class="compare-card">
-      <div class="cc-metric">Revenue</div>
-      <div class="compare-row">
-        <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>Training Cohort</span>
-        <span class="cc-vals"><b>${fmtRs(totalsRaw.baseRev)}</b> \u2192 <b>${fmtRs(totalsRaw.curRev)}</b> ${pillHtmlTop(revDeltaPct)}</span>
-      </div>
-      <div class="compare-row">
-        <span class="cc-label"><span class="cc-dot" style="background:#9aa0ab;"></span>Rest of Network</span>
-        <span class="cc-vals"><b>${fmtRs(restBaseObj?restBaseObj.revenue:null)}</b> \u2192 <b>${fmtRs(restCurObj?restCurObj.revenue:null)}</b> ${pillHtmlTop(restRevDeltaPct)}</span>
-      </div>
-    </div>`;
+  let html = '';
   ['aov','asp','upt'].forEach(m=>{
     const meta = METRIC_META[m];
     const cohort = cohortPooled(m);
@@ -745,6 +735,19 @@ function renderCompareCards(){
       <div class="compare-gap">${gapTxt}</div>
     </div>`;
   });
+  if(currentBatch !== 'batch2'){
+    html += `<div class="compare-card">
+      <div class="cc-metric">Revenue</div>
+      <div class="compare-row">
+        <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>Training Cohort</span>
+        <span class="cc-vals"><b>${fmtRs(totalsRaw.baseRev)}</b> \u2192 <b>${fmtRs(totalsRaw.curRev)}</b> ${pillHtmlTop(revDeltaPct)}</span>
+      </div>
+      <div class="compare-row">
+        <span class="cc-label"><span class="cc-dot" style="background:#9aa0ab;"></span>Rest of Network</span>
+        <span class="cc-vals"><b>${fmtRs(restBaseObj?restBaseObj.revenue:null)}</b> \u2192 <b>${fmtRs(restCurObj?restCurObj.revenue:null)}</b> ${pillHtmlTop(restRevDeltaPct)}</span>
+      </div>
+    </div>`;
+  }
   wrap.innerHTML = html;
 }
 
