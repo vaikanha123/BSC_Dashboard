@@ -703,10 +703,10 @@ function renderCompareCards(){
     return `<span class="cc-delta ${cls}">${dp>=0?'+':''}${dp.toFixed(1)}%</span>`;
   }
 
-  let html = `<div class="compare-card">
+  let html = currentBatch==='batch2' ? '' : `<div class="compare-card">
       <div class="cc-metric">Revenue</div>
       <div class="compare-row">
-        <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>${currentBatch==='batch2'?'Batch 2':'Training Cohort'}</span>
+        <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>Training Cohort</span>
         <span class="cc-vals"><b>${fmtRs(totalsRaw.baseRev)}</b> \u2192 <b>${fmtRs(totalsRaw.curRev)}</b> ${pillHtmlTop(revDeltaPct)}</span>
       </div>
       <div class="compare-row">
