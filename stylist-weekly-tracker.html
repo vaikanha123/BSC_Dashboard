@@ -694,11 +694,8 @@ function renderCompareCards(){
   const restBaseObj = REST_POOLED[restBaseKey];
   const restCurObj = REST_POOLED[restCurKey];
   const fmtRs = v => v==null ? '\u2014' : '\u20b9' + Math.round(v).toLocaleString('en-IN');
-  const fmtBillsN = v => v==null ? '\u2014' : v.toLocaleString('en-IN');
   const revDeltaPct = deltaPct(totalsRaw.curRev, totalsRaw.baseRev);
   const restRevDeltaPct = deltaPct(restCurObj?restCurObj.revenue:null, restBaseObj?restBaseObj.revenue:null);
-  const billsDeltaPct = deltaPct(totalsRaw.curBills, totalsRaw.baseBills);
-  const restBillsDeltaPct = deltaPct(restCurObj?restCurObj.bills:null, restBaseObj?restBaseObj.bills:null);
 
   function pillHtmlTop(dp){
     if(dp==null) return `<span class="cc-delta na">N/A</span>`;
@@ -715,17 +712,6 @@ function renderCompareCards(){
       <div class="compare-row">
         <span class="cc-label"><span class="cc-dot" style="background:#9aa0ab;"></span>Rest of Network</span>
         <span class="cc-vals"><b>${fmtRs(restBaseObj?restBaseObj.revenue:null)}</b> \u2192 <b>${fmtRs(restCurObj?restCurObj.revenue:null)}</b> ${pillHtmlTop(restRevDeltaPct)}</span>
-      </div>
-    </div>
-    <div class="compare-card">
-      <div class="cc-metric">Bills</div>
-      <div class="compare-row">
-        <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>${currentBatch==='batch2'?'Batch 2':'Training Cohort'}</span>
-        <span class="cc-vals"><b>${fmtBillsN(totalsRaw.baseBills)}</b> \u2192 <b>${fmtBillsN(totalsRaw.curBills)}</b> ${pillHtmlTop(billsDeltaPct)}</span>
-      </div>
-      <div class="compare-row">
-        <span class="cc-label"><span class="cc-dot" style="background:#9aa0ab;"></span>Rest of Network</span>
-        <span class="cc-vals"><b>${fmtBillsN(restBaseObj?restBaseObj.bills:null)}</b> \u2192 <b>${fmtBillsN(restCurObj?restCurObj.bills:null)}</b> ${pillHtmlTop(restBillsDeltaPct)}</span>
       </div>
     </div>`;
   ['aov','asp','upt'].forEach(m=>{
