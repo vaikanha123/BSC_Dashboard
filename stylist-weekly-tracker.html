@@ -736,7 +736,7 @@ function renderCompareCards(){
     </div>`;
   });
   if(currentBatch !== 'batch2'){
-    html += `<div class="compare-card">
+    html += `<div class="compare-card" style="grid-column: 1 / -1;">
       <div class="cc-metric">Revenue</div>
       <div class="compare-row">
         <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>Training Cohort</span>
