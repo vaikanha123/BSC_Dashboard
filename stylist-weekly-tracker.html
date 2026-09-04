@@ -112,10 +112,26 @@
   .compare-card{
     background:var(--paper); border:1px solid var(--line); border-radius:6px;
     padding:14px 16px;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .compare-card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(26,35,50,0.12);
+  }
+  .compare-card.cc-win{ border-color: var(--green); box-shadow: 0 0 0 1px rgba(31,122,63,0.15); }
+  .compare-card.cc-lose{ border-color: var(--red); box-shadow: 0 0 0 1px rgba(179,38,30,0.12); }
+  @keyframes ccPulse{
+    0%,100%{ transform: scale(1); }
+    50%{ transform: scale(1.15); }
+  }
+  .cc-badge{
+    display:inline-block; margin-left:6px; font-size:14px;
+    animation: ccPulse 1.6s ease-in-out infinite;
   }
   .compare-card .cc-metric{
     font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted);
     font-weight:700; margin-bottom:10px;
+    display:flex; align-items:center;
   }
   .compare-row{ display:flex; align-items:baseline; justify-content:space-between; padding:6px 0; }
   .compare-row + .compare-row{ border-top:1px dashed var(--line); }
@@ -123,9 +139,18 @@
   .compare-row .cc-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
   .compare-row .cc-vals{ font-size:13.5px; color:var(--muted); text-align:right; }
   .compare-row .cc-vals b{ color:var(--ink); }
-  .compare-row .cc-delta{ font-weight:700; padding:1px 6px; border-radius:4px; font-size:13px; margin-left:6px; }
+  .compare-row .cc-delta{ font-weight:700; padding:1px 6px; border-radius:4px; font-size:13px; margin-left:6px; transition: transform .15s ease; }
+  .compare-card:hover .cc-delta.pos{ transform: scale(1.08); }
   .compare-gap{ margin-top:8px; padding-top:8px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); line-height:1.5; }
   .compare-gap b{ color:var(--ink); }
+  .compare-card.cc-revenue{
+    grid-column: 2 / 3;
+    text-align:center;
+    background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+  }
+  .compare-card.cc-revenue .cc-metric{ justify-content:center; }
+  .compare-card.cc-revenue .compare-row{ justify-content:center; gap:14px; }
+  .compare-card.cc-revenue .cc-vals{ text-align:left; }
 
   .controls{
     display:flex; align-items:center; gap:10px; flex-wrap:wrap;
@@ -718,12 +743,19 @@ function renderCompareCards(){
       return `<span class="cc-delta ${cls}">${dp>=0?'+':''}${dp.toFixed(1)}%</span>`;
     }
 
+    // Fun signal: is the cohort beating the rest of network on this metric, or falling behind?
+    let cardClass = '', badge = '';
+    if(cohortDp!=null && restDp!=null){
+      if(cohortDp > restDp){ cardClass = 'cc-win'; badge = '<span class="cc-badge" title="Outpacing rest of network">\ud83c\udfc6</span>'; }
+      else if(cohortDp < restDp){ cardClass = 'cc-lose'; badge = '<span class="cc-badge" title="Trailing rest of network" style="animation:none;">\u26a0\ufe0f</span>'; }
+    }
+
     const gapTxt = (cohortDp!=null && restDp!=null)
       ? `Cohort is ${(cohortDp>=restDp?'outpacing':'trailing')} the rest of network by <b>${Math.abs(cohortDp-restDp).toFixed(1)} pts</b> on ${meta.label}.`
       : `Not enough data yet to compare growth on ${meta.label}.`;
 
-    html += `<div class="compare-card">
-      <div class="cc-metric">${meta.label}</div>
+    html += `<div class="compare-card ${cardClass}">
+      <div class="cc-metric">${meta.label}${badge}</div>
       <div class="compare-row">
         <span class="cc-label"><span class="cc-dot" style="background:${meta.color};"></span>Training Cohort</span>
         <span class="cc-vals"><b>${meta.fmt(cohort.base)}</b> → <b>${meta.fmt(cohort.cur)}</b> ${pillHtml(cohortDp)}</span>
@@ -736,8 +768,13 @@ function renderCompareCards(){
     </div>`;
   });
   if(currentBatch !== 'batch2'){
-    html += `<div class="compare-card" style="grid-column: 1 / -1;">
-      <div class="cc-metric">Revenue</div>
+    let revCardClass = 'compare-card cc-revenue', revBadge = '';
+    if(revDeltaPct!=null && restRevDeltaPct!=null){
+      if(revDeltaPct > restRevDeltaPct){ revCardClass += ' cc-win'; revBadge = '<span class="cc-badge" title="Outpacing rest of network">\ud83c\udfc6</span>'; }
+      else if(revDeltaPct < restRevDeltaPct){ revCardClass += ' cc-lose'; revBadge = '<span class="cc-badge" title="Trailing rest of network" style="animation:none;">\u26a0\ufe0f</span>'; }
+    }
+    html += `<div class="${revCardClass}">
+      <div class="cc-metric">Revenue${revBadge}</div>
       <div class="compare-row">
         <span class="cc-label"><span class="cc-dot" style="background:${METRIC_META.aov.color};"></span>Training Cohort</span>
         <span class="cc-vals"><b>${fmtRs(totalsRaw.baseRev)}</b> \u2192 <b>${fmtRs(totalsRaw.curRev)}</b> ${pillHtmlTop(revDeltaPct)}</span>
