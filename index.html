@@ -1507,9 +1507,10 @@ function renderTrainingCohort(body, days){
   // Special case: Rahul Yadav works across multiple stores, and his blended total was
   // masking real improvement happening specifically at Andheri. Scope his figures to
   // Andheri only; everyone else stays as their normal all-stores total.
-  const STORE_SPECIFIC_STYLISTS = {}; // Rahul Yadav's Andheri-only scoping (added in August) was
-    // suspended in September: he's since moved and is no longer selling at Andheri, so scoping him
-    // there would now hide his real activity rather than clarify it. Using his normal blended total.
+  const STORE_SPECIFIC_STYLISTS = {'rahul yadav': 'Kemps Corner'}; // Rahul Yadav moved from Andheri
+    // to Kemps Corner between August and September. His July baseline above stays Andheri-only
+    // (that's where he was in July); his current-period figures are scoped to Kemps Corner (where
+    // he is now), so the comparison reflects his real store-level performance in both periods.
   days.forEach(dk => {
     const revs = state.stylistRevDays[dk] || {};
     const bills = state.stylistBillDays[dk] || {};
