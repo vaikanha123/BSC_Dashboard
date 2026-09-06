@@ -412,19 +412,19 @@ const PERIOD_META = {
   'jul-aug': {
     baseKey: 'jul', curKey: 'mtd', baseLabel: 'Jul Baseline', curColLabel: 'Aug vs Jul', showWeeks: true,
     cardCaption: 'July → August (full month), pooled across all bills in this cohort', cardLabel: 'Cohort Pooled, Aug vs July',
-    headerDesc: 'MTD and week-on-week movement for 42 stylists against their closed-July baseline (official DSR). Offline POS sales only. Wk1 is a 2-day partial week (Aug 1–2); Wk2 and Wk3 are full Mon–Sun weeks; Wk4 (Aug 17–23) is complete; Wk5 (Aug 24–30) is now complete — August is fully closed out; covers Aug 1–30 (full month). All figures use Gross Sales + Taxes, consistently across July and August, matching the basis used on the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">performance console</a>.',
+    headerDesc: 'MTD and week-on-week movement for 42 stylists against their closed-July baseline (official DSR). Offline POS sales only. Wk1 is a 2-day partial week (Aug 1–2); Wk2 and Wk3 are full Mon–Sun weeks; Wk4 (Aug 17–23) is complete; Wk5 (Aug 24–30) is now complete — August is fully closed out; covers Aug 1–30 (full month). All figures use Gross Sales + Taxes, consistently across July and August, matching the basis used on the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">Daily Main Dashboard</a>.',
     asof: 'Data as of Aug 31, 2026 — August fully closed'
   },
   'aug-sep': {
     baseKey: 'aug', curKey: 'sep', baseLabel: 'Aug Baseline', curColLabel: 'Sep MTD vs Aug', showWeeks: false,
     cardCaption: 'August (full month) → September MTD, pooled across all bills in this cohort', cardLabel: 'Cohort Pooled, Sep MTD vs August',
-    headerDesc: 'September MTD movement for 42 stylists against their closed-August baseline (Aug 1–31, full month). Offline POS sales only. September MTD currently covers Sep 1–4 only — very early days, treat as directional. All figures use Gross Sales + Taxes, order rows only, matching the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">performance console</a>.',
+    headerDesc: 'September MTD movement for 42 stylists against their closed-August baseline (Aug 1–31, full month). Offline POS sales only. September MTD currently covers Sep 1–4 only — very early days, treat as directional. All figures use Gross Sales + Taxes, order rows only, matching the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">Daily Main Dashboard</a>.',
     asof: 'Data as of Sep 4, 2026 — September MTD (4 days); August baseline fully closed'
   },
   'jul-sep': {
     baseKey: 'jul', curKey: 'sep', baseLabel: 'Jul Baseline', curColLabel: 'Sep MTD vs Jul', showWeeks: false,
     cardCaption: 'July → September MTD, pooled across all bills in this cohort', cardLabel: 'Cohort Pooled, Sep MTD vs July',
-    headerDesc: 'September MTD movement for 42 stylists against their closed-July baseline (official DSR). Offline POS sales only. September MTD currently covers Sep 1–4 only — very early days, treat as directional. All figures use Gross Sales + Taxes, order rows only, matching the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">performance console</a>.',
+    headerDesc: 'September MTD movement for 42 stylists against their closed-July baseline (official DSR). Offline POS sales only. September MTD currently covers Sep 1–4 only — very early days, treat as directional. All figures use Gross Sales + Taxes, order rows only, matching the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">Daily Main Dashboard</a>.',
     asof: 'Data as of Sep 4, 2026 — September MTD (4 days)'
   }
 };
@@ -860,7 +860,7 @@ document.getElementById('metricTabs').addEventListener('click', e=>{
 function applyPeriodMode(){
   const pm = PERIOD_META[periodMode];
   if(currentBatch === 'batch2'){
-    document.getElementById('headerDesc').innerHTML = `September MTD movement for ${BATCH2_RAW.length} Batch 2 stylists against their closed-August baseline (Aug 1\u201331, full month) \u2014 this batch started training in August, so July is not applicable. Offline POS sales only. September MTD currently covers Sep 1\u20134 only \u2014 very early days, treat as directional. All figures use Gross Sales + Taxes, matching the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">performance console</a>.`;
+    document.getElementById('headerDesc').innerHTML = `September MTD movement for ${BATCH2_RAW.length} Batch 2 stylists against their closed-August baseline (Aug 1\u201331, full month) \u2014 this batch started training in August, so July is not applicable. Offline POS sales only. September MTD currently covers Sep 1\u20134 only \u2014 very early days, treat as directional. All figures use Gross Sales + Taxes, matching the main <a href="https://vaikanha123.github.io/BSC_Dashboard/" style="color:var(--gold);">Daily Main Dashboard</a>.`;
     document.getElementById('asofBadge').textContent = 'Data as of Sep 4, 2026 \u2014 September MTD (4 days)';
   } else {
     document.getElementById('headerDesc').innerHTML = pm.headerDesc;
