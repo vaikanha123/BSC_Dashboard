@@ -800,6 +800,7 @@ function computeProjectedLanding(days){
   const lastDate = new Date(lastDay + 'T00:00:00');
   const year = lastDate.getFullYear(), month = lastDate.getMonth();
   const daysInMonth = new Date(year, month+1, 0).getDate();
+  const pad = n => String(n).padStart(2,'0');
 
   // Defensive: only count days that belong to the month being viewed (custom ranges can span months).
   const monthDays = days.filter(dk => {
@@ -808,45 +809,53 @@ function computeProjectedLanding(days){
   });
   if(monthDays.length === 0) return null;
 
-  let wdSum=0, wdCount=0, weSum=0, weCount=0;
+  const targetForDaySum = (dk) => {
+    let t = 0;
+    Object.keys(STORE_LOOKUP).forEach(store => {
+      const v = storeTargetForDay(store, dk);
+      if(v !== null) t += v;
+    });
+    return t;
+  };
+
+  // Observed days: sum actual + own target per weekday/weekend bucket, so we get an
+  // achievement RATE per bucket rather than a flat rupee average (a flat average double-counts
+  // whatever mix of high/low-target days happened to fall in the observed window).
+  let wdActual=0, wdTarget=0, wdCount=0, weActual=0, weTarget=0, weCount=0;
   monthDays.forEach(dk => {
     let actual = 0;
     Object.keys(state.days[dk]).forEach(store => {
       if(offlineRegion(store)) actual += state.days[dk][store];
     });
-    if(dayType(dk) === 'weekend'){ weSum += actual; weCount++; }
-    else { wdSum += actual; wdCount++; }
+    const tgt = targetForDaySum(dk);
+    if(dayType(dk) === 'weekend'){ weActual+=actual; weTarget+=tgt; weCount++; }
+    else { wdActual+=actual; wdTarget+=tgt; wdCount++; }
   });
 
-  let totalWd=0, totalWe=0;
-  for(let d=1; d<=daysInMonth; d++){
-    const dow = new Date(year, month, d).getDay();
-    if(dow === 0 || dow === 6) totalWe++; else totalWd++;
-  }
-  const remWd = Math.max(0, totalWd - wdCount);
-  const remWe = Math.max(0, totalWe - weCount);
+  const wdAch = wdTarget ? wdActual/wdTarget : null;
+  const weAch = weTarget ? weActual/weTarget : null;
+  const mtdActual = wdActual + weActual;
+  const mtdTargetObserved = wdTarget + weTarget;
+  const blendedAch = mtdTargetObserved ? mtdActual/mtdTargetObserved : 0;
+  // Fall back to the blended rate for a bucket with no observations yet, so the projection still runs.
+  const wdAchUse = wdAch !== null ? wdAch : blendedAch;
+  const weAchUse = weAch !== null ? weAch : blendedAch;
 
-  const wdAvg = wdCount ? wdSum/wdCount : null;
-  const weAvg = weCount ? weSum/weCount : null;
-  // If one bucket has no observations yet, fall back to the other bucket's avg so the projection still runs.
-  const wdAvgUse = wdAvg !== null ? wdAvg : (weAvg || 0);
-  const weAvgUse = weAvg !== null ? weAvg : (wdAvg || 0);
-
-  const mtdActual = wdSum + weSum;
-  const projectedRemaining = remWd*wdAvgUse + remWe*weAvgUse;
-  const projectedLanding = mtdActual + projectedRemaining;
-
-  let fullMonthTarget = 0;
-  const pad = n => String(n).padStart(2,'0');
+  // Remaining days: apply the bucket's achievement rate to THAT day's own target (preserves
+  // whatever day-level seasonality is already baked into the target file), then sum.
+  let remWd=0, remWe=0, remWdTarget=0, remWeTarget=0, projectedRemaining=0;
   for(let d=1; d<=daysInMonth; d++){
     const dk = year + '-' + pad(month+1) + '-' + pad(d);
-    Object.keys(STORE_LOOKUP).forEach(store => {
-      const t = storeTargetForDay(store, dk);
-      if(t !== null) fullMonthTarget += t;
-    });
+    if(monthDays.includes(dk)) continue;
+    const tgt = targetForDaySum(dk);
+    if(dayType(dk) === 'weekend'){ remWe++; remWeTarget+=tgt; projectedRemaining += tgt*weAchUse; }
+    else { remWd++; remWdTarget+=tgt; projectedRemaining += tgt*wdAchUse; }
   }
 
-  return {wdAvg, weAvg, wdCount, weCount, remWd, remWe, totalWd, totalWe, mtdActual, projectedRemaining, projectedLanding, fullMonthTarget};
+  const projectedLanding = mtdActual + projectedRemaining;
+  const fullMonthTarget = mtdTargetObserved + remWdTarget + remWeTarget;
+
+  return {wdAch, weAch, wdCount, weCount, remWd, remWe, mtdActual, projectedRemaining, projectedLanding, fullMonthTarget};
 }
 
 function fmtINR(n){
@@ -1069,11 +1078,13 @@ function renderOverview(body, days){
     body.appendChild(projHead);
 
     const achPct = proj.fullMonthTarget ? proj.projectedLanding/proj.fullMonthTarget*100 : 0;
+    const wdAchPct = proj.wdAch!==null ? proj.wdAch*100 : null;
+    const weAchPct = proj.weAch!==null ? proj.weAch*100 : null;
     const projRow = document.createElement('div');
     projRow.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:8px;';
     const projCards = [
-      {label:'Weekday avg/day', val: proj.wdAvg!==null?fmtINR(proj.wdAvg):'\u2014', sub: proj.wdCount + ' weekday(s) observed'},
-      {label:'Weekend avg/day', val: proj.weAvg!==null?fmtINR(proj.weAvg):'\u2014', sub: proj.weCount + ' weekend day(s) observed'},
+      {label:'Weekday ach% (MTD)', val: wdAchPct!==null?fmtPct(wdAchPct):'\u2014', color: wdAchPct!==null?achColor(wdAchPct):null, sub: proj.wdCount + ' weekday(s) observed'},
+      {label:'Weekend ach% (MTD)', val: weAchPct!==null?fmtPct(weAchPct):'\u2014', color: weAchPct!==null?achColor(weAchPct):null, sub: proj.weCount + ' weekend day(s) observed'},
       {label:'Projected landing', val: fmtINR(proj.projectedLanding), sub: 'vs full-month target ' + fmtINR(proj.fullMonthTarget)},
       {label:'Projected ach%', val: fmtPct(achPct), color: achColor(achPct)},
     ];
@@ -1089,8 +1100,8 @@ function renderOverview(body, days){
 
     const projNote = document.createElement('div');
     projNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-bottom:8px; line-height:1.6;';
-    projNote.textContent = 'Method: ' + proj.remWd + ' remaining weekday(s) and ' + proj.remWe + ' remaining weekend day(s) this month are each projected at the observed average and added to actuals so far (offline stores, same basis as the cards above \u2014 Online is excluded here for consistency with MTD actual/target). '
-      + (proj.wdCount < 5 || proj.weCount < 2 ? 'Small sample so far (' + proj.wdCount + ' weekday(s), ' + proj.weCount + ' weekend day(s)) \u2014 treat as directional and expect this to move as more of the month lands.' : '');
+    projNote.textContent = 'Method: for each of the ' + proj.remWd + ' remaining weekday(s) and ' + proj.remWe + ' remaining weekend day(s) this month, that day\u2019s own target is multiplied by the achievement rate observed in its bucket so far, then added to actuals (offline stores, same basis as the cards above \u2014 Online excluded for consistency with MTD actual/target). This tracks each remaining day\u2019s own target level rather than a flat rupee average, so an early run of higher- or lower-target days doesn\u2019t skew the rest of the month. '
+      + (proj.wdCount < 5 || proj.weCount < 2 ? 'Small sample so far (' + proj.wdCount + ' weekday(s), ' + proj.weCount + ' weekend day(s)) \u2014 treat as directional and expect this to firm up as more of the month lands.' : '');
     body.appendChild(projNote);
   }
 
