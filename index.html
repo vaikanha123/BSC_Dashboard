@@ -794,6 +794,61 @@ function computeRegionTotals(storeTotals){
   return regions;
 }
 
+function computeProjectedLanding(days){
+  if(days.length === 0) return null;
+  const lastDay = days[days.length-1];
+  const lastDate = new Date(lastDay + 'T00:00:00');
+  const year = lastDate.getFullYear(), month = lastDate.getMonth();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  // Defensive: only count days that belong to the month being viewed (custom ranges can span months).
+  const monthDays = days.filter(dk => {
+    const d = new Date(dk+'T00:00:00');
+    return d.getFullYear()===year && d.getMonth()===month;
+  });
+  if(monthDays.length === 0) return null;
+
+  let wdSum=0, wdCount=0, weSum=0, weCount=0;
+  monthDays.forEach(dk => {
+    let actual = 0;
+    Object.keys(state.days[dk]).forEach(store => {
+      if(offlineRegion(store)) actual += state.days[dk][store];
+    });
+    if(dayType(dk) === 'weekend'){ weSum += actual; weCount++; }
+    else { wdSum += actual; wdCount++; }
+  });
+
+  let totalWd=0, totalWe=0;
+  for(let d=1; d<=daysInMonth; d++){
+    const dow = new Date(year, month, d).getDay();
+    if(dow === 0 || dow === 6) totalWe++; else totalWd++;
+  }
+  const remWd = Math.max(0, totalWd - wdCount);
+  const remWe = Math.max(0, totalWe - weCount);
+
+  const wdAvg = wdCount ? wdSum/wdCount : null;
+  const weAvg = weCount ? weSum/weCount : null;
+  // If one bucket has no observations yet, fall back to the other bucket's avg so the projection still runs.
+  const wdAvgUse = wdAvg !== null ? wdAvg : (weAvg || 0);
+  const weAvgUse = weAvg !== null ? weAvg : (wdAvg || 0);
+
+  const mtdActual = wdSum + weSum;
+  const projectedRemaining = remWd*wdAvgUse + remWe*weAvgUse;
+  const projectedLanding = mtdActual + projectedRemaining;
+
+  let fullMonthTarget = 0;
+  const pad = n => String(n).padStart(2,'0');
+  for(let d=1; d<=daysInMonth; d++){
+    const dk = year + '-' + pad(month+1) + '-' + pad(d);
+    Object.keys(STORE_LOOKUP).forEach(store => {
+      const t = storeTargetForDay(store, dk);
+      if(t !== null) fullMonthTarget += t;
+    });
+  }
+
+  return {wdAvg, weAvg, wdCount, weCount, remWd, remWe, totalWd, totalWe, mtdActual, projectedRemaining, projectedLanding, fullMonthTarget};
+}
+
 function fmtINR(n){
   n = Math.round(n);
   if(Math.abs(n) >= 10000000) return '\u20b9' + (n/10000000).toFixed(2) + 'Cr';
@@ -1005,6 +1060,39 @@ function renderOverview(body, days){
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:14px; line-height:1.6;';
   note.textContent = 'Targets are derived from each store\u2019s monthly target split into weekday/weekend daily figures using its own actual July performance ratio. ' + days.length + ' day(s) of data loaded.';
   body.appendChild(note);
+
+  const proj = computeProjectedLanding(days);
+  if(proj){
+    const projHead = document.createElement('div');
+    projHead.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin:24px 0 10px;';
+    projHead.textContent = 'Projected month landing \u2014 weekday vs weekend run-rate';
+    body.appendChild(projHead);
+
+    const achPct = proj.fullMonthTarget ? proj.projectedLanding/proj.fullMonthTarget*100 : 0;
+    const projRow = document.createElement('div');
+    projRow.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:8px;';
+    const projCards = [
+      {label:'Weekday avg/day', val: proj.wdAvg!==null?fmtINR(proj.wdAvg):'\u2014', sub: proj.wdCount + ' weekday(s) observed'},
+      {label:'Weekend avg/day', val: proj.weAvg!==null?fmtINR(proj.weAvg):'\u2014', sub: proj.weCount + ' weekend day(s) observed'},
+      {label:'Projected landing', val: fmtINR(proj.projectedLanding), sub: 'vs full-month target ' + fmtINR(proj.fullMonthTarget)},
+      {label:'Projected ach%', val: fmtPct(achPct), color: achColor(achPct)},
+    ];
+    projCards.forEach(c => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:var(--panel); border-radius:10px; padding:14px 16px;';
+      card.innerHTML = `<div style="font-size:12px; color:var(--text-mute); margin-bottom:6px;">${c.label}</div>
+        <div style="font-size:22px; font-weight:600; color:${c.color||'var(--text)'};" class="bsc-mono">${c.val}</div>
+        ${c.sub?`<div style="font-size:11.5px; color:var(--text-mute); margin-top:3px;">${c.sub}</div>`:''}`;
+      projRow.appendChild(card);
+    });
+    body.appendChild(projRow);
+
+    const projNote = document.createElement('div');
+    projNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-bottom:8px; line-height:1.6;';
+    projNote.textContent = 'Method: ' + proj.remWd + ' remaining weekday(s) and ' + proj.remWe + ' remaining weekend day(s) this month are each projected at the observed average and added to actuals so far (offline stores, same basis as the cards above \u2014 Online is excluded here for consistency with MTD actual/target). '
+      + (proj.wdCount < 5 || proj.weCount < 2 ? 'Small sample so far (' + proj.wdCount + ' weekday(s), ' + proj.weCount + ' weekend day(s)) \u2014 treat as directional and expect this to move as more of the month lands.' : '');
+    body.appendChild(projNote);
+  }
 
   }
 
