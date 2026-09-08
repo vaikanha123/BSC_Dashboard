@@ -851,7 +851,32 @@ function computeProjectedLanding(days){
   const mtdTargetObserved = targetForDaySum ? monthDays.reduce((s,dk)=>s+targetForDaySum(dk),0) : 0;
   const fullMonthTarget = mtdTargetObserved + remWdTarget + remWeTarget;
 
-  return {wdAvg, weAvg, wdCount, weCount, remWd, remWe, mtdActual, projectedRemaining, projectedLanding, fullMonthTarget};
+  // Required weekday/weekend avg/day on the remaining days to land exactly on fullMonthTarget.
+  // Scales the two currently-observed averages by a common factor so their ratio to each other
+  // is preserved (same "flat, observed-shape" philosophy as the projection above), rather than
+  // picking an arbitrary split between the two day types.
+  const remainingNeeded = fullMonthTarget - mtdActual;
+  let reqWdAvg = null, reqWeAvg = null;
+  if(remWd > 0 || remWe > 0){
+    const observedDenom = remWd*wdAvgUse + remWe*weAvgUse;
+    if(observedDenom > 0){
+      const scale = remainingNeeded / observedDenom;
+      if(remWd > 0) reqWdAvg = Math.max(0, wdAvgUse*scale);
+      if(remWe > 0) reqWeAvg = Math.max(0, weAvgUse*scale);
+    } else {
+      // No run-rate basis yet (e.g. very first day) -- fall back to the remaining days' own
+      // target mix to split the shortfall between weekday/weekend.
+      const targetDenom = remWdTarget + remWeTarget;
+      if(targetDenom > 0){
+        const scale = remainingNeeded / targetDenom;
+        if(remWd > 0) reqWdAvg = Math.max(0, (remWdTarget/remWd)*scale);
+        if(remWe > 0) reqWeAvg = Math.max(0, (remWeTarget/remWe)*scale);
+      }
+    }
+  }
+
+  return {wdAvg, weAvg, wdCount, weCount, remWd, remWe, mtdActual, projectedRemaining, projectedLanding, fullMonthTarget,
+    reqWdAvg, reqWeAvg, remainingNeeded};
 }
 
 function fmtINR(n){
@@ -1076,11 +1101,22 @@ function renderOverview(body, days){
     const achPct = proj.fullMonthTarget ? proj.projectedLanding/proj.fullMonthTarget*100 : 0;
     const projRow = document.createElement('div');
     projRow.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:8px;';
+    const reqVsAvgColor = (req, avg) => {
+      if(req===null) return 'var(--text)';
+      if(avg===null) return 'var(--text)';
+      return req <= avg ? 'var(--good)' : 'var(--bad)';
+    };
     const projCards = [
       {label:'Weekday avg/day', val: proj.wdAvg!==null?fmtINR(proj.wdAvg):'\u2014', sub: proj.wdCount + ' weekday(s) observed'},
       {label:'Weekend avg/day', val: proj.weAvg!==null?fmtINR(proj.weAvg):'\u2014', sub: proj.weCount + ' weekend day(s) observed'},
       {label:'Projected landing', val: fmtINR(proj.projectedLanding), sub: 'vs full-month target ' + fmtINR(proj.fullMonthTarget)},
       {label:'Projected ach%', val: fmtPct(achPct), color: achColor(achPct)},
+      {label:'Required weekday avg/day', val: proj.remWd>0 ? (proj.reqWdAvg!==null?fmtINR(proj.reqWdAvg):'\u2014') : 'n/a',
+        sub: proj.remWd>0 ? ('to hit target \u2014 ' + proj.remWd + ' remaining') : 'no remaining weekdays this month',
+        color: proj.remWd>0 ? reqVsAvgColor(proj.reqWdAvg, proj.wdAvg) : 'var(--text-mute)'},
+      {label:'Required weekend avg/day', val: proj.remWe>0 ? (proj.reqWeAvg!==null?fmtINR(proj.reqWeAvg):'\u2014') : 'n/a',
+        sub: proj.remWe>0 ? ('to hit target \u2014 ' + proj.remWe + ' remaining') : 'no remaining weekend days this month',
+        color: proj.remWe>0 ? reqVsAvgColor(proj.reqWeAvg, proj.weAvg) : 'var(--text-mute)'},
     ];
     projCards.forEach(c => {
       const card = document.createElement('div');
@@ -1095,7 +1131,9 @@ function renderOverview(body, days){
     const projNote = document.createElement('div');
     projNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-bottom:8px; line-height:1.6;';
     projNote.textContent = 'Method: ' + proj.remWd + ' remaining weekday(s) and ' + proj.remWe + ' remaining weekend day(s) this month are each projected at the flat average observed in their bucket so far, then added to actuals (offline stores, same basis as the cards above \u2014 Online excluded for consistency with MTD actual/target). '
-      + (proj.wdCount < 5 || proj.weCount < 2 ? 'Small sample so far (' + proj.wdCount + ' weekday(s), ' + proj.weCount + ' weekend day(s)) \u2014 treat as directional, especially the weekend figure, and expect it to move as more of the month lands.' : '');
+      + (proj.wdCount < 5 || proj.weCount < 2 ? 'Small sample so far (' + proj.wdCount + ' weekday(s), ' + proj.weCount + ' weekend day(s)) \u2014 treat as directional, especially the weekend figure, and expect it to move as more of the month lands. ' : '')
+      + (proj.remainingNeeded <= 0 ? 'Full-month target is already covered by actuals + the flat-average projection, so the required averages above show ' + fmtINR(0) + ' (no further raise needed to hit the number as things stand).' :
+        'Required weekday/weekend avg/day: the flat daily average needed on each remaining day type, keeping the same weekday:weekend ratio as observed so far, so that actuals + remaining days land exactly on the full-month target \u2014 shown in red where it exceeds the currently observed average for that day type (i.e. a step-up is needed), green where the current pace already clears it.');
     body.appendChild(projNote);
   }
 
