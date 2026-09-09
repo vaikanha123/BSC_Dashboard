@@ -132,14 +132,38 @@ def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_r
         'noTarget': (rev_t == 0 and rev_a == 0),
     }
 
-    if orders_rem > 0 and rev_rem > 0:
-        block['requiredAOV'] = round(rev_rem / orders_rem, 2)
-        block['status'] = 'on-track'
-    elif rev_rem <= 0 and not block['noTarget']:
+    # The bill-count target (orders_t, from the Daywise Targets file) and the AOV target (ho_aov,
+    # from the separate "Targets for <Mon>.xlsx" file) are supposed to be the two halves of the
+    # same revenue target (rev_t ~= orders_t * ho_aov). When a store's bill-count target implies
+    # an AOV far off from its stated AOV target, the bill-count target itself is unreliable --
+    # dividing remaining revenue by it produces a nonsensical "required AOV" (seen for real on
+    # Ambience Vasant Kunj: implied target AOV Rs5,195 vs HO's stated Rs11,514). In that case,
+    # anchor on the AOV target instead: derive bills needed from remaining revenue / AOV target,
+    # rather than trusting the target file's own bill-count column.
+    implied_target_aov = (rev_t / orders_t) if orders_t else None
+    target_orders_unreliable = bool(
+        implied_target_aov and ho_aov and (implied_target_aov / ho_aov < 0.65 or implied_target_aov / ho_aov > 1.5))
+    block['targetOrdersUnreliable'] = target_orders_unreliable
+    if target_orders_unreliable:
+        block['impliedTargetAOV'] = round(implied_target_aov, 2)
+
+    if rev_rem <= 0 and not block['noTarget']:
         block['status'] = 'achieved'
         block['surplus'] = round(-rev_rem, 2)
+    elif target_orders_unreliable and ho_aov and rev_rem > 0:
+        block['requiredAOV'] = ho_aov
+        block['altOrdersNeeded'] = round(rev_rem / ho_aov)
+        block['status'] = 'on-track-anchored'
+    elif orders_rem > 0 and rev_rem > 0:
+        block['requiredAOV'] = round(rev_rem / orders_rem, 2)
+        block['status'] = 'on-track'
     else:
         block['status'] = 'orders-hit-revenue-short'
+
+    # Footfall/conversion math below should agree with whichever "orders still needed" figure
+    # the headline actually used -- otherwise the footnote quotes a stale, inconsistent number.
+    effective_orders_rem = block.get('altOrdersNeeded', orders_rem) if target_orders_unreliable else orders_rem
+    block['effectiveOrdersRem'] = effective_orders_rem
 
     if ff_days > 0 and ff_achieved > 0:
         avg_daily_ff = ff_achieved / ff_days
@@ -157,15 +181,15 @@ def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_r
         else:
             block['currentConversion'] = round(cur_conv, 4) if cur_conv is not None else None
             block['projectedFFRemaining'] = round(proj_ff_rem, 1)
-            if orders_rem > 0 and proj_ff_rem > 0:
-                req_conv = orders_rem / proj_ff_rem
+            if effective_orders_rem > 0 and proj_ff_rem > 0:
+                req_conv = effective_orders_rem / proj_ff_rem
                 if req_conv <= 1.0:
                     block['requiredConversion'] = round(req_conv, 4)
                     block['conversionImpossible'] = False
                 else:
                     block['conversionImpossible'] = True
                     if cur_conv:
-                        block['extraFFNeeded'] = round(orders_rem / cur_conv - proj_ff_rem, 1)
+                        block['extraFFNeeded'] = round(effective_orders_rem / cur_conv - proj_ff_rem, 1)
     else:
         block['ffAvailable'] = False
 
