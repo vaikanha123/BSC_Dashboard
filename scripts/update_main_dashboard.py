@@ -145,6 +145,10 @@ def main():
     ap.add_argument('--current-month', help='e.g. Sep-2026 -- required if --refund is passed')
     ap.add_argument('--new-month', action='store_true', help='Set on the first update of a new calendar month')
     ap.add_argument('--prev-month-sales', help='Complete previous month sales CSV, to rebuild prevMonth* baselines (use with --new-month)')
+    ap.add_argument('--prev-month-refund', help="Complete previous month's refund/CN Excel, to rebuild the PREV_MONTH_REFUND_CN "
+                     "baseline used for the Refunds & CN tab's 'vs last month' reason comparison. Do this once per month "
+                     "transition (like --prev-month-sales), from the last cumulative refund/CN file of the month that just closed.")
+    ap.add_argument('--prev-month-key', help='e.g. Aug-2026 -- required with --prev-month-refund')
     args = ap.parse_args()
 
     with open(args.html, encoding='utf-8') as f:
@@ -177,6 +181,19 @@ def main():
             print(f"  Refund [{mk}]: Rs{v['total']:,.0f} ({v['lineItems']} items)")
         for mk, v in cn['byMonth'].items():
             print(f"  CN [{mk}]: Rs{v['total']:,.0f} ({v['lineItems']} items)")
+
+    if args.prev_month_refund:
+        if not args.prev_month_key:
+            print("ERROR: --prev-month-key is required when --prev-month-refund is passed (e.g. Aug-2026)", file=sys.stderr)
+            sys.exit(1)
+        print(f"Loading previous-month refund/CN file: {args.prev_month_refund}")
+        prev_refunds, prev_cn = build_refund_cn(args.prev_month_refund, args.prev_month_key)
+        prev_refund_month = prev_refunds['byMonth'].get(args.prev_month_key, {})
+        prev_cn_month = prev_cn['byMonth'].get(args.prev_month_key, {})
+        prev_baseline = {'month': args.prev_month_key, 'refund': prev_refund_month, 'cn': prev_cn_month}
+        content = replace_const(content, 'PREV_MONTH_REFUND_CN', json.dumps(prev_baseline))
+        print(f"  Prev month [{args.prev_month_key}] refund: Rs{prev_refund_month.get('total', 0):,.0f}, "
+              f"CN: Rs{prev_cn_month.get('total', 0):,.0f}")
 
     if args.nps:
         print(f"Loading NPS file: {args.nps}")

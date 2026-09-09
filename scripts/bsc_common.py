@@ -132,7 +132,11 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
         mk = month_key_from_date(row[date_idx], current_month) or current_month
         channel = (row[channel_idx] or '').strip()
         is_online = channel.lower() == 'online'
-        reason = (row[reason_idx] or 'Unspecified').strip() if row[reason_idx] else 'Unspecified'
+        # Reason codes show up inconsistently cased in the source file (both "FITS" and "fits"
+        # appear across different exports) -- normalize to upper so they aggregate as one reason
+        # instead of silently splitting into two, which would also throw off any month-over-month
+        # comparison of reason mix.
+        reason = (row[reason_idx] or 'Unspecified').strip().upper() if row[reason_idx] else 'Unspecified'
         category = (row[cat_idx] or 'Uncategorized').strip() if row[cat_idx] else 'Uncategorized'
         store = (row[store_idx] or '').strip() if row[store_idx] else ''
         order_id = row[2] or ''
