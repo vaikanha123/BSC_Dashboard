@@ -133,16 +133,20 @@ function segmentCard(label, seg){
     statusLine = `<div style="font-size:13.5px; margin-top:10px;">
       Needed for the rest of the month: <b class="bsc-mono">${fmtNum(seg.altOrdersNeeded)}</b> more bills
       averaging <b class="bsc-mono" style="color:var(--brass);">${fmtINR(seg.requiredAOV)}</b> AOV
-      to close <b class="bsc-mono">${fmtINR(seg.remainingRev)}</b></div>
-      <div style="color:var(--text-mute); font-size:11px; margin-top:4px;">
-      (this store's monthly bill-count target didn't reconcile with its AOV target -- implied
-      target AOV was ${fmtINR(seg.impliedTargetAOV)} vs the stated ${fmtINR(seg.hoTargetAOV)}, so
-      bills-needed here is derived from the AOV target instead of the bill-count target)</div>`;
+      to close <b class="bsc-mono">${fmtINR(seg.remainingRev)}</b></div>`;
   } else {
     statusLine = `<div style="font-size:13.5px; margin-top:10px;">
       Needed for the rest of the month: <b class="bsc-mono">${fmtNum(seg.remainingOrders)}</b> more bills
       averaging <b class="bsc-mono" style="color:var(--brass);">${fmtINR(seg.requiredAOV)}</b> AOV
       to close <b class="bsc-mono">${fmtINR(seg.remainingRev)}</b></div>`;
+  }
+
+  // Nudge stores to work the phones when they're behind on repeat business specifically --
+  // repeat customers are reachable by outbound call in a way new/walk-in customers aren't.
+  const behindStatuses = ['on-track', 'on-track-anchored', 'orders-hit-revenue-short'];
+  if(label === 'REPEAT CUSTOMERS' && behindStatuses.includes(seg.status)){
+    statusLine += `<div style="color:var(--brass); font-size:12.5px; margin-top:6px;">
+      <i class="ti ti-phone"></i>&nbsp; Behind on repeat bills &mdash; prioritize outbound calls to existing customers to close the gap</div>`;
   }
 
   // Footfall/conversion is supporting context, not the headline -- kept terse and muted.
