@@ -147,12 +147,18 @@ def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_r
     if target_orders_unreliable:
         block['impliedTargetAOV'] = round(implied_target_aov, 2)
 
+    # effectiveTargetOrders is what the Bills tile displays -- must always agree with whichever
+    # order-count figure the "needed" math below actually used, so the tile and the headline never
+    # contradict each other (e.g. tile says target 270 while headline implies a target of 114).
+    block['effectiveTargetOrders'] = orders_t
+
     if rev_rem <= 0 and not block['noTarget']:
         block['status'] = 'achieved'
         block['surplus'] = round(-rev_rem, 2)
     elif target_orders_unreliable and ho_aov and rev_rem > 0:
         block['requiredAOV'] = ho_aov
         block['altOrdersNeeded'] = round(rev_rem / ho_aov)
+        block['effectiveTargetOrders'] = orders_a + block['altOrdersNeeded']
         block['status'] = 'on-track-anchored'
     elif orders_rem > 0 and rev_rem > 0:
         block['requiredAOV'] = round(rev_rem / orders_rem, 2)
