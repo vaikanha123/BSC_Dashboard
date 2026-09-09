@@ -1006,6 +1006,14 @@ function render(){
     b.onclick = () => { state.activeTab = t.id; render(); };
     tabBar.appendChild(b);
   });
+  const briefingLink = document.createElement('a');
+  briefingLink.textContent = 'Store Briefing';
+  briefingLink.href = 'store-briefing.html';
+  briefingLink.style.cssText = 'background:none; border:none; border-bottom:2px solid transparent; text-decoration:none;'
+    + 'color:var(--text-mute); font-size:13.5px; font-weight:500; padding:9px 16px; cursor:pointer; font-family:inherit;'
+    + 'margin-left:auto; display:flex; align-items:center; gap:6px;';
+  briefingLink.innerHTML = '<i class="ti ti-clipboard-text"></i> Store Briefing';
+  tabBar.appendChild(briefingLink);
   root.appendChild(tabBar);
 
   const body = document.createElement('div');

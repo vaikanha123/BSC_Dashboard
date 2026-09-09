@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSC Store Briefing</title>
+<style>
+  html, body { margin:0; padding:24px; background:#0e1013; }
+  body { display:flex; justify-content:center; }
+  .bsc-dash-wrap { width:100%; max-width:960px; }
+  @media print {
+    html, body { background:#fff; padding:0; }
+    .no-print { display:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="bsc-dash-wrap">
+<style>
+  :root{
+    --ink:#15181d; --panel:#1c2027; --panel2:#22262e; --line:#2c313a; --line2:#383e49;
+    --brass:#c9a15b; --brass-dim:#8a713f; --text:#e9e6df; --text-dim:#9a9da5; --text-mute:#6d7280;
+    --good:#5ea982; --bad:#c96b5e; --warn:#c9a15b;
+  }
+  *{box-sizing:border-box}
+  .bsc-dash{font-family:'Inter',-apple-system,sans-serif; background:var(--ink); color:var(--text);
+    border-radius:14px; overflow:hidden; border:1px solid var(--line); font-variant-numeric:tabular-nums;}
+  .bsc-mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+  select.bsc-select{background:var(--panel2); color:var(--text); border:1px solid var(--line2); border-radius:8px;
+    padding:8px 12px; font-size:13.5px; font-family:inherit; cursor:pointer;}
+  @media print {
+    .bsc-dash{border:none; border-radius:0; background:#fff; color:#111;}
+    :root{ --panel:#f7f7f7; --panel2:#f0f0f0; --text:#111; --text-dim:#333; --text-mute:#555; --line:#ccc; }
+  }
+</style>
+
+<div class="bsc-dash">
+  <div id="bsc-root"></div>
+</div>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css">
+
+<script>
+// Paste the Apps Script Web App /exec URL here once deployed (see scripts/apps_script/briefing_tracker.gs).
+// Until this is set, view/print tracking is disabled but the briefing itself still works.
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrNcjbrBc_ybXCusa1kewFgekEhas8NUTciI8Ue3FF6xBorm_suMvbrF9-4AQ2W9Rvww/exec';
+
+const BRIEFING_DATA = {"generatedAt": "2026-09-09T12:42:13", "lastSalesDay": "2026-09-08", "daysElapsed": 8, "daysRemaining": 22, "daysInMonth": 30, "stores": {"Ambience Vasant Kunj": {"region": "North", "monthTarget": 2900000.0, "achievedTotal": 584981.68, "new": {"targetRev": 1402595.9108081996, "targetOrders": 270, "achievedRev": 344994.92, "achievedBills": 22, "currentAOV": 15681.59, "hoTargetAOV": 11514, "remainingRev": 1057600.99, "remainingOrders": 248, "noTarget": false, "requiredAOV": 4264.52, "status": "on-track", "ffAchieved": 60.0, "ffDays": 8, "avgDailyFF": 7.5, "currentConversion": 0.3667, "projectedFFRemaining": 165.0, "conversionImpossible": true, "extraFFNeeded": 511.4}, "rep": {"targetRev": 1497404.0891918007, "targetOrders": 240, "achievedRev": 239986.76, "achievedBills": 17, "currentAOV": 14116.87, "hoTargetAOV": 14169, "remainingRev": 1257417.33, "remainingOrders": 223, "noTarget": false, "requiredAOV": 5638.64, "status": "on-track", "ffAchieved": 21.0, "ffDays": 8, "avgDailyFF": 2.62, "currentConversion": 0.8095, "projectedFFRemaining": 57.8, "conversionImpossible": true, "extraFFNeeded": 217.7}}, "Andheri": {"region": "West", "monthTarget": 3000000.0, "achievedTotal": 698674.56, "new": {"targetRev": 688814.1120655681, "targetOrders": 60, "achievedRev": 250682.66, "achievedBills": 15, "currentAOV": 16712.18, "hoTargetAOV": 13523, "remainingRev": 438131.45, "remainingOrders": 45, "noTarget": false, "requiredAOV": 9736.25, "status": "on-track", "ffAchieved": 20.0, "ffDays": 8, "avgDailyFF": 2.5, "currentConversion": 0.75, "projectedFFRemaining": 55.0, "requiredConversion": 0.8182, "conversionImpossible": false}, "rep": {"targetRev": 2311185.8879344356, "targetOrders": 180, "achievedRev": 447991.9, "achievedBills": 26, "currentAOV": 17230.46, "hoTargetAOV": 13770, "remainingRev": 1863193.99, "remainingOrders": 154, "noTarget": false, "requiredAOV": 12098.66, "status": "on-track", "ffAchieved": 25.0, "ffDays": 8, "avgDailyFF": 3.12, "ffUnreliable": true}}, "DLF Midtown - Moti Nagar": {"region": "North", "monthTarget": 1200000.0, "achievedTotal": 175202.33, "new": {"targetRev": 680429.5561588452, "targetOrders": 150, "achievedRev": 101812.33, "achievedBills": 12, "currentAOV": 8484.36, "hoTargetAOV": 9934, "remainingRev": 578617.23, "remainingOrders": 138, "noTarget": false, "requiredAOV": 4192.88, "status": "on-track", "ffAchieved": 17.0, "ffDays": 8, "avgDailyFF": 2.12, "currentConversion": 0.7059, "projectedFFRemaining": 46.8, "conversionImpossible": true, "extraFFNeeded": 148.8}, "rep": {"targetRev": 519570.443841155, "targetOrders": 120, "achievedRev": 73390.0, "achievedBills": 8, "currentAOV": 9173.75, "hoTargetAOV": 10417, "remainingRev": 446180.44, "remainingOrders": 112, "noTarget": false, "requiredAOV": 3983.75, "status": "on-track", "ffAchieved": 10.0, "ffDays": 8, "avgDailyFF": 1.25, "currentConversion": 0.8, "projectedFFRemaining": 27.5, "conversionImpossible": true, "extraFFNeeded": 112.5}}, "Express Avenue": {"region": "South", "monthTarget": 2800000.0, "achievedTotal": 563782.81, "new": {"targetRev": 1654584.0084307883, "targetOrders": 210, "achievedRev": 270102.93, "achievedBills": 26, "currentAOV": 10388.57, "hoTargetAOV": 11190, "remainingRev": 1384481.08, "remainingOrders": 184, "noTarget": false, "requiredAOV": 7524.35, "status": "on-track", "ffAchieved": 67.0, "ffDays": 8, "avgDailyFF": 8.38, "currentConversion": 0.3881, "projectedFFRemaining": 184.2, "requiredConversion": 0.9986, "conversionImpossible": false}, "rep": {"targetRev": 1145415.9915692143, "targetOrders": 120, "achievedRev": 293679.88, "achievedBills": 39, "currentAOV": 7530.25, "hoTargetAOV": 12050, "remainingRev": 851736.11, "remainingOrders": 81, "noTarget": false, "requiredAOV": 10515.26, "status": "on-track", "ffAchieved": 49.0, "ffDays": 8, "avgDailyFF": 6.12, "currentConversion": 0.7959, "projectedFFRemaining": 134.8, "requiredConversion": 0.6011, "conversionImpossible": false}}, "Gurugram": {"region": "North", "monthTarget": 4800000.0, "achievedTotal": 943192.9, "new": {"targetRev": 1792912.0017849468, "targetOrders": 150, "achievedRev": 259740.0, "achievedBills": 23, "currentAOV": 11293.04, "hoTargetAOV": 13610, "remainingRev": 1533172.0, "remainingOrders": 127, "noTarget": false, "requiredAOV": 12072.22, "status": "on-track", "ffAchieved": 38.0, "ffDays": 8, "avgDailyFF": 4.75, "currentConversion": 0.6053, "projectedFFRemaining": 104.5, "conversionImpossible": true, "extraFFNeeded": 105.3}, "rep": {"targetRev": 3007087.9982150607, "targetOrders": 270, "achievedRev": 683452.9, "achievedBills": 42, "currentAOV": 16272.69, "hoTargetAOV": 13366, "remainingRev": 2323635.1, "remainingOrders": 228, "noTarget": false, "requiredAOV": 10191.38, "status": "on-track", "ffAchieved": 44.0, "ffDays": 8, "avgDailyFF": 5.5, "currentConversion": 0.9545, "projectedFFRemaining": 121.0, "conversionImpossible": true, "extraFFNeeded": 117.9}}, "Indiranagar": {"region": "South", "monthTarget": 3600000.0, "achievedTotal": 905792.91, "new": {"targetRev": 1447783.5334326187, "targetOrders": 150, "achievedRev": 410788.55, "achievedBills": 29, "currentAOV": 14165.12, "hoTargetAOV": 12156, "remainingRev": 1036994.98, "remainingOrders": 121, "noTarget": false, "requiredAOV": 8570.21, "status": "on-track", "ffAchieved": 50.0, "ffDays": 8, "avgDailyFF": 6.25, "currentConversion": 0.58, "projectedFFRemaining": 137.5, "requiredConversion": 0.88, "conversionImpossible": false}, "rep": {"targetRev": 2152216.466567381, "targetOrders": 210, "achievedRev": 495004.36, "achievedBills": 39, "currentAOV": 12692.42, "hoTargetAOV": 11870, "remainingRev": 1657212.11, "remainingOrders": 171, "noTarget": false, "requiredAOV": 9691.3, "status": "on-track", "ffAchieved": 33.0, "ffDays": 8, "avgDailyFF": 4.12, "ffUnreliable": true}}, "Inorbit Mall Malad West": {"region": "West", "monthTarget": 2420000.0, "achievedTotal": 524833.37, "new": {"targetRev": 1911800.0000000002, "targetOrders": 300, "achievedRev": 219879.75, "achievedBills": 30, "currentAOV": 7329.32, "hoTargetAOV": 6976, "remainingRev": 1691920.25, "remainingOrders": 270, "noTarget": false, "requiredAOV": 6266.37, "status": "on-track", "ffAchieved": 94.0, "ffDays": 8, "avgDailyFF": 11.75, "currentConversion": 0.3191, "projectedFFRemaining": 258.5, "conversionImpossible": true, "extraFFNeeded": 587.5}, "rep": {"targetRev": 508200.00000000006, "targetOrders": 60, "achievedRev": 304953.62, "achievedBills": 21, "currentAOV": 14521.6, "hoTargetAOV": 10291, "remainingRev": 203246.38, "remainingOrders": 39, "noTarget": false, "requiredAOV": 5211.45, "status": "on-track", "ffAchieved": 17.0, "ffDays": 8, "avgDailyFF": 2.12, "ffUnreliable": true}}, "Inorbit mall Hyderabad": {"region": "South", "monthTarget": 3200000.0, "achievedTotal": 915125.25, "new": {"targetRev": 1529956.671148963, "targetOrders": 240, "achievedRev": 434360.65, "achievedBills": 32, "currentAOV": 13573.77, "hoTargetAOV": 9747, "remainingRev": 1095596.02, "remainingOrders": 208, "noTarget": false, "requiredAOV": 5267.29, "status": "on-track", "ffAchieved": 167.0, "ffDays": 8, "avgDailyFF": 20.88, "currentConversion": 0.1916, "projectedFFRemaining": 459.2, "requiredConversion": 0.4529, "conversionImpossible": false}, "rep": {"targetRev": 1670043.3288510367, "targetOrders": 240, "achievedRev": 480764.6, "achievedBills": 35, "currentAOV": 13736.13, "hoTargetAOV": 10479, "remainingRev": 1189278.73, "remainingOrders": 205, "noTarget": false, "requiredAOV": 5801.36, "status": "on-track", "ffAchieved": 33.0, "ffDays": 8, "avgDailyFF": 4.12, "ffUnreliable": true}}, "Jaipur Store": {"region": "North", "monthTarget": 2200000.0, "achievedTotal": 198323.6, "new": {"targetRev": 775647.7017713472, "targetOrders": 60, "achievedRev": 83409.78, "achievedBills": 9, "currentAOV": 9267.75, "hoTargetAOV": 14404, "remainingRev": 692237.92, "remainingOrders": 51, "noTarget": false, "requiredAOV": 13573.29, "status": "on-track", "ffAchieved": 27.0, "ffDays": 8, "avgDailyFF": 3.38, "currentConversion": 0.3333, "projectedFFRemaining": 74.2, "requiredConversion": 0.6869, "conversionImpossible": false}, "rep": {"targetRev": 1424352.2982286536, "targetOrders": 120, "achievedRev": 114913.82, "achievedBills": 10, "currentAOV": 11491.38, "hoTargetAOV": 11699, "remainingRev": 1309438.48, "remainingOrders": 110, "noTarget": false, "requiredAOV": 11903.99, "status": "on-track", "ffAchieved": 18.0, "ffDays": 8, "avgDailyFF": 2.25, "currentConversion": 0.5556, "projectedFFRemaining": 49.5, "conversionImpossible": true, "extraFFNeeded": 148.5}}, "Jubilee Hills": {"region": "South", "monthTarget": 9200000.0, "achievedTotal": 1893004.63, "new": {"targetRev": 4089718.001059939, "targetOrders": 330, "achievedRev": 513473.82, "achievedBills": 28, "currentAOV": 18338.35, "hoTargetAOV": 16229, "remainingRev": 3576244.18, "remainingOrders": 302, "noTarget": false, "requiredAOV": 11841.87, "status": "on-track", "ffAchieved": 46.0, "ffDays": 8, "avgDailyFF": 5.75, "currentConversion": 0.6087, "projectedFFRemaining": 126.5, "conversionImpossible": true, "extraFFNeeded": 369.6}, "rep": {"targetRev": 5110281.99894006, "targetOrders": 360, "achievedRev": 1379530.81, "achievedBills": 61, "currentAOV": 22615.26, "hoTargetAOV": 19914, "remainingRev": 3730751.19, "remainingOrders": 299, "noTarget": false, "requiredAOV": 12477.43, "status": "on-track", "ffAchieved": 61.0, "ffDays": 8, "avgDailyFF": 7.62, "currentConversion": 1.0, "projectedFFRemaining": 167.8, "conversionImpossible": true, "extraFFNeeded": 131.2}}, "Juhu Store": {"region": "West", "monthTarget": 3200000.0, "achievedTotal": 496253.01, "new": {"targetRev": 543301.1411278495, "targetOrders": 30, "achievedRev": 286988.53, "achievedBills": 19, "currentAOV": 15104.66, "hoTargetAOV": 18821, "remainingRev": 256312.61, "remainingOrders": 11, "noTarget": false, "requiredAOV": 23301.15, "status": "on-track", "ffAchieved": 46.0, "ffDays": 8, "avgDailyFF": 5.75, "currentConversion": 0.413, "projectedFFRemaining": 126.5, "requiredConversion": 0.087, "conversionImpossible": false}, "rep": {"targetRev": 2656698.858872153, "targetOrders": 120, "achievedRev": 209264.48, "achievedBills": 21, "currentAOV": 9964.98, "hoTargetAOV": 20532, "remainingRev": 2447434.38, "remainingOrders": 99, "noTarget": false, "requiredAOV": 24721.56, "status": "on-track", "ffAchieved": 20.0, "ffDays": 8, "avgDailyFF": 2.5, "ffUnreliable": true}}, "KNK Chennai": {"region": "South", "monthTarget": 2700000.0, "achievedTotal": 651950.51, "new": {"targetRev": 2295000.0, "targetOrders": 270, "achievedRev": 287269.13, "achievedBills": 22, "currentAOV": 13057.69, "hoTargetAOV": 8897, "remainingRev": 2007730.87, "remainingOrders": 248, "noTarget": false, "requiredAOV": 8095.69, "status": "on-track", "ffAchieved": 25.0, "ffDays": 8, "avgDailyFF": 3.12, "currentConversion": 0.88, "projectedFFRemaining": 68.8, "conversionImpossible": true, "extraFFNeeded": 213.1}, "rep": {"targetRev": 405000.0, "targetOrders": 60, "achievedRev": 364681.38, "achievedBills": 33, "currentAOV": 11050.95, "hoTargetAOV": 11197, "remainingRev": 40318.62, "remainingOrders": 27, "noTarget": false, "requiredAOV": 1493.28, "status": "on-track", "ffAchieved": 20.0, "ffDays": 8, "avgDailyFF": 2.5, "ffUnreliable": true}}, "Kalaghoda, Fort": {"region": "West", "monthTarget": 7000000.0, "achievedTotal": 1485965.65, "new": {"targetRev": 2201995.890315094, "targetOrders": 150, "achievedRev": 432618.56, "achievedBills": 33, "currentAOV": 13109.65, "hoTargetAOV": 14903, "remainingRev": 1769377.33, "remainingOrders": 117, "noTarget": false, "requiredAOV": 15122.88, "status": "on-track", "ffAchieved": 88.0, "ffDays": 8, "avgDailyFF": 11.0, "currentConversion": 0.375, "projectedFFRemaining": 242.0, "requiredConversion": 0.4835, "conversionImpossible": false}, "rep": {"targetRev": 4798004.109684903, "targetOrders": 270, "achievedRev": 1053347.09, "achievedBills": 68, "currentAOV": 15490.4, "hoTargetAOV": 16885, "remainingRev": 3744657.02, "remainingOrders": 202, "noTarget": false, "requiredAOV": 18537.91, "status": "on-track", "ffAchieved": 62.0, "ffDays": 8, "avgDailyFF": 7.75, "ffUnreliable": true}}, "Kemps Corner": {"region": "West", "monthTarget": 7500000.0, "achievedTotal": 1663398.1, "new": {"targetRev": 1550075.08302891, "targetOrders": 90, "achievedRev": 622850.54, "achievedBills": 30, "currentAOV": 20761.68, "hoTargetAOV": 16287, "remainingRev": 927224.54, "remainingOrders": 60, "noTarget": false, "requiredAOV": 15453.74, "status": "on-track", "ffAchieved": 42.0, "ffDays": 8, "avgDailyFF": 5.25, "currentConversion": 0.7143, "projectedFFRemaining": 115.5, "requiredConversion": 0.5195, "conversionImpossible": false}, "rep": {"targetRev": 5949924.916971089, "targetOrders": 360, "achievedRev": 1040547.56, "achievedBills": 73, "currentAOV": 14254.08, "hoTargetAOV": 15421, "remainingRev": 4909377.36, "remainingOrders": 287, "noTarget": false, "requiredAOV": 17105.84, "status": "on-track", "ffAchieved": 75.0, "ffDays": 8, "avgDailyFF": 9.38, "currentConversion": 0.9733, "projectedFFRemaining": 206.2, "conversionImpossible": true, "extraFFNeeded": 88.6}}, "Khan Market": {"region": "North", "monthTarget": 3800000.0, "achievedTotal": 703508.08, "new": {"targetRev": 1536148.48571072, "targetOrders": 150, "achievedRev": 321837.44, "achievedBills": 22, "currentAOV": 14628.97, "hoTargetAOV": 12582, "remainingRev": 1214311.05, "remainingOrders": 128, "noTarget": false, "requiredAOV": 9486.81, "status": "on-track", "ffAchieved": 48.0, "ffDays": 8, "avgDailyFF": 6.0, "currentConversion": 0.4583, "projectedFFRemaining": 132.0, "requiredConversion": 0.9697, "conversionImpossible": false}, "rep": {"targetRev": 2263851.5142892837, "targetOrders": 210, "achievedRev": 381670.64, "achievedBills": 18, "currentAOV": 21203.92, "hoTargetAOV": 12557, "remainingRev": 1882180.87, "remainingOrders": 192, "noTarget": false, "requiredAOV": 9803.03, "status": "on-track", "ffAchieved": 24.0, "ffDays": 8, "avgDailyFF": 3.0, "currentConversion": 0.75, "projectedFFRemaining": 66.0, "conversionImpossible": true, "extraFFNeeded": 190.0}}, "Kochi Store": {"region": "South", "monthTarget": 1095600.0, "achievedTotal": 314817.81, "new": {"targetRev": 201155.99999999985, "targetOrders": 30, "achievedRev": 114791.96, "achievedBills": 16, "currentAOV": 7174.5, "hoTargetAOV": 8731, "remainingRev": 86364.04, "remainingOrders": 14, "noTarget": false, "requiredAOV": 6168.86, "status": "on-track", "ffAchieved": 16.0, "ffDays": 8, "avgDailyFF": 2.0, "currentConversion": 1.0, "projectedFFRemaining": 44.0, "requiredConversion": 0.3182, "conversionImpossible": false}, "rep": {"targetRev": 894444.0000000001, "targetOrders": 120, "achievedRev": 200025.85, "achievedBills": 15, "currentAOV": 13335.06, "hoTargetAOV": 7846, "remainingRev": 694418.15, "remainingOrders": 105, "noTarget": false, "requiredAOV": 6613.51, "status": "on-track", "ffAchieved": 15.0, "ffDays": 8, "avgDailyFF": 1.88, "currentConversion": 1.0, "projectedFFRemaining": 41.2, "conversionImpossible": true, "extraFFNeeded": 63.8}}, "Koregaon Park": {"region": "West", "monthTarget": 4000000.0, "achievedTotal": 1239848.99, "new": {"targetRev": 1195763.7157230002, "targetOrders": 120, "achievedRev": 440133.21, "achievedBills": 34, "currentAOV": 12945.09, "hoTargetAOV": 13054, "remainingRev": 755630.51, "remainingOrders": 86, "noTarget": false, "requiredAOV": 8786.4, "status": "on-track", "ffAchieved": 44.0, "ffDays": 8, "avgDailyFF": 5.5, "currentConversion": 0.7727, "projectedFFRemaining": 121.0, "requiredConversion": 0.7107, "conversionImpossible": false}, "rep": {"targetRev": 2804236.284277001, "targetOrders": 240, "achievedRev": 799715.78, "achievedBills": 61, "currentAOV": 13110.09, "hoTargetAOV": 14543, "remainingRev": 2004520.5, "remainingOrders": 179, "noTarget": false, "requiredAOV": 11198.44, "status": "on-track", "ffAchieved": 55.0, "ffDays": 8, "avgDailyFF": 6.88, "ffUnreliable": true}}, "LakeShore Mall": {"region": "South", "monthTarget": 1500000.0, "achievedTotal": 191913.83, "new": {"targetRev": 773432.9681662021, "targetOrders": 180, "achievedRev": 89340.0, "achievedBills": 12, "currentAOV": 7445.0, "hoTargetAOV": 9747, "remainingRev": 684092.97, "remainingOrders": 168, "noTarget": false, "requiredAOV": 4071.98, "status": "on-track", "ffAchieved": 69.0, "ffDays": 8, "avgDailyFF": 8.62, "currentConversion": 0.1739, "projectedFFRemaining": 189.8, "requiredConversion": 0.8854, "conversionImpossible": false}, "rep": {"targetRev": 726567.0318337978, "targetOrders": 150, "achievedRev": 102573.83, "achievedBills": 9, "currentAOV": 11397.09, "hoTargetAOV": 10479, "remainingRev": 623993.2, "remainingOrders": 141, "noTarget": false, "requiredAOV": 4425.48, "status": "on-track", "ffAchieved": 9.0, "ffDays": 8, "avgDailyFF": 1.12, "currentConversion": 1.0, "projectedFFRemaining": 24.8, "conversionImpossible": true, "extraFFNeeded": 116.2}}, "Lavelle Road": {"region": "South", "monthTarget": 3200000.0, "achievedTotal": 1297814.5, "new": {"targetRev": 659210.139299808, "targetOrders": 60, "achievedRev": 312450.08, "achievedBills": 17, "currentAOV": 18379.42, "hoTargetAOV": 17977, "remainingRev": 346760.06, "remainingOrders": 43, "noTarget": false, "requiredAOV": 8064.19, "status": "on-track", "ffAchieved": 18.0, "ffDays": 8, "avgDailyFF": 2.25, "currentConversion": 0.9444, "projectedFFRemaining": 49.5, "requiredConversion": 0.8687, "conversionImpossible": false}, "rep": {"targetRev": 2540789.8607001915, "targetOrders": 120, "achievedRev": 985364.42, "achievedBills": 32, "currentAOV": 30792.64, "hoTargetAOV": 22111, "remainingRev": 1555425.44, "remainingOrders": 88, "noTarget": false, "requiredAOV": 17675.29, "status": "on-track", "ffAchieved": 31.0, "ffDays": 8, "avgDailyFF": 3.88, "ffUnreliable": true}}, "Mall of India, Noida": {"region": "North", "monthTarget": 3407900.0, "achievedTotal": 622213.13, "new": {"targetRev": 1858191.9890862429, "targetOrders": 210, "achievedRev": 346544.89, "achievedBills": 34, "currentAOV": 10192.5, "hoTargetAOV": 10263, "remainingRev": 1511647.1, "remainingOrders": 176, "noTarget": false, "requiredAOV": 8588.9, "status": "on-track", "ffAchieved": 65.0, "ffDays": 8, "avgDailyFF": 8.12, "currentConversion": 0.5231, "projectedFFRemaining": 178.8, "requiredConversion": 0.9846, "conversionImpossible": false}, "rep": {"targetRev": 1549708.010913759, "targetOrders": 150, "achievedRev": 275668.24, "achievedBills": 30, "currentAOV": 9188.94, "hoTargetAOV": 10471, "remainingRev": 1274039.77, "remainingOrders": 120, "noTarget": false, "requiredAOV": 10617.0, "status": "on-track", "ffAchieved": 28.0, "ffDays": 8, "avgDailyFF": 3.5, "ffUnreliable": true}}, "Oberoi Mall Store": {"region": "West", "monthTarget": 4000000.0, "achievedTotal": 844465.04, "new": {"targetRev": 1652557.3202499552, "targetOrders": 150, "achievedRev": 339602.37, "achievedBills": 26, "currentAOV": 13061.63, "hoTargetAOV": 11661, "remainingRev": 1312954.95, "remainingOrders": 124, "noTarget": false, "requiredAOV": 10588.35, "status": "on-track", "ffAchieved": 46.0, "ffDays": 8, "avgDailyFF": 5.75, "currentConversion": 0.5652, "projectedFFRemaining": 126.5, "requiredConversion": 0.9802, "conversionImpossible": false}, "rep": {"targetRev": 2347442.6797500434, "targetOrders": 180, "achievedRev": 504862.67, "achievedBills": 42, "currentAOV": 12020.54, "hoTargetAOV": 14159, "remainingRev": 1842580.01, "remainingOrders": 138, "noTarget": false, "requiredAOV": 13352.03, "status": "on-track", "ffAchieved": 40.0, "ffDays": 8, "avgDailyFF": 5.0, "ffUnreliable": true}}, "Oberoi Sky City": {"region": "West", "monthTarget": 2500000.0, "achievedTotal": 844759.72, "new": {"targetRev": 870082.0000000003, "targetOrders": 90, "achievedRev": 473581.03, "achievedBills": 41, "currentAOV": 11550.76, "hoTargetAOV": 9780, "remainingRev": 396500.97, "remainingOrders": 49, "noTarget": false, "requiredAOV": 8091.86, "status": "on-track", "ffAchieved": 123.0, "ffDays": 8, "avgDailyFF": 15.38, "currentConversion": 0.3333, "projectedFFRemaining": 338.2, "requiredConversion": 0.1449, "conversionImpossible": false}, "rep": {"targetRev": 1629918.0, "targetOrders": 150, "achievedRev": 371178.69, "achievedBills": 34, "currentAOV": 10917.02, "hoTargetAOV": 11811, "remainingRev": 1258739.31, "remainingOrders": 116, "noTarget": false, "requiredAOV": 10851.2, "status": "on-track", "ffAchieved": 33.0, "ffDays": 8, "avgDailyFF": 4.12, "ffUnreliable": true}}, "PMC Viman Nagar Pune": {"region": "West", "monthTarget": 1800000.0, "achievedTotal": 363501.58, "new": {"targetRev": 1674000.0, "targetOrders": 240, "achievedRev": 186505.39, "achievedBills": 25, "currentAOV": 7460.22, "hoTargetAOV": 8315, "remainingRev": 1487494.61, "remainingOrders": 215, "noTarget": false, "requiredAOV": 6918.58, "status": "on-track", "ffAchieved": 59.0, "ffDays": 8, "avgDailyFF": 7.38, "currentConversion": 0.4237, "projectedFFRemaining": 162.2, "conversionImpossible": true, "extraFFNeeded": 345.2}, "rep": {"targetRev": 126000.00000000012, "targetOrders": 30, "achievedRev": 176996.19, "achievedBills": 20, "currentAOV": 8849.81, "hoTargetAOV": 12600, "remainingRev": -50996.19, "remainingOrders": 10, "noTarget": false, "status": "achieved", "surplus": 50996.19, "ffAchieved": 21.0, "ffDays": 8, "avgDailyFF": 2.62, "currentConversion": 0.9524, "projectedFFRemaining": 57.8, "requiredConversion": 0.1732, "conversionImpossible": false}}, "Pali Hill, Bandra": {"region": "West", "monthTarget": 7500000.0, "achievedTotal": 1236903.94, "new": {"targetRev": 2259816.0457963417, "targetOrders": 120, "achievedRev": 374748.34, "achievedBills": 37, "currentAOV": 10128.33, "hoTargetAOV": 14348, "remainingRev": 1885067.71, "remainingOrders": 83, "noTarget": false, "requiredAOV": 22711.66, "status": "on-track", "ffAchieved": 42.0, "ffDays": 8, "avgDailyFF": 5.25, "currentConversion": 0.881, "projectedFFRemaining": 115.5, "requiredConversion": 0.7186, "conversionImpossible": false}, "rep": {"targetRev": 5240183.954203655, "targetOrders": 270, "achievedRev": 862155.6, "achievedBills": 64, "currentAOV": 13471.18, "hoTargetAOV": 14855, "remainingRev": 4378028.35, "remainingOrders": 206, "noTarget": false, "requiredAOV": 21252.56, "status": "on-track", "ffAchieved": 72.0, "ffDays": 8, "avgDailyFF": 9.0, "currentConversion": 0.8889, "projectedFFRemaining": 198.0, "conversionImpossible": true, "extraFFNeeded": 33.8}}, "Phoenix Marketcity Kurla": {"region": "West", "monthTarget": 2750000.0, "achievedTotal": 620123.67, "new": {"targetRev": 1239714.3290484587, "targetOrders": 120, "achievedRev": 427468.84, "achievedBills": 34, "currentAOV": 12572.61, "hoTargetAOV": 10757, "remainingRev": 812245.49, "remainingOrders": 86, "noTarget": false, "requiredAOV": 9444.71, "status": "on-track", "ffAchieved": 85.0, "ffDays": 8, "avgDailyFF": 10.62, "currentConversion": 0.4, "projectedFFRemaining": 233.8, "requiredConversion": 0.3679, "conversionImpossible": false}, "rep": {"targetRev": 1510285.670951544, "targetOrders": 120, "achievedRev": 192654.83, "achievedBills": 17, "currentAOV": 11332.64, "hoTargetAOV": 12180, "remainingRev": 1317630.84, "remainingOrders": 103, "noTarget": false, "requiredAOV": 12792.53, "status": "on-track", "ffAchieved": 19.0, "ffDays": 8, "avgDailyFF": 2.38, "currentConversion": 0.8947, "projectedFFRemaining": 52.2, "conversionImpossible": true, "extraFFNeeded": 62.9}}, "Phoenix Marketcity, Whitefield": {"region": "South", "monthTarget": 2500000.0, "achievedTotal": 712962.83, "new": {"targetRev": 731326.7565935175, "targetOrders": 90, "achievedRev": 332655.83, "achievedBills": 21, "currentAOV": 15840.75, "hoTargetAOV": 10231, "remainingRev": 398670.93, "remainingOrders": 69, "noTarget": false, "requiredAOV": 5777.84, "status": "on-track", "ffAchieved": 72.0, "ffDays": 8, "avgDailyFF": 9.0, "currentConversion": 0.2917, "projectedFFRemaining": 198.0, "requiredConversion": 0.3485, "conversionImpossible": false}, "rep": {"targetRev": 1768673.243406483, "targetOrders": 150, "achievedRev": 380307.0, "achievedBills": 24, "currentAOV": 15846.12, "hoTargetAOV": 11295, "remainingRev": 1388366.24, "remainingOrders": 126, "noTarget": false, "requiredAOV": 11018.78, "status": "on-track", "ffAchieved": 23.0, "ffDays": 8, "avgDailyFF": 2.88, "ffUnreliable": true}}, "Phoenix Palassio": {"region": "North", "monthTarget": 2000000.0, "achievedTotal": 383569.76, "new": {"targetRev": 1092513.3333333335, "targetOrders": 120, "achievedRev": 135770.0, "achievedBills": 18, "currentAOV": 7542.78, "hoTargetAOV": 10263, "remainingRev": 956743.33, "remainingOrders": 102, "noTarget": false, "requiredAOV": 9379.84, "status": "on-track", "ffAchieved": 45.0, "ffDays": 8, "avgDailyFF": 5.62, "currentConversion": 0.4, "projectedFFRemaining": 123.8, "requiredConversion": 0.8242, "conversionImpossible": false}, "rep": {"targetRev": 907486.6666666659, "targetOrders": 90, "achievedRev": 247799.76, "achievedBills": 22, "currentAOV": 11263.63, "hoTargetAOV": 10471, "remainingRev": 659686.91, "remainingOrders": 68, "noTarget": false, "requiredAOV": 9701.28, "status": "on-track", "ffAchieved": 30.0, "ffDays": 8, "avgDailyFF": 3.75, "currentConversion": 0.7333, "projectedFFRemaining": 82.5, "requiredConversion": 0.8242, "conversionImpossible": false}}, "R.K. Salai": {"region": "South", "monthTarget": 0.0, "achievedTotal": 0.0, "new": {"targetRev": 0.0, "targetOrders": 0, "achievedRev": 0.0, "achievedBills": 0, "currentAOV": null, "hoTargetAOV": 12887, "remainingRev": 0.0, "remainingOrders": 0, "noTarget": true, "status": "orders-hit-revenue-short", "ffAvailable": false}, "rep": {"targetRev": 0.0, "targetOrders": 0, "achievedRev": 0.0, "achievedBills": 0, "currentAOV": null, "hoTargetAOV": 13933, "remainingRev": 0.0, "remainingOrders": 0, "noTarget": true, "status": "orders-hit-revenue-short", "ffAchieved": 8.0, "ffDays": 8, "avgDailyFF": 1.0, "currentConversion": 0.0, "projectedFFRemaining": 22.0}}, "Sarath City-Hyderabad": {"region": "South", "monthTarget": 3750000.0, "achievedTotal": 773191.35, "new": {"targetRev": 426678.9570705263, "targetOrders": 60, "achievedRev": 367706.51, "achievedBills": 24, "currentAOV": 15321.1, "hoTargetAOV": 10285, "remainingRev": 58972.45, "remainingOrders": 36, "noTarget": false, "requiredAOV": 1638.12, "status": "on-track", "ffAchieved": 131.0, "ffDays": 8, "avgDailyFF": 16.38, "currentConversion": 0.1832, "projectedFFRemaining": 360.2, "requiredConversion": 0.0999, "conversionImpossible": false}, "rep": {"targetRev": 3323321.0429294743, "targetOrders": 240, "achievedRev": 405484.84, "achievedBills": 29, "currentAOV": 13982.24, "hoTargetAOV": 13775, "remainingRev": 2917836.2, "remainingOrders": 211, "noTarget": false, "requiredAOV": 13828.61, "status": "on-track", "ffAchieved": 23.0, "ffDays": 8, "avgDailyFF": 2.88, "ffUnreliable": true}}, "Select City": {"region": "North", "monthTarget": 2500000.0, "achievedTotal": 541891.35, "new": {"targetRev": 501649.7431257077, "targetOrders": 60, "achievedRev": 138602.35, "achievedBills": 20, "currentAOV": 6930.12, "hoTargetAOV": 11144, "remainingRev": 363047.39, "remainingOrders": 40, "noTarget": false, "requiredAOV": 9076.18, "status": "on-track", "ffAchieved": 74.0, "ffDays": 8, "avgDailyFF": 9.25, "currentConversion": 0.2703, "projectedFFRemaining": 203.5, "requiredConversion": 0.1966, "conversionImpossible": false}, "rep": {"targetRev": 1998350.2568742963, "targetOrders": 120, "achievedRev": 403289.0, "achievedBills": 37, "currentAOV": 10899.7, "hoTargetAOV": 12961, "remainingRev": 1595061.26, "remainingOrders": 83, "noTarget": false, "requiredAOV": 19217.61, "status": "on-track", "ffAchieved": 1.0, "ffDays": 8, "avgDailyFF": 0.12, "ffUnreliable": true}}, "Shakespearesarani": {"region": "North", "monthTarget": 3996389.0, "achievedTotal": 861141.39, "new": {"targetRev": 1696978.746836332, "targetOrders": 120, "achievedRev": 464754.84, "achievedBills": 23, "currentAOV": 20206.73, "hoTargetAOV": 15117, "remainingRev": 1232223.91, "remainingOrders": 97, "noTarget": false, "requiredAOV": 12703.34, "status": "on-track", "ffAchieved": 36.0, "ffDays": 8, "avgDailyFF": 4.5, "currentConversion": 0.6389, "projectedFFRemaining": 99.0, "requiredConversion": 0.9798, "conversionImpossible": false}, "rep": {"targetRev": 2299410.253163672, "targetOrders": 180, "achievedRev": 396386.55, "achievedBills": 37, "currentAOV": 10713.15, "hoTargetAOV": 13215, "remainingRev": 1903023.7, "remainingOrders": 143, "noTarget": false, "requiredAOV": 13307.86, "status": "on-track", "ffAchieved": 29.0, "ffDays": 8, "avgDailyFF": 3.62, "ffUnreliable": true}}, "Sindhu Bhavan Marg": {"region": "West", "monthTarget": 5000000.0, "achievedTotal": 1384260.35, "new": {"targetRev": 2895525.1618550704, "targetOrders": 210, "achievedRev": 621359.29, "achievedBills": 51, "currentAOV": 12183.52, "hoTargetAOV": 15340, "remainingRev": 2274165.87, "remainingOrders": 159, "noTarget": false, "requiredAOV": 14302.93, "status": "on-track", "ffAchieved": 63.0, "ffDays": 8, "avgDailyFF": 7.88, "currentConversion": 0.8095, "projectedFFRemaining": 173.2, "requiredConversion": 0.9177, "conversionImpossible": false}, "rep": {"targetRev": 2104474.83814493, "targetOrders": 150, "achievedRev": 762901.06, "achievedBills": 58, "currentAOV": 13153.47, "hoTargetAOV": 15142, "remainingRev": 1341573.78, "remainingOrders": 92, "noTarget": false, "requiredAOV": 14582.32, "status": "on-track", "ffAchieved": 59.0, "ffDays": 8, "avgDailyFF": 7.38, "currentConversion": 0.9831, "projectedFFRemaining": 162.2, "requiredConversion": 0.567, "conversionImpossible": false}}, "South Ex.": {"region": "North", "monthTarget": 3000000.0, "achievedTotal": 412379.4, "new": {"targetRev": 1124113.6999296695, "targetOrders": 90, "achievedRev": 97360.0, "achievedBills": 7, "currentAOV": 13908.57, "hoTargetAOV": 13408, "remainingRev": 1026753.7, "remainingOrders": 83, "noTarget": false, "requiredAOV": 12370.53, "status": "on-track", "ffAchieved": 14.0, "ffDays": 8, "avgDailyFF": 1.75, "currentConversion": 0.5, "projectedFFRemaining": 38.5, "conversionImpossible": true, "extraFFNeeded": 127.5}, "rep": {"targetRev": 1875886.3000703317, "targetOrders": 150, "achievedRev": 315019.4, "achievedBills": 17, "currentAOV": 18530.55, "hoTargetAOV": 14919, "remainingRev": 1560866.9, "remainingOrders": 133, "noTarget": false, "requiredAOV": 11735.84, "status": "on-track", "ffAchieved": 17.0, "ffDays": 8, "avgDailyFF": 2.12, "currentConversion": 1.0, "projectedFFRemaining": 46.8, "conversionImpossible": true, "extraFFNeeded": 86.2}}, "Vegas Dwarka": {"region": "North", "monthTarget": 1800000.0, "achievedTotal": 160717.66, "new": {"targetRev": 894848.0984995757, "targetOrders": 150, "achievedRev": 86912.76, "achievedBills": 15, "currentAOV": 5794.18, "hoTargetAOV": 10218, "remainingRev": 807935.34, "remainingOrders": 135, "noTarget": false, "requiredAOV": 5984.71, "status": "on-track", "ffAchieved": 43.0, "ffDays": 8, "avgDailyFF": 5.38, "currentConversion": 0.3488, "projectedFFRemaining": 118.2, "conversionImpossible": true, "extraFFNeeded": 268.8}, "rep": {"targetRev": 905151.9015004254, "targetOrders": 150, "achievedRev": 73804.9, "achievedBills": 13, "currentAOV": 5677.3, "hoTargetAOV": 10479, "remainingRev": 831347.0, "remainingOrders": 137, "noTarget": false, "requiredAOV": 6068.23, "status": "on-track", "ffAchieved": 12.0, "ffDays": 8, "avgDailyFF": 1.5, "ffUnreliable": true}}, "Viviana Mall": {"region": "West", "monthTarget": 3000000.0, "achievedTotal": 833307.4, "new": {"targetRev": 865666.171999212, "targetOrders": 90, "achievedRev": 358433.65, "achievedBills": 27, "currentAOV": 13275.32, "hoTargetAOV": 11540, "remainingRev": 507232.52, "remainingOrders": 63, "noTarget": false, "requiredAOV": 8051.31, "status": "on-track", "ffAchieved": 124.0, "ffDays": 8, "avgDailyFF": 15.5, "currentConversion": 0.2177, "projectedFFRemaining": 341.0, "requiredConversion": 0.1848, "conversionImpossible": false}, "rep": {"targetRev": 2134333.828000791, "targetOrders": 180, "achievedRev": 474873.75, "achievedBills": 36, "currentAOV": 13190.94, "hoTargetAOV": 14159, "remainingRev": 1659460.08, "remainingOrders": 144, "noTarget": false, "requiredAOV": 11524.03, "status": "on-track", "ffAchieved": 37.0, "ffDays": 8, "avgDailyFF": 4.62, "currentConversion": 0.973, "projectedFFRemaining": 101.8, "conversionImpossible": true, "extraFFNeeded": 46.2}}}};
+
+// Transcribed by hand each day from the "DAILY BRIEFING FEED" PDF HO circulates -- that doc's
+// layout/sections vary day to day (some days include a Superfone script or shipping-charge
+// policy note instead of a product spotlight), so this isn't parsed automatically. Update this
+// block whenever a new day's PDF comes in; everything else in this file (BRIEFING_DATA) is
+// regenerated separately by scripts/generate_briefing_data.py.
+const BRIEFING_CONTENT = {"date": "2026-09-09", "talkingPoints": [{"title": "Review Sales Performance", "body": ["Discuss last month’s Store Tgt. vs. Ach. and review progress against the month’s target.", "Highlight store’s SSSG, FF conversion and achievers of the target.", "Conclude by discussing this week’s plan and ways to achieve the target."]}], "productSpotlight": [{"customerSays": "I want something similar to what I already own, but better fitted.", "name": "Beckett Mid-Rise Dress Pants – Navy", "description": "Another solid navy option, cut for the new mid-rise silhouette — a clean, effortless staple.", "availableIn": "Navy", "rememberAs": "the everyday navy staple", "bestFor": "Daily office wear and smart-casual days", "pairIt": "Light shirts or polos, brown or black shoes", "sayThis": "This is the pant he can wear on repeat and it'll never look out of place.", "mrp": 5590}, {"customerSays": "I want grey, but not the same flat grey everyone wears.", "name": "Hartwell Structured Mid-Rise Dress Pants – Grey", "description": "A structured grey fabric with subtle texture and body, giving the pant more depth than a plain weave.", "availableIn": "Grey", "rememberAs": "the textured grey", "bestFor": "Office wear and semi-formal events", "pairIt": "White, blue or pastel shirts, brown formal shoes", "sayThis": "This grey has more character than a flat grey — it still stays formal, just not boring.", "mrp": 5590}], "nps": {"period": "1-6th Sept", "rows": [{"store": "DLF Midtown - Moti Nagar", "neutral": 0, "notLikely": 1, "veryLikely": 0, "grandTotal": 1, "nps": -100}, {"store": "Sarath City-Hyderabad", "neutral": 1, "notLikely": 3, "veryLikely": 2, "grandTotal": 6, "nps": -17}, {"store": "R.K. Salai", "neutral": 0, "notLikely": 1, "veryLikely": 1, "grandTotal": 2, "nps": 0}, {"store": "Inorbit mall Hyderabad", "neutral": 0, "notLikely": 2, "veryLikely": 3, "grandTotal": 5, "nps": 20}, {"store": "Andheri", "neutral": 1, "notLikely": 1, "veryLikely": 2, "grandTotal": 4, "nps": 25}, {"store": "Kochi Store", "neutral": 0, "notLikely": 1, "veryLikely": 2, "grandTotal": 3, "nps": 33}, {"store": "Select City", "neutral": 1, "notLikely": 1, "veryLikely": 3, "grandTotal": 5, "nps": 40}, {"store": "PMC Viman Nagar Pune", "neutral": 2, "notLikely": 2, "veryLikely": 6, "grandTotal": 10, "nps": 40}, {"store": "Jubilee Hills", "neutral": 2, "notLikely": 2, "veryLikely": 7, "grandTotal": 11, "nps": 45}, {"store": "Inorbit Mall Malad West", "neutral": 0, "notLikely": 1, "veryLikely": 3, "grandTotal": 4, "nps": 50}, {"store": "Mall of India, Noida", "neutral": 1, "notLikely": 1, "veryLikely": 4, "grandTotal": 6, "nps": 50}, {"store": "Online", "neutral": 4, "notLikely": 13, "veryLikely": 51, "grandTotal": 68, "nps": 56}, {"store": "Phoenix Marketcity, Whitefield", "neutral": 1, "notLikely": 1, "veryLikely": 5, "grandTotal": 7, "nps": 57}, {"store": "Viviana Mall", "neutral": 2, "notLikely": 1, "veryLikely": 7, "grandTotal": 10, "nps": 60}, {"store": "Gurugram", "neutral": 0, "notLikely": 1, "veryLikely": 4, "grandTotal": 5, "nps": 60}, {"store": "Oberoi Sky City", "neutral": 0, "notLikely": 2, "veryLikely": 9, "grandTotal": 11, "nps": 64}, {"store": "LakeShore Mall", "neutral": 1, "notLikely": 0, "veryLikely": 2, "grandTotal": 3, "nps": 67}, {"store": "Phoenix Marketcity Kurla", "neutral": 0, "notLikely": 1, "veryLikely": 5, "grandTotal": 6, "nps": 67}, {"store": "Kalaghoda, Fort", "neutral": 1, "notLikely": 1, "veryLikely": 7, "grandTotal": 9, "nps": 67}, {"store": "Pali Hill, Bandra", "neutral": 2, "notLikely": 1, "veryLikely": 11, "grandTotal": 14, "nps": 71}, {"store": "Indiranagar", "neutral": 0, "notLikely": 1, "veryLikely": 11, "grandTotal": 12, "nps": 83}, {"store": "Shakespearesarani", "neutral": 1, "notLikely": 0, "veryLikely": 5, "grandTotal": 6, "nps": 83}, {"store": "Kemps Corner", "neutral": 1, "notLikely": 0, "veryLikely": 5, "grandTotal": 6, "nps": 83}, {"store": "Sindhu Bhavan Marg", "neutral": 1, "notLikely": 0, "veryLikely": 6, "grandTotal": 7, "nps": 86}, {"store": "Express Avenue", "neutral": 0, "notLikely": 0, "veryLikely": 3, "grandTotal": 3, "nps": 100}, {"store": "Ambience Vasant Kunj", "neutral": 0, "notLikely": 0, "veryLikely": 1, "grandTotal": 1, "nps": 100}, {"store": "Koregaon Park", "neutral": 0, "notLikely": 0, "veryLikely": 5, "grandTotal": 5, "nps": 100}, {"store": "Khan Market", "neutral": 0, "notLikely": 0, "veryLikely": 3, "grandTotal": 3, "nps": 100}, {"store": "KNK Chennai", "neutral": 0, "notLikely": 0, "veryLikely": 3, "grandTotal": 3, "nps": 100}, {"store": "South Ex.", "neutral": 0, "notLikely": 0, "veryLikely": 1, "grandTotal": 1, "nps": 100}, {"store": "Lavelle Road", "neutral": 0, "notLikely": 0, "veryLikely": 4, "grandTotal": 4, "nps": 100}, {"store": "Juhu Store", "neutral": 0, "notLikely": 0, "veryLikely": 3, "grandTotal": 3, "nps": 100}, {"store": "Jaipur Store", "neutral": 0, "notLikely": 0, "veryLikely": 2, "grandTotal": 2, "nps": 100}, {"store": "Phoenix Palassio", "neutral": 0, "notLikely": 0, "veryLikely": 1, "grandTotal": 1, "nps": 100}, {"store": "Oberoi Mall Store", "neutral": 0, "notLikely": 0, "veryLikely": 1, "grandTotal": 1, "nps": 100}]}};
+
+(function(){
+
+const state = { store: null, log: [] };
+
+function fmtINR(n){
+  if(n === null || n === undefined) return 'n/a';
+  const neg = n < 0; n = Math.abs(Math.round(n));
+  const s = n.toString();
+  let last3 = s.slice(-3), rest = s.slice(0,-3);
+  if(rest !== '') last3 = ',' + last3;
+  const formatted = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + last3;
+  return (neg?'-':'') + 'Rs' + formatted;
+}
+function fmtPct(n){ return (n===null||n===undefined) ? 'n/a' : (n*100).toFixed(1) + '%'; }
+function fmtNum(n){ return (n===null||n===undefined) ? 'n/a' : Math.round(n).toLocaleString('en-IN'); }
+
+async function logEvent(store, event){
+  if(!APPS_SCRIPT_URL) return;
+  try{
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'}, // avoids CORS preflight to Apps Script
+      body: JSON.stringify({store, event}),
+    });
+  }catch(e){ /* tracking is best-effort -- never block the briefing on a network failure */ }
+}
+
+async function loadLog(){
+  if(!APPS_SCRIPT_URL) return [];
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, {method:'GET'});
+    const data = await res.json();
+    return data.rows || [];
+  }catch(e){ return []; }
+}
+
+function statusFor(store){
+  const rows = state.log.filter(r => r.store === store);
+  const views = rows.filter(r => r.event === 'view');
+  const prints = rows.filter(r => r.event === 'print');
+  const last = arr => arr.length ? arr[arr.length-1].timestamp : null;
+  return {
+    viewed: views.length > 0, viewCount: views.length, lastViewed: last(views),
+    printed: prints.length > 0, printCount: prints.length, lastPrinted: last(prints),
+  };
+}
+
+function fmtWhen(iso){
+  if(!iso) return null;
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) + ' ' +
+    d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+}
+
+function segmentCard(label, seg){
+  if(!seg){
+    return `<div style="background:var(--panel); border-radius:10px; padding:16px 18px; margin-bottom:14px;">
+      <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">${label}</div>
+      <div style="color:var(--text-mute); font-size:13px;">No data</div></div>`;
+  }
+  if(seg.noTarget){
+    return `<div style="background:var(--panel); border-radius:10px; padding:16px 18px; margin-bottom:14px;">
+      <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">${label}</div>
+      <div style="color:var(--text-mute); font-size:13px;">No target set for this segment this month</div></div>`;
+  }
+
+  let statusLine;
+  if(seg.status === 'achieved'){
+    statusLine = `<div style="color:var(--good); font-size:13.5px; margin-top:8px;">
+      Target already achieved for this segment &mdash; ${fmtINR(seg.surplus)} ahead of pace</div>`;
+  } else if(seg.status === 'orders-hit-revenue-short'){
+    statusLine = `<div style="color:var(--warn); font-size:13.5px; margin-top:8px;">
+      Order-count target already hit, but still ${fmtINR(seg.remainingRev)} short on revenue &mdash;
+      needs extra orders beyond target, or a higher AOV on the ones already counted</div>`;
+  } else {
+    statusLine = `<div style="font-size:13.5px; margin-top:8px;">
+      Needed for the rest of the month: <b class="bsc-mono">${fmtNum(seg.remainingOrders)}</b> more orders
+      averaging <b class="bsc-mono" style="color:var(--brass);">${fmtINR(seg.requiredAOV)}</b> AOV
+      to close <b class="bsc-mono">${fmtINR(seg.remainingRev)}</b></div>`;
+  }
+
+  let convLine = '';
+  if(seg.ffAvailable === false){
+    convLine = `<div style="color:var(--text-mute); font-size:13px; margin-top:6px;">Footfall data not available for this store this month</div>`;
+  } else if(seg.ffUnreliable){
+    convLine = `<div style="font-size:13px; color:var(--text-dim); margin-top:10px;">
+      Footfall MTD: <b class="bsc-mono">${fmtNum(seg.ffAchieved)}</b> (${seg.avgDailyFF}/day avg)</div>
+      <div style="color:var(--warn); font-size:13px; margin-top:4px;">
+      More orders than recorded footfall &mdash; this store's footfall isn't being logged reliably this month,
+      so conversion figures are skipped</div>`;
+  } else if(seg.ffAchieved !== undefined){
+    convLine += `<div style="font-size:13px; color:var(--text-dim); margin-top:10px;">
+      Footfall MTD: <b class="bsc-mono">${fmtNum(seg.ffAchieved)}</b> (${seg.avgDailyFF}/day avg)
+      &nbsp;&middot;&nbsp; Conversion so far: <b class="bsc-mono">${fmtPct(seg.currentConversion)}</b></div>`;
+    if(seg.conversionImpossible){
+      convLine += `<div style="color:var(--bad); font-size:13px; margin-top:4px;">
+        Even at 100% conversion, projected footfall (~${fmtNum(seg.projectedFFRemaining)}) can't cover the
+        ${fmtNum(seg.remainingOrders)} orders still needed`
+        + (seg.extraFFNeeded !== undefined ? ` &mdash; needs ~${fmtNum(seg.extraFFNeeded)} more footfall
+        (walk-ins/outbound calls) at the current ${fmtPct(seg.currentConversion)} conversion rate` : '') + `</div>`;
+    } else if(seg.requiredConversion !== undefined){
+      convLine += `<div style="font-size:13px; margin-top:4px;">
+        Conversion needed on ~${fmtNum(seg.projectedFFRemaining)} projected visitors:
+        <b class="bsc-mono" style="color:var(--brass);">${fmtPct(seg.requiredConversion)}</b></div>`;
+    }
+  }
+
+  const hoAov = seg.hoTargetAOV ? `<span style="color:var(--text-mute); font-size:12px; margin-left:8px;">
+    (HO target AOV: ${fmtINR(seg.hoTargetAOV)})</span>` : '';
+
+  return `<div style="background:var(--panel); border-radius:10px; padding:16px 18px; margin-bottom:14px; border-left:3px solid var(--brass-dim);">
+    <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">${label}</div>
+    <div style="font-size:13px; color:var(--text-dim);">
+      Target: <b class="bsc-mono">${fmtINR(seg.targetRev)}</b> across <b class="bsc-mono">${fmtNum(seg.targetOrders)}</b> orders
+      &nbsp;&middot;&nbsp; Achieved: <b class="bsc-mono">${fmtINR(seg.achievedRev)}</b> across <b class="bsc-mono">${fmtNum(seg.achievedBills)}</b> orders
+      ${seg.currentAOV ? `(AOV <b class="bsc-mono">${fmtINR(seg.currentAOV)}</b>)` : ''}${hoAov}
+    </div>
+    ${statusLine}
+    ${convLine}
+  </div>`;
+}
+
+function renderBriefing(store){
+  const d = BRIEFING_DATA.stores[store];
+  const body = document.getElementById('briefing-body');
+  if(!d){ body.innerHTML = '<div style="color:var(--text-mute); padding:20px;">No briefing data for this store.</div>'; return; }
+
+  const pct = d.monthTarget ? (d.achievedTotal / d.monthTarget * 100) : 0;
+  body.innerHTML = `
+    <div style="font-size:12px; color:var(--text-mute); margin-bottom:4px;">
+      As of day ${BRIEFING_DATA.daysElapsed} of the month (${BRIEFING_DATA.lastSalesDay}) &mdash;
+      ${BRIEFING_DATA.daysRemaining} day(s) remaining
+    </div>
+    <div style="font-size:20px; font-weight:700; margin-bottom:4px;">${store}</div>
+    <div style="font-size:13.5px; color:var(--text-dim); margin-bottom:18px;">
+      Month target <b class="bsc-mono">${fmtINR(d.monthTarget)}</b> &nbsp;&middot;&nbsp;
+      Achieved MTD <b class="bsc-mono">${fmtINR(d.achievedTotal)}</b> (${pct.toFixed(0)}%)
+    </div>
+    ${segmentCard('NEW CUSTOMERS', d.new)}
+    ${segmentCard('REPEAT CUSTOMERS', d.rep)}
+    ${renderHOContent(store)}
+  `;
+}
+
+function renderHOContent(store){
+  const c = BRIEFING_CONTENT;
+  if(!c || !c.date) return '';
+
+  const points = (c.talkingPoints || []).map(p => `
+    <div style="margin-bottom:10px;">
+      <div style="font-size:13px; font-weight:600; color:var(--text);">${p.title}</div>
+      <ul style="margin:4px 0 0 18px; padding:0; font-size:13px; color:var(--text-dim); line-height:1.6;">
+        ${p.body.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+    </div>`).join('');
+
+  const spotlight = (c.productSpotlight || []).map(p => `
+    <div style="background:var(--panel2); border-radius:8px; padding:12px 14px; margin-bottom:10px;">
+      <div style="font-size:12px; color:var(--text-mute); font-style:italic; margin-bottom:6px;">Customer says: "${p.customerSays}"</div>
+      <div style="font-size:13.5px; font-weight:600; color:var(--brass);">${p.name}</div>
+      <div style="font-size:12.5px; color:var(--text-dim); margin-top:4px;">${p.description}</div>
+      <div style="font-size:12px; color:var(--text-mute); margin-top:6px; line-height:1.5;">
+        <b>Best for:</b> ${p.bestFor} &nbsp;&middot;&nbsp; <b>Pair it:</b> ${p.pairIt} &nbsp;&middot;&nbsp; <b>MRP:</b> ${fmtINR(p.mrp)}
+      </div>
+      <div style="font-size:12.5px; color:var(--text); margin-top:6px; font-style:italic;">Say this: "${p.sayThis}"</div>
+    </div>`).join('');
+
+  const npsRows = (c.nps && c.nps.rows) || [];
+  const myRow = npsRows.find(r => r.store === store);
+  const npsTable = npsRows.length ? `
+    <div style="font-size:12px; color:var(--text-mute); margin:10px 0 6px;">NPS, ${c.nps.period} (all stores)</div>
+    <div style="max-height:180px; overflow-y:auto; border:1px solid var(--line); border-radius:8px;">
+      <table style="width:100%; border-collapse:collapse;">
+        <tbody>
+          ${npsRows.map(r => `<tr style="${r.store===store ? 'background:var(--panel2);' : ''}">
+            <td style="padding:5px 10px; font-size:12px; ${r.store===store?'font-weight:600;':'color:var(--text-dim);'}">${r.store}</td>
+            <td style="padding:5px 10px; font-size:12px; color:var(--text-mute);">${r.grandTotal} responses</td>
+            <td style="padding:5px 10px; font-size:12px; font-weight:600; color:${r.nps>=50?'var(--good)':r.nps>=0?'var(--warn)':'var(--bad)'};">${r.nps}%</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>` : '';
+
+  return `
+    <div style="margin-top:22px; padding-top:18px; border-top:1px solid var(--line);">
+      <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;">
+        HO Briefing Points &mdash; ${c.date}${myRow ? ` &nbsp;&middot;&nbsp; This store's NPS: <span style="color:${myRow.nps>=50?'var(--good)':myRow.nps>=0?'var(--warn)':'var(--bad)'};">${myRow.nps}%</span> (${myRow.grandTotal} responses)` : ''}
+      </div>
+      ${points}
+      ${spotlight ? `<div style="font-size:13px; font-weight:600; color:var(--text); margin:14px 0 8px;">Know Your Product</div>${spotlight}` : ''}
+      ${npsTable}
+    </div>`;
+}
+
+function renderTrackingPanel(){
+  const panel = document.getElementById('tracking-panel');
+  if(!panel) return;
+  const stores = Object.keys(BRIEFING_DATA.stores || {}).sort();
+  const viewedCount = stores.filter(s => statusFor(s).viewed).length;
+  const rows = stores.map(s => {
+    const st = statusFor(s);
+    const dot = st.viewed ? 'var(--good)' : 'var(--bad)';
+    return `<tr>
+      <td style="padding:5px 10px; font-size:12.5px;">
+        <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:${dot}; margin-right:7px;"></span>${s}
+      </td>
+      <td style="padding:5px 10px; font-size:12px; color:var(--text-mute);">${fmtWhen(st.lastViewed) || 'Not viewed'}</td>
+      <td style="padding:5px 10px; font-size:12px; color:var(--text-mute);">${fmtWhen(st.lastPrinted) || '—'}</td>
+    </tr>`;
+  }).join('');
+  panel.innerHTML = `
+    <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;">
+      Viewed by ${viewedCount} of ${stores.length} stores
+      ${!APPS_SCRIPT_URL ? '<span style="color:var(--warn); font-weight:400;"> (tracking backend not configured yet)</span>' : ''}
+    </div>
+    <div style="max-height:220px; overflow-y:auto; border:1px solid var(--line); border-radius:8px;">
+      <table style="width:100%; border-collapse:collapse;">
+        <thead><tr style="background:var(--panel2);">
+          <th style="text-align:left; padding:6px 10px; font-size:11px; color:var(--text-mute);">Store</th>
+          <th style="text-align:left; padding:6px 10px; font-size:11px; color:var(--text-mute);">Last viewed</th>
+          <th style="text-align:left; padding:6px 10px; font-size:11px; color:var(--text-mute);">Last printed</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+async function selectStore(store, opts){
+  opts = opts || {};
+  state.store = store;
+  renderBriefing(store);
+  if(!opts.silent){
+    await logEvent(store, 'view');
+    state.log.push({store, event:'view', timestamp:new Date().toISOString()});
+    renderTrackingPanel();
+  }
+}
+
+async function init(){
+  const root = document.getElementById('bsc-root');
+  const stores = Object.keys(BRIEFING_DATA.stores || {}).sort();
+
+  root.innerHTML = `
+    <div class="no-print" style="display:flex; align-items:center; gap:12px; padding:20px 24px; border-bottom:1px solid var(--line); flex-wrap:wrap;">
+      <div style="font-size:15px; font-weight:600;"><i class="ti ti-clipboard-text"></i>&nbsp; Store Briefing</div>
+      <select id="store-select" class="bsc-select"></select>
+      <button id="print-btn" class="bsc-select" style="cursor:pointer;"><i class="ti ti-printer"></i>&nbsp; Print</button>
+      <a href="index.html" style="margin-left:auto; color:var(--text-mute); font-size:13px; text-decoration:none;">&larr; Back to dashboard</a>
+    </div>
+    <div style="padding:20px 24px;">
+      <div id="briefing-body"></div>
+    </div>
+    <div class="no-print" style="padding:16px 24px 24px; border-top:1px solid var(--line);">
+      <div id="tracking-panel"></div>
+    </div>
+  `;
+
+  const sel = document.getElementById('store-select');
+  stores.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => selectStore(sel.value);
+
+  document.getElementById('print-btn').onclick = async () => {
+    if(state.store){ await logEvent(state.store, 'print'); state.log.push({store:state.store, event:'print', timestamp:new Date().toISOString()}); renderTrackingPanel(); }
+    window.print();
+  };
+
+  state.log = await loadLog();
+  renderTrackingPanel();
+
+  if(stores.length){
+    sel.value = stores[0];
+    await selectStore(stores[0]);
+  } else {
+    document.getElementById('briefing-body').innerHTML = '<div style="color:var(--text-mute); padding:20px;">No briefing data yet &mdash; run scripts/generate_briefing_data.py.</div>';
+  }
+}
+
+init();
+
+})();
+</script>
+</div>
+</body>
+</html>

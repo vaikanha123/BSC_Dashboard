@@ -267,6 +267,29 @@ STORE_SCOPING_OVERRIDES = {
 }
 
 
+# ---- Store name normalization for the "Targets for <Mon>.xlsx" AOV-target file, whose Store
+# column uses shorthand/alternate names instead of the canonical REGION_MAP keys. Confirmed with
+# Vaibhav on 2026-09-09: "Sky City Borivali" = Oberoi Sky City, "Phoenix Lucknow" = Phoenix
+# Palassio (Palassio mall is in Lucknow). Extend this if a future month's file renames a store
+# again or adds a new one.
+AOV_TARGET_STORE_MAP = {
+    'Kalaghoda, Fort': 'Kalaghoda, Fort', 'Kemps Corner': 'Kemps Corner',
+    'Pali Hill, Khar': 'Pali Hill, Bandra', 'Sindhu Bhavan Marg': 'Sindhu Bhavan Marg',
+    'Koregaon Park': 'Koregaon Park', 'Andheri': 'Andheri', 'Juhu': 'Juhu Store',
+    'Oberoi Mall': 'Oberoi Mall Store', 'PMC Kurla': 'Phoenix Marketcity Kurla',
+    'Sky City Borivali': 'Oberoi Sky City', 'R.K. Salai': 'R.K. Salai', 'Lavelle Road': 'Lavelle Road',
+    'Jubilee Hills': 'Jubilee Hills', 'Indiranagar': 'Indiranagar', 'Sharath City': 'Sarath City-Hyderabad',
+    'Kochi': 'Kochi Store', 'PMC Whitefield': 'Phoenix Marketcity, Whitefield', 'Express Avenue': 'Express Avenue',
+    'Jaipur': 'Jaipur Store', 'Select City Mall': 'Select City', 'Khan Market': 'Khan Market',
+    'South Ex.': 'South Ex.', 'Gurugram': 'Gurugram', 'Shakespear Sarani': 'Shakespearesarani',
+    'Phoenix Lucknow': 'Phoenix Palassio', 'Mall of India': 'Mall of India, Noida', 'Viviana Mall': 'Viviana Mall',
+    'Inorbit Mall Malad West': 'Inorbit Mall Malad West', 'Inorbit mall': 'Inorbit mall Hyderabad',
+    'Lakeshore mall': 'LakeShore Mall', 'Ambience Vasnt Kunj': 'Ambience Vasant Kunj',
+    'Vegas Mall Dwarka': 'Vegas Dwarka', 'DLF Midtown': 'DLF Midtown - Moti Nagar', 'KNK Chennai': 'KNK Chennai',
+    'PMC Viman Nagar Pune': 'PMC Viman Nagar Pune',
+}
+
+
 def scoped_stylist_metrics(df, stylist_name_lower, month_key):
     """Return (revenue, bills, units) for a stylist, applying any store-scoping override that
     applies to that month. df must already have Revenue/Qty/StylistNorm/POS location name columns

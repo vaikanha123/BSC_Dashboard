@@ -1,0 +1,242 @@
+"""
+generate_briefing_data.py -- Computes per-store daily briefing numbers (required New/Repeat AOV,
+repeat customers needed, conversion needed for the rest of the month) and writes them into
+store-briefing.html as `const BRIEFING_DATA = {...};`, the same replace-a-JS-constant pattern used
+by update_main_dashboard.py / update_tracker.py.
+
+Usage:
+  python3 generate_briefing_data.py --html store-briefing.html --sales sales.csv \
+      --targets "Daywise Targets Sep-26.xlsx" --footfall footfall.csv [--aov-targets "Targets for Sep.xlsx"]
+
+  --sales       : cumulative current-month sales CSV.
+  --targets     : Daywise Targets Excel for the current month (POS location name, Date, New
+                   Revenue, Repeat Revenue, New orders, Repeat orders, ...). This is the
+                   authoritative source for the full-month revenue/order targets used in the
+                   "required AOV" / "orders needed" math -- see BSC_Dashboard_Runbook.md.
+  --footfall    : CSV export of the "<Month> FF" tab of the footfall tracker Google Sheet.
+  --aov-targets : optional. The separate "Targets for <Mon>.xlsx" file (Store, Target, New Rev
+                   Tar, Rep Rev Tar, New AOV Target, Repeat AOV Target, New Bills, Repeat Bill).
+                   As of 2026-09, the Rev/Bills columns in this file don't reconcile against the
+                   Daywise Targets file or against each other (AOV x Bills != Rev Tar) -- period
+                   unclear, unresolved with Vaibhav. Only the two AOV Target columns are pulled
+                   from this file, as a labeled reference figure ("HO Target AOV") shown alongside
+                   the calculated required AOV -- NOT used in any calculation. Store names in this
+                   file are normalized via AOV_TARGET_STORE_MAP in bsc_common.py.
+
+Same calculation logic as scripts/generate_store_briefing.py (that script remains the
+plain-text/WhatsApp-friendly version of the same output); see its docstring for the formulas.
+"""
+import argparse
+import calendar
+import csv
+import datetime
+import json
+
+import openpyxl
+
+from bsc_common import REGION_MAP, AOV_TARGET_STORE_MAP, load_sales_csv, replace_const, syntax_check_html_js
+
+
+def load_targets(path):
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb['Sheet1'] if 'Sheet1' in wb.sheetnames else wb[wb.sheetnames[0]]
+    totals = {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        store, date, new_rev, rep_rev, new_orders, rep_orders = row[0], row[1], row[2], row[3], row[4], row[5]
+        if store is None or date is None:
+            continue
+        t = totals.setdefault(store, {'new_rev': 0.0, 'rep_rev': 0.0, 'new_orders': 0, 'rep_orders': 0})
+        t['new_rev'] += new_rev or 0
+        t['rep_rev'] += rep_rev or 0
+        t['new_orders'] += new_orders or 0
+        t['rep_orders'] += rep_orders or 0
+    return totals
+
+
+def load_aov_targets(path):
+    """Store -> {new_aov, rep_aov}, keyed by canonical REGION_MAP name via AOV_TARGET_STORE_MAP."""
+    wb = openpyxl.load_workbook(path, data_only=True)
+    ws = wb['Sheet1'] if 'Sheet1' in wb.sheetnames else wb[wb.sheetnames[0]]
+    out = {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        store = row[0]
+        if store is None:
+            continue
+        canonical = AOV_TARGET_STORE_MAP.get(store)
+        if canonical is None:
+            print(f"[warn] '{store}' in AOV targets file has no entry in AOV_TARGET_STORE_MAP -- skipped")
+            continue
+        out[canonical] = {'new_aov': row[4], 'rep_aov': row[5]}
+    return out
+
+
+def load_footfall(path, cutoff_date):
+    with open(path, encoding='utf-8') as f:
+        rows = list(csv.reader(f))
+
+    header = rows[0]
+    stores = header[2:-1]
+
+    def parse_date(s):
+        s = s.strip()
+        for fmt in ('%d-%b-%Y', '%Y-%m-%d'):
+            try:
+                return datetime.datetime.strptime(s, fmt).date()
+            except ValueError:
+                continue
+        return None
+
+    def num(v):
+        v = (v or '').strip().replace(',', '')
+        try:
+            return float(v)
+        except ValueError:
+            return 0.0
+
+    blocks = {'New FF': {}, 'Repeat FF': {}}
+    current_block = None
+    days_seen = {'New FF': set(), 'Repeat FF': set()}
+    for row in rows[1:]:
+        if len(row) < 2:
+            continue
+        label = row[1].strip()
+        if label in ('New FF', 'Repeat FF'):
+            current_block = label
+            continue
+        if label == 'TOTAL FF':
+            current_block = None
+            continue
+        if current_block is None:
+            continue
+        d = parse_date(label)
+        if d is None or d > cutoff_date:
+            continue
+        days_seen[current_block].add(d)
+        for store, cell in zip(stores, row[2:2 + len(stores)]):
+            blocks[current_block].setdefault(store, 0.0)
+            blocks[current_block][store] += num(cell)
+
+    return blocks['New FF'], blocks['Repeat FF'], len(days_seen['New FF']), len(days_seen['Repeat FF'])
+
+
+def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_remaining, ho_aov):
+    rev_rem = rev_t - rev_a
+    orders_rem = orders_t - orders_a
+    cur_aov = (rev_a / orders_a) if orders_a else None
+
+    block = {
+        'targetRev': rev_t, 'targetOrders': orders_t, 'achievedRev': round(rev_a, 2), 'achievedBills': orders_a,
+        'currentAOV': round(cur_aov, 2) if cur_aov is not None else None,
+        'hoTargetAOV': ho_aov,
+        'remainingRev': round(rev_rem, 2), 'remainingOrders': orders_rem,
+        'noTarget': (rev_t == 0 and rev_a == 0),
+    }
+
+    if orders_rem > 0 and rev_rem > 0:
+        block['requiredAOV'] = round(rev_rem / orders_rem, 2)
+        block['status'] = 'on-track'
+    elif rev_rem <= 0 and not block['noTarget']:
+        block['status'] = 'achieved'
+        block['surplus'] = round(-rev_rem, 2)
+    else:
+        block['status'] = 'orders-hit-revenue-short'
+
+    if ff_days > 0 and ff_achieved > 0:
+        avg_daily_ff = ff_achieved / ff_days
+        proj_ff_rem = avg_daily_ff * days_remaining
+        cur_conv = (orders_a / ff_achieved) if ff_achieved else None
+        block['ffAchieved'] = round(ff_achieved, 1)
+        block['ffDays'] = ff_days
+        block['avgDailyFF'] = round(avg_daily_ff, 2)
+
+        if cur_conv is not None and cur_conv > 1.0:
+            # More bills than recorded footfall -- footfall for this store/segment isn't being
+            # logged reliably (can't actually convert more visitors than walked in). Surface that
+            # instead of a >100% "conversion" or a downstream negative "extra footfall needed".
+            block['ffUnreliable'] = True
+        else:
+            block['currentConversion'] = round(cur_conv, 4) if cur_conv is not None else None
+            block['projectedFFRemaining'] = round(proj_ff_rem, 1)
+            if orders_rem > 0 and proj_ff_rem > 0:
+                req_conv = orders_rem / proj_ff_rem
+                if req_conv <= 1.0:
+                    block['requiredConversion'] = round(req_conv, 4)
+                    block['conversionImpossible'] = False
+                else:
+                    block['conversionImpossible'] = True
+                    if cur_conv:
+                        block['extraFFNeeded'] = round(orders_rem / cur_conv - proj_ff_rem, 1)
+    else:
+        block['ffAvailable'] = False
+
+    return block
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--html', required=True)
+    ap.add_argument('--sales', required=True)
+    ap.add_argument('--targets', required=True)
+    ap.add_argument('--footfall', required=True)
+    ap.add_argument('--aov-targets', default=None)
+    args = ap.parse_args()
+
+    df = load_sales_csv(args.sales)
+    df = df[df['POS location name'].isin(REGION_MAP.keys())]
+
+    days = sorted(df['Day_str'].unique())
+    last_day = datetime.datetime.strptime(days[-1], '%Y-%m-%d').date()
+    days_elapsed = len(days)
+    days_in_month = calendar.monthrange(last_day.year, last_day.month)[1]
+    days_remaining = days_in_month - days_elapsed
+
+    targets = load_targets(args.targets)
+    new_ff, rep_ff, new_ff_days, rep_ff_days = load_footfall(args.footfall, last_day)
+    aov_targets = load_aov_targets(args.aov_targets) if args.aov_targets else {}
+
+    stores_out = {}
+    for store in sorted(REGION_MAP.keys()):
+        if store not in targets:
+            continue
+        sub = df[df['POS location name'] == store]
+        new_sub = sub[sub['Segment'] == 'new']
+        rep_sub = sub[sub['Segment'] == 'returning']
+        t = targets[store]
+        ho = aov_targets.get(store, {})
+
+        new_block = segment_block(
+            t['new_rev'], t['new_orders'], float(new_sub['Revenue'].sum()), int(new_sub['Order name'].nunique()),
+            new_ff.get(store, 0.0), new_ff_days, days_remaining, ho.get('new_aov'))
+        rep_block = segment_block(
+            t['rep_rev'], t['rep_orders'], float(rep_sub['Revenue'].sum()), int(rep_sub['Order name'].nunique()),
+            rep_ff.get(store, 0.0), rep_ff_days, days_remaining, ho.get('rep_aov'))
+
+        stores_out[store] = {
+            'region': REGION_MAP[store],
+            'monthTarget': round(t['new_rev'] + t['rep_rev'], 2),
+            'achievedTotal': round(float(sub['Revenue'].sum()), 2),
+            'new': new_block, 'rep': rep_block,
+        }
+
+    payload = {
+        'generatedAt': datetime.datetime.now().isoformat(timespec='seconds'),
+        'lastSalesDay': last_day.isoformat(),
+        'daysElapsed': days_elapsed,
+        'daysRemaining': days_remaining,
+        'daysInMonth': days_in_month,
+        'stores': stores_out,
+    }
+
+    with open(args.html, encoding='utf-8') as f:
+        content = f.read()
+    content = replace_const(content, 'BRIEFING_DATA', json.dumps(payload))
+    with open(args.html, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+    syntax_check_html_js(args.html)
+    print(f"OK. {args.html} updated with {len(stores_out)} store(s), "
+          f"through {last_day.isoformat()} ({days_remaining} days remaining).")
+
+
+if __name__ == '__main__':
+    main()
