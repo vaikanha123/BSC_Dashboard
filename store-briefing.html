@@ -123,54 +123,66 @@ function segmentCard(label, seg){
 
   let statusLine;
   if(seg.status === 'achieved'){
-    statusLine = `<div style="color:var(--good); font-size:13.5px; margin-top:8px;">
+    statusLine = `<div style="color:var(--good); font-size:13.5px; margin-top:10px;">
       Target already achieved for this segment &mdash; ${fmtINR(seg.surplus)} ahead of pace</div>`;
   } else if(seg.status === 'orders-hit-revenue-short'){
-    statusLine = `<div style="color:var(--warn); font-size:13.5px; margin-top:8px;">
-      Order-count target already hit, but still ${fmtINR(seg.remainingRev)} short on revenue &mdash;
-      needs extra orders beyond target, or a higher AOV on the ones already counted</div>`;
+    statusLine = `<div style="color:var(--warn); font-size:13.5px; margin-top:10px;">
+      Bills target already hit, but still ${fmtINR(seg.remainingRev)} short on revenue &mdash;
+      needs extra bills beyond target, or a higher AOV on the ones already counted</div>`;
   } else {
-    statusLine = `<div style="font-size:13.5px; margin-top:8px;">
-      Needed for the rest of the month: <b class="bsc-mono">${fmtNum(seg.remainingOrders)}</b> more orders
+    statusLine = `<div style="font-size:13.5px; margin-top:10px;">
+      Needed for the rest of the month: <b class="bsc-mono">${fmtNum(seg.remainingOrders)}</b> more bills
       averaging <b class="bsc-mono" style="color:var(--brass);">${fmtINR(seg.requiredAOV)}</b> AOV
       to close <b class="bsc-mono">${fmtINR(seg.remainingRev)}</b></div>`;
   }
 
+  // Footfall/conversion is supporting context, not the headline -- kept terse and muted.
   let convLine = '';
   if(seg.ffAvailable === false){
-    convLine = `<div style="color:var(--text-mute); font-size:13px; margin-top:6px;">Footfall data not available for this store this month</div>`;
+    convLine = `<div style="color:var(--text-mute); font-size:11.5px; margin-top:8px;">Footfall data not available for this store this month</div>`;
   } else if(seg.ffUnreliable){
-    convLine = `<div style="font-size:13px; color:var(--text-dim); margin-top:10px;">
-      Footfall MTD: <b class="bsc-mono">${fmtNum(seg.ffAchieved)}</b> (${seg.avgDailyFF}/day avg)</div>
-      <div style="color:var(--warn); font-size:13px; margin-top:4px;">
-      More orders than recorded footfall &mdash; this store's footfall isn't being logged reliably this month,
-      so conversion figures are skipped</div>`;
+    convLine = `<div style="color:var(--text-mute); font-size:11.5px; margin-top:8px;">
+      Footfall MTD: ${fmtNum(seg.ffAchieved)} &mdash; more bills than recorded footfall, so this store's footfall
+      isn't being logged reliably this month; conversion figures skipped</div>`;
   } else if(seg.ffAchieved !== undefined){
-    convLine += `<div style="font-size:13px; color:var(--text-dim); margin-top:10px;">
-      Footfall MTD: <b class="bsc-mono">${fmtNum(seg.ffAchieved)}</b> (${seg.avgDailyFF}/day avg)
-      &nbsp;&middot;&nbsp; Conversion so far: <b class="bsc-mono">${fmtPct(seg.currentConversion)}</b></div>`;
+    convLine = `<div style="color:var(--text-mute); font-size:11.5px; margin-top:8px;">
+      Footfall MTD ${fmtNum(seg.ffAchieved)} (${seg.avgDailyFF}/day) &middot; conversion so far ${fmtPct(seg.currentConversion)}`;
     if(seg.conversionImpossible){
-      convLine += `<div style="color:var(--bad); font-size:13px; margin-top:4px;">
-        Even at 100% conversion, projected footfall (~${fmtNum(seg.projectedFFRemaining)}) can't cover the
-        ${fmtNum(seg.remainingOrders)} orders still needed`
-        + (seg.extraFFNeeded !== undefined ? ` &mdash; needs ~${fmtNum(seg.extraFFNeeded)} more footfall
-        (walk-ins/outbound calls) at the current ${fmtPct(seg.currentConversion)} conversion rate` : '') + `</div>`;
+      convLine += ` &middot; even at 100% conversion, projected footfall only covers ~${fmtNum(seg.projectedFFRemaining)}
+        of the ${fmtNum(seg.remainingOrders)} bills still needed`
+        + (seg.extraFFNeeded !== undefined ? ` (needs ~${fmtNum(seg.extraFFNeeded)} more footfall)` : '');
     } else if(seg.requiredConversion !== undefined){
-      convLine += `<div style="font-size:13px; margin-top:4px;">
-        Conversion needed on ~${fmtNum(seg.projectedFFRemaining)} projected visitors:
-        <b class="bsc-mono" style="color:var(--brass);">${fmtPct(seg.requiredConversion)}</b></div>`;
+      convLine += ` &middot; conversion needed on remaining days: ${fmtPct(seg.requiredConversion)}`;
     }
+    convLine += `</div>`;
   }
 
-  const hoAov = seg.hoTargetAOV ? `<span style="color:var(--text-mute); font-size:12px; margin-left:8px;">
-    (HO target AOV: ${fmtINR(seg.hoTargetAOV)})</span>` : '';
+  const aovTile = `<div style="background:var(--panel2); border-radius:8px; padding:10px 14px;">
+      <div style="font-size:11px; color:var(--text-mute);">AOV &mdash; achieved / target</div>
+      <div style="margin-top:2px;">
+        <span class="bsc-mono" style="font-size:19px; font-weight:700;">${fmtINR(seg.currentAOV)}</span>
+        <span style="color:var(--text-mute); font-size:13px;"> / </span>
+        <span class="bsc-mono" style="font-size:15px; color:var(--brass);">${fmtINR(seg.hoTargetAOV)}</span>
+      </div>
+    </div>`;
+  const billsTile = `<div style="background:var(--panel2); border-radius:8px; padding:10px 14px;">
+      <div style="font-size:11px; color:var(--text-mute);">Bills &mdash; achieved / target</div>
+      <div style="margin-top:2px;">
+        <span class="bsc-mono" style="font-size:19px; font-weight:700;">${fmtNum(seg.achievedBills)}</span>
+        <span style="color:var(--text-mute); font-size:13px;"> / </span>
+        <span class="bsc-mono" style="font-size:15px; color:var(--brass);">${fmtNum(seg.targetOrders)}</span>
+      </div>
+    </div>`;
 
   return `<div style="background:var(--panel); border-radius:10px; padding:16px 18px; margin-bottom:14px; border-left:3px solid var(--brass-dim);">
-    <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">${label}</div>
-    <div style="font-size:13px; color:var(--text-dim);">
-      Target: <b class="bsc-mono">${fmtINR(seg.targetRev)}</b> across <b class="bsc-mono">${fmtNum(seg.targetOrders)}</b> orders
-      &nbsp;&middot;&nbsp; Achieved: <b class="bsc-mono">${fmtINR(seg.achievedRev)}</b> across <b class="bsc-mono">${fmtNum(seg.achievedBills)}</b> orders
-      ${seg.currentAOV ? `(AOV <b class="bsc-mono">${fmtINR(seg.currentAOV)}</b>)` : ''}${hoAov}
+    <div style="font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;">${label}</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      ${aovTile}
+      ${billsTile}
+    </div>
+    <div style="font-size:12px; color:var(--text-mute); margin-top:8px;">
+      Revenue: <b class="bsc-mono" style="color:var(--text-dim);">${fmtINR(seg.achievedRev)}</b> achieved of
+      <b class="bsc-mono" style="color:var(--text-dim);">${fmtINR(seg.targetRev)}</b> target
     </div>
     ${statusLine}
     ${convLine}

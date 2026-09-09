@@ -137,9 +137,10 @@ def build_briefing(store, days_elapsed, days_remaining, achieved, target, ff):
         cur_aov = (rev_a / orders_a) if orders_a else None
 
         lines.append(f"{label} CUSTOMERS")
-        lines.append(f"  Target: {fmt_inr(rev_t)} across {orders_t:.0f} orders  |  "
-                      f"Achieved: {fmt_inr(rev_a)} across {orders_a:.0f} orders"
-                      + (f" (AOV {fmt_inr(cur_aov)})" if cur_aov else ""))
+        lines.append(f"  AOV (achieved/target): {fmt_inr(cur_aov) if cur_aov else 'n/a'} / "
+                      f"{fmt_inr(rev_t/orders_t) if orders_t else 'n/a'}")
+        lines.append(f"  Bills (achieved/target): {orders_a:.0f} / {orders_t:.0f}")
+        lines.append(f"  Revenue: {fmt_inr(rev_a)} achieved of {fmt_inr(rev_t)} target")
 
         if rev_t == 0 and rev_a == 0:
             lines.append("  No target set for this segment this month")
@@ -156,6 +157,7 @@ def build_briefing(store, days_elapsed, days_remaining, achieved, target, ff):
             lines.append(f"  Order-count target already hit, but still {fmt_inr(rev_rem)} short on revenue "
                           f"- needs extra orders beyond target, or a higher AOV on the ones already counted")
 
+        # Footfall/conversion is supporting context, not the headline -- kept to one terse line.
         ff_key = 'new' if key == 'new' else 'rep'
         ff_days = ff[f'{ff_key}_ff_days']
         ff_achieved = ff[f'{ff_key}_ff']
@@ -164,30 +166,26 @@ def build_briefing(store, days_elapsed, days_remaining, achieved, target, ff):
             proj_ff_rem = avg_daily_ff * days_remaining
             cur_conv = orders_a / ff_achieved if ff_achieved else None
             if cur_conv is not None and cur_conv > 1.0:
-                lines.append(f"  Footfall MTD: {ff_achieved:.0f} ({avg_daily_ff:.1f}/day avg) - more orders than "
-                              f"recorded footfall, so this store's footfall isn't being logged reliably this month; "
-                              f"skipping conversion figures")
+                lines.append(f"  (Footfall MTD {ff_achieved:.0f} - more orders than recorded footfall, so this "
+                              f"store's footfall isn't being logged reliably this month; conversion skipped)")
                 lines.append("")
                 continue
-            lines.append(f"  Footfall MTD: {ff_achieved:.0f} ({avg_daily_ff:.1f}/day avg)  |  "
-                          f"Conversion so far: {fmt_pct(cur_conv) if cur_conv is not None else 'n/a'}")
+            note = f"  (Footfall MTD {ff_achieved:.0f} ({avg_daily_ff:.1f}/day) - conversion so far " \
+                   f"{fmt_pct(cur_conv) if cur_conv is not None else 'n/a'}"
             if orders_rem > 0 and proj_ff_rem > 0:
                 req_conv = orders_rem / proj_ff_rem
                 if req_conv <= 1.0:
-                    lines.append(f"  Conversion needed on ~{proj_ff_rem:.0f} projected visitors over remaining days: "
-                                  f"{fmt_pct(req_conv)}")
+                    note += f" - conversion needed: {fmt_pct(req_conv)}"
                 else:
-                    # Even 100% conversion on the current footfall trend can't close the gap --
-                    # the real ask is more footfall (walk-ins / outbound calls), not better conversion.
                     extra_ff_needed = (orders_rem / cur_conv - proj_ff_rem) if cur_conv else None
-                    lines.append(f"  Even at 100% conversion, projected footfall only supports "
-                                  f"~{proj_ff_rem:.0f} of the {orders_rem:.0f} orders needed - "
-                                  + (f"needs ~{extra_ff_needed:.0f} more footfall (walk-ins/outbound calls) "
-                                     f"at the current {fmt_pct(cur_conv)} conversion rate to close the gap"
-                                     if extra_ff_needed is not None else
-                                     "needs more footfall (walk-ins/outbound calls), not just better conversion"))
+                    note += f" - even at 100% conversion, projected footfall only covers ~{proj_ff_rem:.0f} of the " \
+                            f"{orders_rem:.0f} bills still needed"
+                    if extra_ff_needed is not None:
+                        note += f" (needs ~{extra_ff_needed:.0f} more footfall)"
+            note += ")"
+            lines.append(note)
         else:
-            lines.append("  Footfall data not available for this store this month")
+            lines.append("  (Footfall data not available for this store this month)")
 
         lines.append("")
 
