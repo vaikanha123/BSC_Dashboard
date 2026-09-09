@@ -126,21 +126,20 @@ def load_footfall(path, cutoff_date):
 
 
 def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_remaining, ho_aov, ho_bills=None):
-    # The Daywise Targets file's bill-count column (orders_t) and this store's separately-stated
-    # AOV target (ho_aov) are supposed to multiply out to the same revenue target. When they
-    # don't, Daywise's bill-count column is the unreliable one -- and the "Targets for <Mon>.xlsx"
-    # file's own New Bills/Repeat Bill column (ho_bills), paired with its own AOV Target, IS
-    # reliable: for Ambience Vasant Kunj, New AOV Target (Rs11,514) x New Bills (250) = Rs28,78,500,
-    # matching the store's overall Rs29,00,000 target almost exactly, whereas Daywise's New orders
-    # column (270) implies an AOV of just Rs5,195. Confirmed with Vaibhav on 2026-09-09 -- when
-    # this mismatch shows up, override both the revenue and bill-count target with this file's own
-    # internally-consistent pair rather than trusting Daywise's bill-count column.
-    implied_target_aov = (rev_t / orders_t) if orders_t else None
-    target_orders_unreliable = bool(
-        implied_target_aov and ho_aov and (implied_target_aov / ho_aov < 0.65 or implied_target_aov / ho_aov > 1.5))
-    if target_orders_unreliable and ho_aov and ho_bills:
+    # Two independently-confirmed sources, each trusted for what it actually states -- don't try
+    # to make them reconcile with each other:
+    #  - Revenue target (rev_t) = Daywise Targets file. Confirmed correct by Vaibhav's own
+    #    store-by-store revenue table on 2026-09-09 (matched exactly).
+    #  - Bill-count target (ho_bills) = "Targets for <Mon>.xlsx"'s own New Bills/Repeat Bill
+    #    column. Confirmed correct for Ambience Vasant Kunj (250, not Daywise's own 270 orders
+    #    column) on 2026-09-09 -- prefer it over Daywise's bill-count column when available.
+    #  - AOV Target (ho_aov), from the same file, is a separate reference figure shown alongside
+    #    the calculated required AOV. It is NOT assumed to multiply out with rev_t or ho_bills --
+    #    an earlier attempt to "reconcile" it by overriding rev_t when it didn't match was wrong
+    #    and got corrected; a required AOV far from ho_aov is a real signal (this store's revenue
+    #    target implies a different average ticket than its stated AOV target), not a data bug.
+    if ho_bills:
         orders_t = ho_bills
-        rev_t = ho_bills * ho_aov
 
     rev_rem = rev_t - rev_a
     orders_rem = orders_t - orders_a
@@ -152,7 +151,6 @@ def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_r
         'hoTargetAOV': ho_aov,
         'remainingRev': round(rev_rem, 2), 'remainingOrders': orders_rem,
         'noTarget': (rev_t == 0 and rev_a == 0),
-        'effectiveTargetOrders': orders_t,
     }
 
     if rev_rem <= 0 and not block['noTarget']:
@@ -163,8 +161,6 @@ def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_r
         block['status'] = 'on-track'
     else:
         block['status'] = 'orders-hit-revenue-short'
-
-    block['effectiveOrdersRem'] = orders_rem
 
     if ff_days > 0 and ff_achieved > 0:
         avg_daily_ff = ff_achieved / ff_days
