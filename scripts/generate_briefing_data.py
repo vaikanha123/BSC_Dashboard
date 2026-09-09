@@ -54,7 +54,13 @@ def load_targets(path):
 
 
 def load_aov_targets(path):
-    """Store -> {new_aov, rep_aov}, keyed by canonical REGION_MAP name via AOV_TARGET_STORE_MAP."""
+    """Store -> {new_aov, rep_aov, new_bills, rep_bills}, keyed by canonical REGION_MAP name via
+    AOV_TARGET_STORE_MAP. This file's own New Bills/Repeat Bill columns, combined with its own AOV
+    Target columns, turn out to be the internally-consistent basis for a segment's revenue target
+    when the Daywise Targets file's bill-count column doesn't reconcile with the AOV target (see
+    segment_block) -- e.g. for Ambience Vasant Kunj, New AOV Target (11,514) x New Bills (250) =
+    28,78,500, which lines up with the store's overall Rs29,00,000 target; Daywise's own New orders
+    column (270) does not. Confirmed with Vaibhav on 2026-09-09."""
     wb = openpyxl.load_workbook(path, data_only=True)
     ws = wb['Sheet1'] if 'Sheet1' in wb.sheetnames else wb[wb.sheetnames[0]]
     out = {}
@@ -66,7 +72,7 @@ def load_aov_targets(path):
         if canonical is None:
             print(f"[warn] '{store}' in AOV targets file has no entry in AOV_TARGET_STORE_MAP -- skipped")
             continue
-        out[canonical] = {'new_aov': row[4], 'rep_aov': row[5]}
+        out[canonical] = {'new_aov': row[4], 'rep_aov': row[5], 'new_bills': row[6], 'rep_bills': row[7]}
     return out
 
 
@@ -119,57 +125,46 @@ def load_footfall(path, cutoff_date):
     return blocks['New FF'], blocks['Repeat FF'], len(days_seen['New FF']), len(days_seen['Repeat FF'])
 
 
-def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_remaining, ho_aov):
+def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_remaining, ho_aov, ho_bills=None):
+    # The Daywise Targets file's bill-count column (orders_t) and this store's separately-stated
+    # AOV target (ho_aov) are supposed to multiply out to the same revenue target. When they
+    # don't, Daywise's bill-count column is the unreliable one -- and the "Targets for <Mon>.xlsx"
+    # file's own New Bills/Repeat Bill column (ho_bills), paired with its own AOV Target, IS
+    # reliable: for Ambience Vasant Kunj, New AOV Target (Rs11,514) x New Bills (250) = Rs28,78,500,
+    # matching the store's overall Rs29,00,000 target almost exactly, whereas Daywise's New orders
+    # column (270) implies an AOV of just Rs5,195. Confirmed with Vaibhav on 2026-09-09 -- when
+    # this mismatch shows up, override both the revenue and bill-count target with this file's own
+    # internally-consistent pair rather than trusting Daywise's bill-count column.
+    implied_target_aov = (rev_t / orders_t) if orders_t else None
+    target_orders_unreliable = bool(
+        implied_target_aov and ho_aov and (implied_target_aov / ho_aov < 0.65 or implied_target_aov / ho_aov > 1.5))
+    if target_orders_unreliable and ho_aov and ho_bills:
+        orders_t = ho_bills
+        rev_t = ho_bills * ho_aov
+
     rev_rem = rev_t - rev_a
     orders_rem = orders_t - orders_a
     cur_aov = (rev_a / orders_a) if orders_a else None
 
     block = {
-        'targetRev': rev_t, 'targetOrders': orders_t, 'achievedRev': round(rev_a, 2), 'achievedBills': orders_a,
+        'targetRev': round(rev_t, 2), 'targetOrders': orders_t, 'achievedRev': round(rev_a, 2), 'achievedBills': orders_a,
         'currentAOV': round(cur_aov, 2) if cur_aov is not None else None,
         'hoTargetAOV': ho_aov,
         'remainingRev': round(rev_rem, 2), 'remainingOrders': orders_rem,
         'noTarget': (rev_t == 0 and rev_a == 0),
+        'effectiveTargetOrders': orders_t,
     }
-
-    # The bill-count target (orders_t, from the Daywise Targets file) and the AOV target (ho_aov,
-    # from the separate "Targets for <Mon>.xlsx" file) are supposed to be the two halves of the
-    # same revenue target (rev_t ~= orders_t * ho_aov). When a store's bill-count target implies
-    # an AOV far off from its stated AOV target, the bill-count target itself is unreliable --
-    # dividing remaining revenue by it produces a nonsensical "required AOV" (seen for real on
-    # Ambience Vasant Kunj: implied target AOV Rs5,195 vs HO's stated Rs11,514). In that case,
-    # anchor on the AOV target instead: derive bills needed from remaining revenue / AOV target,
-    # rather than trusting the target file's own bill-count column.
-    implied_target_aov = (rev_t / orders_t) if orders_t else None
-    target_orders_unreliable = bool(
-        implied_target_aov and ho_aov and (implied_target_aov / ho_aov < 0.65 or implied_target_aov / ho_aov > 1.5))
-    block['targetOrdersUnreliable'] = target_orders_unreliable
-    if target_orders_unreliable:
-        block['impliedTargetAOV'] = round(implied_target_aov, 2)
-
-    # effectiveTargetOrders is what the Bills tile displays -- must always agree with whichever
-    # order-count figure the "needed" math below actually used, so the tile and the headline never
-    # contradict each other (e.g. tile says target 270 while headline implies a target of 114).
-    block['effectiveTargetOrders'] = orders_t
 
     if rev_rem <= 0 and not block['noTarget']:
         block['status'] = 'achieved'
         block['surplus'] = round(-rev_rem, 2)
-    elif target_orders_unreliable and ho_aov and rev_rem > 0:
-        block['requiredAOV'] = ho_aov
-        block['altOrdersNeeded'] = round(rev_rem / ho_aov)
-        block['effectiveTargetOrders'] = orders_a + block['altOrdersNeeded']
-        block['status'] = 'on-track-anchored'
     elif orders_rem > 0 and rev_rem > 0:
         block['requiredAOV'] = round(rev_rem / orders_rem, 2)
         block['status'] = 'on-track'
     else:
         block['status'] = 'orders-hit-revenue-short'
 
-    # Footfall/conversion math below should agree with whichever "orders still needed" figure
-    # the headline actually used -- otherwise the footnote quotes a stale, inconsistent number.
-    effective_orders_rem = block.get('altOrdersNeeded', orders_rem) if target_orders_unreliable else orders_rem
-    block['effectiveOrdersRem'] = effective_orders_rem
+    block['effectiveOrdersRem'] = orders_rem
 
     if ff_days > 0 and ff_achieved > 0:
         avg_daily_ff = ff_achieved / ff_days
@@ -187,15 +182,15 @@ def segment_block(rev_t, orders_t, rev_a, orders_a, ff_achieved, ff_days, days_r
         else:
             block['currentConversion'] = round(cur_conv, 4) if cur_conv is not None else None
             block['projectedFFRemaining'] = round(proj_ff_rem, 1)
-            if effective_orders_rem > 0 and proj_ff_rem > 0:
-                req_conv = effective_orders_rem / proj_ff_rem
+            if orders_rem > 0 and proj_ff_rem > 0:
+                req_conv = orders_rem / proj_ff_rem
                 if req_conv <= 1.0:
                     block['requiredConversion'] = round(req_conv, 4)
                     block['conversionImpossible'] = False
                 else:
                     block['conversionImpossible'] = True
                     if cur_conv:
-                        block['extraFFNeeded'] = round(effective_orders_rem / cur_conv - proj_ff_rem, 1)
+                        block['extraFFNeeded'] = round(orders_rem / cur_conv - proj_ff_rem, 1)
     else:
         block['ffAvailable'] = False
 
@@ -236,14 +231,16 @@ def main():
 
         new_block = segment_block(
             t['new_rev'], t['new_orders'], float(new_sub['Revenue'].sum()), int(new_sub['Order name'].nunique()),
-            new_ff.get(store, 0.0), new_ff_days, days_remaining, ho.get('new_aov'))
+            new_ff.get(store, 0.0), new_ff_days, days_remaining, ho.get('new_aov'), ho.get('new_bills'))
         rep_block = segment_block(
             t['rep_rev'], t['rep_orders'], float(rep_sub['Revenue'].sum()), int(rep_sub['Order name'].nunique()),
-            rep_ff.get(store, 0.0), rep_ff_days, days_remaining, ho.get('rep_aov'))
+            rep_ff.get(store, 0.0), rep_ff_days, days_remaining, ho.get('rep_aov'), ho.get('rep_bills'))
 
         stores_out[store] = {
             'region': REGION_MAP[store],
-            'monthTarget': round(t['new_rev'] + t['rep_rev'], 2),
+            # Sum the two segments' own (possibly-overridden) targets rather than re-reading
+            # Daywise's raw new_rev+rep_rev, so this always agrees with what the segment cards show.
+            'monthTarget': round(new_block['targetRev'] + rep_block['targetRev'], 2),
             'achievedTotal': round(float(sub['Revenue'].sum()), 2),
             'new': new_block, 'rep': rep_block,
         }
