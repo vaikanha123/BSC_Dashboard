@@ -74,10 +74,16 @@ COMPLIANCE_STORE_MAP = {
 }
 
 
-def load_targets(path):
+def load_targets(path, cutoff_date):
+    """Returns (totals, todate): totals is the full-month per-store target (used for the "rest of
+    month" required-AOV/bills math, unchanged); todate is the target summed only through
+    cutoff_date -- the correct denominator for "Target vs Achievement" on the briefing, which must
+    compare like-for-like (target-to-date vs achieved-to-date), not a mid-month achieved figure
+    against the full month's target."""
     wb = openpyxl.load_workbook(path, data_only=True)
     ws = wb['Sheet1'] if 'Sheet1' in wb.sheetnames else wb[wb.sheetnames[0]]
     totals = {}
+    todate = {}
     for row in ws.iter_rows(min_row=2, values_only=True):
         store, date, new_rev, rep_rev, new_orders, rep_orders = row[0], row[1], row[2], row[3], row[4], row[5]
         if store is None or date is None:
@@ -87,7 +93,10 @@ def load_targets(path):
         t['rep_rev'] += rep_rev or 0
         t['new_orders'] += new_orders or 0
         t['rep_orders'] += rep_orders or 0
-    return totals
+        d = date.date() if hasattr(date, 'date') else date
+        if d <= cutoff_date:
+            todate[store] = todate.get(store, 0.0) + (new_rev or 0) + (rep_rev or 0)
+    return totals, todate
 
 
 def load_aov_targets(path):
@@ -363,7 +372,7 @@ def main():
     days_in_month = calendar.monthrange(last_day.year, last_day.month)[1]
     days_remaining = days_in_month - days_elapsed
 
-    targets = load_targets(args.targets)
+    targets, targets_todate = load_targets(args.targets, last_day)
     new_ff, rep_ff, new_ff_days, rep_ff_days = load_footfall(args.footfall, last_day)
     aov_targets = load_aov_targets(args.aov_targets) if args.aov_targets else {}
     compliance = load_compliance(args.compliance) if args.compliance else {}
@@ -406,6 +415,7 @@ def main():
             # Sum the two segments' own (possibly-overridden) targets rather than re-reading
             # Daywise's raw new_rev+rep_rev, so this always agrees with what the segment cards show.
             'monthTarget': round(new_block['targetRev'] + rep_block['targetRev'], 2),
+            'monthTargetToDate': round(targets_todate.get(store, 0.0), 2),
             'achievedTotal': round(float(sub['Revenue'].sum()), 2),
             'new': new_block, 'rep': rep_block,
             'prevMonth': prev_month,
