@@ -177,6 +177,20 @@ const COHORT_CONFIGS = {
   },
 };
 
+// SM Cohort: 7 hand-picked stores tracked for the SM (Store Manager) initiative -- NPS, audit
+// score, and AOV, September vs August. A store-based cohort, independent of the stylist-based
+// Training Cohorts above -- no "rest of network" comparison, just this group's own trend.
+const SM_COHORT_STORES = ["Juhu Store", "PMC Viman Nagar Pune", "Phoenix Marketcity, Whitefield", "Express Avenue", "Gurugram", "Vegas Dwarka", "Mall of India, Noida"];
+// August 2026 NPS per store, from the last NPS refresh before the Sep Week 1 survey overwrote
+// SEED_NPS (commit 7f2b14e) -- kept here since SEED_NPS itself is replaced wholesale each month
+// and doesn't retain prior months. A store with no August survey responses is omitted, not zeroed.
+const AUG_NPS_BYSTORE = {"Juhu Store": 50.0, "PMC Viman Nagar Pune": 70.0, "Phoenix Marketcity, Whitefield": 90.5, "Express Avenue": 75.0, "Gurugram": 69.6, "Vegas Dwarka": 42.9, "Mall of India, Noida": 43.8};
+// Audit score (% pass) per store, August and September 2026. TODO: fill in from the user's audit
+// scoring sheet once shared -- no source for these exists anywhere in the repo or its history, so
+// they're left null (renders as "—") rather than fabricated.
+const AUG_AUDIT_BYSTORE = {"Juhu Store": null, "PMC Viman Nagar Pune": null, "Phoenix Marketcity, Whitefield": null, "Express Avenue": null, "Gurugram": null, "Vegas Dwarka": null, "Mall of India, Noida": null};
+const SEP_AUDIT_BYSTORE = {"Juhu Store": null, "PMC Viman Nagar Pune": null, "Phoenix Marketcity, Whitefield": null, "Express Avenue": null, "Gurugram": null, "Vegas Dwarka": null, "Mall of India, Noida": null};
+
 const STORE_LOOKUP = {}; // pos_name -> target record
 TARGETS.forEach(t => STORE_LOOKUP[t.pos_name] = t);
 
@@ -1037,6 +1051,7 @@ function render(){
     {id:'stylists', label:'Stylists', icon:'ti-user-star'},
     {id:'cohort1', label:'Training Cohort 1', icon:'ti-school'},
     {id:'cohort2', label:'Training Cohort 2', icon:'ti-school'},
+    {id:'smcohort', label:'SM Cohort', icon:'ti-building-store'},
   ];
   tabs.forEach(t => {
     const b = document.createElement('button');
@@ -1072,6 +1087,7 @@ function render(){
   if(state.activeTab === 'stylists') renderStylists(body, days);
   if(state.activeTab === 'cohort1') renderTrainingCohort(body, days, COHORT_CONFIGS.cohort1);
   if(state.activeTab === 'cohort2') renderTrainingCohort(body, days, COHORT_CONFIGS.cohort2);
+  if(state.activeTab === 'smcohort') renderSMCohort(body, days);
 
   attachHandlers();
 }
@@ -1830,6 +1846,133 @@ function renderTrainingCohort(body, days, cfg){
   note.textContent = cfg.cohortLabel + ' is the same ' + TRAINING_COHORT.length + '-stylist roster tracked in the separate Stylist Weekly Tracker. ' +
     'This view recalculates from whatever date range you\u2019ve selected above, so it updates automatically as new sales data is added \u2014 no separate upload needed. ' +
     baseFullLbl + ' baseline % shows growth for each cohort since the month the training program\u2019s comparison point was set.';
+  body.appendChild(note);
+}
+
+function renderSMCohort(body, days){
+  const cmk = currentMonthKey();
+
+  // Per-store September figures, live from whatever date range is currently selected.
+  const sepRev = {}, sepBills = {};
+  SM_COHORT_STORES.forEach(s => { sepRev[s] = 0; sepBills[s] = 0; });
+  days.forEach(dk => {
+    const revs = state.days[dk] || {};
+    const bills = state.billDays[dk] || {};
+    SM_COHORT_STORES.forEach(s => {
+      sepRev[s] += revs[s] || 0;
+      sepBills[s] += bills[s] || 0;
+    });
+  });
+
+  const rows = SM_COHORT_STORES.map(store => {
+    const sepAov = sepBills[store] ? sepRev[store]/sepBills[store] : null;
+    const augAov = BASELINE.prevMonthStoreAOV && BASELINE.prevMonthStoreAOV[store] ? BASELINE.prevMonthStoreAOV[store].aov : null;
+    const aovDelta = (sepAov !== null && augAov) ? (sepAov-augAov)/augAov*100 : null;
+    const npsSep = state.npsData && state.npsData.byStore ? state.npsData.byStore[store] : undefined;
+    return {
+      store, region: STORE_LOOKUP[store] ? STORE_LOOKUP[store].region : '-',
+      sepRev: sepRev[store], sepBills: sepBills[store], sepAov, augAov, aovDelta,
+      npsSep, npsAug: AUG_NPS_BYSTORE[store],
+      auditSep: SEP_AUDIT_BYSTORE[store], auditAug: AUG_AUDIT_BYSTORE[store],
+    };
+  });
+
+  const head = document.createElement('div');
+  head.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
+  head.textContent = 'SM Cohort (' + SM_COHORT_STORES.length + ' stores) — ' + cmk;
+  body.appendChild(head);
+
+  // ---- Cohort rollup ----
+  const totalSepRev = rows.reduce((a,r) => a+r.sepRev, 0);
+  const totalSepBills = rows.reduce((a,r) => a+r.sepBills, 0);
+  const pooledSepAov = totalSepBills ? totalSepRev/totalSepBills : 0;
+  function avg(vals){
+    const v = vals.filter(x => x !== null && x !== undefined);
+    return v.length ? v.reduce((a,b) => a+b, 0)/v.length : null;
+  }
+  // August AOV is a simple average of each store's AOV, not a revenue-weighted pool like September --
+  // per-store August bill counts aren't retained on this dashboard, so true pooling isn't possible for it.
+  const avgAugAov = avg(rows.map(r => r.augAov));
+  const pooledAovDelta = avgAugAov ? (pooledSepAov-avgAugAov)/avgAugAov*100 : null;
+  const avgNpsAug = avg(rows.map(r => r.npsAug));
+  const avgNpsSep = avg(rows.map(r => r.npsSep));
+  const npsDelta = (avgNpsAug !== null && avgNpsSep !== null) ? (avgNpsSep-avgNpsAug) : null;
+  const avgAuditAug = avg(rows.map(r => r.auditAug));
+  const avgAuditSep = avg(rows.map(r => r.auditSep));
+  const auditDelta = (avgAuditAug !== null && avgAuditSep !== null) ? (avgAuditSep-avgAuditAug) : null;
+
+  function fmtDeltaPct(d){
+    if(d === null || d === undefined) return '<span style="color:var(--text-mute);">—</span>';
+    return `<span style="color:${d>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${d>=0?'+':''}${d.toFixed(1)}%</span>`;
+  }
+  function fmtDeltaPts(d){
+    if(d === null || d === undefined) return '<span style="color:var(--text-mute);">—</span>';
+    return `<span style="color:${d>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${d>=0?'+':''}${d.toFixed(1)} pts</span>`;
+  }
+
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-bottom:10px;';
+  grid.innerHTML = `
+    <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
+      <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort AOV — ${cmk}</div>
+      <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${fmtINR(pooledSepAov)}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAugAov ? fmtINR(avgAugAov) : '—'} · ${fmtDeltaPct(pooledAovDelta)}</div>
+    </div>
+    <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
+      <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort NPS — avg across stores</div>
+      <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${avgNpsSep!==null ? avgNpsSep.toFixed(1) : '—'}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgNpsAug!==null ? avgNpsAug.toFixed(1) : '—'} · ${fmtDeltaPts(npsDelta)}</div>
+    </div>
+    <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
+      <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort Audit Score — avg across stores</div>
+      <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${avgAuditSep!==null ? avgAuditSep.toFixed(1)+'%' : '—'}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAuditAug!==null ? avgAuditAug.toFixed(1)+'%' : '— (awaiting data)'} · ${fmtDeltaPts(auditDelta)}</div>
+    </div>
+  `;
+  body.appendChild(grid);
+
+  const rollupNote = document.createElement('div');
+  rollupNote.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:24px; line-height:1.6;';
+  rollupNote.textContent = 'Cohort AOV is pooled (sum revenue ÷ sum bills) for September, live from whatever date range is selected above; August is a simple average of each store’s AOV, since per-store August bill counts aren’t retained on this dashboard for a true revenue-weighted pool. NPS and Audit Score are simple averages across the cohort’s stores in each month — a store with no data that period is excluded from the average rather than counted as zero.';
+  body.appendChild(rollupNote);
+
+  // ---- Per-store table ----
+  const tableHead = document.createElement('div');
+  tableHead.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
+  tableHead.textContent = 'By store';
+  body.appendChild(tableHead);
+
+  const table = document.createElement('table');
+  table.style.cssText = 'font-size:13px;';
+  function dash(v, decimals, suffix){
+    if(v === null || v === undefined) return '<td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">—</td>';
+    return `<td style="padding:8px 10px; text-align:right; font-weight:600;" class="bsc-mono">${v.toFixed(decimals)}${suffix||''}</td>`;
+  }
+  let tRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
+    '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
+    '<td style="padding:6px 10px; text-align:right;">NPS Aug</td><td style="padding:6px 10px; text-align:right;">NPS Sep</td>' +
+    '<td style="padding:6px 10px; text-align:right;">Audit Aug</td><td style="padding:6px 10px; text-align:right;">Audit Sep</td>' +
+    '<td style="padding:6px 10px; text-align:right;">AOV Aug</td><td style="padding:6px 10px; text-align:right;">AOV Sep</td>' +
+    '<td style="padding:6px 10px; text-align:right;">AOV Δ</td></tr>';
+  rows.forEach(r => {
+    tRows += `<tr style="border-top:1px solid var(--line);">
+      <td style="padding:8px 10px; font-weight:500;">${r.store}</td>
+      <td style="padding:8px 10px; color:var(--text-mute);">${r.region}</td>
+      ${dash(r.npsAug, 1)}
+      ${dash(r.npsSep, 1)}
+      ${dash(r.auditAug, 1, '%')}
+      ${dash(r.auditSep, 1, '%')}
+      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${r.augAov ? fmtINR(r.augAov) : '—'}</td>
+      <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.sepAov !== null ? fmtINR(r.sepAov) : '—'}</td>
+      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtDeltaPct(r.aovDelta)}</td>
+    </tr>`;
+  });
+  table.innerHTML = tRows;
+  body.appendChild(table);
+
+  const note = document.createElement('div');
+  note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:16px; line-height:1.6;';
+  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Score columns are awaiting data — they’ll populate once the store audit scoring sheet is shared.';
   body.appendChild(note);
 }
 
