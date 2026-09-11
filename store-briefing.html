@@ -280,16 +280,50 @@ function scoresSection(d){
     <div style="font-size:11px; color:var(--text-mute); margin-top:6px; font-style:italic;">Customer Calling Score is awaiting a connected calling tracker.</div>`;
 }
 
+// TESTING: detailed per-stylist pace-projected insight (see stylistPaceInsight below) is gated to
+// this list of stores so it can be reviewed before rolling out network-wide. Once approved, either
+// add more store names or just make stylistSection always use the detailed branch.
+const STYLIST_INSIGHT_TEST_STORES = ['Jaipur Store'];
+
+// No per-stylist target exists anywhere in the pipeline (only store-level), so there's no formal
+// "bills needed" to project against. Instead: assume this stylist keeps selling at their own
+// current bills/day pace for the rest of the month, project how many more bills that implies, and
+// solve for the AOV those projected bills would need to average so that the stylist's FULL-MONTH
+// AOV (already-achieved + projected) reaches the store's own HO AOV target for that segment. This
+// mirrors the store-level "needed for the rest of the month: N bills averaging Rs.X AOV" math one
+// level down, using a pace projection in place of the missing stylist target.
+function stylistPaceInsight(seg, targetAov){
+  if(!seg || !seg.bills || !targetAov || seg.aov >= targetAov) return null;
+  const avgPerDay = seg.bills / BRIEFING_DATA.daysElapsed;
+  const projRemaining = Math.round(avgPerDay * BRIEFING_DATA.daysRemaining);
+  if(projRemaining <= 0){
+    return {text: `At the current pace (~${avgPerDay.toFixed(2)}/day), too few bills are projected over the remaining ${BRIEFING_DATA.daysRemaining} day(s) to meaningfully project a required AOV.`, level:'mute'};
+  }
+  const desiredTotalRev = targetAov * (seg.bills + projRemaining);
+  const revNeeded = desiredTotalRev - seg.rev;
+  if(revNeeded <= 0){
+    return {text: `At the current pace (~${avgPerDay.toFixed(2)}/day, ~${projRemaining} more bills projected), the month's AOV should reach target without needing a higher AOV on those bills.`, level:'good'};
+  }
+  const requiredAov = revNeeded / projRemaining;
+  const stretch = requiredAov > seg.aov * 1.75; // more than 75% above their own current AOV -- flag as a big ask
+  return {
+    text: `At the current pace (~${avgPerDay.toFixed(2)} bills/day), ~${projRemaining} more bills are projected over the remaining ${BRIEFING_DATA.daysRemaining} day(s) &mdash;
+      they'd need to average <b class="bsc-mono">${fmtINR(requiredAov)}</b> AOV to bring the month's AOV up to the ${fmtINR(targetAov)} target${stretch ? ' (a big jump from their current AOV -- likely needs coaching/upselling support, not just volume)' : ''}.`,
+    level: stretch ? 'bad' : 'warn',
+  };
+}
+
 // No per-stylist target exists anywhere in the pipeline (only store-level), so the only grounded
 // comparison is each stylist's own AOV against the store's HO AOV target for that segment -- same
 // number the New/Repeat Customers sections above already judge the store by. Color-code the AOV
 // itself (green/red) rather than adding a separate delta column, and name the underperformers in
 // a one-line callout so the manager has someone concrete to coach, not just a wall of numbers.
-function stylistSection(d){
+function stylistSection(d, store){
   const stylists = d.stylists || [];
   if(!stylists.length) return '';
   const newTarget = d.new && d.new.hoTargetAOV;
   const repTarget = d.rep && d.rep.hoTargetAOV;
+  const detailed = STYLIST_INSIGHT_TEST_STORES.includes(store);
 
   const segCell = (seg, target) => {
     if(!seg || !seg.bills) return `<span style="color:var(--text-mute);">&mdash;</span>`;
@@ -306,16 +340,34 @@ function stylistSection(d){
       <td style="padding:7px 8px; text-align:right; font-weight:600;" class="bsc-mono">${fmtINR(s.totalRev)}</td>
     </tr>`).join('');
 
-  const belowNew = newTarget ? stylists.filter(s => s.new && s.new.bills && s.new.aov < newTarget).map(s => s.name) : [];
-  const belowRep = repTarget ? stylists.filter(s => s.rep && s.rep.bills && s.rep.aov < repTarget).map(s => s.name) : [];
-  const callouts = [];
-  if(belowNew.length) callouts.push(`<div style="color:var(--bad); font-size:12px; margin-top:4px;">
-    <i class="ti ti-alert-circle"></i>&nbsp; Below New AOV target (${fmtINR(newTarget)}): <b>${belowNew.join(', ')}</b></div>`);
-  if(belowRep.length) callouts.push(`<div style="color:var(--bad); font-size:12px; margin-top:4px;">
-    <i class="ti ti-alert-circle"></i>&nbsp; Below Repeat AOV target (${fmtINR(repTarget)}): <b>${belowRep.join(', ')}</b></div>`);
+  const belowNew = newTarget ? stylists.filter(s => s.new && s.new.bills && s.new.aov < newTarget) : [];
+  const belowRep = repTarget ? stylists.filter(s => s.rep && s.rep.bills && s.rep.aov < repTarget) : [];
+
+  let calloutsHtml;
+  if(detailed){
+    const levelColor = {good:'var(--good)', warn:'var(--warn)', bad:'var(--bad)', mute:'var(--text-mute)'};
+    const detailBlock = (label, list, target) => list.map(s => {
+      const insight = stylistPaceInsight(label === 'New' ? s.new : s.rep, target);
+      if(!insight) return '';
+      return `<div style="background:var(--panel2); border-radius:8px; padding:10px 12px; margin-top:6px;">
+        <div style="font-size:12.5px; font-weight:600;">${s.name} <span style="color:var(--text-mute); font-weight:400;">&mdash; ${label}</span></div>
+        <div style="font-size:12px; color:${levelColor[insight.level]}; margin-top:3px; line-height:1.6;">${insight.text}</div>
+      </div>`;
+    }).join('');
+    calloutsHtml = `
+      ${belowNew.length ? `<div style="font-size:12px; color:var(--bad); margin-top:4px;"><i class="ti ti-alert-circle"></i>&nbsp; Below New AOV target (${fmtINR(newTarget)}):</div>${detailBlock('New', belowNew, newTarget)}` : ''}
+      ${belowRep.length ? `<div style="font-size:12px; color:var(--bad); margin-top:10px;"><i class="ti ti-alert-circle"></i>&nbsp; Below Repeat AOV target (${fmtINR(repTarget)}):</div>${detailBlock('Repeat', belowRep, repTarget)}` : ''}`;
+  } else {
+    const callouts = [];
+    if(belowNew.length) callouts.push(`<div style="color:var(--bad); font-size:12px; margin-top:4px;">
+      <i class="ti ti-alert-circle"></i>&nbsp; Below New AOV target (${fmtINR(newTarget)}): <b>${belowNew.map(s=>s.name).join(', ')}</b></div>`);
+    if(belowRep.length) callouts.push(`<div style="color:var(--bad); font-size:12px; margin-top:4px;">
+      <i class="ti ti-alert-circle"></i>&nbsp; Below Repeat AOV target (${fmtINR(repTarget)}): <b>${belowRep.map(s=>s.name).join(', ')}</b></div>`);
+    calloutsHtml = callouts.join('');
+  }
 
   return sectionHead('ti-user-star', 'Stylist-wise', 'this store, this month') + `
-    ${callouts.length ? `<div style="margin-bottom:10px;">${callouts.join('')}</div>` : ''}
+    ${calloutsHtml ? `<div style="margin-bottom:10px;">${calloutsHtml}</div>` : ''}
     <div style="overflow-x:auto;">
     <table style="width:100%; border-collapse:collapse; font-size:12.5px;">
       <thead><tr style="color:var(--text-mute); font-size:10.5px; text-transform:uppercase; letter-spacing:.03em;">
@@ -343,7 +395,7 @@ function renderBriefing(store){
     ${newCustomerSection(d)}
     ${repeatCustomerSection(d)}
     ${scoresSection(d)}
-    ${stylistSection(d)}
+    ${stylistSection(d, store)}
     ${sectionHead('ti-notes', 'General Briefing', BRIEFING_CONTENT && BRIEFING_CONTENT.date ? fmtDateNice(BRIEFING_CONTENT.date) : '')}
     ${renderHOContent(store)}
   `;
