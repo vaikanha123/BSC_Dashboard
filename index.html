@@ -147,20 +147,33 @@ const TRAINING_COHORT_2 = ["hiten zakhariya", "nisar mall", "hari krishn sharma"
 const AUG_COHORT_BASELINE_2 = {"rest": {"aov": 14163.0, "asp": 4731.0, "upt": 2.99, "revenue": 114832874.0, "bills": 8108, "units": 24270.0}, "training": {"aov": 11523.56, "asp": 4081.83, "upt": 2.823, "revenue": 13747604.0, "bills": 1193, "units": 3368.0}};
 // Per-stylist August baseline (cohort 2 only), for the "% individually improved" stat.
 const AUG_STYLIST_DETAIL_2 = {"hiten zakhariya": {"aov": 9473.0, "asp": 3332.0, "upt": 2.84}, "nisar mall": {"aov": 8848.0, "asp": 3160.0, "upt": 2.8}, "hari krishn sharma": {"aov": 11209.0, "asp": 4027.0, "upt": 2.78}, "akshay jadhav": {"aov": 13886.0, "asp": 5232.0, "upt": 2.65}, "sharik shaikh": {"aov": 13406.0, "asp": 4920.0, "upt": 2.72}, "sushant more": {"aov": 14221.0, "asp": 4495.0, "upt": 3.16}, "trisha roy": {"aov": 12589.0, "asp": 4408.0, "upt": 2.86}, "krishna kulkarni": {"aov": 9058.0, "asp": 4368.0, "upt": 2.07}, "omkar tambe": {"aov": 9410.0, "asp": 4635.0, "upt": 2.03}, "arif shaikhh": {"aov": 12078.0, "asp": 4529.0, "upt": 2.67}, "neha gaikar": {"aov": 10487.0, "asp": 4089.0, "upt": 2.56}, "yasin sayyed": {"aov": 16045.0, "asp": 5002.0, "upt": 3.21}, "adnan zeri": {"aov": 9276.0, "asp": 2806.0, "upt": 3.31}, "irfan sayed": {"aov": 11689.0, "asp": 3649.0, "upt": 3.2}};
+// Cohort 1's already-closed August, pooled (tracker's BATCH1_RAW[].aug summed, and
+// BATCH1_REST_POOLED.aug). Cohort 1's pooled cards/impact-estimate combine this closed month
+// with the live current month so the comparison covers everything since the July baseline, not
+// just whatever's currently loaded -- unlike cohort 2, which has no closed month between its
+// baseline (August) and the live current month, so there's nothing to combine there.
+const AUG_CLOSED_COHORT1 = {"training": {"aov": 13494.81, "asp": 4517.78, "upt": 2.987, "revenue": 36449470.0, "bills": 2701, "units": 8068.0}, "rest": {"aov": 14015.0, "asp": 4710.0, "upt": 2.98, "revenue": 91632223.0, "bills": 6538, "units": 19455.0}};
 // Config table driving the two Training Cohort tabs -- add a "cohort3" entry here (plus its
 // TRAINING_COHORT_N / baseline / stylist-detail constants above) if a third batch ever starts.
+// `priorClosedMonths` lists already-closed months (after the baseline, before the live current
+// month) whose pooled totals get added to the live period for the pooled cards/impact estimate.
+// At each month transition, add the month that just closed to cohort 1's list here (pull its
+// pooled training/rest totals from the tracker's BATCH1_RAW[].<month>/BATCH1_REST_POOLED.<month>,
+// same way AUG_CLOSED_COHORT1 was built) so the "since baseline" comparison keeps accumulating.
 const COHORT_CONFIGS = {
   cohort1: {
     cohortLabel: 'Training Cohort 1', cohortList: TRAINING_COHORT,
     storeOverrides: {'rahul yadav': 'Kemps Corner'}, // Rahul Yadav moved from Andheri to Kemps Corner between Aug and Sep
     baseline: JULY_COHORT_BASELINE, stylistDetail: JULY_STYLIST_DETAIL,
     baselineLabel: 'Jul', baselineFullLabel: 'July',
+    priorClosedMonths: [{label: 'Aug', training: AUG_CLOSED_COHORT1.training, rest: AUG_CLOSED_COHORT1.rest}],
   },
   cohort2: {
     cohortLabel: 'Training Cohort 2', cohortList: TRAINING_COHORT_2,
     storeOverrides: {},
     baseline: AUG_COHORT_BASELINE_2, stylistDetail: AUG_STYLIST_DETAIL_2,
     baselineLabel: 'Aug', baselineFullLabel: 'August',
+    priorClosedMonths: [],
   },
 };
 
@@ -1615,6 +1628,20 @@ function renderTrainingCohort(body, days, cfg){
     });
   });
 
+  // Pooled cards and the revenue-impact estimate compare against everything since the baseline
+  // month, not just the live current period -- so fold in any already-closed months (cfg.priorClosedMonths)
+  // between the baseline and now. cohort 1 has August in there; cohort 2 has none, so this is a no-op for it.
+  const combinedTotals = {training: {...totals.training}, rest: {...totals.rest}};
+  (cfg.priorClosedMonths || []).forEach(pm => {
+    ['training','rest'].forEach(b => {
+      combinedTotals[b].rev += pm[b].revenue || 0;
+      combinedTotals[b].bills += pm[b].bills || 0;
+      combinedTotals[b].units += pm[b].units || 0;
+    });
+  });
+  const priorLabels = (cfg.priorClosedMonths || []).map(pm => pm.label);
+  const periodLabel = priorLabels.length ? (priorLabels.join('+') + '\u2013' + cmk + ' combined') : cmk;
+
   function metricsFor(t){
     return {
       aov: t.bills ? t.rev/t.bills : 0,
@@ -1622,10 +1649,10 @@ function renderTrainingCohort(body, days, cfg){
       upt: t.bills ? t.units/t.bills : 0,
     };
   }
-  const mTraining = metricsFor(totals.training);
-  const mRest = metricsFor(totals.rest);
+  const mTraining = metricsFor(combinedTotals.training);
+  const mRest = metricsFor(combinedTotals.rest);
 
-  if(totals.training.bills === 0 && totals.rest.bills === 0){
+  if(combinedTotals.training.bills === 0 && combinedTotals.rest.bills === 0){
     const empty = document.createElement('div');
     empty.style.cssText = 'padding:30px 14px; text-align:center; color:var(--text-mute); font-size:13px;';
     empty.textContent = 'No stylist data in the selected range.';
@@ -1635,7 +1662,7 @@ function renderTrainingCohort(body, days, cfg){
 
   const head = document.createElement('div');
   head.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
-  head.textContent = cfg.cohortLabel + ' (' + TRAINING_COHORT.length + ' stylists) vs rest of network \u2014 ' + cmk;
+  head.textContent = cfg.cohortLabel + ' (' + TRAINING_COHORT.length + ' stylists) vs rest of network \u2014 ' + periodLabel;
   body.appendChild(head);
 
   function deltaVsBaseline(now, then){
@@ -1663,7 +1690,7 @@ function renderTrainingCohort(body, days, cfg){
       </div>`;
     }).join('');
     card.innerHTML = `<div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">${g.label}</div>
-      <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px;">${g.label==='Training cohort'?totals.training.bills:totals.rest.bills} bills \u00b7 ${fmtINR(g.label==='Training cohort'?totals.training.rev:totals.rest.rev)} revenue</div>
+      <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px;">${g.label==='Training cohort'?combinedTotals.training.bills:combinedTotals.rest.bills} bills \u00b7 ${fmtINR(g.label==='Training cohort'?combinedTotals.training.rev:combinedTotals.rest.rev)} revenue</div>
       ${rows}`;
     grid.appendChild(card);
   });
@@ -1675,7 +1702,7 @@ function renderTrainingCohort(body, days, cfg){
   if(mRest.aov && COHORT_BASELINE.rest && COHORT_BASELINE.rest.aov){
     const restGrowthPct = (mRest.aov - COHORT_BASELINE.rest.aov) / COHORT_BASELINE.rest.aov * 100;
     const counterfactualAov = COHORT_BASELINE.training.aov * (1 + restGrowthPct/100);
-    const impactRev = (mTraining.aov - counterfactualAov) * totals.training.bills;
+    const impactRev = (mTraining.aov - counterfactualAov) * combinedTotals.training.bills;
     const impactColor = impactRev >= 0 ? 'var(--good)' : 'var(--bad)';
     const impactCard = document.createElement('div');
     impactCard.style.cssText = `background:var(--panel); border-radius:10px; padding:18px 20px; margin-bottom:24px; border-left:3px solid ${impactColor};`;
@@ -1683,8 +1710,8 @@ function renderTrainingCohort(body, days, cfg){
       <div style="font-size:28px; font-weight:700; color:${impactColor};" class="bsc-mono">${impactRev>=0?'+':''}${fmtINR(impactRev)}</div>
       <div style="font-size:11.5px; color:var(--text-mute); margin-top:8px; line-height:1.6;">
         Rest of network moved ${restGrowthPct>=0?'+':''}${restGrowthPct.toFixed(1)}% vs ${baseFullLbl}. If training had followed that same trend, its AOV would have been ${fmtINR(counterfactualAov)} instead of its actual ${fmtINR(mTraining.aov)}.
-        Applied to ${totals.training.bills.toLocaleString('en-IN')} training-cohort bills this period, that gap is worth the figure above \u2014
-        this isolates the training-specific effect from whatever the whole business experienced this month, but is a correlation, not proof of causation.
+        Applied to ${combinedTotals.training.bills.toLocaleString('en-IN')} training-cohort bills ${periodLabel}, that gap is worth the figure above \u2014
+        this isolates the training-specific effect from whatever the whole business experienced over that period, but is a correlation, not proof of causation.
       </div>`;
     body.appendChild(impactCard);
   }
