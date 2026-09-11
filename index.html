@@ -185,11 +185,11 @@ const SM_COHORT_STORES = ["Juhu Store", "PMC Viman Nagar Pune", "Phoenix Marketc
 // SEED_NPS (commit 7f2b14e) -- kept here since SEED_NPS itself is replaced wholesale each month
 // and doesn't retain prior months. A store with no August survey responses is omitted, not zeroed.
 const AUG_NPS_BYSTORE = {"Juhu Store": 50.0, "PMC Viman Nagar Pune": 70.0, "Phoenix Marketcity, Whitefield": 90.5, "Express Avenue": 75.0, "Gurugram": 69.6, "Vegas Dwarka": 42.9, "Mall of India, Noida": 43.8};
-// Audit score (% pass) per store, August and September 2026. TODO: fill in from the user's audit
-// scoring sheet once shared -- no source for these exists anywhere in the repo or its history, so
-// they're left null (renders as "—") rather than fabricated.
-const AUG_AUDIT_BYSTORE = {"Juhu Store": null, "PMC Viman Nagar Pune": null, "Phoenix Marketcity, Whitefield": null, "Express Avenue": null, "Gurugram": null, "Vegas Dwarka": null, "Mall of India, Noida": null};
-const SEP_AUDIT_BYSTORE = {"Juhu Store": null, "PMC Viman Nagar Pune": null, "Phoenix Marketcity, Whitefield": null, "Express Avenue": null, "Gurugram": null, "Vegas Dwarka": null, "Mall of India, Noida": null};
+// Compliance/audit score (% pass) per store, from "Compliance Score Sheet - July to Sep MTD 26".
+// August = the sheet's "Aug MTD" column (full month); September = "Sep W1", the latest column
+// available in that sheet (only week 1 audited so far this month) -- fractions x100 for percent.
+const AUG_AUDIT_BYSTORE = {"Juhu Store": 86.0, "PMC Viman Nagar Pune": 96.0, "Phoenix Marketcity, Whitefield": 88.0, "Express Avenue": 92.0, "Gurugram": 80.0, "Vegas Dwarka": 99.0, "Mall of India, Noida": 92.0};
+const SEP_AUDIT_BYSTORE = {"Juhu Store": 97.0, "PMC Viman Nagar Pune": 95.0, "Phoenix Marketcity, Whitefield": 88.0, "Express Avenue": 91.0, "Gurugram": 72.0, "Vegas Dwarka": 96.0, "Mall of India, Noida": 91.0};
 
 const STORE_LOOKUP = {}; // pos_name -> target record
 TARGETS.forEach(t => STORE_LOOKUP[t.pos_name] = t);
@@ -1869,11 +1869,14 @@ function renderSMCohort(body, days){
     const augAov = BASELINE.prevMonthStoreAOV && BASELINE.prevMonthStoreAOV[store] ? BASELINE.prevMonthStoreAOV[store].aov : null;
     const aovDelta = (sepAov !== null && augAov) ? (sepAov-augAov)/augAov*100 : null;
     const npsSep = state.npsData && state.npsData.byStore ? state.npsData.byStore[store] : undefined;
+    const npsAug = AUG_NPS_BYSTORE[store];
+    const npsDelta = (npsSep !== null && npsSep !== undefined && npsAug !== null && npsAug !== undefined) ? (npsSep-npsAug) : null;
+    const auditSep = SEP_AUDIT_BYSTORE[store], auditAug = AUG_AUDIT_BYSTORE[store];
+    const auditDelta = (auditSep !== null && auditSep !== undefined && auditAug !== null && auditAug !== undefined) ? (auditSep-auditAug) : null;
     return {
       store, region: STORE_LOOKUP[store] ? STORE_LOOKUP[store].region : '-',
       sepRev: sepRev[store], sepBills: sepBills[store], sepAov, augAov, aovDelta,
-      npsSep, npsAug: AUG_NPS_BYSTORE[store],
-      auditSep: SEP_AUDIT_BYSTORE[store], auditAug: AUG_AUDIT_BYSTORE[store],
+      npsSep, npsAug, npsDelta, auditSep, auditAug, auditDelta,
     };
   });
 
@@ -1926,7 +1929,7 @@ function renderSMCohort(body, days){
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort Audit Score — avg across stores</div>
       <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${avgAuditSep!==null ? avgAuditSep.toFixed(1)+'%' : '—'}</div>
-      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAuditAug!==null ? avgAuditAug.toFixed(1)+'%' : '— (awaiting data)'} · ${fmtDeltaPts(auditDelta)}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAuditAug!==null ? avgAuditAug.toFixed(1)+'%' : '—'} · ${fmtDeltaPts(auditDelta)}</div>
     </div>
   `;
   body.appendChild(grid);
@@ -1948,10 +1951,13 @@ function renderSMCohort(body, days){
     if(v === null || v === undefined) return '<td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">—</td>';
     return `<td style="padding:8px 10px; text-align:right; font-weight:600;" class="bsc-mono">${v.toFixed(decimals)}${suffix||''}</td>`;
   }
+  function deltaTd(d){
+    return `<td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtDeltaPts(d)}</td>`;
+  }
   let tRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
     '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
-    '<td style="padding:6px 10px; text-align:right;">NPS Aug</td><td style="padding:6px 10px; text-align:right;">NPS Sep</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Audit Aug</td><td style="padding:6px 10px; text-align:right;">Audit Sep</td>' +
+    '<td style="padding:6px 10px; text-align:right;">NPS Aug</td><td style="padding:6px 10px; text-align:right;">NPS Sep</td><td style="padding:6px 10px; text-align:right;">NPS Δ</td>' +
+    '<td style="padding:6px 10px; text-align:right;">Audit Aug</td><td style="padding:6px 10px; text-align:right;">Audit Sep</td><td style="padding:6px 10px; text-align:right;">Audit Δ</td>' +
     '<td style="padding:6px 10px; text-align:right;">AOV Aug</td><td style="padding:6px 10px; text-align:right;">AOV Sep</td>' +
     '<td style="padding:6px 10px; text-align:right;">AOV Δ</td></tr>';
   rows.forEach(r => {
@@ -1960,8 +1966,10 @@ function renderSMCohort(body, days){
       <td style="padding:8px 10px; color:var(--text-mute);">${r.region}</td>
       ${dash(r.npsAug, 1)}
       ${dash(r.npsSep, 1)}
+      ${deltaTd(r.npsDelta)}
       ${dash(r.auditAug, 1, '%')}
       ${dash(r.auditSep, 1, '%')}
+      ${deltaTd(r.auditDelta)}
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${r.augAov ? fmtINR(r.augAov) : '—'}</td>
       <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.sepAov !== null ? fmtINR(r.sepAov) : '—'}</td>
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtDeltaPct(r.aovDelta)}</td>
@@ -1972,7 +1980,7 @@ function renderSMCohort(body, days){
 
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:16px; line-height:1.6;';
-  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Score columns are awaiting data — they’ll populate once the store audit scoring sheet is shared.';
+  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest week audited so far this month, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. Δ columns are colored green when the store improved vs August, red when it declined.';
   body.appendChild(note);
 }
 
