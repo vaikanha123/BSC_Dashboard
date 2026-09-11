@@ -1904,18 +1904,13 @@ function renderSMCohort(body, days){
   const avgAuditSep = avg(rows.map(r => r.auditSep));
   const auditDelta = (avgAuditAug !== null && avgAuditSep !== null) ? (avgAuditSep-avgAuditAug) : null;
 
-  function fmtDeltaPct(d){
-    if(d === null || d === undefined) return '<span style="color:var(--text-mute);">—</span>';
-    return `<span style="color:${d>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${d>=0?'+':''}${d.toFixed(1)}%</span>`;
-  }
-
   const grid = document.createElement('div');
   grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-bottom:10px;';
   grid.innerHTML = `
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort AOV — ${cmk}</div>
-      <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${fmtINR(pooledSepAov)}</div>
-      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAugAov ? fmtINR(avgAugAov) : '—'} · ${fmtDeltaPct(pooledAovDelta)}</div>
+      <div style="font-size:22px; font-weight:700; color:${pooledAovDelta===null?'var(--text)':(pooledAovDelta>=0?'var(--good)':'var(--bad)')};" class="bsc-mono">${fmtINR(pooledSepAov)}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAugAov ? fmtINR(avgAugAov) : '—'}</div>
     </div>
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort NPS — avg across stores</div>
@@ -1957,9 +1952,9 @@ function renderSMCohort(body, days){
     '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
     '<td style="padding:6px 10px; text-align:right;">NPS Aug</td><td style="padding:6px 10px; text-align:right;">NPS Sep</td>' +
     '<td style="padding:6px 10px; text-align:right;">Audit Aug</td><td style="padding:6px 10px; text-align:right;">Audit Sep</td>' +
-    '<td style="padding:6px 10px; text-align:right;">AOV Aug</td><td style="padding:6px 10px; text-align:right;">AOV Sep</td>' +
-    '<td style="padding:6px 10px; text-align:right;">AOV Δ</td></tr>';
+    '<td style="padding:6px 10px; text-align:right;">AOV Aug</td><td style="padding:6px 10px; text-align:right;">AOV Sep</td></tr>';
   rows.forEach(r => {
+    const aovSepColor = r.sepAov === null ? 'var(--text-mute)' : (r.aovDelta===null?'var(--brass)':(r.aovDelta>=0?'var(--good)':'var(--bad)'));
     tRows += `<tr style="border-top:1px solid var(--line);">
       <td style="padding:8px 10px; font-weight:500;">${r.store}</td>
       <td style="padding:8px 10px; color:var(--text-mute);">${r.region}</td>
@@ -1968,8 +1963,7 @@ function renderSMCohort(body, days){
       ${dash(r.auditAug, 1, '%')}
       ${dashColoredBySep(r.auditSep, r.auditDelta, 1, '%')}
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${r.augAov ? fmtINR(r.augAov) : '—'}</td>
-      <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.sepAov !== null ? fmtINR(r.sepAov) : '—'}</td>
-      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtDeltaPct(r.aovDelta)}</td>
+      <td style="padding:8px 10px; text-align:right; color:${aovSepColor}; font-weight:600;" class="bsc-mono">${r.sepAov !== null ? fmtINR(r.sepAov) : '—'}</td>
     </tr>`;
   });
   table.innerHTML = tRows;
@@ -1977,7 +1971,7 @@ function renderSMCohort(body, days){
 
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:16px; line-height:1.6;';
-  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest week audited so far this month, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. NPS Sep and Audit Sep are colored green where the store improved vs August, red where it declined.';
+  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest week audited so far this month, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. NPS Sep, Audit Sep, and AOV Sep are colored green where the store improved vs August, red where it declined.';
   body.appendChild(note);
 }
 
