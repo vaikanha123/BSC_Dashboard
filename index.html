@@ -1908,10 +1908,6 @@ function renderSMCohort(body, days){
     if(d === null || d === undefined) return '<span style="color:var(--text-mute);">—</span>';
     return `<span style="color:${d>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${d>=0?'+':''}${d.toFixed(1)}%</span>`;
   }
-  function fmtDeltaPts(d){
-    if(d === null || d === undefined) return '<span style="color:var(--text-mute);">—</span>';
-    return `<span style="color:${d>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${d>=0?'+':''}${d.toFixed(1)} pts</span>`;
-  }
 
   const grid = document.createElement('div');
   grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-bottom:10px;';
@@ -1923,13 +1919,13 @@ function renderSMCohort(body, days){
     </div>
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort NPS — avg across stores</div>
-      <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${avgNpsSep!==null ? avgNpsSep.toFixed(1) : '—'}</div>
-      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgNpsAug!==null ? avgNpsAug.toFixed(1) : '—'} · ${fmtDeltaPts(npsDelta)}</div>
+      <div style="font-size:22px; font-weight:700; color:${npsDelta===null?'var(--text)':(npsDelta>=0?'var(--good)':'var(--bad)')};" class="bsc-mono">${avgNpsSep!==null ? avgNpsSep.toFixed(1) : '—'}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgNpsAug!==null ? avgNpsAug.toFixed(1) : '—'}</div>
     </div>
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort Audit Score — avg across stores</div>
-      <div style="font-size:22px; font-weight:700; color:var(--text);" class="bsc-mono">${avgAuditSep!==null ? avgAuditSep.toFixed(1)+'%' : '—'}</div>
-      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAuditAug!==null ? avgAuditAug.toFixed(1)+'%' : '—'} · ${fmtDeltaPts(auditDelta)}</div>
+      <div style="font-size:22px; font-weight:700; color:${auditDelta===null?'var(--text)':(auditDelta>=0?'var(--good)':'var(--bad)')};" class="bsc-mono">${avgAuditSep!==null ? avgAuditSep.toFixed(1)+'%' : '—'}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs Aug avg ${avgAuditAug!==null ? avgAuditAug.toFixed(1)+'%' : '—'}</div>
     </div>
   `;
   body.appendChild(grid);
@@ -1951,13 +1947,16 @@ function renderSMCohort(body, days){
     if(v === null || v === undefined) return '<td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">—</td>';
     return `<td style="padding:8px 10px; text-align:right; font-weight:600;" class="bsc-mono">${v.toFixed(decimals)}${suffix||''}</td>`;
   }
-  function deltaTd(d){
-    return `<td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtDeltaPts(d)}</td>`;
+  // Sep cell colored by its own delta vs Aug -- no separate Δ column, the color on the number is the signal.
+  function dashColoredBySep(v, delta, decimals, suffix){
+    if(v === null || v === undefined) return '<td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">—</td>';
+    const color = delta === null ? 'var(--text)' : (delta >= 0 ? 'var(--good)' : 'var(--bad)');
+    return `<td style="padding:8px 10px; text-align:right; color:${color}; font-weight:600;" class="bsc-mono">${v.toFixed(decimals)}${suffix||''}</td>`;
   }
   let tRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
     '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
-    '<td style="padding:6px 10px; text-align:right;">NPS Aug</td><td style="padding:6px 10px; text-align:right;">NPS Sep</td><td style="padding:6px 10px; text-align:right;">NPS Δ</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Audit Aug</td><td style="padding:6px 10px; text-align:right;">Audit Sep</td><td style="padding:6px 10px; text-align:right;">Audit Δ</td>' +
+    '<td style="padding:6px 10px; text-align:right;">NPS Aug</td><td style="padding:6px 10px; text-align:right;">NPS Sep</td>' +
+    '<td style="padding:6px 10px; text-align:right;">Audit Aug</td><td style="padding:6px 10px; text-align:right;">Audit Sep</td>' +
     '<td style="padding:6px 10px; text-align:right;">AOV Aug</td><td style="padding:6px 10px; text-align:right;">AOV Sep</td>' +
     '<td style="padding:6px 10px; text-align:right;">AOV Δ</td></tr>';
   rows.forEach(r => {
@@ -1965,11 +1964,9 @@ function renderSMCohort(body, days){
       <td style="padding:8px 10px; font-weight:500;">${r.store}</td>
       <td style="padding:8px 10px; color:var(--text-mute);">${r.region}</td>
       ${dash(r.npsAug, 1)}
-      ${dash(r.npsSep, 1)}
-      ${deltaTd(r.npsDelta)}
+      ${dashColoredBySep(r.npsSep, r.npsDelta, 1)}
       ${dash(r.auditAug, 1, '%')}
-      ${dash(r.auditSep, 1, '%')}
-      ${deltaTd(r.auditDelta)}
+      ${dashColoredBySep(r.auditSep, r.auditDelta, 1, '%')}
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${r.augAov ? fmtINR(r.augAov) : '—'}</td>
       <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.sepAov !== null ? fmtINR(r.sepAov) : '—'}</td>
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtDeltaPct(r.aovDelta)}</td>
@@ -1980,7 +1977,7 @@ function renderSMCohort(body, days){
 
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:16px; line-height:1.6;';
-  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest week audited so far this month, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. Δ columns are colored green when the store improved vs August, red when it declined.';
+  note.textContent = 'AOV Sep recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest week audited so far this month, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. NPS Sep and Audit Sep are colored green where the store improved vs August, red where it declined.';
   body.appendChild(note);
 }
 
