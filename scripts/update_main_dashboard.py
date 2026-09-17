@@ -113,6 +113,8 @@ def build_prev_month_baselines(prev_month_sales_path):
         prev_month_store_upt[store] = {'upt': upt_all, 'newUpt': upt_new, 'repUpt': upt_rep}
 
     offline = df[df['Region'].notna()]
+    online = df[df['Region'].isna()]
+    prev_month_online_revenue = round(online['Revenue'].sum(), 2)
     prev_month_category = offline.groupby('Category')['Revenue'].sum().round(2).to_dict()
     prev_month_category_units = {k: int(v) for k, v in offline.groupby('Category')['Qty'].sum().to_dict().items()}
 
@@ -132,6 +134,7 @@ def build_prev_month_baselines(prev_month_sales_path):
         'prevMonthCategoryUnits': prev_month_category_units,
         'prevMonthDailyRegion': prev_month_daily_region,
         'prevMonthDailyCategoryUnits': prev_month_daily_category_units,
+        'prevMonthOnlineRevenue': prev_month_online_revenue,
     }
 
 

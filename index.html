@@ -216,7 +216,6 @@ let state = {
   reasonType: 'refund',        // 'refund' | 'cn'
   reasonChannel: 'both',       // 'online' | 'offline' | 'both'
   reasonBreakdown: 'reason',   // 'reason' | 'category'
-  reasonMetric: 'amount',      // 'amount' | 'pctRevenue' | 'pctRevenueAug'
   stylistFilterRegion: 'all',
   npsData: null, // { byStore: {store: nps}, overall: nps }
   dateRange: null, // {start:'YYYY-MM-DD', end:'YYYY-MM-DD'} or null for "current month" default
@@ -249,6 +248,12 @@ const BASELINE = {
   prevMonthCategoryUnits: {"Bundi": 67, "Casual Chinos": 225, "Chinos": 1074, "Dress Pants": 2685, "Fatigue Pants": 4, "Gift Card": 239, "Jackets": 197, "Joggers": 55, "Kurta": 141, "Linen Pants": 8, "Linen Shorts": 6, "Long Sleeve Polo T-Shirts": 374, "Lounge Pants": 23, "MTM Shirt": 7565, "Metal Collar Stay": 33, "Metal Cufflinks": 24, "Mid Rise Dress Pants": 38, "Mid Rise Stretch Jeans": 272, "Neapolitan Dress Pants": 61, "Oversized T-Shirts": 100, "Pocket Square": 25, "RTW Shirt": 9090, "Relaxed Linen Pants": 713, "Relaxed Neapolitan Pants": 398, "Relaxed T-Shirts": 44, "Rigid Denim": 2, "Shackets": 217, "Silk Knots": 6, "Smartpants": 583, "Soft Tailored Jackets": 40, "Stretch Denim": 61, "Suit Blazer": 147, "Suits": 1, "Sweaters": 1, "Sweatshirts": 64, "T-Shirts": 1505, "Ties": 61, "Uncategorized": 1155, "Washed Shorts": 17, "Wide Leg Pants": 30},
   prevMonthStoreUPT: {"Ambience Vasant Kunj": {"upt": 2.399, "newUpt": 2.325, "repUpt": 2.5}, "Andheri": {"upt": 3.349, "newUpt": 4.277, "repUpt": 2.944}, "Corporate Orders": {"upt": 3.176, "newUpt": 3.13, "repUpt": 3.0}, "DLF Midtown - Moti Nagar": {"upt": 2.6, "newUpt": 2.526, "repUpt": 2.727}, "Express Avenue": {"upt": 2.516, "newUpt": 2.484, "repUpt": 2.56}, "Gurugram": {"upt": 2.913, "newUpt": 2.758, "repUpt": 3.075}, "Indiranagar": {"upt": 3.36, "newUpt": 3.473, "repUpt": 3.357}, "Inorbit Mall Malad West": {"upt": 2.106, "newUpt": 2.15, "repUpt": 2.063}, "Inorbit mall Hyderabad": {"upt": 2.55, "newUpt": 2.195, "repUpt": 2.965}, "Jaipur Store": {"upt": 2.796, "newUpt": 2.458, "repUpt": 3.082}, "Jubilee Hills": {"upt": 4.108, "newUpt": 3.728, "repUpt": 4.304}, "Juhu Store": {"upt": 2.858, "newUpt": 2.789, "repUpt": 3.008}, "KNK Chennai": {"upt": 2.78, "newUpt": 2.677, "repUpt": 2.884}, "Kalaghoda, Fort": {"upt": 3.11, "newUpt": 2.798, "repUpt": 3.382}, "Kemps Corner": {"upt": 3.013, "newUpt": 3.131, "repUpt": 3.11}, "Khan Market": {"upt": 2.972, "newUpt": 2.924, "repUpt": 3.018}, "Kochi Store": {"upt": 2.184, "newUpt": 2.107, "repUpt": 2.246}, "Koregaon Park": {"upt": 2.678, "newUpt": 2.518, "repUpt": 2.759}, "LakeShore Mall": {"upt": 2.518, "newUpt": 2.5, "repUpt": 2.54}, "Lavelle Road": {"upt": 3.847, "newUpt": 3.403, "repUpt": 4.062}, "Mall of India, Noida": {"upt": 3.01, "newUpt": 2.077, "repUpt": 4.199}, "Oberoi Mall Store": {"upt": 2.898, "newUpt": 2.935, "repUpt": 2.896}, "Oberoi Sky City": {"upt": 2.422, "newUpt": 2.497, "repUpt": 2.325}, "Online": {"upt": 1.768, "newUpt": 1.573, "repUpt": 1.99}, "PMC Viman Nagar Pune": {"upt": 1.796, "newUpt": 1.681, "repUpt": 1.953}, "Pali Hill, Bandra": {"upt": 3.635, "newUpt": 3.107, "repUpt": 4.036}, "Phoenix Marketcity Kurla": {"upt": 2.429, "newUpt": 2.473, "repUpt": 2.406}, "Phoenix Marketcity, Whitefield": {"upt": 3.401, "newUpt": 3.232, "repUpt": 3.598}, "Phoenix Palassio": {"upt": 2.412, "newUpt": 1.938, "repUpt": 2.833}, "R.K. Salai": {"upt": 3.523, "newUpt": 3.065, "repUpt": 3.67}, "Sarath City-Hyderabad": {"upt": 3.285, "newUpt": 2.742, "repUpt": 3.792}, "Select City": {"upt": 2.589, "newUpt": 2.556, "repUpt": 2.608}, "Shakespearesarani": {"upt": 2.864, "newUpt": 2.5, "repUpt": 3.107}, "Sindhu Bhavan Marg": {"upt": 2.957, "newUpt": 2.86, "repUpt": 3.043}, "South Ex.": {"upt": 3.367, "newUpt": 2.933, "repUpt": 3.602}, "Vegas Dwarka": {"upt": 1.883, "newUpt": 1.609, "repUpt": 2.239}, "Virtual Stylist": {"upt": 1.5, "newUpt": 1.364, "repUpt": 1.528}, "Viviana Mall": {"upt": 2.484, "newUpt": 2.55, "repUpt": 2.431}},
   prevMonthStoreAOV: {"Ambience Vasant Kunj": {"aov": 11501.29, "newAov": 10858.29, "repAov": 12376.07}, "Andheri": {"aov": 15182.36, "newAov": 17480.63, "repAov": 14478.72}, "Corporate Orders": {"aov": 10560.69, "newAov": 10422.26, "repAov": 13856.58}, "DLF Midtown - Moti Nagar": {"aov": 10757.11, "newAov": 9848.52, "repAov": 12326.49}, "Express Avenue": {"aov": 11269.44, "newAov": 10954.08, "repAov": 11672.45}, "Gurugram": {"aov": 14185.36, "newAov": 13081.74, "repAov": 15354.11}, "Indiranagar": {"aov": 17591.95, "newAov": 16970.25, "repAov": 18970.28}, "Inorbit Mall Malad West": {"aov": 9033.8, "newAov": 9678.39, "repAov": 8342.85}, "Inorbit mall Hyderabad": {"aov": 11275.34, "newAov": 9493.22, "repAov": 13383.29}, "Jaipur Store": {"aov": 13244.37, "newAov": 11152.22, "repAov": 15016.29}, "Jubilee Hills": {"aov": 20483.54, "newAov": 21161.24, "repAov": 20134.28}, "Juhu Store": {"aov": 13955.01, "newAov": 14173.34, "repAov": 14866.44}, "KNK Chennai": {"aov": 11554.81, "newAov": 10791.88, "repAov": 12311.92}, "Kalaghoda, Fort": {"aov": 15545.0, "newAov": 13133.9, "repAov": 17626.63}, "Kemps Corner": {"aov": 14247.0, "newAov": 16921.18, "repAov": 14620.67}, "Khan Market": {"aov": 16025.34, "newAov": 17641.21, "repAov": 15216.22}, "Kochi Store": {"aov": 8966.96, "newAov": 7723.83, "repAov": 9975.87}, "Koregaon Park": {"aov": 12122.97, "newAov": 11133.68, "repAov": 12626.77}, "LakeShore Mall": {"aov": 11950.45, "newAov": 10041.13, "repAov": 14318.0}, "Lavelle Road": {"aov": 22860.78, "newAov": 18620.44, "repAov": 24914.69}, "Mall of India, Noida": {"aov": 10984.88, "newAov": 9624.81, "repAov": 12836.52}, "Oberoi Mall Store": {"aov": 13422.49, "newAov": 13390.41, "repAov": 13643.92}, "Oberoi Sky City": {"aov": 10230.13, "newAov": 10371.59, "repAov": 10176.5}, "Online": {"aov": 5174.96, "newAov": 4131.88, "repAov": 6416.45}, "PMC Viman Nagar Pune": {"aov": 7469.85, "newAov": 6548.68, "repAov": 8726.97}, "Pali Hill, Bandra": {"aov": 14630.7, "newAov": 12561.04, "repAov": 16404.17}, "Phoenix Marketcity Kurla": {"aov": 12674.21, "newAov": 12534.63, "repAov": 13202.79}, "Phoenix Marketcity, Whitefield": {"aov": 15812.5, "newAov": 14148.8, "repAov": 17739.96}, "Phoenix Palassio": {"aov": 14002.18, "newAov": 8671.8, "repAov": 18740.29}, "R.K. Salai": {"aov": 17192.14, "newAov": 13968.39, "repAov": 18222.42}, "Sarath City-Hyderabad": {"aov": 14365.56, "newAov": 11312.92, "repAov": 17263.57}, "Select City": {"aov": 12920.95, "newAov": 11816.37, "repAov": 13583.7}, "Shakespearesarani": {"aov": 13723.91, "newAov": 12087.79, "repAov": 14927.74}, "Sindhu Bhavan Marg": {"aov": 11057.2, "newAov": 11636.94, "repAov": 10721.07}, "South Ex.": {"aov": 16520.17, "newAov": 12936.0, "repAov": 18432.08}, "Vegas Dwarka": {"aov": 8468.26, "newAov": 7503.21, "repAov": 9721.4}, "Virtual Stylist": {"aov": 6443.19, "newAov": 7505.13, "repAov": 6222.79}, "Viviana Mall": {"aov": 11738.58, "newAov": 12343.28, "repAov": 11188.62}}, // Previous month (Aug 2026) store-wise AOV (all/new/repeat).
+  // August 2026 online revenue (₹) -- "Online" + "Corporate Orders" + "Virtual Stylist" POS locations
+  // (i.e. every row NOT mapped to a physical region in REGION_MAP), same definition the dashboard
+  // uses for "online" elsewhere. Derived from the full Aug 1-31 sales export on 2026-09-18;
+  // prevMonthDailyRegion/prevMonthCategory above are offline-only by design (see build_prev_month_baselines
+  // in scripts/update_main_dashboard.py), so this fills the online half of the August revenue picture.
+  prevMonthOnlineRevenue: 19673697.84,
 };
 
 // ---------- storage ----------
@@ -2488,15 +2493,16 @@ function renderRefunds(body){
   function renderReasonsExplorer(){
     const prevBaseline = (typeof PREV_MONTH_REFUND_CN !== 'undefined' && PREV_MONTH_REFUND_CN.month) ? PREV_MONTH_REFUND_CN : null;
 
-    // The Aug baseline in this dashboard is built from in-store "order rows" only (see
-    // BSC_Dashboard_Runbook.md), so Aug revenue is only reliably known for the offline channel --
-    // there's no tracked Aug online or Aug combined revenue total.
+    // The offline half of the Aug baseline is built from in-store "order rows" (see
+    // BSC_Dashboard_Runbook.md); the online half comes from BASELINE.prevMonthOnlineRevenue,
+    // derived separately from a full Aug 1-31 sales export (2026-09-18).
     let augOfflineRev = 0;
     if(typeof BASELINE !== 'undefined' && BASELINE.prevMonthDailyRegion){
       Object.values(BASELINE.prevMonthDailyRegion).forEach(dayObj => {
         Object.values(dayObj).forEach(v => augOfflineRev += v);
       });
     }
+    const augOnlineRev = (typeof BASELINE !== 'undefined' && BASELINE.prevMonthOnlineRevenue) ? BASELINE.prevMonthOnlineRevenue : 0;
     const augMonthLabel = prevBaseline ? prevBaseline.month : 'Aug';
 
     const head = document.createElement('div');
@@ -2521,11 +2527,6 @@ function renderRefunds(body){
         <option value="reason"${state.reasonBreakdown==='reason'?' selected':''}>By reason</option>
         <option value="category"${state.reasonBreakdown==='category'?' selected':''}>By category</option>
       </select>
-      <select id="bsc-reason-metric" style="${selStyle}">
-        <option value="amount"${state.reasonMetric==='amount'?' selected':''}>Amount</option>
-        <option value="pctRevenue"${state.reasonMetric==='pctRevenue'?' selected':''}>% of revenue (${cmk})</option>
-        <option value="pctRevenueAug"${state.reasonMetric==='pctRevenueAug'?' selected':''}>% of revenue (${augMonthLabel})</option>
-      </select>
     `;
     body.appendChild(filterBar);
 
@@ -2544,67 +2545,52 @@ function renderRefunds(body){
     const augMap = mapFor(augObj, state.reasonBreakdown, state.reasonChannel);
 
     const curChannelRev = state.reasonChannel === 'online' ? onlineRev : state.reasonChannel === 'offline' ? offlineRev : totalRev;
-    const augChannelRev = state.reasonChannel === 'offline' ? augOfflineRev : null; // online/both Aug revenue not tracked
+    const augChannelRev = state.reasonChannel === 'online' ? augOnlineRev : state.reasonChannel === 'offline' ? augOfflineRev : (augOfflineRev + augOnlineRev);
 
     const curLocalTotal = Object.values(curMap).reduce((s,v)=>s+v,0);
     const augLocalTotal = Object.values(augMap).reduce((s,v)=>s+v,0);
+    const curPctDenom = (hasRevenue && curChannelRev) ? curChannelRev : curLocalTotal;
+    const augPctDenom = (augObj && augChannelRev) ? augChannelRev : augLocalTotal;
 
     const labels = new Set([...Object.keys(curMap), ...Object.keys(augMap)]);
     let rows = Array.from(labels).map(label => {
       const curAmt = curMap[label] || 0;
       const augAmt = augMap[label] || 0;
-      let val, display;
-      if(state.reasonMetric === 'amount'){
-        val = curAmt; display = fmtINR(curAmt);
-      } else if(state.reasonMetric === 'pctRevenue'){
-        const denom = (hasRevenue && curChannelRev) ? curChannelRev : curLocalTotal;
-        val = denom ? curAmt/denom*100 : 0;
-        display = denom ? fmtPct(val) : '—';
-      } else { // pctRevenueAug
-        if(!augObj){ val = 0; display = '—'; }
-        else {
-          const denom = augChannelRev || augLocalTotal;
-          val = denom ? augAmt/denom*100 : 0;
-          display = denom ? fmtPct(val) : '—';
-        }
-      }
-      return {label, curAmt, augAmt, val, display};
+      const curPct = curPctDenom ? curAmt/curPctDenom*100 : null;
+      const augPct = (augObj && augPctDenom) ? augAmt/augPctDenom*100 : null;
+      return {label, curAmt, augAmt, curPct, augPct};
     }).filter(r => r.curAmt > 0 || r.augAmt > 0);
-    rows.sort((a,b) => b.val - a.val);
+    rows.sort((a,b) => b.curAmt - a.curAmt);
 
     const note = document.createElement('div');
-    note.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:10px;';
-    if(state.reasonMetric === 'amount'){
-      note.textContent = 'Raw ' + (state.reasonType==='cn'?'credit note':'refund') + ' amount for ' + cmk + ', ' + channelLabel(state.reasonChannel) + '.';
-    } else if(state.reasonMetric === 'pctRevenue'){
-      note.textContent = hasRevenue
-        ? '% of ' + channelLabel(state.reasonChannel).toLowerCase() + ' revenue for ' + cmk + ' (' + fmtINR(curChannelRev) + ').'
-        : 'No sales CSV uploaded for ' + cmk + ' yet, so this shows % of this table’s own total instead of true revenue.';
-    } else if(!augObj){
-      note.textContent = 'No ' + augMonthLabel + ' refund/CN baseline set yet — see BSC_Dashboard_Runbook.md for how to build PREV_MONTH_REFUND_CN.';
-    } else if(augChannelRev){
-      note.textContent = '% of ' + channelLabel(state.reasonChannel).toLowerCase() + ' revenue in ' + augMonthLabel + ' (' + fmtINR(augChannelRev) + ').';
-    } else {
-      note.textContent = augMonthLabel + ' revenue isn’t tracked for ' + channelLabel(state.reasonChannel).toLowerCase() + ' on this dashboard (baseline only covers in-store order rows), so this shows % of ' + augMonthLabel + '’s ' + (state.reasonType==='cn'?'credit note':'refund') + ' total for that channel instead.';
-    }
+    note.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:10px; line-height:1.5;';
+    let noteText = (hasRevenue
+      ? '% of ' + cmk + ' revenue uses ' + channelLabel(state.reasonChannel).toLowerCase() + ' revenue for ' + cmk + ' (' + fmtINR(curChannelRev) + ').'
+      : 'No sales CSV uploaded for ' + cmk + ' yet, so % of ' + cmk + ' revenue shows % of this table’s own total instead.');
+    noteText += ' ';
+    noteText += (!augObj
+      ? 'No ' + augMonthLabel + ' refund/CN baseline set yet — see BSC_Dashboard_Runbook.md for how to build PREV_MONTH_REFUND_CN.'
+      : '% of ' + augMonthLabel + ' revenue uses ' + channelLabel(state.reasonChannel).toLowerCase() + ' revenue for ' + augMonthLabel + ' (' + fmtINR(augChannelRev) + ').');
+    note.textContent = noteText;
     body.appendChild(note);
 
     const t = document.createElement('table');
     t.style.cssText = 'font-size:13px; margin-bottom:24px;';
     const breakdownLabel = state.reasonBreakdown === 'category' ? 'Category' : 'Reason';
-    const metricColLabel = state.reasonMetric === 'amount' ? cmk + ' amount'
-      : state.reasonMetric === 'pctRevenue' ? '% of revenue'
-      : '% of ' + augMonthLabel + ' revenue';
     let trows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
       '<td style="padding:6px 10px;">' + breakdownLabel + '</td>' +
-      '<td style="padding:6px 10px; text-align:right;">' + metricColLabel + '</td></tr>';
+      '<td style="padding:6px 10px; text-align:right;">Amount</td>' +
+      '<td style="padding:6px 10px; text-align:right;">% of ' + cmk + ' revenue</td>' +
+      '<td style="padding:6px 10px; text-align:right;">% of ' + augMonthLabel + ' revenue</td></tr>';
     if(rows.length === 0){
-      trows += '<tr><td colspan="2" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No data for this combination.</td></tr>';
+      trows += '<tr><td colspan="4" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No data for this combination.</td></tr>';
     }
     rows.forEach(r => {
       trows += `<tr style="border-top:1px solid var(--line);">
         <td style="padding:8px 10px; font-weight:500;">${r.label}</td>
-        <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.display}</td>
+        <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(r.curAmt)}</td>
+        <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.curPct!==null?fmtPct(r.curPct):'—'}</td>
+        <td style="padding:8px 10px; text-align:right; color:var(--text-mute); font-weight:600;" class="bsc-mono">${r.augPct!==null?fmtPct(r.augPct):'—'}</td>
       </tr>`;
     });
     t.innerHTML = trows;
@@ -2645,7 +2631,6 @@ function attachReasonsFilterHandlers(){
     ['bsc-reason-type', 'reasonType'],
     ['bsc-reason-channel', 'reasonChannel'],
     ['bsc-reason-breakdown', 'reasonBreakdown'],
-    ['bsc-reason-metric', 'reasonMetric'],
   ];
   bindings.forEach(([id, key]) => {
     const el = document.getElementById(id);
