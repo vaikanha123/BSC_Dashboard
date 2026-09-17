@@ -213,6 +213,10 @@ let state = {
   stylistFilterStore: 'all',
   refundStoreFilterRegion: 'all',
   refundStoreSortBy: 'refund', // 'refund' | 'cn' | 'revenue'
+  reasonType: 'refund',        // 'refund' | 'cn'
+  reasonChannel: 'both',       // 'online' | 'offline' | 'both'
+  reasonBreakdown: 'reason',   // 'reason' | 'category'
+  reasonMetric: 'amount',      // 'amount' | 'pctRevenue' | 'pctRevenueAug'
   stylistFilterRegion: 'all',
   npsData: null, // { byStore: {store: nps}, overall: nps }
   dateRange: null, // {start:'YYYY-MM-DD', end:'YYYY-MM-DD'} or null for "current month" default
@@ -2475,114 +2479,142 @@ function renderRefunds(body){
     attachRefundStoreFilterHandlers();
   }
 
-  function reasonTableByChannel(title, onlineObj, offlineObj){
-    const onlineEntries = onlineObj ? Object.entries(onlineObj).sort((a,b)=>b[1]-a[1]) : [];
-    const offlineEntries = offlineObj ? Object.entries(offlineObj).sort((a,b)=>b[1]-a[1]) : [];
-    if(!onlineEntries.length && !offlineEntries.length) return;
+  // ---- Reasons explorer: one filterable table (type / channel / breakdown / metric dropdowns)
+  // instead of a fixed grid of 10 always-shown tables. ----
+  function channelLabel(ch){
+    return ch === 'online' ? 'Online' : ch === 'offline' ? 'Offline' : 'Online + Offline';
+  }
+
+  function renderReasonsExplorer(){
+    const prevBaseline = (typeof PREV_MONTH_REFUND_CN !== 'undefined' && PREV_MONTH_REFUND_CN.month) ? PREV_MONTH_REFUND_CN : null;
+
+    // The Aug baseline in this dashboard is built from in-store "order rows" only (see
+    // BSC_Dashboard_Runbook.md), so Aug revenue is only reliably known for the offline channel --
+    // there's no tracked Aug online or Aug combined revenue total.
+    let augOfflineRev = 0;
+    if(typeof BASELINE !== 'undefined' && BASELINE.prevMonthDailyRegion){
+      Object.values(BASELINE.prevMonthDailyRegion).forEach(dayObj => {
+        Object.values(dayObj).forEach(v => augOfflineRev += v);
+      });
+    }
+    const augMonthLabel = prevBaseline ? prevBaseline.month : 'Aug';
 
     const head = document.createElement('div');
     head.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
-    head.textContent = title + ' \u2014 ' + cmk + (hasRevenue ? ' (% of that channel\u2019s own revenue)' : ' (% of that channel\u2019s total in this table)');
+    head.textContent = 'Reasons — ' + cmk;
     body.appendChild(head);
 
-    function oneChannelTable(label, entries, channelRevenue){
-      if(!entries.length) return;
-      const sub = document.createElement('div');
-      sub.style.cssText = 'font-size:11.5px; font-weight:600; color:var(--brass); margin:6px 0 6px 2px;';
-      sub.textContent = label;
-      body.appendChild(sub);
-      const localTotal = entries.reduce((s,e)=>s+e[1],0);
-      const denom = (hasRevenue && channelRevenue) ? channelRevenue : localTotal;
-      const denomLabel = (hasRevenue && channelRevenue) ? '% of ' + label.toLowerCase() + ' revenue' : '% of ' + label.toLowerCase() + ' total';
-      const t = document.createElement('table');
-      t.style.cssText = 'font-size:13px; margin-bottom:18px;';
-      let rows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
-        '<td style="padding:6px 10px;">Reason</td><td style="padding:6px 10px; text-align:right;">Amount</td>' +
-        '<td style="padding:6px 10px; text-align:right;">' + denomLabel + '</td></tr>';
-      entries.forEach(([reason, amt]) => {
-        rows += `<tr style="border-top:1px solid var(--line);">
-          <td style="padding:8px 10px; font-weight:500;">${reason}</td>
-          <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(amt)}</td>
-          <td style="padding:8px 10px; text-align:right; color:var(--brass);" class="bsc-mono">${denom?fmtPct(amt/denom*100):'\u2014'}</td>
-        </tr>`;
-      });
-      t.innerHTML = rows;
-      body.appendChild(t);
+    const selStyle = 'background:var(--panel); border:0.5px solid var(--line2); color:var(--text); font-size:12px; padding:6px 10px; border-radius:6px; font-family:inherit;';
+    const filterBar = document.createElement('div');
+    filterBar.style.cssText = 'display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; align-items:center;';
+    filterBar.innerHTML = `
+      <select id="bsc-reason-type" style="${selStyle}">
+        <option value="refund"${state.reasonType==='refund'?' selected':''}>Refunds</option>
+        <option value="cn"${state.reasonType==='cn'?' selected':''}>Credit notes</option>
+      </select>
+      <select id="bsc-reason-channel" style="${selStyle}">
+        <option value="both"${state.reasonChannel==='both'?' selected':''}>Online + Offline</option>
+        <option value="online"${state.reasonChannel==='online'?' selected':''}>Online</option>
+        <option value="offline"${state.reasonChannel==='offline'?' selected':''}>Offline</option>
+      </select>
+      <select id="bsc-reason-breakdown" style="${selStyle}">
+        <option value="reason"${state.reasonBreakdown==='reason'?' selected':''}>By reason</option>
+        <option value="category"${state.reasonBreakdown==='category'?' selected':''}>By category</option>
+      </select>
+      <select id="bsc-reason-metric" style="${selStyle}">
+        <option value="amount"${state.reasonMetric==='amount'?' selected':''}>Amount</option>
+        <option value="pctRevenue"${state.reasonMetric==='pctRevenue'?' selected':''}>% of revenue (${cmk})</option>
+        <option value="pctRevenueAug"${state.reasonMetric==='pctRevenueAug'?' selected':''}>% of revenue (${augMonthLabel})</option>
+      </select>
+    `;
+    body.appendChild(filterBar);
+
+    const curObj = state.reasonType === 'cn' ? cnMonth : refundMonth;
+    const augObj = prevBaseline ? (state.reasonType === 'cn' ? prevBaseline.cn : prevBaseline.refund) : null;
+
+    function mapFor(obj, breakdown, channel){
+      if(!obj) return {};
+      const key = breakdown === 'category'
+        ? (channel === 'online' ? 'byCategoryOnline' : channel === 'offline' ? 'byCategoryOffline' : 'byCategory')
+        : (channel === 'online' ? 'byReasonOnline' : channel === 'offline' ? 'byReasonOffline' : 'byReason');
+      return obj[key] || {};
     }
 
-    oneChannelTable('Online', onlineEntries, onlineRev);
-    oneChannelTable('Offline', offlineEntries, offlineRev);
-  }
+    const curMap = mapFor(curObj, state.reasonBreakdown, state.reasonChannel);
+    const augMap = mapFor(augObj, state.reasonBreakdown, state.reasonChannel);
 
-  reasonTableByChannel('Refunds by reason', refundMonth ? refundMonth.byReasonOnline : null, refundMonth ? refundMonth.byReasonOffline : null);
-  reasonTableByChannel('Credit notes by reason', cnMonth ? cnMonth.byReasonOnline : null, cnMonth ? cnMonth.byReasonOffline : null);
-  reasonTableByChannel('Refunds by category', refundMonth ? refundMonth.byCategoryOnline : null, refundMonth ? refundMonth.byCategoryOffline : null);
-  reasonTableByChannel('Credit notes by category', cnMonth ? cnMonth.byCategoryOnline : null, cnMonth ? cnMonth.byCategoryOffline : null);
+    const curChannelRev = state.reasonChannel === 'online' ? onlineRev : state.reasonChannel === 'offline' ? offlineRev : totalRev;
+    const augChannelRev = state.reasonChannel === 'offline' ? augOfflineRev : null; // online/both Aug revenue not tracked
 
-  // ---- Reasons vs last month (mix-shift, not run-rate -- MTD-so-far vs a full prior month
-  // wouldn't be a fair amount comparison, so this compares each reason's SHARE of that month's
-  // total refund/CN instead) ----
-  function reasonVsLastMonth(title, curByReason, curTotal, prevByReason, prevTotal, prevMonthLabel){
-    if(!prevByReason || !prevMonthLabel) return; // no baseline yet -- see BSC_Dashboard_Runbook.md
-    const allReasons = new Set([...Object.keys(curByReason||{}), ...Object.keys(prevByReason||{})]);
-    if(allReasons.size === 0) return;
+    const curLocalTotal = Object.values(curMap).reduce((s,v)=>s+v,0);
+    const augLocalTotal = Object.values(augMap).reduce((s,v)=>s+v,0);
 
-    const head = document.createElement('div');
-    head.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:4px;';
-    head.textContent = title + ' — ' + cmk + ' vs ' + prevMonthLabel;
-    body.appendChild(head);
-    const sub = document.createElement('div');
-    sub.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:10px;';
-    const kind = title.toLowerCase().includes('credit') ? 'credit notes' : 'refunds';
-    sub.textContent = 'Share of that month’s total ' + kind + ' — not a run-rate comparison, since ' + cmk + ' is month-to-date and ' + prevMonthLabel + ' is a complete month.';
-    body.appendChild(sub);
+    const labels = new Set([...Object.keys(curMap), ...Object.keys(augMap)]);
+    let rows = Array.from(labels).map(label => {
+      const curAmt = curMap[label] || 0;
+      const augAmt = augMap[label] || 0;
+      let val, display;
+      if(state.reasonMetric === 'amount'){
+        val = curAmt; display = fmtINR(curAmt);
+      } else if(state.reasonMetric === 'pctRevenue'){
+        const denom = (hasRevenue && curChannelRev) ? curChannelRev : curLocalTotal;
+        val = denom ? curAmt/denom*100 : 0;
+        display = denom ? fmtPct(val) : '—';
+      } else { // pctRevenueAug
+        if(!augObj){ val = 0; display = '—'; }
+        else {
+          const denom = augChannelRev || augLocalTotal;
+          val = denom ? augAmt/denom*100 : 0;
+          display = denom ? fmtPct(val) : '—';
+        }
+      }
+      return {label, curAmt, augAmt, val, display};
+    }).filter(r => r.curAmt > 0 || r.augAmt > 0);
+    rows.sort((a,b) => b.val - a.val);
 
-    let rows = Array.from(allReasons).map(reason => {
-      const curAmt = (curByReason||{})[reason] || 0;
-      const prevAmt = (prevByReason||{})[reason] || 0;
-      const curPct = curTotal ? curAmt/curTotal*100 : 0;
-      const prevPct = prevTotal ? prevAmt/prevTotal*100 : 0;
-      return {reason, curAmt, prevAmt, curPct, prevPct, delta: curPct - prevPct};
-    });
-    rows.sort((a,b) => b.curAmt - a.curAmt);
+    const note = document.createElement('div');
+    note.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:10px;';
+    if(state.reasonMetric === 'amount'){
+      note.textContent = 'Raw ' + (state.reasonType==='cn'?'credit note':'refund') + ' amount for ' + cmk + ', ' + channelLabel(state.reasonChannel) + '.';
+    } else if(state.reasonMetric === 'pctRevenue'){
+      note.textContent = hasRevenue
+        ? '% of ' + channelLabel(state.reasonChannel).toLowerCase() + ' revenue for ' + cmk + ' (' + fmtINR(curChannelRev) + ').'
+        : 'No sales CSV uploaded for ' + cmk + ' yet, so this shows % of this table’s own total instead of true revenue.';
+    } else if(!augObj){
+      note.textContent = 'No ' + augMonthLabel + ' refund/CN baseline set yet — see BSC_Dashboard_Runbook.md for how to build PREV_MONTH_REFUND_CN.';
+    } else if(augChannelRev){
+      note.textContent = '% of ' + channelLabel(state.reasonChannel).toLowerCase() + ' revenue in ' + augMonthLabel + ' (' + fmtINR(augChannelRev) + ').';
+    } else {
+      note.textContent = augMonthLabel + ' revenue isn’t tracked for ' + channelLabel(state.reasonChannel).toLowerCase() + ' on this dashboard (baseline only covers in-store order rows), so this shows % of ' + augMonthLabel + '’s ' + (state.reasonType==='cn'?'credit note':'refund') + ' total for that channel instead.';
+    }
+    body.appendChild(note);
 
     const t = document.createElement('table');
     t.style.cssText = 'font-size:13px; margin-bottom:24px;';
+    const breakdownLabel = state.reasonBreakdown === 'category' ? 'Category' : 'Reason';
+    const metricColLabel = state.reasonMetric === 'amount' ? cmk + ' amount'
+      : state.reasonMetric === 'pctRevenue' ? '% of revenue'
+      : '% of ' + augMonthLabel + ' revenue';
     let trows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
-      '<td style="padding:6px 10px;">Reason</td>' +
-      '<td style="padding:6px 10px; text-align:right;">' + cmk + '</td><td style="padding:6px 10px; text-align:right;">% of total</td>' +
-      '<td style="padding:6px 10px; text-align:right;">' + prevMonthLabel + '</td><td style="padding:6px 10px; text-align:right;">% of total</td>' +
-      '<td style="padding:6px 10px; text-align:right;">Change</td></tr>';
+      '<td style="padding:6px 10px;">' + breakdownLabel + '</td>' +
+      '<td style="padding:6px 10px; text-align:right;">' + metricColLabel + '</td></tr>';
+    if(rows.length === 0){
+      trows += '<tr><td colspan="2" style="padding:16px 10px; text-align:center; color:var(--text-mute);">No data for this combination.</td></tr>';
+    }
     rows.forEach(r => {
-      const deltaColor = r.delta > 0.5 ? 'var(--bad)' : (r.delta < -0.5 ? 'var(--good)' : 'var(--text-mute)');
-      const deltaText = (r.delta >= 0 ? '+' : '') + r.delta.toFixed(1) + 'pp';
       trows += `<tr style="border-top:1px solid var(--line);">
-        <td style="padding:8px 10px; font-weight:500;">${r.reason}</td>
-        <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(r.curAmt)}</td>
-        <td style="padding:8px 10px; text-align:right; color:var(--brass);" class="bsc-mono">${fmtPct(r.curPct)}</td>
-        <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${fmtINR(r.prevAmt)}</td>
-        <td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">${fmtPct(r.prevPct)}</td>
-        <td style="padding:8px 10px; text-align:right; font-weight:600; color:${deltaColor};" class="bsc-mono">${deltaText}</td>
+        <td style="padding:8px 10px; font-weight:500;">${r.label}</td>
+        <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${r.display}</td>
       </tr>`;
     });
     t.innerHTML = trows;
     body.appendChild(t);
   }
 
-  const prevBaseline = (typeof PREV_MONTH_REFUND_CN !== 'undefined' && PREV_MONTH_REFUND_CN.month) ? PREV_MONTH_REFUND_CN : null;
-  if(prevBaseline){
-    reasonVsLastMonth('Refunds by reason', refundMonth ? refundMonth.byReason : null, refundTotal,
-      prevBaseline.refund ? prevBaseline.refund.byReason : null, prevBaseline.refund ? prevBaseline.refund.total : 0, prevBaseline.month);
-    reasonVsLastMonth('Credit notes by reason', cnMonth ? cnMonth.byReason : null, cnTotal,
-      prevBaseline.cn ? prevBaseline.cn.byReason : null, prevBaseline.cn ? prevBaseline.cn.total : 0, prevBaseline.month);
-  } else {
-    const note = document.createElement('div');
-    note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-bottom:24px; padding:10px 14px; background:var(--panel); border-radius:8px;';
-    note.textContent = 'No previous-month refund/CN baseline set yet -- see BSC_Dashboard_Runbook.md for how to build PREV_MONTH_REFUND_CN from a complete prior month’s refund/CN file.';
-    body.appendChild(note);
-  }
+  renderReasonsExplorer();
 
   attachRefundHandlers();
+  attachReasonsFilterHandlers();
 }
 
 function currentMonthKeyForDate(d){
@@ -2605,6 +2637,22 @@ function attachRefundStoreFilterHandlers(){
   if(sortSel) sortSel.addEventListener('change', (e) => {
     state.refundStoreSortBy = e.target.value;
     render();
+  });
+}
+
+function attachReasonsFilterHandlers(){
+  const bindings = [
+    ['bsc-reason-type', 'reasonType'],
+    ['bsc-reason-channel', 'reasonChannel'],
+    ['bsc-reason-breakdown', 'reasonBreakdown'],
+    ['bsc-reason-metric', 'reasonMetric'],
+  ];
+  bindings.forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('change', (e) => {
+      state[key] = e.target.value;
+      render();
+    });
   });
 }
 
