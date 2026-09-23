@@ -1,5 +1,6 @@
 // verify_cohort_match.js -- cross-check that the pooled Training Cohort 1 figures in index.html
-// (SEED_DAYS + TRAINING_COHORT) equal the tracker's BATCH1_RAW[].<period> totals, to the cent.
+// (SEED_DAYS + TRAINING_COHORT) equal the tracker's BATCH1_RAW[].<period> totals (bills/units/AOV exact,
+// revenue within per-stylist rounding).
 // Usage: node scripts/verify_cohort_match.js <period-key, e.g. sep>
 // Exit code 0 = match, 1 = mismatch or parse problem.
 const fs = require('fs');
@@ -54,7 +55,9 @@ for (const s of B1) {
 const aov1 = (r / b).toFixed(2), aov2 = (r2 / b2).toFixed(2);
 console.log('index.html   revenue=' + r.toFixed(0) + ' bills=' + b + ' units=' + u + ' AOV=' + aov1);
 console.log('tracker      revenue=' + r2.toFixed(0) + ' bills=' + b2 + ' units=' + u2 + ' AOV=' + aov2);
-if (aov1 === aov2 && b === b2 && u === u2 && Math.abs(r - r2) < 1) {
+// The tracker stores each stylist's revenue rounded to the rupee, so allow up to 0.5 per stylist of drift
+const tol = 0.5 * B1.length;
+if (aov1 === aov2 && b === b2 && u === u2 && Math.abs(r - r2) <= tol) {
   console.log('MATCH');
 } else {
   console.log('MISMATCH');
