@@ -12,7 +12,9 @@ leaving the files as they were -- it never touches git):
   3. Runs update_main_dashboard.py and update_tracker.py.
   4. Bumps the tracker's hand-written "as of" labels, which update_tracker.py never touches.
   5. Runs verify_cohort_match.js (pooled Training Cohort 1 AOV must match between the two files).
-On any failure after step 3 the two HTML files are restored from git (git checkout).
+  6. Runs forecast.py run (Forecast tab + data/ history/log). Non-fatal: on failure data/ is restored
+     and a WARNING is printed, but the sales refresh still counts as OK.
+On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
 """
 import argparse
 import datetime as dt
@@ -133,7 +135,15 @@ def main():
         restore(html_files)
         stop('pooled Training Cohort AOV does NOT match between index.html and the tracker')
 
-    print('OK: dashboards refreshed through %s. Ready to commit + push.' % last)
+    # Forecast tab: merge this MTD file into data/sales_history_daily.csv, retrain, forecast, log.
+    # Non-fatal -- if it fails, the sales refresh still ships and the Forecast tab keeps yesterday's numbers.
+    forecast_ok = run([py, 'scripts/forecast.py', 'run', '--sales', a.sales, '--html', 'index.html']) == 0
+    if not forecast_ok:
+        restore(['data/'])
+        print('WARNING: forecast.py failed -- Forecast tab NOT updated (still shows the previous run); data/ restored.')
+
+    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/).'
+          % (last, '' if forecast_ok else ' (forecast step failed, see WARNING)'))
 
 
 if __name__ == '__main__':

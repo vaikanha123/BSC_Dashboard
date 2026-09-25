@@ -1,0 +1,35 @@
+{
+  "_readme": "Config for scripts/forecast.py. closed_stores: permanently closed offline stores that appear in the sales history but not in REGION_MAP (name -> region), so their past sales still train the model. temporarily_closed: shown as a note on the Forecast tab; the model itself detects a closure from a >=14-day sales gap and brings the store back automatically once it sells again (seeded from its pre-closure level). festivals: main day of each festival per year -- extend every year and have HO verify. festival_windows: days before/after the main day the model treats as that festival's effect window (default -10..+5).",
+  "closed_stores": {
+    "Borivali": "West",
+    "Seawoods": "West",
+    "Meharchand Market, New Delhi": "North",
+    "Noida": "North",
+    "Jayanagar": "South"
+  },
+  "temporarily_closed": {
+    "R.K. Salai": "Renovation - reopening date not confirmed (contractor delayed)"
+  },
+  "festivals": {
+    "diwali": ["2024-11-01", "2025-10-20", "2026-11-08", "2027-10-29"],
+    "dussehra": ["2024-10-12", "2025-10-02", "2026-10-20", "2027-10-09"],
+    "holi": ["2024-03-25", "2025-03-14", "2026-03-04", "2027-03-22"],
+    "rakhi": ["2024-08-19", "2025-08-09", "2026-08-28", "2027-08-17"],
+    "ganesh": ["2024-09-07", "2025-08-27", "2026-09-14", "2027-09-04"],
+    "eid": ["2024-04-11", "2025-03-31", "2026-03-20", "2027-03-10"],
+    "christmas": ["2024-12-25", "2025-12-25", "2026-12-25", "2027-12-25"],
+    "newyear": ["2024-01-01", "2025-01-01", "2026-01-01", "2027-01-01", "2028-01-01"],
+    "independence": ["2024-08-15", "2025-08-15", "2026-08-15", "2027-08-15"],
+    "republic": ["2024-01-26", "2025-01-26", "2026-01-26", "2027-01-26"],
+    "gandhi": ["2024-10-02", "2025-10-02", "2026-10-02", "2027-10-02"]
+  },
+  "festival_labels": {
+    "diwali": "Diwali", "dussehra": "Dussehra", "holi": "Holi", "rakhi": "Raksha Bandhan",
+    "ganesh": "Ganesh Chaturthi", "eid": "Eid al-Fitr", "christmas": "Christmas", "newyear": "New Year",
+    "independence": "Independence Day", "republic": "Republic Day", "gandhi": "Gandhi Jayanti"
+  },
+  "festival_windows": {
+    "diwali": [-40, 10],
+    "dussehra": [-20, 5]
+  }
+}

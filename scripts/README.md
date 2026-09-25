@@ -3,7 +3,7 @@
 See `../BSC_Dashboard_Runbook.md` for full context. Quick reference:
 
 ```bash
-pip install pandas openpyxl --break-system-packages   # if not already installed
+pip install pandas openpyxl scikit-learn --break-system-packages   # if not already installed (scikit-learn: forecast.py)
 
 # Daily update, main dashboard:
 python3 update_main_dashboard.py --html ../index.html \
