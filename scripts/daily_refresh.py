@@ -124,15 +124,16 @@ def main():
         t = f.read()
     new_asof = 'Data as of %s %d, %d' % (MON[last.month - 1], last.day, last.year)
     # only the live-month labels ("... — September MTD"); frozen ones like "August fully closed" stay
-    t, n1 = re.subn(r'Data as of [A-Z][a-z]{2} \d{1,2}, \d{4}(?= (?:—|\u2014) [A-Z][a-z]+ MTD)', new_asof, t)
+    # The Batch 2 badge in applyPeriodMode() writes the dash as a literal JS escape (backslash-u2014).
+    t, n1 = re.subn(r'Data as of [A-Z][a-z]{2} \d{1,2}, \d{4}(?= (?:—|\\u2014) [A-Z][a-z]+ MTD)', new_asof, t)
     t, n2 = re.subn(r'(%s MTD \()\d+( days\))' % MONTH_NAMES[last.month - 1], r'\g<1>%d\g<2>' % last.day, t)
     t, n3 = re.subn(r'([A-Z][a-z]{2} 1(?:–|\\u2013))\d+( (?:MTD|only))', r'\g<1>%d\g<2>' % last.day, t)
     with open(p, 'w', encoding='utf-8', newline='') as f:
         f.write(t)
     print('tracker labels bumped: asof=%d, days=%d, range=%d' % (n1, n2, n3))
-    if n1 < 3 or n2 < 3:
+    if n1 < 4 or n2 < 3:
         restore(html_files)
-        stop('expected >=3 "as of"/"days" labels in the tracker, found %d/%d' % (n1, n2))
+        stop('expected >=4 "as of" and >=3 "days" labels in the tracker, found %d/%d' % (n1, n2))
 
     if run([find_node(), 'scripts/verify_cohort_match.js', period]) != 0:
         restore(html_files)
