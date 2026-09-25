@@ -1885,7 +1885,6 @@ function renderForecast(body, days){
   const pct1 = v => v !== null && v !== undefined ? (v*100).toFixed(1) + '%' : '—';
   cardGrid([
     {label: 'Next-day miss — live, last 30 days', val: pct1(A.liveDay30.mape), sub: A.liveDay30.n ? A.liveDay30.n + ' days scored' : 'scores start from ' + dayLabel(F.dataThrough)},
-    {label: 'Full-month miss — live', val: pct1(A.liveMonth.mape), sub: A.liveMonth.n ? A.liveMonth.n + ' month' + (A.liveMonth.n === 1 ? '' : 's') + ' scored' : 'first score once ' + monthName(F.nextMonth.key) + ' closes'},
     {label: 'Next-day miss — backtest', val: pct1(A.backtestDay.mape), sub: A.backtestDay.n + ' past days, as-if forecasts'},
     {label: 'Full-month miss — backtest', val: pct1(A.backtestMonth.mape), sub: A.backtestMonth.n + ' past months (1st to month-end), forecast made just before each began'},
   ]);
