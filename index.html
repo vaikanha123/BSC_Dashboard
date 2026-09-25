@@ -1880,7 +1880,7 @@ function renderForecast(body, days){
   body.appendChild(stNote);
 
   // accuracy
-  section('How accurate has it been?', 'every forecast is logged and scored once the actual comes in');
+  section('How accurate has it been?', 'every forecast is logged and scored once the actual comes in; misses are % of actual sales, negative = came in below forecast');
   const A = F.accuracy;
   const pct1 = v => v !== null && v !== undefined ? (v*100).toFixed(1) + '%' : '—';
   cardGrid([
@@ -1889,18 +1889,18 @@ function renderForecast(body, days){
     {label: 'Next-day miss — backtest', val: pct1(A.backtestDay.mape), sub: A.backtestDay.n + ' past days, as-if forecasts'},
     {label: 'Next-7-days miss — backtest', val: pct1(A.backtestWeek.mape), sub: A.backtestWeek.n + ' past weeks'},
   ]);
-  rows = th(['Day', 'Forecast (made day before)', 'Actual', 'Actual vs forecast', 'Type']);
+  rows = th(['Day', 'Forecast (made day before)', 'Actual', 'Miss (% of actual)', 'Type']);
   A.recent.slice().reverse().forEach(r => {
     rows += tr(td(dayLabel(r.date), {left:true}) + td(fmtINR(r.forecast)) + td(fmtINR(r.actual)) +
-      td(pctTxt(-r.err / (1 + r.err)), {color: missColor(r.err, 0.1, 0.2)}) + td(r.source === 'live' ? 'Live' : 'Backtest'));
+      td(pctTxt(-r.err), {color: missColor(r.err, 0.1, 0.2)}) + td(r.source === 'live' ? 'Live' : 'Backtest'));
   });
   tableWrap(rows);
 
   const bt = F.backtest || {};
   if(bt.perMonth){
-    section('Monthly backtest', 'as-if forecasts using only data available at the time; negative = month came in below forecast');
-    rows = th(['Month', 'Actual vs forecast made on day 0', 'Actual vs landing forecast on day 14', 'Avg next-day miss', 'Avg next-7-days miss']);
-    const inv = v => -v / (1 + v); // stored as forecast/actual - 1; show actual vs forecast
+    section('Monthly backtest', 'as-if forecasts using only data available at the time; all misses are % of actual sales, negative = came in below forecast');
+    rows = th(['Month', 'Day-0 forecast miss', 'Day-14 landing miss', 'Avg next-day miss', 'Avg next-7-days miss']);
+    const inv = v => -v; // stored as forecast/actual - 1; shown as (actual - forecast) / actual, same basis as the cards
     bt.perMonth.filter(m => m.full).slice().reverse().forEach(m => {
       rows += tr(td(monthName(m.month), {left:true}) +
         td(pctTxt(inv(m.monthAhead)), {color: missColor(m.monthAhead, 0.05, 0.1)}) +
