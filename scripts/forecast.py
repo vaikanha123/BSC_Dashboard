@@ -342,20 +342,28 @@ def band(F, Ac, h0, h1, q=(0.1, 0.9)):
 
 
 # ---------------------------------------------------------------- month landing (MTD actual + rest of month)
-# Backtest finding (2026-09-26, 513 origins): the newest forecast over-reacts to a strong/weak start of the
-# month -- first-half surprises mostly don't persist -- and method B is noisy over a part-month. Averaging
-# the forecast made just before the month began with the newest one (newest = A and G only) cut the landing
-# miss from 3.44% to 3.20%, most in days 8-14 (4.63% -> 3.87%), and won in both halves of the period.
-# Every run re-scores the candidates on the last 365 days of logged forecasts; a challenger replaces the
-# default only if it is better by LANDING_SWITCH_MARGIN, so the choice keeps learning without flip-flopping.
+# Backtest findings (2026-09-26, 513 origins): the newest forecast over-reacts to a strong/weak start of the
+# month -- first-half surprises mostly don't persist -- and method B is noisy over a part-month. Averaging the
+# forecast made just before the month began with the newest one (A and G) helps clearly in days 8-21 (e.g.
+# days 8-14: 4.63% -> 3.87%), but not early (the two forecasts are nearly the same) nor late in the month,
+# when a start-of-month forecast that has already proven wrong only drags the landing (Sep-2026: the 31-Aug
+# forecast was 14% high for Sep 1-25 and still pulled the day-25 landing up ~Rs10L).
+# So the choice is made per phase of the month. Every run re-scores each candidate per phase on the last 365
+# days of logged forecasts; a challenger replaces a phase's default only if it is better by
+# LANDING_SWITCH_REL (relative), so the choice keeps learning without flip-flopping.
 
 LANDING_METHODS = {
     'latest': 'newest forecast only',
     'avg_start_latest': 'average of the start-of-month forecast and the newest forecast',
     'avg_start_latest_noB': 'average of the start-of-month forecast and the newest forecast (methods A and G)',
 }
-LANDING_DEFAULT = 'avg_start_latest_noB'
-LANDING_SWITCH_MARGIN = 0.0015
+LANDING_PHASES = {'early': (1, 7), 'mid': (8, 21), 'late': (22, 31)}  # day of month the data runs through
+LANDING_DEFAULTS = {'early': 'latest', 'mid': 'avg_start_latest_noB', 'late': 'latest'}
+LANDING_SWITCH_REL = 0.05
+
+
+def landing_phase(day):
+    return next(ph for ph, (a, b) in LANDING_PHASES.items() if a <= day <= b)
 
 
 def start_origin(origins, month_start):
@@ -375,19 +383,20 @@ def landing_rest(method, new, old_final):
 
 
 def score_landing(lg, act, last, lookback=365):
-    """Mean |landing miss| of each method over logged origins in the last `lookback` days whose month has
-    closed. Returns ({method: miss}, n)."""
+    """Mean |landing miss| of each method per phase of the month, over logged origins in the last `lookback`
+    days whose month has closed. Returns {phase: ({method: miss}, n)}."""
     x = lg[(lg.scope == 'network') & (lg.origin > last - pd.Timedelta(days=lookback))]
+    out = {ph: ({}, 0) for ph in LANDING_PHASES}
     if x.empty:
-        return {}, 0
+        return out
     P = {c: x.pivot_table(index='origin', columns='target', values=c, aggfunc='last') for c in ('final', 'A', 'G')}
     origins = list(P['final'].index)
-    errs = {m: [] for m in LANDING_METHODS}
+    errs = {ph: {m: [] for m in LANDING_METHODS} for ph in LANDING_PHASES}
     net = act['network']
     for o in origins:
-        per = pd.Period(o + pd.Timedelta(days=1), 'M') if o.day == o.days_in_month else pd.Period(o, 'M')
         if o.day == o.days_in_month:
             continue  # month-ahead, not a landing
+        per = pd.Period(o, 'M')
         ms, me = per.start_time, per.end_time.normalize()
         if me > last:
             continue
@@ -400,17 +409,26 @@ def score_landing(lg, act, last, lookback=365):
         new = tuple(float(P[c].loc[o, rest].sum()) for c in ('final', 'A', 'G'))
         old = float(P['final'].loc[s0, rest].sum())
         mtd, total = float(net[ms:o].sum()), float(net[ms:me].sum())
+        ph = landing_phase(o.day)
         for m in LANDING_METHODS:
-            errs[m].append(abs((mtd + landing_rest(m, new, old)) / total - 1))
-    n = len(errs[LANDING_DEFAULT])
-    return ({m: float(np.mean(v)) for m, v in errs.items() if v}, n)
+            errs[ph][m].append(abs((mtd + landing_rest(m, new, old)) / total - 1))
+    for ph, e in errs.items():
+        out[ph] = ({m: float(np.mean(v)) for m, v in e.items() if v}, len(e[LANDING_DEFAULTS[ph]]))
+    return out
 
 
-def choose_landing(scores, n):
-    if n < 60 or LANDING_DEFAULT not in scores:
-        return LANDING_DEFAULT
-    best = min(scores, key=scores.get)
-    return best if scores[best] < scores[LANDING_DEFAULT] - LANDING_SWITCH_MARGIN else LANDING_DEFAULT
+def choose_landing(phase_scores):
+    """{phase: method}: each phase keeps its default unless another method beat it by LANDING_SWITCH_REL
+    over at least 20 scored origins in that phase."""
+    choice = {}
+    for ph, (scores, n) in phase_scores.items():
+        d = LANDING_DEFAULTS[ph]
+        if n < 20 or d not in scores:
+            choice[ph] = d
+            continue
+        best = min(scores, key=scores.get)
+        choice[ph] = best if scores[best] < scores[d] * (1 - LANDING_SWITCH_REL) else d
+    return choice
 
 
 def landing14_by_month(lg, act, method, months):
@@ -610,8 +628,11 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
     mtd = float(act['network'][cur.start_time:last].sum())
     rest_latest = float(net.loc[last + pd.Timedelta(days=1):cur_end, 'final'].sum())
     # month landing: learned choice of how to combine the start-of-month and newest forecasts
-    l_scores, l_n = score_landing(lg, act, last)
-    l_method = choose_landing(l_scores, l_n)
+    l_phase_scores = score_landing(lg, act, last)
+    l_choice = choose_landing(l_phase_scores)
+    l_phase = landing_phase(last.day)
+    l_method = l_choice[l_phase]
+    l_scores, l_n = l_phase_scores[l_phase]
     rest_dates = pd.date_range(last + pd.Timedelta(days=1), cur_end)
     s0 = start_origin(list(lg.loc[lg.scope == 'network', 'origin'].unique()), cur.start_time)
     old = None
@@ -621,8 +642,8 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
     new = tuple(float(net.loc[rest_dates, c].sum()) if days_left else 0.0 for c in ('final', 'A', 'G'))
     rest = landing_rest(l_method, new, old) if days_left else 0.0
     k_rest = rest / rest_latest if rest_latest else 1.0  # applied to regions/stores so they add up
-    log('landing: method %s (%s) scores %s over %d origins; start-of-month origin %s' % (
-        l_method, LANDING_METHODS[l_method], {m: round(v * 100, 2) for m, v in l_scores.items()}, l_n,
+    log('landing: %s-month phase -> %s (%s); phase scores %s over %d origins; start-of-month origin %s' % (
+        l_phase, l_method, LANDING_METHODS[l_method], {m: round(v * 100, 2) for m, v in l_scores.items()}, l_n,
         s0.date() if s0 is not None else None))
     b_rest = band(F, Ac, 1, days_left) if days_left else [0.0, 0.0, 0]
     h0, h1 = (nxt_start - last).days, (nxt_end - last).days
@@ -714,7 +735,7 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
 
     return {
         'generatedOn': dt.date.today().isoformat(), 'dataThrough': str(last.date()),
-        'policy': pol, 'backtest': backtest_view(bt, lg, act, l_method),
+        'policy': pol, 'backtest': backtest_view(bt, lg, act, l_choice['mid']),
         'month': {'key': str(cur), 'mtd': round(mtd), 'rest': round(rest), 'landing': round(mtd + rest),
                   'lo': lo, 'hi': hi, 'daysLeft': days_left},
         'nextMonth': {'key': str(nxt), 'forecast': round(nm), 'lo': nlo, 'hi': nhi, 'lastYear': round(ly_actual),
@@ -730,9 +751,11 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
                      'backtestDay': acc('backtest', 400), 'backtestMonth': acc_month('backtest'), 'recent': recent},
         'notes': {'temporarilyClosed': temp, 'runRateStores': new_stores, 'festivals': festivals},
         'insights': compute_insights(d, agg, rows, act, cfg, cur, nxt, mtd + rest, nm, k_rest),
-        'landingMethod': {'method': l_method, 'label': LANDING_METHODS[l_method], 'n': l_n,
+        'landingMethod': {'method': l_method, 'label': LANDING_METHODS[l_method], 'n': l_n, 'phase': l_phase,
                           'scores': {m: round(v, 4) for m, v in l_scores.items()},
-                          'labels': LANDING_METHODS, 'default': LANDING_DEFAULT},
+                          'labels': LANDING_METHODS, 'choice': l_choice, 'phases': LANDING_PHASES,
+                          'phaseScores': {ph: {'n': n_, 'scores': {m: round(v, 4) for m, v in sc.items()}}
+                                          for ph, (sc, n_) in l_phase_scores.items()}},
     }
 
 
