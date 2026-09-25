@@ -554,15 +554,27 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
         y = x[(x.source == src) & (x.target > last - pd.Timedelta(days=days))]
         return {'n': int(len(y)), 'mape': round(float(y.err.abs().mean()), 4) if len(y) else None}
 
-    wk = lg[(lg.scope == 'network') & (lg.h <= 7)].copy()
-    wk['actual'] = wk['target'].map(act['network'])
-    wk = wk.dropna(subset=['actual']).groupby(['origin', 'source']).filter(lambda g: len(g) == 7)
-    wk = wk.groupby(['origin', 'source'])[['final', 'actual']].sum().reset_index()
-    wk['err'] = (wk.final / wk.actual - 1).abs()
+    net_log = lg[lg.scope == 'network']
 
-    def acc_w(src, days):
-        y = wk[(wk.source == src) & (wk.origin > last - pd.Timedelta(days=days))]
-        return {'n': int(len(y)), 'mape': round(float(y.err.mean()), 4) if len(y) else None}
+    def acc_month(src):
+        """Calendar-month miss (1st..last day), using the latest forecast of that source made in the
+        7 days before the month started, once the whole month has actuals."""
+        y = net_log[net_log.source == src]
+        misses = []
+        if y.empty:
+            return {'n': 0, 'mape': None}
+        for per in pd.period_range(pd.Period(y.origin.min(), 'M'), pd.Period(last, 'M')):
+            ms, me = per.start_time, per.end_time.normalize()
+            if me > last:
+                continue
+            cand = y[(y.origin < ms) & (y.origin >= ms - pd.Timedelta(days=7))]
+            if cand.empty:
+                continue
+            z = cand[(cand.origin == cand.origin.max()) & (cand.target >= ms) & (cand.target <= me)]
+            if z.target.nunique() != per.days_in_month:
+                continue
+            misses.append(abs(z.final.sum() / act['network'][ms:me].sum() - 1))
+        return {'n': len(misses), 'mape': round(float(np.mean(misses)), 4) if misses else None}
 
     all_locs = set(hist['loc'])
     temp = {k: v for k, v in cfg.get('temporarily_closed', {}).items()
@@ -590,8 +602,8 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
                                                      (agg.target <= nxt_end)]['final'].sum()))}
                     for r in d.region_names},
         'daily': daily, 'stores': stores,
-        'accuracy': {'liveDay30': acc('live', 30), 'liveWeek30': acc_w('live', 30),
-                     'backtestDay': acc('backtest', 400), 'backtestWeek': acc_w('backtest', 400), 'recent': recent},
+        'accuracy': {'liveDay30': acc('live', 30), 'liveMonth': acc_month('live'),
+                     'backtestDay': acc('backtest', 400), 'backtestMonth': acc_month('backtest'), 'recent': recent},
         'notes': {'temporarilyClosed': temp, 'runRateStores': new_stores, 'festivals': festivals},
         'insights': compute_insights(d, agg, rows, act, cfg, cur, nxt, mtd + rest, nm),
     }
