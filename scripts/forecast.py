@@ -1,4 +1,5 @@
-"""forecast.py -- offline-store revenue forecasting ("learning layer") for index.html's Forecast tab.
+"""forecast.py -- offline-store revenue forecasting ("learning layer") for the separate, unlinked forecast page
+(forecast-1ad8b79c.html -- deliberately not linked from index.html).
 
 Usage (from the repo root):
     python scripts/forecast.py init-history --sales "<multi-year sales CSV>"
@@ -11,7 +12,7 @@ Usage (from the repo root):
         these "as-if" forecasts (source=backtest), scores the three blend policies, and records the
         winner in data/forecast_backtest.json. Re-run after changing the model or features -- a change
         only goes live if it wins here (champion/challenger).
-    python scripts/forecast.py run --sales "<month-to-date CSV>" --html index.html
+    python scripts/forecast.py run --sales "<month-to-date CSV>" --html forecast-1ad8b79c.html --dashboard index.html
         At a month transition pass the complete previous-month file first, since the daily task skips
         the 1st/2nd and the month's last day would otherwise never reach the history:
             --sales "<full previous month CSV>" --sales "<new month-to-date CSV>"
@@ -474,6 +475,7 @@ def cmd_run(a):
     write_log(lg)
 
     payload = build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist)
+    payload['targets'] = dashboard_targets(os.path.join(ROOT, a.dashboard), pd.Period(last, 'M'))
     if a.html:
         p = os.path.join(ROOT, a.html) if not os.path.isabs(a.html) else a.html
         with open(p, encoding='utf-8', newline='') as f:
@@ -609,6 +611,36 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
     }
 
 
+# ---------------------------------------------------------------- targets (read from the main dashboard)
+
+def dashboard_targets(path, cur):
+    """Month / daily / store targets for month `cur`, read from index.html's TARGETS + DAILY_TARGETS
+    constants with the same rule as its storeTargetForDay(): exact day-wise target if present, else the
+    store's weekday/weekend figure. None when the dashboard's targets aren't for this month yet."""
+    if not path or not os.path.exists(path):
+        return None
+    with open(path, encoding='utf-8') as f:
+        content = f.read()
+    dec = json.JSONDecoder()
+
+    def const(name):
+        i = content.find('const %s = ' % name)
+        return dec.raw_decode(content, i + len('const %s = ' % name))[0] if i >= 0 else None
+
+    T, DT = const('TARGETS'), const('DAILY_TARGETS') or {}
+    days = pd.date_range(cur.start_time, cur.end_time.normalize())
+    keys = [str(x.date()) for x in days]
+    if not T or not any(k in v for v in DT.values() for k in keys):
+        return None
+    daily = dict.fromkeys(keys, 0.0)
+    for rec in T:
+        dt_ = DT.get(rec['pos_name'], {})
+        for x, k in zip(days, keys):
+            daily[k] += dt_[k] if k in dt_ else (rec['weekend_target'] if x.dayofweek >= 5 else rec['weekday_target'])
+    return {'monthKey': str(cur), 'month': round(sum(daily.values())), 'daily': {k: round(v) for k, v in daily.items()},
+            'stores': {r['pos_name']: r['month_target'] for r in T}}
+
+
 # ---------------------------------------------------------------- insights ("why this forecast")
 
 def _month_slice(obs, per):
@@ -622,7 +654,7 @@ def _weekend_days(per):
 
 
 def compute_insights(d, agg, rows, act, cfg, cur, nxt, landing, nm_fc):
-    """Data-derived explanations for the Forecast tab. Everything here is computed from the sales
+    """Data-derived explanations for the forecast page. Everything here is computed from the sales
     history on each run -- no hand-written claims -- so it stays true as the data moves."""
     obs = d.Y.loc[:d.last]
     last = d.last
@@ -755,7 +787,8 @@ def main():
     p.add_argument('--months', type=int, default=18)
     p = sub.add_parser('run')
     p.add_argument('--sales', action='append', help='sales CSV to merge into the history first; repeatable (oldest first)')
-    p.add_argument('--html')
+    p.add_argument('--html', help='forecast page to write const FORECAST into')
+    p.add_argument('--dashboard', default='index.html', help='main dashboard to read TARGETS / DAILY_TARGETS from')
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True)
     if a.cmd == 'init-history':

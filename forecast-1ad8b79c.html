@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>BSC Revenue Forecast</title>
+<style>
+  html, body { margin:0; padding:24px; background:#0e1013; }
+  body { display:flex; justify-content:center; }
+  .bsc-dash-wrap { width:100%; max-width:960px; }
+  @media (max-width:600px) { html, body { padding:8px; } }
+  :root{
+    --ink:#15181d; --panel:#1c2027; --panel2:#22262e; --line:#2c313a; --line2:#383e49;
+    --brass:#c9a15b; --brass-dim:#8a713f; --text:#e9e6df; --text-dim:#9a9da5; --text-mute:#6d7280;
+    --good:#5ea982; --bad:#c96b5e; --warn:#c9a15b;
+  }
+  *{box-sizing:border-box}
+  .bsc-dash{font-family:'Inter',-apple-system,sans-serif; background:var(--ink); color:var(--text);
+    border-radius:14px; overflow:hidden; border:1px solid var(--line); font-variant-numeric:tabular-nums;}
+  .bsc-dash table{border-collapse:collapse; width:100%}
+  .bsc-mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+<div class="bsc-dash-wrap">
+<div class="bsc-dash">
+  <div style="padding:20px 24px 16px; border-bottom:1px solid var(--line);">
+    <div style="font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--brass); font-weight:600;">Bombay Shirt Company</div>
+    <div style="font-size:20px; font-weight:600; margin-top:2px;">Revenue Forecast</div>
+  </div>
+  <div id="bsc-forecast" style="padding:20px 24px 24px;"></div>
+</div>
+</div>
+<script>
+(function(){
+// Separate, unlinked page (not reachable from index.html). Data written daily by scripts/forecast.py.
+const FORECAST = {"generatedOn":"2026-09-25","dataThrough":"2026-09-24","policy":{"mode":"adaptive","weights":{"day":{"A":0.3406,"B":0.2884,"G":0.371},"week":{"A":0.3459,"B":0.2872,"G":0.3668},"month":{"A":0.3162,"B":0.3066,"G":0.3772}},"bias":{"day":1.0,"week":1.0,"month":1.0},"n":{"day":119,"week":118,"month":112}},"backtest":{"champion":"adaptive","policies":{"equal":{"day":0.1405,"week":0.0758,"month":0.0497,"landing14":0.04},"adaptive":{"day":0.1396,"week":0.0753,"month":0.0507,"landing14":0.0399},"adaptive_bias":{"day":0.1428,"week":0.083,"month":0.0698,"landing14":0.0456}},"perMonth":[{"day":0.2299,"week":0.1684,"landing14":-0.1014,"full":true,"monthAhead":0.0073,"month":"2025-03"},{"day":0.1874,"week":0.0569,"landing14":0.0218,"full":true,"monthAhead":-0.0448,"month":"2025-04"},{"day":0.1731,"week":0.0817,"landing14":0.0563,"full":true,"monthAhead":0.0088,"month":"2025-05"},{"day":0.1441,"week":0.0724,"landing14":0.0237,"full":true,"monthAhead":-0.0408,"month":"2025-06"},{"day":0.11,"week":0.0767,"landing14":-0.0578,"full":true,"monthAhead":-0.0748,"month":"2025-07"},{"day":0.1567,"week":0.0903,"landing14":0.0444,"full":true,"monthAhead":0.0483,"month":"2025-08"},{"day":0.1214,"week":0.0514,"landing14":-0.0067,"full":true,"monthAhead":0.0337,"month":"2025-09"},{"day":0.1671,"week":0.0753,"landing14":0.0503,"full":true,"monthAhead":-0.0793,"month":"2025-10"},{"day":0.0961,"week":0.0496,"landing14":-0.0213,"full":true,"monthAhead":-0.0795,"month":"2025-11"},{"day":0.1749,"week":0.1335,"landing14":0.0557,"full":true,"monthAhead":0.1517,"month":"2025-12"},{"day":0.1335,"week":0.0775,"landing14":-0.0278,"full":true,"monthAhead":-0.0028,"month":"2026-01"},{"day":0.1296,"week":0.081,"landing14":-0.0714,"full":true,"monthAhead":-0.0584,"month":"2026-02"},{"day":0.1778,"week":0.0786,"landing14":0.0687,"full":true,"monthAhead":0.0072,"month":"2026-03"},{"day":0.1603,"week":0.0604,"landing14":0.0288,"full":true,"monthAhead":-0.0605,"month":"2026-04"},{"day":0.1177,"week":0.0544,"landing14":-0.0231,"full":true,"monthAhead":-0.0132,"month":"2026-05"},{"day":0.1394,"week":0.0774,"landing14":-0.0416,"full":true,"monthAhead":-0.0135,"month":"2026-06"},{"day":0.1346,"week":0.0423,"landing14":-0.0291,"full":true,"monthAhead":-0.0435,"month":"2026-07"},{"day":0.0903,"week":0.0653,"landing14":-0.0317,"full":true,"monthAhead":-0.0952,"month":"2026-08"},{"day":0.1461,"week":0.112,"landing14":null,"full":false,"monthAhead":null,"month":"2026-09"}],"months":["2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"],"generated":"2026-09-25"},"month":{"key":"2026-09","mtd":78795108,"rest":22507107,"landing":101302215,"lo":98589342,"hi":104022231,"daysLeft":6},"nextMonth":{"key":"2026-10","forecast":127398832,"lo":120553005,"hi":139422025,"lastYear":105637877,"lastYearKey":"2025-10"},"regions":{"North":{"mtd":18511146,"landing":23546276,"nextMonth":27809165},"South":{"mtd":24537388,"landing":31185619,"nextMonth":36903370},"West":{"mtd":35746575,"landing":46570320,"nextMonth":62686297}},"daily":[{"date":"2026-09-01","actual":2465319},{"date":"2026-09-02","actual":2408785},{"date":"2026-09-03","actual":2885905},{"date":"2026-09-04","actual":2693254},{"date":"2026-09-05","actual":4751568},{"date":"2026-09-06","actual":5634725},{"date":"2026-09-07","actual":2476226},{"date":"2026-09-08","actual":2727991},{"date":"2026-09-09","actual":2336194},{"date":"2026-09-10","actual":2518568},{"date":"2026-09-11","actual":2498055},{"date":"2026-09-12","actual":5125446},{"date":"2026-09-13","actual":5794821},{"date":"2026-09-14","actual":2791336},{"date":"2026-09-15","actual":2370039},{"date":"2026-09-16","actual":2544237},{"date":"2026-09-17","actual":3192459},{"date":"2026-09-18","actual":2233190},{"date":"2026-09-19","actual":5631293},{"date":"2026-09-20","actual":5735433},{"date":"2026-09-21","actual":2197800},{"date":"2026-09-22","actual":2900975},{"date":"2026-09-23","actual":2555405},{"date":"2026-09-24","actual":2326084},{"date":"2026-09-25","forecast":2786815,"lo":2180076,"hi":3432661},{"date":"2026-09-26","forecast":5260329,"lo":4115893,"hi":6457627},{"date":"2026-09-27","forecast":6104103,"lo":4779310,"hi":7467950},{"date":"2026-09-28","forecast":2773001,"lo":2173376,"hi":3409693},{"date":"2026-09-29","forecast":2837393,"lo":2223440,"hi":3472411},{"date":"2026-09-30","forecast":2745466,"lo":2157495,"hi":3364442},{"date":"2026-10-01","forecast":3893851,"lo":3070131,"hi":4793081},{"date":"2026-10-02","forecast":3780501,"lo":3000953,"hi":4715053},{"date":"2026-10-03","forecast":5770293,"lo":4570447,"hi":7170517},{"date":"2026-10-04","forecast":6912974,"lo":5479023,"hi":8589809},{"date":"2026-10-05","forecast":3128863,"lo":2480861,"hi":3897771},{"date":"2026-10-06","forecast":3084045,"lo":2441086,"hi":3847147},{"date":"2026-10-07","forecast":3036592,"lo":2405645,"hi":3799166},{"date":"2026-10-08","forecast":3261335,"lo":2579948,"hi":4073025},{"date":"2026-10-09","forecast":3461559,"lo":2755928,"hi":4287153},{"date":"2026-10-10","forecast":6131229,"lo":4887115,"hi":7613732},{"date":"2026-10-11","forecast":7133290,"lo":5676593,"hi":8885363},{"date":"2026-10-12","forecast":3336649,"lo":2664723,"hi":4137004},{"date":"2026-10-13","forecast":3305758,"lo":2641547,"hi":4089875},{"date":"2026-10-14","forecast":3053248,"lo":2445029,"hi":3772255},{"date":"2026-10-15","forecast":3148611,"lo":2522322,"hi":3881327},{"date":"2026-10-16","forecast":3194946,"lo":2534170,"hi":3983897},{"date":"2026-10-17","forecast":5452940,"lo":4349147,"hi":6795469},{"date":"2026-10-18","forecast":6634380,"lo":5301783,"hi":8271737},{"date":"2026-10-19","forecast":3049530,"lo":2451055,"hi":3825414},{"date":"2026-10-20","forecast":3116750,"lo":2499326,"hi":3923916},{"date":"2026-10-21","forecast":3105433,"lo":2492135,"hi":3895140},{"date":"2026-10-22","forecast":3257939,"lo":2617102,"hi":4081691},{"date":"2026-10-23","forecast":3314246,"lo":2679462,"hi":4114029},{"date":"2026-10-24","forecast":5667322,"lo":4555974,"hi":7077881},{"date":"2026-10-25","forecast":6715914,"lo":5417102,"hi":8405295},{"date":"2026-10-26","forecast":3005593,"lo":2425772,"hi":3775361},{"date":"2026-10-27","forecast":3067997,"lo":2472513,"hi":3849169},{"date":"2026-10-28","forecast":2966555,"lo":2404511,"hi":3710096},{"date":"2026-10-29","forecast":3256048,"lo":2640081,"hi":4094340},{"date":"2026-10-30","forecast":3310739,"lo":2687752,"hi":4170290},{"date":"2026-10-31","forecast":5843702,"lo":4733468,"hi":7358766}],"stores":[{"store":"Ambience Vasant Kunj","region":"North","mtd":2139818,"rest":537867,"landing":2677685,"nextMonth":2898351,"runRate":false,"forecast":true},{"store":"Andheri","region":"West","mtd":1725522,"rest":550419,"landing":2275941,"nextMonth":3239448,"runRate":false,"forecast":true},{"store":"DLF Midtown - Moti Nagar","region":"North","mtd":471227,"rest":169838,"landing":641065,"nextMonth":902211,"runRate":false,"forecast":true},{"store":"Express Avenue","region":"South","mtd":1925779,"rest":502557,"landing":2428337,"nextMonth":2631810,"runRate":false,"forecast":true},{"store":"Gurugram","region":"North","mtd":2573293,"rest":672210,"landing":3245503,"nextMonth":3759973,"runRate":false,"forecast":true},{"store":"Indiranagar","region":"South","mtd":2763984,"rest":857706,"landing":3621689,"nextMonth":4809797,"runRate":false,"forecast":true},{"store":"Inorbit Mall Malad West","region":"West","mtd":1411521,"rest":421943,"landing":1833464,"nextMonth":2399273,"runRate":false,"forecast":true},{"store":"Inorbit mall Hyderabad","region":"South","mtd":2441027,"rest":651747,"landing":3092775,"nextMonth":3693528,"runRate":false,"forecast":true},{"store":"Jaipur Store","region":"North","mtd":1328735,"rest":380471,"landing":1709206,"nextMonth":2026024,"runRate":false,"forecast":true},{"store":"Jubilee Hills","region":"South","mtd":6516114,"rest":1761293,"landing":8277407,"nextMonth":9851427,"runRate":false,"forecast":true},{"store":"Juhu Store","region":"West","mtd":2195582,"rest":693335,"landing":2888917,"nextMonth":3934585,"runRate":false,"forecast":true},{"store":"KNK Chennai","region":"South","mtd":2022931,"rest":488037,"landing":2510968,"nextMonth":2655124,"runRate":false,"forecast":true},{"store":"Kalaghoda, Fort","region":"West","mtd":4652995,"rest":1468938,"landing":6121933,"nextMonth":8821986,"runRate":false,"forecast":true},{"store":"Kemps Corner","region":"West","mtd":5017043,"rest":1536041,"landing":6553084,"nextMonth":9236429,"runRate":false,"forecast":true},{"store":"Khan Market","region":"North","mtd":2077017,"rest":597092,"landing":2674109,"nextMonth":3235874,"runRate":false,"forecast":true},{"store":"Kochi Store","region":"South","mtd":683879,"rest":201327,"landing":885205,"nextMonth":1026609,"runRate":false,"forecast":true},{"store":"Koregaon Park","region":"West","mtd":3141510,"rest":838821,"landing":3980330,"nextMonth":4635283,"runRate":false,"forecast":true},{"store":"LakeShore Mall","region":"South","mtd":791280,"rest":228576,"landing":1019855,"nextMonth":1241958,"runRate":false,"forecast":true},{"store":"Lavelle Road","region":"South","mtd":3006616,"rest":737733,"landing":3744349,"nextMonth":4382171,"runRate":false,"forecast":true},{"store":"Mall of India, Noida","region":"North","mtd":2042634,"rest":587645,"landing":2630278,"nextMonth":3302327,"runRate":false,"forecast":true},{"store":"Oberoi Mall Store","region":"West","mtd":2036214,"rest":712383,"landing":2748597,"nextMonth":4163388,"runRate":false,"forecast":true},{"store":"Oberoi Sky City","region":"West","mtd":2323988,"rest":602750,"landing":2926739,"nextMonth":3560409,"runRate":false,"forecast":true},{"store":"PMC Viman Nagar Pune","region":"West","mtd":1253753,"rest":331900,"landing":1585653,"nextMonth":1887770,"runRate":false,"forecast":true},{"store":"Pali Hill, Bandra","region":"West","mtd":4254505,"rest":1497754,"landing":5752259,"nextMonth":8630309,"runRate":false,"forecast":true},{"store":"Phoenix Marketcity Kurla","region":"West","mtd":1739572,"rest":542500,"landing":2282072,"nextMonth":3137874,"runRate":false,"forecast":true},{"store":"Phoenix Marketcity, Whitefield","region":"South","mtd":2156602,"rest":567039,"landing":2723641,"nextMonth":3000897,"runRate":false,"forecast":true},{"store":"Phoenix Palassio","region":"North","mtd":1116714,"rest":308195,"landing":1424908,"nextMonth":1622273,"runRate":false,"forecast":true},{"store":"Sarath City-Hyderabad","region":"South","mtd":2229175,"rest":652217,"landing":2881392,"nextMonth":3610049,"runRate":false,"forecast":true},{"store":"Select City","region":"North","mtd":1845613,"rest":510038,"landing":2355652,"nextMonth":2748904,"runRate":false,"forecast":true},{"store":"Shakespearesarani","region":"North","mtd":2448680,"rest":631993,"landing":3080672,"nextMonth":3596033,"runRate":false,"forecast":true},{"store":"Sindhu Bhavan Marg","region":"West","mtd":3955542,"rest":1063882,"landing":5019424,"nextMonth":5773538,"runRate":false,"forecast":true},{"store":"South Ex.","region":"North","mtd":1761424,"rest":432380,"landing":2193804,"nextMonth":2497750,"runRate":false,"forecast":true},{"store":"Vegas Dwarka","region":"North","mtd":705992,"rest":207402,"landing":913394,"nextMonth":1219445,"runRate":false,"forecast":true},{"store":"Viviana Mall","region":"West","mtd":2038827,"rest":563080,"landing":2601907,"nextMonth":3266005,"runRate":false,"forecast":true}],"accuracy":{"liveDay30":{"n":0,"mape":null},"liveMonth":{"n":0,"mape":null},"backtestDay":{"n":400,"mape":0.1398},"backtestMonth":{"n":18,"mape":0.048},"recent":[{"date":"2026-09-11","forecast":3201875,"actual":2498055,"err":0.2817,"source":"backtest"},{"date":"2026-09-12","forecast":5283250,"actual":5125446,"err":0.0308,"source":"backtest"},{"date":"2026-09-13","forecast":6851165,"actual":5794821,"err":0.1823,"source":"backtest"},{"date":"2026-09-14","forecast":2921845,"actual":2791336,"err":0.0468,"source":"backtest"},{"date":"2026-09-15","forecast":2806701,"actual":2370039,"err":0.1842,"source":"backtest"},{"date":"2026-09-16","forecast":2742647,"actual":2544237,"err":0.078,"source":"backtest"},{"date":"2026-09-17","forecast":2783887,"actual":3192459,"err":-0.128,"source":"backtest"},{"date":"2026-09-18","forecast":3150711,"actual":2233190,"err":0.4109,"source":"backtest"},{"date":"2026-09-19","forecast":5255927,"actual":5631293,"err":-0.0667,"source":"backtest"},{"date":"2026-09-20","forecast":6773366,"actual":5735433,"err":0.181,"source":"backtest"},{"date":"2026-09-21","forecast":2782310,"actual":2197800,"err":0.266,"source":"backtest"},{"date":"2026-09-22","forecast":2733388,"actual":2900975,"err":-0.0578,"source":"backtest"},{"date":"2026-09-23","forecast":2712017,"actual":2555405,"err":0.0613,"source":"backtest"},{"date":"2026-09-24","forecast":2897351,"actual":2326084,"err":0.2456,"source":"backtest"}]},"notes":{"temporarilyClosed":{"R.K. Salai":"Renovation - reopening date not confirmed (contractor delayed)"},"runRateStores":[],"festivals":[{"name":"Gandhi Jayanti","date":"2026-10-02"},{"name":"Dussehra","date":"2026-10-20"},{"name":"Diwali","date":"2026-11-08"}]},"insights":{"weekendMultiplier":{"network":2.18,"North":2.32,"South":1.83,"West":2.37},"seasonal":{"network":[{"year":2025,"raw":1.257,"calAdj":1.267,"stores":28},{"year":2024,"raw":1.326,"calAdj":1.377,"stores":23}],"North":[{"year":2025,"raw":1.118,"calAdj":1.128,"stores":8},{"year":2024,"raw":1.251,"calAdj":1.302,"stores":6}],"South":[{"year":2025,"raw":1.035,"calAdj":1.041,"stores":9},{"year":2024,"raw":1.138,"calAdj":1.171,"stores":7}],"West":[{"year":2025,"raw":1.521,"calAdj":1.534,"stores":11},{"year":2024,"raw":1.499,"calAdj":1.562,"stores":10}]},"implied":{"network":{"perDay":1.217,"calAdj":1.192},"North":{"perDay":1.143,"calAdj":1.117},"South":{"perDay":1.145,"calAdj":1.127},"West":{"perDay":1.303,"calAdj":1.272}},"yoy":{"network":{"growth":0.1936,"stores":25},"North":{"growth":-0.0178,"stores":8},"South":{"growth":0.1158,"stores":7},"West":{"growth":0.3794,"stores":10}},"festivals":[{"name":"Dussehra","date":"2026-10-20","window":[-20,5],"previous":["2024-10-12","2025-10-02"],"daysInNextMonth":25,"windowDays":26,"past":[{"date":"2024-10-12","network":0.2,"North":0.098,"South":0.179,"West":0.267},{"date":"2025-10-02","network":0.211,"North":0.065,"South":0.212,"West":0.321}]},{"name":"Diwali","date":"2026-11-08","window":[-40,10],"previous":["2024-11-01","2025-10-20"],"daysInNextMonth":31,"windowDays":51,"past":[{"date":"2024-11-01","network":0.235,"North":0.146,"South":0.177,"West":0.322},{"date":"2025-10-20","network":0.183,"North":0.01,"South":0.097,"West":0.395}]}],"methods":{"A":106685266,"B":125367456,"G":146524040},"bridge":{"landing":101302215,"daysCur":30,"daysNext":31,"samePace":104678956,"calendar":2218745,"learned":20501131,"forecast":127398832,"weekendsCur":8,"weekendsNext":9,"historyRatio":1.322,"historyScenario":141318760},"drift":{"down":[{"store":"Gurugram","region":"North","recent":105925,"prior":141613,"change":-0.252},{"store":"South Ex.","region":"North","recent":67207,"prior":81156,"change":-0.172},{"store":"Oberoi Mall Store","region":"West","recent":96204,"prior":115703,"change":-0.169},{"store":"Shakespearesarani","region":"North","recent":105510,"prior":120002,"change":-0.121}],"up":[{"store":"Kemps Corner","region":"West","recent":225953,"prior":135156,"change":0.672},{"store":"Oberoi Sky City","region":"West","recent":96303,"prior":59155,"change":0.628},{"store":"Sindhu Bhavan Marg","region":"West","recent":165780,"prior":103472,"change":0.602},{"store":"Lavelle Road","region":"South","recent":132649,"prior":85066,"change":0.559}]}},"targets":{"monthKey":"2026-09","month":118819889,"daily":{"2026-09-01":3978459,"2026-09-02":3978459,"2026-09-03":3978459,"2026-09-04":4115250,"2026-09-05":6486014,"2026-09-06":6439223,"2026-09-07":3758812,"2026-09-08":3758812,"2026-09-09":3758812,"2026-09-10":3836245,"2026-09-11":4223721,"2026-09-12":6339850,"2026-09-13":6281636,"2026-09-14":4030562,"2026-09-15":3168303,"2026-09-16":3168303,"2026-09-17":3168303,"2026-09-18":3295094,"2026-09-19":4866102,"2026-09-20":4746911,"2026-09-21":2886656,"2026-09-22":2886656,"2026-09-23":2886656,"2026-09-24":3061087,"2026-09-25":3295094,"2026-09-26":4545585,"2026-09-27":4470088,"2026-09-28":2470247,"2026-09-29":2470247,"2026-09-30":2470247},"stores":{"Kalaghoda, Fort":7116719,"Kemps Corner":6465349,"Lavelle Road":4874398,"Koregaon Park":4333005,"R.K. Salai":3632171,"Sindhu Bhavan Marg":3412579,"Jaipur Store":2380785,"Juhu Store":3478240,"Oberoi Mall Store":4768403,"Select City":2400484,"Jubilee Hills":9436396,"Indiranagar":4412370,"Gurugram":5395047,"Pali Hill, Bandra":7637106,"Andheri":3671766,"South Ex.":2821084,"Express Avenue":3388880,"Khan Market":3938473,"Kochi Store":1462424,"Phoenix Marketcity Kurla":2486353,"Phoenix Marketcity, Whitefield":3089550,"Phoenix Palassio":1800000,"Sarath City-Hyderabad":3616360,"Shakespearesarani":3774228,"Oberoi Sky City":2300000,"Mall of India, Noida":3390203,"Viviana Mall":3878422,"Ambience Vasant Kunj":3750000,"Vegas Dwarka":1800000,"DLF Midtown - Moti Nagar":1800000,"LakeShore Mall":2000000,"Inorbit mall Hyderabad":2700000,"KNK Chennai":2100000,"Inorbit Mall Malad West":2200000,"PMC Viman Nagar Pune":2250000}}};
+
+function fmtINR(n){
+  n = Math.round(n);
+  if(Math.abs(n) >= 10000000) return '\u20b9' + (n/10000000).toFixed(2) + 'Cr';
+  if(Math.abs(n) >= 100000) return '\u20b9' + (n/100000).toFixed(2) + 'L';
+  return '\u20b9' + n.toLocaleString('en-IN');
+}
+function fmtPct(n){ return (isFinite(n) ? n.toFixed(1) : '0.0') + '%'; }
+function achColor(pct){
+  if(pct >= 100) return 'var(--good)';
+  if(pct >= 80) return 'var(--warn)';
+  return 'var(--bad)';
+}
+
+function dayLabel(dk){
+  const d = new Date(dk + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', weekday:'short'});
+}
+
+function renderForecast(body){
+  const F = FORECAST;
+  if(!F || !F.month){
+    body.innerHTML = '<div style="color:var(--text-mute); font-size:13px;">No forecast yet — run <span class="bsc-mono">scripts/forecast.py run</span>.</div>';
+    return;
+  }
+  const monthName = key => new Date(key + '-01T00:00:00').toLocaleDateString('en-GB', {month:'long', year:'numeric'});
+  const monthShort = key => new Date(key + '-01T00:00:00').toLocaleDateString('en-GB', {month:'short'});
+  const rangeTxt = (lo, hi) => (lo && hi) ? fmtINR(lo) + ' – ' + fmtINR(hi) : '—';
+  const pctTxt = v => (v >= 0 ? '+' : '') + (v*100).toFixed(1) + '%';
+  const missColor = (v, good, ok) => Math.abs(v) <= good ? 'var(--good)' : Math.abs(v) <= ok ? 'var(--warn)' : 'var(--bad)';
+  const section = (title, sub) => {
+    const h = document.createElement('div');
+    h.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin:26px 0 10px;';
+    h.innerHTML = title + (sub ? `<span style="font-weight:400; color:var(--text-mute); margin-left:8px;">${sub}</span>` : '');
+    body.appendChild(h);
+  };
+  const tableWrap = html => {
+    const w = document.createElement('div');
+    w.style.cssText = 'overflow-x:auto; margin-bottom:8px;';
+    w.innerHTML = `<table style="font-size:13px; min-width:100%;">${html}</table>`;
+    body.appendChild(w);
+  };
+  const th = cols => '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
+    cols.map((c,i) => `<td style="padding:6px 10px; ${i ? 'text-align:right;' : ''} white-space:nowrap;">${c}</td>`).join('') + '</tr>';
+  const td = (v, opts={}) => `<td style="padding:8px 10px; white-space:nowrap; ${opts.left ? '' : 'text-align:right;'} ${opts.color ? 'color:'+opts.color+'; font-weight:600;' : ''}"${opts.left ? '' : ' class="bsc-mono"'}>${v}</td>`;
+  const tr = cells => `<tr style="border-top:1px solid var(--line);">${cells}</tr>`;
+  const small = t => ` <span style="color:var(--text-mute); font-size:11.5px;">${t}</span>`;
+  const cardGrid = (cards) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:8px;';
+    cards.forEach(c => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:var(--panel); border-radius:10px; padding:14px 16px;';
+      card.innerHTML = `<div style="font-size:12px; color:var(--text-mute); margin-bottom:6px;">${c.label}</div>
+        <div style="font-size:22px; font-weight:600; color:${c.color||'var(--text)'};" class="bsc-mono">${c.val}</div>
+        ${c.sub ? `<div style="font-size:11.5px; color:var(--text-mute); margin-top:3px; line-height:1.5;">${c.sub}</div>` : ''}`;
+      row.appendChild(card);
+    });
+    body.appendChild(row);
+  };
+  // targets come from the main dashboard's TARGETS/DAILY_TARGETS, copied in by forecast.py
+  const TG = (F.targets && F.targets.monthKey === F.month.key) ? F.targets : null;
+  const targetFor = dk => (TG && TG.daily[dk] !== undefined) ? TG.daily[dk] : null;
+
+  const target = TG ? TG.month : null;
+  const ach = target ? F.month.landing / target * 100 : null;
+  const yoy = F.nextMonth.lastYear ? F.nextMonth.forecast / F.nextMonth.lastYear - 1 : null;
+
+  const intro = document.createElement('div');
+  intro.style.cssText = 'font-size:12px; color:var(--text-mute); margin-bottom:14px; line-height:1.6;';
+  intro.textContent = 'Offline stores only (Online, Corporate Orders and Virtual Stylist excluded). Sales data through ' + dayLabel(F.dataThrough) +
+    ', model retrained ' + F.generatedOn + '. Ranges are 80% ranges, set by how far past forecasts made the same distance ahead actually missed.';
+  body.appendChild(intro);
+
+  cardGrid([
+    {label: monthName(F.month.key) + ' — forecast landing', val: fmtINR(F.month.landing), sub: '80%: ' + rangeTxt(F.month.lo, F.month.hi)},
+    {label: 'Landing vs month target', val: ach !== null ? fmtPct(ach) : '—', color: ach !== null ? achColor(ach) : null,
+      sub: target ? 'target ' + fmtINR(target) + (target > F.month.landing ? ' · short by ' + fmtINR(target - F.month.landing) : ' · on track') : 'targets not loaded for this month'},
+    {label: 'Still to come (' + F.month.daysLeft + ' day' + (F.month.daysLeft === 1 ? '' : 's') + ')', val: fmtINR(F.month.rest), sub: 'on top of ' + fmtINR(F.month.mtd) + ' MTD actual'},
+    {label: monthName(F.nextMonth.key) + ' — forecast', val: fmtINR(F.nextMonth.forecast), sub: '80%: ' + rangeTxt(F.nextMonth.lo, F.nextMonth.hi) +
+      (yoy !== null ? '<br>' + pctTxt(yoy) + ' vs ' + monthName(F.nextMonth.lastYearKey) + ' (' + fmtINR(F.nextMonth.lastYear) + ', fewer stores then)' : '')},
+  ]);
+
+  // ---- why this forecast: every number here is computed by forecast.py from the sales history
+  const I = F.insights;
+  if(I){
+    const mS = monthShort(F.month.key), nS = monthShort(F.nextMonth.key);
+    const x2 = v => v.toFixed(2) + '×';
+    const sgn = v => (v >= 0 ? '+' : '') + (v*100).toFixed(0) + '%';
+    const fmtD = dk => new Date(dk + 'T00:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+    const REG = ['North','South','West'];
+    const avgSeason = g => { const s = I.seasonal[g] || []; return s.length ? s.reduce((a,b) => a + b.calAdj, 0) / s.length : null; };
+    const Bg = I.bridge, WM = I.weekendMultiplier;
+
+    section('Why this forecast', 'computed fresh on every run from all sales since Jan 2024');
+
+    // bridge: this month's landing -> next month's forecast
+    const note = t => `<td style="padding:8px 10px; color:var(--text-mute); font-size:12px; min-width:220px;">${t}</td>`;
+    const bRow = (label, v, t, strong) => tr(td(strong ? '<b>' + label + '</b>' : label, {left:true}) +
+      td((strong ? '' : (v >= 0 ? '+' : '−')) + fmtINR(Math.abs(v))) + note(t));
+    let br = th(['Step', 'Amount', 'What it means']);
+    br += bRow(mS + ' forecast landing', Bg.landing, Bg.daysCur + ' days · ' + fmtINR(Bg.landing / Bg.daysCur) + ' a day', true);
+    if(Bg.daysNext !== Bg.daysCur) br += bRow('Month length', Bg.samePace - Bg.landing, nS + ' has ' + Bg.daysNext + ' days vs ' + Bg.daysCur + ', at the same daily pace');
+    br += bRow('Calendar', Bg.calendar, nS + ' has ' + Bg.weekendsNext + ' weekend days vs ' + Bg.weekendsCur + '; a weekend day sells ' + x2(WM.network) + ' a weekday');
+    br += bRow('Season, festivals & trend', Bg.learned, 'what the models learned from past ' + nS + 's, festival timing and each store’s recent trend');
+    br += bRow(nS + ' forecast', Bg.forecast, '80% range ' + rangeTxt(F.nextMonth.lo, F.nextMonth.hi), true);
+    tableWrap(br);
+
+    const bullets = [];
+    // 1. seasonality vs history
+    const sn = I.seasonal.network || [];
+    if(sn.length && I.implied.network){
+      const imp = I.implied.network.calAdj, h = Bg.historyRatio;
+      const tone = imp < h - 0.04 ? 'more cautious than' : imp > h + 0.04 ? 'more optimistic than' : 'in line with';
+      let t = `<b>Seasonality.</b> Stores that traded through both months sold ${sn.map(s => x2(s.calAdj) + ' in ' + s.year).join(' and ')} as much per day in ${nS} as in ${mS} (weekend count evened out). This forecast assumes ${x2(imp)} — ${tone} history.`;
+      if(tone === 'more cautious than' && Bg.historyScenario){
+        t += ` If ${nS} repeats the past pattern exactly, it would land near <b>${fmtINR(Bg.historyScenario)}</b>. The forecast holds back because ${mS} has been soft and one of its three methods (same-weekday pace) carries today’s pace forward with no seasonal lift — in the backtest, blending it in missed less than any single method did on its own.`;
+      }
+      bullets.push(t);
+    }
+    // 2. which region drives it
+    const ranked = REG.filter(r => avgSeason(r) !== null).sort((a,b) => avgSeason(b) - avgSeason(a));
+    const nFests = (I.festivals || []).filter(f => f.past.length && f.daysInNextMonth > 0).slice(0, 2);
+    const fLift = (f, g) => f.past.reduce((a,p) => a + p[g], 0) / f.past.length;
+    if(ranked.length === 3 && I.implied[ranked[0]]){
+      const t0 = ranked[0];
+      let t = `<b>${t0} drives the ${nS} lift.</b> ${t0}’s ${nS} has run ${I.seasonal[t0].map(s => x2(s.calAdj) + ' (' + s.year + ')').join(' and ')} its ${mS} per store per day, against ${ranked.slice(1).map(r => r + ' ' + x2(avgSeason(r))).join(' and ')} on average. The forecast gives ${t0} ${x2(I.implied[t0].calAdj)}.`;
+      if(nFests.length){
+        const reactsMost = nFests.every(f => REG.every(r => fLift(f, t0) >= fLift(f, r)));
+        t += ` The lift lines up with the festive season` + (reactsMost ? `, and ${t0} reacts to it more than any other region` : '') + ': ' +
+          nFests.map(f => `past ${f.name} windows lifted ${t0} ${sgn(fLift(f, t0))} over the 4 weeks before (` + REG.filter(r => r !== t0).map(r => r + ' ' + sgn(fLift(f, r))).join(', ') + ')').join('; ') + '.';
+      }
+      bullets.push(t);
+    }
+    // 3. festival timing
+    (I.festivals || []).filter(f => f.past.length).forEach(f => {
+      const prev = (f.previous || []).map(fmtD).join(' and ');
+      bullets.push(`<b>${f.name}: ${fmtD(f.date)}</b>${prev ? ' (was ' + prev + ')' : ''}. The model treats ${-f.window[0]} days before to ${f.window[1]} after as its shopping window` +
+        (f.daysInNextMonth ? ` — ${f.daysInNextMonth} of those ${f.windowDays} days fall in ${nS}` : '') +
+        `. Past windows ran ${f.past.map(p => sgn(p.network) + ' (' + p.date.slice(0,4) + ')').join(' and ')} above the 4 weeks before them, network-wide.`);
+    });
+    // 4. underlying growth
+    if(I.yoy.network){
+      bullets.push(`<b>Underlying growth.</b> Over the last 13 weeks, stores open a year ago sold ${sgn(I.yoy.network.growth)} vs the same weeks last year — ` +
+        REG.filter(r => I.yoy[r]).map(r => r + ' ' + sgn(I.yoy[r].growth)).join(', ') + `. The models pick this up through each store’s recent sales level.`);
+    }
+    // 5. weekends
+    bullets.push(`<b>Weekends carry the numbers.</b> A Saturday or Sunday sells ${x2(WM.network)} a weekday per store (` +
+      REG.map(r => r + ' ' + x2(WM[r])).join(', ') + `) — so a month’s outcome depends heavily on how its weekends go, and the day-by-day chart zig-zags.`);
+    // 6. current month vs target
+    if(target && F.month.daysLeft > 0){
+      const need = (target - F.month.mtd) / F.month.daysLeft, fcd = F.month.rest / F.month.daysLeft;
+      bullets.push(`<b>${mS} target.</b> Hitting ${fmtINR(target)} needs ${fmtINR(Math.max(0, need))} a day over the last ${F.month.daysLeft} days; the forecast is ${fmtINR(fcd)} a day` +
+        (need > fcd ? ` (${x2(need / fcd)} the expected pace).` : ' — already enough.'));
+    }
+    // 7. how sure
+    const M = I.methods, vals = [M.A, M.B, M.G], spread = (Math.max(...vals) - Math.min(...vals)) / Bg.forecast;
+    bullets.push(`<b>How sure is it?</b> The three methods say: same-weekday pace ${fmtINR(M.A)}, last-year pattern ${fmtINR(M.B)}, machine learning ${fmtINR(M.G)}. ` +
+      (spread > 0.25 ? `They disagree a lot this time — the model has seen only ${sn.length} past ${nS}${sn.length === 1 ? '' : 's'} with different festival dates — so read the 80% range, not just the single number.`
+                     : 'They broadly agree, so confidence is higher than usual.'));
+    // 8. movers
+    if(I.drift && I.drift.up.length){
+      const lst = a => a.map(s => s.store + ' ' + sgn(s.change)).join(', ');
+      bullets.push(`<b>Stores moving most vs the same 4 weeks last year</b> (stores open over a year): up — ${lst(I.drift.up.filter(s => s.change > 0))}; down — ${lst(I.drift.down.filter(s => s.change < 0))}.`);
+    }
+    const ul = document.createElement('ul');
+    ul.style.cssText = 'margin:14px 0 6px; padding-left:18px; font-size:13px; line-height:1.65; color:var(--text);';
+    ul.innerHTML = bullets.map(b => `<li style="margin-bottom:8px;">${b}</li>`).join('');
+    body.appendChild(ul);
+
+    // region table
+    let rt = th(['Region', nS + ' ÷ ' + mS + ' per day, past years', 'Forecast assumes', 'Growth vs last year (13 wks)', 'Weekend × weekday'].concat(nFests.map(f => f.name + ' window lift (avg)')));
+    ['network'].concat(REG).forEach(g => {
+      const past = (I.seasonal[g] || []).map(s => x2(s.calAdj) + ' (’' + String(s.year).slice(2) + ')').join(' · ') || '—';
+      rt += tr(td(g === 'network' ? '<b>All stores</b>' : g, {left:true}) + td(past) + td(I.implied[g] ? x2(I.implied[g].calAdj) : '—') +
+        td(I.yoy[g] ? sgn(I.yoy[g].growth) : '—') + td(x2(WM[g])) + nFests.map(f => td(sgn(fLift(f, g)))).join(''));
+    });
+    tableWrap(rt);
+
+    // the science
+    const P = (F.backtest && F.backtest.policies && F.backtest.policies[F.backtest.champion]) || null;
+    const det = document.createElement('details');
+    det.style.cssText = 'background:var(--panel); border-radius:10px; padding:12px 16px; margin:12px 0 4px; font-size:12.5px; line-height:1.7; color:var(--text-dim);';
+    det.innerHTML = `<summary style="cursor:pointer; color:var(--text); font-weight:600; font-size:13px;">The science behind it</summary>
+      <p style="margin:10px 0 0;"><b style="color:var(--text);">What is predicted.</b> Every offline store, every day, up to 62 days ahead — then added up to regions and the network. It works store by store because the network grew from about 15 to 36 stores since 2024: a single network trend line would mistake store openings for growth.</p>
+      <p style="margin:8px 0 0;"><b style="color:var(--text);">Three independent methods.</b> <b>A — same-weekday pace:</b> the store’s average of its last 4 same weekdays (a Sunday is predicted from recent Sundays). <b>B — last-year pattern:</b> A, scaled by how the whole network moved over the same weeks a year ago (this is what brings in seasonality). <b>G — machine learning:</b> gradient-boosted decision trees that learn how far a store’s day will sit above or below its recent level, from weekday, month, days to each festival, days to month-end, store age, the store’s own weekday profile, 3-month momentum and last year’s seasonal factor. Predicting the <i>ratio</i> to a store’s own level lets one model learn from big and small stores together.</p>
+      <p style="margin:8px 0 0;"><b style="color:var(--text);">Guarding against false patterns.</b> With only two years of history a flexible model can memorise one-off days — an early version “learned” that 1–2 October is always huge because Dussehra fell on 2 Oct in 2025. So G is heavily constrained (each rule must be backed by thousands of examples), has no day-of-month input, and festivals are described by distance to the festival date, which moves every year.</p>
+      <p style="margin:8px 0 0;"><b style="color:var(--text);">How it was tested.</b> A walk-forward backtest over 18 months: for each month, the models were trained only on data available before it, then asked to forecast it — exactly the situation they face live, with no peeking at the future.${P ? ` Average misses: next day ${(P.day*100).toFixed(1)}%, next 7 days ${(P.week*100).toFixed(1)}%, full month ${(P.month*100).toFixed(1)}%, month landing from mid-month ${(P.landing14*100).toFixed(1)}%.` : ''}</p>
+      <p style="margin:8px 0 0;"><b style="color:var(--text);">How it learns.</b> Every forecast is saved and scored once the real sales come in. Each morning the models retrain on all history including yesterday, and the blend re-weights toward whichever method has been more accurate over the last 120 days, separately for next-day, next-week and longer forecasts. Any change to the method has to beat the current one in the backtest before it goes live — a “bias-correction” idea was tested this way and rejected because it made month forecasts worse.</p>
+      <p style="margin:8px 0 0;"><b style="color:var(--text);">Where the ranges come from.</b> Not a textbook formula: the 80% range is how far the logged forecasts made the same number of days ahead actually missed, 8 times out of 10. As live accuracy improves, the ranges tighten on their own.</p>
+      <p style="margin:8px 0 0;"><b style="color:var(--text);">What it can’t see.</b> Promotions and campaigns, stock problems, staff changes, store openings/closures before they happen, and anything that has never happened before. Festive months are the weakest (only two past examples each) and improve every year.</p>`;
+    body.appendChild(det);
+  }
+
+  // daily chart
+  section('Day by day', 'actual so far, forecast ahead');
+  const canvasWrap = document.createElement('div');
+  canvasWrap.style.cssText = 'position:relative; height:280px; margin-bottom:10px;';
+  canvasWrap.innerHTML = '<canvas id="bsc-forecast-chart" role="img" aria-label="Daily actual and forecast offline revenue"></canvas>';
+  body.appendChild(canvasWrap);
+  requestAnimationFrame(() => {
+    const ctx = document.getElementById('bsc-forecast-chart');
+    if(!ctx || !window.Chart) return;
+    const D = F.daily;
+    new Chart(ctx, {
+      data: {
+        labels: D.map(d => dayLabel(d.date)),
+        datasets: [
+          {type:'bar', label:'Actual', data: D.map(d => d.actual ?? null), backgroundColor:'rgba(201,161,91,0.75)', borderRadius:2, order:3},
+          {type:'line', label:'80% low', data: D.map(d => d.lo ?? null), borderWidth:0, pointRadius:0, fill:false, order:2},
+          {type:'line', label:'80% high', data: D.map(d => d.hi ?? null), borderWidth:0, pointRadius:0, fill:'-1', backgroundColor:'rgba(154,157,165,0.18)', order:2},
+          {type:'line', label:'Forecast', data: D.map(d => d.forecast ?? null), borderColor:'#e9e6df', borderWidth:1.5, pointRadius:1.5, tension:0.15, order:1},
+          {type:'line', label:'Target', data: D.map(d => targetFor(d.date)), borderColor:'#8a8d95', borderDash:[4,3], borderWidth:1.2, pointRadius:0, order:0},
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, interaction:{mode:'index', intersect:false},
+        scales: {
+          x: {ticks:{color:'#9a9da5', maxRotation:60, autoSkip:true, maxTicksLimit:20}, grid:{display:false}},
+          y: {ticks:{color:'#9a9da5', callback:(v)=>fmtINR(v)}, grid:{color:'#2c313a'}}
+        },
+        plugins: {
+          legend:{display:false},
+          tooltip:{filter: i => i.raw !== null && !i.dataset.label.startsWith('80%'),
+                   callbacks:{label: i => i.dataset.label + ': ' + fmtINR(i.raw)}}
+        }
+      }
+    });
+  });
+  const legend = document.createElement('div');
+  legend.style.cssText = 'display:flex; flex-wrap:wrap; gap:16px; margin-bottom:6px; font-size:12px; color:var(--text-dim);';
+  legend.innerHTML = `<span style="display:flex; align-items:center; gap:5px;"><span style="width:10px;height:10px;background:rgba(201,161,91,0.75);"></span>Actual</span>
+    <span style="display:flex; align-items:center; gap:5px;"><span style="width:14px;height:2px;background:#e9e6df;"></span>Forecast</span>
+    <span style="display:flex; align-items:center; gap:5px;"><span style="width:14px;height:10px;background:rgba(154,157,165,0.3);"></span>80% range</span>
+    <span style="display:flex; align-items:center; gap:5px;"><span style="width:14px;height:0;border-top:2px dashed #8a8d95;"></span>Target</span>`;
+  body.appendChild(legend);
+
+  // next 7 days
+  const fest = {};
+  (F.notes.festivals || []).forEach(f => { fest[f.date] = f.name; });
+  section('Next 7 days');
+  let rows = th(['Day', 'Forecast', '80% range', 'Target', 'Fcst vs target']);
+  F.daily.filter(d => d.forecast !== undefined).slice(0, 7).forEach(d => {
+    const t = targetFor(d.date);
+    const a = t ? d.forecast / t * 100 : null;
+    rows += tr(td(dayLabel(d.date) + (fest[d.date] ? ` <span style="color:var(--brass); font-size:11.5px;">· ${fest[d.date]}</span>` : ''), {left:true}) +
+      td(fmtINR(d.forecast)) + td(rangeTxt(d.lo, d.hi)) + td(t ? fmtINR(t) : '—') + td(a !== null ? fmtPct(a) : '—', {color: a !== null ? achColor(a) : null}));
+  });
+  tableWrap(rows);
+
+  // regions
+  section('By region');
+  rows = th(['Region', 'MTD actual', monthShort(F.month.key) + ' landing', monthShort(F.nextMonth.key) + ' forecast', 'vs ' + monthShort(F.month.key)]);
+  ['North','South','West'].forEach(r => {
+    const x = F.regions[r];
+    rows += tr(td(r, {left:true}) + td(fmtINR(x.mtd)) + td(fmtINR(x.landing)) + td(fmtINR(x.nextMonth)) + td(x.landing ? pctTxt(x.nextMonth / x.landing - 1) : '—'));
+  });
+  tableWrap(rows);
+
+  // stores, most at risk vs target first
+  section('By store', 'lowest forecast landing vs month target first');
+  const st = F.stores.map(s => {
+    const tgt = TG && TG.stores[s.store] ? TG.stores[s.store] : null;
+    return Object.assign({}, s, {target: tgt, ach: tgt ? s.landing / tgt * 100 : null});
+  }).sort((a,b) => (a.ach ?? 1e9) - (b.ach ?? 1e9));
+  rows = th(['Store', 'MTD actual', 'Forecast landing', 'Month target', 'Landing ach%', monthShort(F.nextMonth.key) + ' forecast']);
+  st.forEach(s => {
+    const flag = !s.forecast ? small('(not forecast)') : s.runRate ? small('(new — run-rate)') : '';
+    rows += tr(td(s.store + flag + small(s.region), {left:true}) + td(fmtINR(s.mtd)) + td(fmtINR(s.landing)) +
+      td(s.target ? fmtINR(s.target) : '—') + td(s.ach !== null ? fmtPct(s.ach) : '—', {color: s.ach !== null ? achColor(s.ach) : null}) +
+      td(s.forecast ? fmtINR(s.nextMonth) : '—'));
+  });
+  tableWrap(rows);
+  const stNote = document.createElement('div');
+  stNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); line-height:1.6;';
+  stNote.textContent = 'Store forecasts are much noisier than the network total (one store’s single day can miss by 50%). Use them to spot who is drifting, not as exact numbers.';
+  body.appendChild(stNote);
+
+  // accuracy
+  section('How accurate has it been?', 'every forecast is logged and scored once the actual comes in; misses are % of actual sales, negative = came in below forecast');
+  const A = F.accuracy;
+  const pct1 = v => v !== null && v !== undefined ? (v*100).toFixed(1) + '%' : '—';
+  cardGrid([
+    {label: 'Next-day miss — live, last 30 days', val: pct1(A.liveDay30.mape), sub: A.liveDay30.n ? A.liveDay30.n + ' days scored' : 'scores start from ' + dayLabel(F.dataThrough)},
+    {label: 'Next-day miss — backtest', val: pct1(A.backtestDay.mape), sub: A.backtestDay.n + ' past days, as-if forecasts'},
+    {label: 'Full-month miss — backtest', val: pct1(A.backtestMonth.mape), sub: A.backtestMonth.n + ' past months (1st to month-end), forecast made just before each began'},
+  ]);
+  rows = th(['Day', 'Forecast (made day before)', 'Actual', 'Miss (% of actual)', 'Type']);
+  A.recent.slice().reverse().forEach(r => {
+    rows += tr(td(dayLabel(r.date), {left:true}) + td(fmtINR(r.forecast)) + td(fmtINR(r.actual)) +
+      td(pctTxt(-r.err), {color: missColor(r.err, 0.1, 0.2)}) + td(r.source === 'live' ? 'Live' : 'Backtest'));
+  });
+  tableWrap(rows);
+
+  const bt = F.backtest || {};
+  if(bt.perMonth){
+    section('Monthly backtest', 'as-if forecasts using only data available at the time; all misses are % of actual sales, negative = came in below forecast');
+    rows = th(['Month', 'Day-0 forecast miss', 'Day-14 landing miss', 'Avg next-day miss', 'Avg next-7-days miss']);
+    const inv = v => -v; // stored as forecast/actual - 1; shown as (actual - forecast) / actual, same basis as the cards
+    bt.perMonth.filter(m => m.full).slice().reverse().forEach(m => {
+      rows += tr(td(monthName(m.month), {left:true}) +
+        td(pctTxt(inv(m.monthAhead)), {color: missColor(m.monthAhead, 0.05, 0.1)}) +
+        td(pctTxt(inv(m.landing14)), {color: missColor(m.landing14, 0.03, 0.06)}) +
+        td(pct1(m.day)) + td(pct1(m.week)));
+    });
+    tableWrap(rows);
+  }
+
+  const W = F.policy.weights;
+  const wtxt = b => `A ${(W[b].A*100).toFixed(0)}% · B ${(W[b].B*100).toFixed(0)}% · G ${(W[b].G*100).toFixed(0)}%`;
+  const tc = Object.entries(F.notes.temporarilyClosed || {}).map(([s, why]) => s + ' (' + why + ')');
+  const fs = (F.notes.festivals || []).map(f => f.name + ' ' + dayLabel(f.date));
+  const note = document.createElement('div');
+  note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:18px; line-height:1.7;';
+  note.innerHTML = '<b style="color:var(--text-dim);">How it works.</b> Each store is forecast three ways and blended: ' +
+    '<b>A</b> its last 4 same-weekday days; <b>B</b> A adjusted by how the network moved over the same weeks last year; ' +
+    '<b>G</b> a machine-learning model trained on all sales since Jan 2024 (weekday, month, festival timing, store age, momentum). ' +
+    'It retrains every morning with yesterday’s sales, and re-learns the blend weights from the last 120 days of scored forecasts — now: next day ' + wtxt('day') +
+    '; days 2–7 ' + wtxt('week') + '; further out ' + wtxt('month') + '. ' +
+    'A change to the method only goes live if it beats the current one in an 18-month backtest (in use: <span class="bsc-mono">' + F.policy.mode + '</span>).' +
+    (fs.length ? '<br><b style="color:var(--text-dim);">Festivals ahead the model accounts for:</b> ' + fs.join(', ') + '.' : '') +
+    (tc.length ? '<br><b style="color:var(--text-dim);">Not forecast:</b> ' + tc.join('; ') + ' — rejoins automatically once it starts selling again.' : '') +
+    (F.notes.runRateStores.length ? '<br><b style="color:var(--text-dim);">New stores on run-rate</b> (under 4 weeks of history): ' + F.notes.runRateStores.join(', ') + '.' : '') +
+    '<br>Stores that haven’t opened yet aren’t in the forecast until they start trading.';
+  body.appendChild(note);
+}
+
+renderForecast(document.getElementById('bsc-forecast'));
+})();
+</script>
+</body>
+</html>

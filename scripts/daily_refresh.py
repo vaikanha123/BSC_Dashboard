@@ -12,7 +12,7 @@ leaving the files as they were -- it never touches git):
   3. Runs update_main_dashboard.py and update_tracker.py.
   4. Bumps the tracker's hand-written "as of" labels, which update_tracker.py never touches.
   5. Runs verify_cohort_match.js (pooled Training Cohort 1 AOV must match between the two files).
-  6. Runs forecast.py run (Forecast tab + data/ history/log). Non-fatal: on failure data/ is restored
+  6. Runs forecast.py run (separate forecast page FORECAST_PAGE + data/ history/log). Non-fatal: on failure data/ is restored
      and a WARNING is printed, but the sales refresh still counts as OK.
 On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
 """
@@ -28,6 +28,9 @@ import sys
 import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# The forecast lives on its own unlinked page (kept off index.html on purpose -- the main dashboard's
+# link is widely shared). forecast.py reads the month targets from index.html.
+FORECAST_PAGE = 'forecast-1ad8b79c.html'
 MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
                'September', 'October', 'November', 'December']
@@ -135,15 +138,16 @@ def main():
         restore(html_files)
         stop('pooled Training Cohort AOV does NOT match between index.html and the tracker')
 
-    # Forecast tab: merge this MTD file into data/sales_history_daily.csv, retrain, forecast, log.
-    # Non-fatal -- if it fails, the sales refresh still ships and the Forecast tab keeps yesterday's numbers.
-    forecast_ok = run([py, 'scripts/forecast.py', 'run', '--sales', a.sales, '--html', 'index.html']) == 0
+    # Forecast page: merge this MTD file into data/sales_history_daily.csv, retrain, forecast, log.
+    # Non-fatal -- if it fails, the sales refresh still ships and the forecast page keeps yesterday's numbers.
+    forecast_ok = run([py, 'scripts/forecast.py', 'run', '--sales', a.sales, '--html', FORECAST_PAGE,
+                       '--dashboard', 'index.html']) == 0
     if not forecast_ok:
-        restore(['data/'])
-        print('WARNING: forecast.py failed -- Forecast tab NOT updated (still shows the previous run); data/ restored.')
+        restore(['data/', FORECAST_PAGE])
+        print('WARNING: forecast.py failed -- forecast page NOT updated (still shows the previous run); data/ and the page restored.')
 
-    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/).'
-          % (last, '' if forecast_ok else ' (forecast step failed, see WARNING)'))
+    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/ and %s).'
+          % (last, '' if forecast_ok else ' (forecast step failed, see WARNING)', FORECAST_PAGE))
 
 
 if __name__ == '__main__':
