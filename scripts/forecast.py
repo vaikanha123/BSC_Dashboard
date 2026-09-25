@@ -341,6 +341,99 @@ def band(F, Ac, h0, h1, q=(0.1, 0.9)):
     return [float(np.quantile(rel, q[0])), float(np.quantile(rel, q[1])), int(full.sum())]
 
 
+# ---------------------------------------------------------------- month landing (MTD actual + rest of month)
+# Backtest finding (2026-09-26, 513 origins): the newest forecast over-reacts to a strong/weak start of the
+# month -- first-half surprises mostly don't persist -- and method B is noisy over a part-month. Averaging
+# the forecast made just before the month began with the newest one (newest = A and G only) cut the landing
+# miss from 3.44% to 3.20%, most in days 8-14 (4.63% -> 3.87%), and won in both halves of the period.
+# Every run re-scores the candidates on the last 365 days of logged forecasts; a challenger replaces the
+# default only if it is better by LANDING_SWITCH_MARGIN, so the choice keeps learning without flip-flopping.
+
+LANDING_METHODS = {
+    'latest': 'newest forecast only',
+    'avg_start_latest': 'average of the start-of-month forecast and the newest forecast',
+    'avg_start_latest_noB': 'average of the start-of-month forecast and the newest forecast (methods A and G)',
+}
+LANDING_DEFAULT = 'avg_start_latest_noB'
+LANDING_SWITCH_MARGIN = 0.0015
+
+
+def start_origin(origins, month_start):
+    """Latest forecast origin in the 7 days before the month began (the 'start-of-month' forecast)."""
+    c = [o for o in origins if month_start - pd.Timedelta(days=7) <= o < month_start]
+    return max(c) if c else None
+
+
+def landing_rest(method, new, old_final):
+    """Rest-of-month forecast. new: (final, A, G) sums from the newest origin; old_final: sum from the
+    start-of-month origin (None if there wasn't one)."""
+    final, A, G = new
+    if method == 'latest' or old_final is None:
+        return final
+    newest = final if method == 'avg_start_latest' else (A + G) / 2
+    return 0.5 * newest + 0.5 * old_final
+
+
+def score_landing(lg, act, last, lookback=365):
+    """Mean |landing miss| of each method over logged origins in the last `lookback` days whose month has
+    closed. Returns ({method: miss}, n)."""
+    x = lg[(lg.scope == 'network') & (lg.origin > last - pd.Timedelta(days=lookback))]
+    if x.empty:
+        return {}, 0
+    P = {c: x.pivot_table(index='origin', columns='target', values=c, aggfunc='last') for c in ('final', 'A', 'G')}
+    origins = list(P['final'].index)
+    errs = {m: [] for m in LANDING_METHODS}
+    net = act['network']
+    for o in origins:
+        per = pd.Period(o + pd.Timedelta(days=1), 'M') if o.day == o.days_in_month else pd.Period(o, 'M')
+        if o.day == o.days_in_month:
+            continue  # month-ahead, not a landing
+        ms, me = per.start_time, per.end_time.normalize()
+        if me > last:
+            continue
+        rest = [t for t in pd.date_range(o + pd.Timedelta(days=1), me) if t in P['final'].columns]
+        if len(rest) != (me - o).days:
+            continue
+        s0 = start_origin(origins, ms)
+        if s0 is None or P['final'].loc[s0, rest].isna().any():
+            continue
+        new = tuple(float(P[c].loc[o, rest].sum()) for c in ('final', 'A', 'G'))
+        old = float(P['final'].loc[s0, rest].sum())
+        mtd, total = float(net[ms:o].sum()), float(net[ms:me].sum())
+        for m in LANDING_METHODS:
+            errs[m].append(abs((mtd + landing_rest(m, new, old)) / total - 1))
+    n = len(errs[LANDING_DEFAULT])
+    return ({m: float(np.mean(v)) for m, v in errs.items() if v}, n)
+
+
+def choose_landing(scores, n):
+    if n < 60 or LANDING_DEFAULT not in scores:
+        return LANDING_DEFAULT
+    best = min(scores, key=scores.get)
+    return best if scores[best] < scores[LANDING_DEFAULT] - LANDING_SWITCH_MARGIN else LANDING_DEFAULT
+
+
+def landing14_by_month(lg, act, method, months):
+    """Signed day-14 landing miss (forecast/actual - 1) per month with the given method, from the log."""
+    x = lg[lg.scope == 'network']
+    P = {c: x.pivot_table(index='origin', columns='target', values=c, aggfunc='last') for c in ('final', 'A', 'G')}
+    origins = list(P['final'].index)
+    out = {}
+    for m in months:
+        per = pd.Period(m, 'M')
+        ms, me = per.start_time, per.end_time.normalize()
+        o = ms + pd.Timedelta(days=13)
+        if o not in P['final'].index or me > act['network'].index.max():
+            continue
+        rest = list(pd.date_range(o + pd.Timedelta(days=1), me))
+        s0 = start_origin(origins, ms)
+        new = tuple(float(P[c].loc[o, rest].sum()) for c in ('final', 'A', 'G'))
+        old = float(P['final'].loc[s0, rest].sum()) if s0 is not None else None
+        mtd, total = float(act['network'][ms:o].sum()), float(act['network'][ms:me].sum())
+        out[m] = round((mtd + landing_rest(method, new, old)) / total - 1, 4)
+    return out
+
+
 # ---------------------------------------------------------------- backtest
 
 def month_errors(df, act):
@@ -492,6 +585,20 @@ def cmd_run(a):
         payload['nextMonth']['key'], payload['nextMonth']['forecast'] / 1e7))
 
 
+def backtest_view(bt, lg, act, l_method):
+    """Backtest summary for the page, with the day-14 landing column recomputed using the landing method
+    currently in use (the stored backtest scored the older 'latest' method)."""
+    view = {k: bt.get(k) for k in ('champion', 'policies', 'perMonth', 'months', 'generated')}
+    if view.get('perMonth'):
+        l14 = landing14_by_month(lg, act, l_method, [m['month'] for m in view['perMonth'] if m.get('full')])
+        view['perMonth'] = [dict(m, landing14=l14.get(m['month'], m.get('landing14'))) for m in view['perMonth']]
+        vals = [abs(v) for v in l14.values()]
+        if vals and view.get('policies') and view.get('champion') in view['policies']:
+            view['policies'] = {k: dict(v) for k, v in view['policies'].items()}
+            view['policies'][view['champion']]['landing14'] = round(float(np.mean(vals)), 4)
+    return view
+
+
 def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
     last = d.last
     F, Ac = error_matrix(lg, act, last)
@@ -501,7 +608,22 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
     cur_end, nxt_start, nxt_end = cur.end_time.normalize(), nxt.start_time, nxt.end_time.normalize()
     days_left = (cur_end - last).days
     mtd = float(act['network'][cur.start_time:last].sum())
-    rest = float(net.loc[last + pd.Timedelta(days=1):cur_end, 'final'].sum())
+    rest_latest = float(net.loc[last + pd.Timedelta(days=1):cur_end, 'final'].sum())
+    # month landing: learned choice of how to combine the start-of-month and newest forecasts
+    l_scores, l_n = score_landing(lg, act, last)
+    l_method = choose_landing(l_scores, l_n)
+    rest_dates = pd.date_range(last + pd.Timedelta(days=1), cur_end)
+    s0 = start_origin(list(lg.loc[lg.scope == 'network', 'origin'].unique()), cur.start_time)
+    old = None
+    if s0 is not None and days_left:
+        o_rows = lg[(lg.scope == 'network') & (lg.origin == s0) & (lg.target.isin(rest_dates))]
+        old = float(o_rows['final'].sum()) if o_rows['target'].nunique() == days_left else None
+    new = tuple(float(net.loc[rest_dates, c].sum()) if days_left else 0.0 for c in ('final', 'A', 'G'))
+    rest = landing_rest(l_method, new, old) if days_left else 0.0
+    k_rest = rest / rest_latest if rest_latest else 1.0  # applied to regions/stores so they add up
+    log('landing: method %s (%s) scores %s over %d origins; start-of-month origin %s' % (
+        l_method, LANDING_METHODS[l_method], {m: round(v * 100, 2) for m, v in l_scores.items()}, l_n,
+        s0.date() if s0 is not None else None))
     b_rest = band(F, Ac, 1, days_left) if days_left else [0.0, 0.0, 0]
     h0, h1 = (nxt_start - last).days, (nxt_end - last).days
     nm = float(net.loc[nxt_start:nxt_end, 'final'].sum())
@@ -539,7 +661,7 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
         if s not in REGION_MAP:
             continue
         m_ = float(mtd_store.get(s, 0) or 0)
-        r_ = float(rest_store.get(s, 0))
+        r_ = float(rest_store.get(s, 0)) * k_rest
         stores.append({'store': s, 'region': region_of[s], 'mtd': round(m_), 'rest': round(r_), 'landing': round(m_ + r_),
                        'nextMonth': round(float(nm_store.get(s, 0))), 'runRate': bool(fb.get(s, False)),
                        'forecast': s in rest_store.index or s in nm_store.index})
@@ -592,14 +714,14 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
 
     return {
         'generatedOn': dt.date.today().isoformat(), 'dataThrough': str(last.date()),
-        'policy': pol, 'backtest': {k: bt.get(k) for k in ('champion', 'policies', 'perMonth', 'months', 'generated')},
+        'policy': pol, 'backtest': backtest_view(bt, lg, act, l_method),
         'month': {'key': str(cur), 'mtd': round(mtd), 'rest': round(rest), 'landing': round(mtd + rest),
                   'lo': lo, 'hi': hi, 'daysLeft': days_left},
         'nextMonth': {'key': str(nxt), 'forecast': round(nm), 'lo': nlo, 'hi': nhi, 'lastYear': round(ly_actual),
                       'lastYearKey': str(ly)},
         'regions': {r: {'mtd': round(float(act[r][cur.start_time:last].sum())),
                         'landing': round(float(act[r][cur.start_time:last].sum()) +
-                                         float(agg[(agg.scope == r) & (agg.target <= cur_end)]['final'].sum())),
+                                         k_rest * float(agg[(agg.scope == r) & (agg.target <= cur_end)]['final'].sum())),
                         'nextMonth': round(float(agg[(agg.scope == r) & (agg.target >= nxt_start) &
                                                      (agg.target <= nxt_end)]['final'].sum()))}
                     for r in d.region_names},
@@ -607,7 +729,10 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
         'accuracy': {'liveDay30': acc('live', 30), 'liveMonth': acc_month('live'),
                      'backtestDay': acc('backtest', 400), 'backtestMonth': acc_month('backtest'), 'recent': recent},
         'notes': {'temporarilyClosed': temp, 'runRateStores': new_stores, 'festivals': festivals},
-        'insights': compute_insights(d, agg, rows, act, cfg, cur, nxt, mtd + rest, nm),
+        'insights': compute_insights(d, agg, rows, act, cfg, cur, nxt, mtd + rest, nm, k_rest),
+        'landingMethod': {'method': l_method, 'label': LANDING_METHODS[l_method], 'n': l_n,
+                          'scores': {m: round(v, 4) for m, v in l_scores.items()},
+                          'labels': LANDING_METHODS, 'default': LANDING_DEFAULT},
     }
 
 
@@ -653,7 +778,7 @@ def _weekend_days(per):
     return len(ds) - we, we
 
 
-def compute_insights(d, agg, rows, act, cfg, cur, nxt, landing, nm_fc):
+def compute_insights(d, agg, rows, act, cfg, cur, nxt, landing, nm_fc, k_rest=1.0):
     """Data-derived explanations for the forecast page. Everything here is computed from the sales
     history on each run -- no hand-written claims -- so it stays true as the data moves."""
     obs = d.Y.loc[:d.last]
@@ -739,7 +864,7 @@ def compute_insights(d, agg, rows, act, cfg, cur, nxt, landing, nm_fc):
     cur_mask = lambda s: (agg.scope == s) & (agg.target <= cur.end_time.normalize())  # noqa: E731
     for g in groups:
         mtd_g = float(act[g][cur.start_time:last].sum())
-        land_g = mtd_g + float(agg.loc[cur_mask(g), 'final'].sum())
+        land_g = mtd_g + k_rest * float(agg.loc[cur_mask(g), 'final'].sum())
         nm_g = float(agg[(agg.scope == g) & (agg.target >= nxt.start_time) & (agg.target <= nxt.end_time.normalize())]['final'].sum())
         if land_g > 0:
             dn, dc = nxt.days_in_month, cur.days_in_month
