@@ -749,7 +749,9 @@ def build_payload(d, rows, agg, lg, act, pol, bt, cfg, hist):
         'daily': daily, 'stores': stores,
         'accuracy': {'liveDay30': acc('live', 30), 'liveMonth': acc_month('live'),
                      'backtestDay': acc('backtest', 400), 'backtestMonth': acc_month('backtest'), 'recent': recent},
-        'notes': {'temporarilyClosed': temp, 'runRateStores': new_stores, 'festivals': festivals},
+        'notes': {'temporarilyClosed': temp, 'runRateStores': new_stores, 'festivals': festivals,
+                  'storeEvents': [e for e in cfg.get('store_events', [])
+                                  if last - pd.Timedelta(days=60) <= pd.Timestamp(e['from']) <= last + pd.Timedelta(days=30)]},
         'insights': compute_insights(d, agg, rows, act, cfg, cur, nxt, mtd + rest, nm, k_rest),
         'landingMethod': {'method': l_method, 'label': LANDING_METHODS[l_method], 'n': l_n, 'phase': l_phase,
                           'scores': {m: round(v, 4) for m, v in l_scores.items()},
