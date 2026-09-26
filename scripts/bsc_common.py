@@ -127,6 +127,14 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
     })
     for row in ws.iter_rows(min_row=2, values_only=True):
         amt = row[amount_idx]
+        # Some rows arrive as text like '₹4,490' (pasted, not typed) -- coerce to a number
+        # instead of letting them crash the sum or silently dropping them.
+        if isinstance(amt, str):
+            cleaned = amt.replace('₹', '').replace('Rs.', '').replace('Rs', '').replace(',', '').strip()
+            try:
+                amt = float(cleaned) if cleaned else 0
+            except ValueError:
+                raise ValueError(f"Unparseable refund/CN amount {row[amount_idx]!r} in row {row}")
         if not amt:
             continue
         mk = month_key_from_date(row[date_idx], current_month) or current_month
