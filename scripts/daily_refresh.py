@@ -14,6 +14,7 @@ leaving the files as they were -- it never touches git):
   5. Runs verify_cohort_match.js (pooled Training Cohort 1 AOV must match between the two files).
   6. Runs forecast.py run (separate forecast page FORECAST_PAGE + data/ history/log). Non-fatal: on failure data/ is restored
      and a WARNING is printed, but the sales refresh still counts as OK.
+  7. Runs footfall.py fetch (HO's footfall Google Sheet -> data/footfall_history_daily.csv). Non-fatal.
 On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
 """
 import argparse
@@ -146,6 +147,13 @@ def main():
     if not forecast_ok:
         restore(['data/', FORECAST_PAGE])
         print('WARNING: forecast.py failed -- forecast page NOT updated (still shows the previous run); data/ and the page restored.')
+
+    # Footfall: pull HO's FF Master File Google Sheet into data/footfall_history_daily.csv. Collected, not yet
+    # used by the forecast -- the 2026-09-27 test (scripts/ff_experiment.py) showed no gain; re-test later.
+    # Non-fatal -- a failed download just keeps the previous footfall history.
+    if run([py, 'scripts/footfall.py', 'fetch']) != 0:
+        restore(['data/footfall_history_daily.csv'])
+        print('WARNING: footfall fetch failed -- footfall history not updated.')
 
     print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/ and %s).'
           % (last, '' if forecast_ok else ' (forecast step failed, see WARNING)', FORECAST_PAGE))
