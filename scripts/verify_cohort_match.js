@@ -57,7 +57,10 @@ console.log('index.html   revenue=' + r.toFixed(0) + ' bills=' + b + ' units=' +
 console.log('tracker      revenue=' + r2.toFixed(0) + ' bills=' + b2 + ' units=' + u2 + ' AOV=' + aov2);
 // The tracker stores each stylist's revenue rounded to the rupee, so allow up to 0.5 per stylist of drift
 const tol = 0.5 * B1.length;
-if (aov1 === aov2 && b === b2 && u === u2 && Math.abs(r - r2) <= tol) {
+// AOV is compared within the same rounding tolerance: a rupee or two of drift can flip the
+// second decimal (e.g. 13592.624 vs 13592.625), which is not a real mismatch.
+const aovTol = b ? tol / b + 0.005 : 0;
+if (b === b2 && u === u2 && Math.abs(r - r2) <= tol && Math.abs(r / b - r2 / b2) <= aovTol) {
   console.log('MATCH');
 } else {
   console.log('MISMATCH');
