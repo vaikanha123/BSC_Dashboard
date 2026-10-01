@@ -222,6 +222,8 @@ let state = {
   refundsData: null,  // uploaded refund summary, or null to use fallback snapshot
   cnData: null,        // uploaded credit note summary, or null to use fallback snapshot
   activeTab: 'overview',
+  viewMonth: null,     // 'Mon-YYYY' of an archived month being viewed, or null for the live month
+  monthLoading: null,  // 'Mon-YYYY' while its archive file is being fetched
   showManagePanel: false,
   loading: true,
 };
@@ -234,22 +236,27 @@ const PREV_MONTH_REFUND_CN = {"month": "Aug-2026", "refund": {"total": 1667472, 
 const SEED_NPS = {"byStore": {"Ambience Vasant Kunj": 66.7, "DLF Midtown - Moti Nagar": 0.0, "Gurugram": 80.0, "Jaipur Store": 33.3, "Khan Market": 100.0, "Mall of India, Noida": 12.5, "Phoenix Palassio": 100.0, "Select City": 57.9, "Shakespearesarani": 45.5, "South Ex.": 100.0, "Vegas Dwarka": 100.0, "Andheri": 61.5, "Inorbit Mall Malad West": 66.7, "Juhu Store": 58.3, "Kalaghoda, Fort": 40.0, "Kemps Corner": 76.2, "Koregaon Park": 87.5, "Oberoi Mall Store": 100.0, "Oberoi Sky City": 62.1, "PMC Viman Nagar Pune": 66.7, "Pali Hill, Bandra": 80.6, "Phoenix Marketcity Kurla": 46.2, "Sindhu Bhavan Marg": 70.8, "Viviana Mall": 60.9, "Express Avenue": 100.0, "Indiranagar": 68.4, "Inorbit mall Hyderabad": 50.0, "Jubilee Hills": 58.3, "KNK Chennai": 77.8, "Kochi Store": 14.3, "LakeShore Mall": 42.9, "Lavelle Road": 100.0, "Phoenix Marketcity, Whitefield": 31.2, "R.K. Salai": 0.0, "Online": 51.4}, "overall": 59.6};
 
 
+// Closed months, one data/months/*.json file each (written by scripts/month_archive.py) --
+// fetched when picked in the header's month dropdown.
+const ARCHIVE_MONTHS = [{"key": "Apr-2026", "file": "data/months/2026-04.json"}, {"key": "May-2026", "file": "data/months/2026-05.json"}, {"key": "Jun-2026", "file": "data/months/2026-06.json"}, {"key": "Jul-2026", "file": "data/months/2026-07.json"}, {"key": "Aug-2026", "file": "data/months/2026-08.json"}];
+
 const BASELINE = {
-  // August 2025 (last year) — only month totals available, no daily breakdown, so last-year
-  // comparisons are pro-rated by day-count as an approximation (flagged in the UI).
-  aug25:  { total: 87000630,  days: 31, region: { North: 21974391, South: 27709317, West: 37316923 } },
-  // August 2025 per-store revenue -- used for SSSG. Missing stores are new since Aug 2025
+  // Same month LAST YEAR (key name is historical -- it holds whatever month is 12 before the one
+  // shown; refreshed by update_main_dashboard.py --new-month from data/sales_history_daily.csv).
+  // Only month totals are kept, so last-year comparisons are pro-rated by day-count (flagged in the UI).
+  aug25: {"total": 80469535, "days": 30, "region": {"North": 21285938, "South": 26133050, "West": 33050547}},
+  // Same month last year, per-store revenue -- used for SSSG. Missing stores are new since then
   // (no comparable base), so SSSG shows "New store" for those rather than a misleading %.
-  aug25StoreRevenue: {"Andheri": 3009062, "Express Avenue": 2126133, "Gurugram": 4507363, "Indiranagar": 3687192, "Jaipur Store": 1986288, "Jayanagar": 1393940, "Jubilee Hills": 7881065, "Juhu Store": 2888645, "Kalaghoda, Fort": 5062001, "Kemps Corner": 4316447, "Khan Market": 3280132, "Kochi Store": 1225547, "Koregaon Park": 3634069, "Lavelle Road": 4063193, "Mall of India, Noida": 3230910, "Oberoi Mall Store": 4004818, "Oberoi Sky City": 1647437, "Pali Hill, Bandra": 5888073, "Phoenix Marketcity Kurla": 1995789, "Phoenix Marketcity, Whitefield": 2493987, "Phoenix Palassio": 1549260, "R.K. Salai": 1820222, "Sarath City-Hyderabad": 3018037, "Select City": 2086653, "Shakespearesarani": 2981634, "Sindhu Bhavan Marg": 2278811, "South Ex.": 2352151, "Viviana Mall": 2591770},
-  // August 2026 (last month) — real day-by-day region revenue, day-of-month (1-30) -> region -> revenue.
+  aug25StoreRevenue: {"Ambience Vasant Kunj": 158147, "Andheri": 2368015, "Express Avenue": 2168393, "Gurugram": 4385237, "Indiranagar": 3099046, "Jaipur Store": 1732682, "Jayanagar": 1132789, "Jubilee Hills": 9991235, "Juhu Store": 2377704, "Kalaghoda, Fort": 4755414, "Kemps Corner": 4458386, "Khan Market": 3371224, "Kochi Store": 908785, "Koregaon Park": 3636164, "Lavelle Road": 2554408, "Mall of India, Noida": 2656295, "Oberoi Mall Store": 3432127, "Oberoi Sky City": 1452129, "Pali Hill, Bandra": 3538739, "Phoenix Marketcity Kurla": 2053955, "Phoenix Marketcity, Whitefield": 1779745, "Phoenix Palassio": 1256634, "R.K. Salai": 1360708, "Sarath City-Hyderabad": 3137941, "Select City": 1677342, "Shakespearesarani": 3592198, "Sindhu Bhavan Marg": 3265525, "South Ex.": 2456179, "Viviana Mall": 1712389},
+  // Previous month — real day-by-day region revenue, day-of-month (1-30) -> region -> revenue.
   prevMonthDailyRegion: {"1": {"North": 1253311.15, "South": 1394508.63, "West": 2866845.98}, "2": {"North": 1901252.46, "South": 1695375.04, "West": 3082984.63}, "3": {"North": 516519.32, "South": 803675.61, "West": 1315524.42}, "4": {"North": 883188.96, "South": 1057438.66, "West": 777763.03}, "5": {"North": 504566.41, "South": 789555.85, "West": 1135489.0}, "6": {"North": 669148.13, "South": 1175589.49, "West": 1188832.28}, "7": {"North": 483114.48, "South": 655901.29, "West": 2011163.09}, "8": {"North": 1360971.89, "South": 1398007.11, "West": 3564332.02}, "9": {"North": 2034633.9, "South": 2080482.89, "West": 4237122.16}, "10": {"North": 433569.92, "South": 1528575.33, "West": 1117199.98}, "11": {"North": 468220.0, "South": 721964.79, "West": 1492009.65}, "12": {"North": 626906.17, "South": 1294020.58, "West": 1344016.88}, "13": {"North": 442983.57, "South": 949850.44, "West": 1541258.74}, "14": {"North": 701040.45, "South": 1067520.0, "West": 1244299.9}, "15": {"North": 1030897.15, "South": 1921052.45, "West": 2785860.96}, "16": {"North": 2064564.58, "South": 2784611.8, "West": 3385615.3}, "17": {"North": 645389.85, "South": 1064673.8, "West": 1180814.39}, "18": {"North": 468790.19, "South": 1096099.89, "West": 1058106.2}, "19": {"North": 698350.0, "South": 1095547.89, "West": 1048883.61}, "20": {"North": 614466.27, "South": 1065440.0, "West": 1279546.95}, "21": {"North": 749217.28, "South": 1171663.38, "West": 2079048.4}, "22": {"North": 1159271.38, "South": 1723901.6, "West": 2724088.34}, "23": {"North": 1665037.55, "South": 1981457.23, "West": 3720038.34}, "24": {"North": 541460.43, "South": 914115.72, "West": 1189160.45}, "25": {"North": 493555.0, "South": 980128.98, "West": 1335082.92}, "26": {"North": 680265.92, "South": 828275.0, "West": 1443314.26}, "27": {"North": 622501.44, "South": 860437.29, "West": 990662.36}, "28": {"North": 603184.9, "South": 837217.88, "West": 1739128.0}, "29": {"North": 1015517.28, "South": 1597165.16, "West": 2426620.28}, "30": {"North": 1265049.62, "South": 1794880.63, "West": 3207009.91}, "31": {"North": 590299.3, "South": 787360.05, "West": 1792762.71}},
-  // August 2026 category revenue (₹), by Product type.
+  // Previous month category revenue (₹), by Product type.
   prevMonthCategory: {"Bundi": 548212.43, "Casual Chinos": 337500.0, "Chinos": 4140918.29, "Dress Pants": 15415717.43, "Fatigue Pants": 10360.0, "Gift Card": 0.0, "Jackets": 2638445.31, "Joggers": 274373.88, "Kurta": 602542.43, "Linen Pants": 30520.0, "Linen Shorts": 17940.0, "Long Sleeve Polo T-Shirts": 741491.88, "Lounge Pants": 88648.26, "MTM Shirt": 44415194.05, "Metal Collar Stay": 9900.0, "Metal Cufflinks": 38077.25, "Mid Rise Dress Pants": 207936.89, "Mid Rise Stretch Jeans": 1226485.22, "Neapolitan Dress Pants": 275579.95, "Oversized T-Shirts": 228622.59, "Pocket Square": 49750.0, "RTW Shirt": 39215410.63, "Relaxed Linen Pants": 3553272.38, "Relaxed Neapolitan Pants": 2256932.1, "Relaxed T-Shirts": 69802.33, "Rigid Denim": 17980.0, "Shackets": 1198666.76, "Silk Knots": 5940.0, "Smartpants": 2137867.3, "Soft Tailored Jackets": 279357.38, "Stretch Denim": 228903.37, "Suit Blazer": 2146342.18, "Suits": 18000.0, "Sweaters": 9990.0, "Sweatshirts": 378177.24, "T-Shirts": 2968254.05, "Ties": 208848.58, "Uncategorized": 432910.51, "Washed Shorts": 33830.0, "Wide Leg Pants": 149623.88},
   prevMonthDailyCategoryUnits: {"1": {"Bundi": 1, "Chinos": 44, "Dress Pants": 112, "Gift Card": 6, "Jackets": 10, "Joggers": 2, "Linen Pants": 1, "Long Sleeve Polo T-Shirts": 16, "MTM Shirt": 352, "Metal Collar Stay": 1, "Mid Rise Stretch Jeans": 16, "Neapolitan Dress Pants": 3, "Oversized T-Shirts": 6, "RTW Shirt": 452, "Relaxed Linen Pants": 40, "Relaxed Neapolitan Pants": 9, "Relaxed T-Shirts": 3, "Shackets": 9, "Smartpants": 32, "Soft Tailored Jackets": 2, "Suit Blazer": 4, "Sweatshirts": 2, "T-Shirts": 53, "Ties": 2, "Uncategorized": 47, "Washed Shorts": 3, "Wide Leg Pants": 1}, "2": {"Bundi": 6, "Chinos": 49, "Dress Pants": 179, "Fatigue Pants": 1, "Gift Card": 4, "Jackets": 14, "Joggers": 3, "Long Sleeve Polo T-Shirts": 11, "Lounge Pants": 1, "MTM Shirt": 420, "Mid Rise Stretch Jeans": 10, "Neapolitan Dress Pants": 3, "Oversized T-Shirts": 5, "Pocket Square": 2, "RTW Shirt": 486, "Relaxed Linen Pants": 26, "Relaxed Neapolitan Pants": 23, "Relaxed T-Shirts": 4, "Shackets": 11, "Smartpants": 32, "Soft Tailored Jackets": 1, "Suit Blazer": 7, "Sweatshirts": 4, "T-Shirts": 57, "Ties": 6, "Uncategorized": 43, "Wide Leg Pants": 1}, "3": {"Chinos": 36, "Dress Pants": 67, "Gift Card": 2, "Jackets": 11, "Long Sleeve Polo T-Shirts": 4, "Lounge Pants": 2, "MTM Shirt": 163, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 7, "Oversized T-Shirts": 2, "RTW Shirt": 169, "Relaxed Linen Pants": 13, "Relaxed Neapolitan Pants": 10, "Relaxed T-Shirts": 1, "Shackets": 2, "Smartpants": 6, "Soft Tailored Jackets": 1, "Suit Blazer": 2, "Sweatshirts": 1, "T-Shirts": 21, "Ties": 1, "Uncategorized": 26, "Wide Leg Pants": 1}, "4": {"Chinos": 11, "Dress Pants": 55, "Jackets": 1, "Long Sleeve Polo T-Shirts": 9, "MTM Shirt": 185, "Mid Rise Stretch Jeans": 9, "Neapolitan Dress Pants": 1, "Pocket Square": 1, "RTW Shirt": 181, "Relaxed Linen Pants": 14, "Relaxed Neapolitan Pants": 7, "Relaxed T-Shirts": 1, "Shackets": 2, "Smartpants": 6, "Soft Tailored Jackets": 2, "Stretch Denim": 1, "Suit Blazer": 2, "Sweatshirts": 2, "T-Shirts": 15, "Uncategorized": 7, "Wide Leg Pants": 2}, "5": {"Bundi": 4, "Chinos": 15, "Dress Pants": 52, "Gift Card": 1, "Jackets": 8, "Joggers": 5, "Linen Shorts": 1, "Long Sleeve Polo T-Shirts": 6, "Lounge Pants": 1, "MTM Shirt": 139, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 2, "Neapolitan Dress Pants": 7, "Oversized T-Shirts": 4, "RTW Shirt": 192, "Relaxed Linen Pants": 14, "Relaxed Neapolitan Pants": 4, "Relaxed T-Shirts": 3, "Shackets": 1, "Smartpants": 26, "Suit Blazer": 2, "Sweatshirts": 3, "T-Shirts": 27, "Ties": 3, "Uncategorized": 35, "Washed Shorts": 2}, "6": {"Bundi": 4, "Chinos": 12, "Dress Pants": 64, "Gift Card": 2, "Jackets": 4, "Long Sleeve Polo T-Shirts": 3, "MTM Shirt": 185, "Metal Cufflinks": 2, "Mid Rise Stretch Jeans": 10, "RTW Shirt": 229, "Relaxed Linen Pants": 18, "Relaxed Neapolitan Pants": 13, "Rigid Denim": 1, "Shackets": 9, "Smartpants": 20, "Stretch Denim": 3, "Suit Blazer": 3, "T-Shirts": 27, "Ties": 1, "Uncategorized": 29}, "7": {"Bundi": 2, "Chinos": 11, "Dress Pants": 54, "Gift Card": 4, "Jackets": 2, "Joggers": 1, "Linen Pants": 1, "Long Sleeve Polo T-Shirts": 7, "Lounge Pants": 2, "MTM Shirt": 185, "Mid Rise Stretch Jeans": 4, "Neapolitan Dress Pants": 2, "Pocket Square": 2, "RTW Shirt": 179, "Relaxed Linen Pants": 15, "Relaxed Neapolitan Pants": 14, "Relaxed T-Shirts": 1, "Shackets": 4, "Smartpants": 12, "Stretch Denim": 5, "Sweatshirts": 1, "T-Shirts": 43, "Ties": 3, "Uncategorized": 26}, "8": {"Bundi": 4, "Chinos": 55, "Dress Pants": 137, "Gift Card": 5, "Jackets": 8, "Joggers": 6, "Kurta": 1, "Linen Pants": 1, "Long Sleeve Polo T-Shirts": 24, "Lounge Pants": 5, "MTM Shirt": 349, "Metal Collar Stay": 1, "Mid Rise Stretch Jeans": 17, "Neapolitan Dress Pants": 5, "Oversized T-Shirts": 3, "Pocket Square": 1, "RTW Shirt": 400, "Relaxed Linen Pants": 40, "Relaxed Neapolitan Pants": 14, "Relaxed T-Shirts": 3, "Shackets": 1, "Smartpants": 24, "Soft Tailored Jackets": 1, "Suit Blazer": 10, "Sweatshirts": 6, "T-Shirts": 66, "Ties": 2, "Uncategorized": 32, "Wide Leg Pants": 3}, "9": {"Bundi": 1, "Chinos": 60, "Dress Pants": 202, "Gift Card": 8, "Jackets": 17, "Joggers": 1, "Linen Shorts": 1, "Long Sleeve Polo T-Shirts": 15, "Lounge Pants": 2, "MTM Shirt": 527, "Metal Collar Stay": 1, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 18, "Neapolitan Dress Pants": 7, "Oversized T-Shirts": 2, "RTW Shirt": 513, "Relaxed Linen Pants": 47, "Relaxed Neapolitan Pants": 25, "Relaxed T-Shirts": 3, "Shackets": 12, "Smartpants": 49, "Soft Tailored Jackets": 10, "Stretch Denim": 1, "Suit Blazer": 15, "Sweaters": 1, "Sweatshirts": 3, "T-Shirts": 96, "Ties": 1, "Uncategorized": 52, "Washed Shorts": 1, "Wide Leg Pants": 8}, "10": {"Bundi": 6, "Chinos": 16, "Dress Pants": 56, "Gift Card": 5, "Jackets": 4, "Joggers": 1, "Long Sleeve Polo T-Shirts": 7, "Lounge Pants": 1, "MTM Shirt": 185, "Mid Rise Stretch Jeans": 13, "Neapolitan Dress Pants": 2, "Oversized T-Shirts": 1, "Pocket Square": 1, "RTW Shirt": 231, "Relaxed Linen Pants": 17, "Relaxed Neapolitan Pants": 10, "Relaxed T-Shirts": 1, "Shackets": 1, "Smartpants": 22, "Soft Tailored Jackets": 4, "Stretch Denim": 1, "Suit Blazer": 4, "T-Shirts": 39, "Ties": 1, "Uncategorized": 23, "Wide Leg Pants": 1}, "11": {"Bundi": 1, "Chinos": 18, "Dress Pants": 64, "Gift Card": 7, "Jackets": 4, "Joggers": 3, "Kurta": 1, "Linen Shorts": 1, "Long Sleeve Polo T-Shirts": 13, "MTM Shirt": 185, "Metal Cufflinks": 2, "Mid Rise Stretch Jeans": 3, "Oversized T-Shirts": 1, "RTW Shirt": 167, "Relaxed Linen Pants": 14, "Relaxed Neapolitan Pants": 5, "Shackets": 4, "Smartpants": 20, "Stretch Denim": 1, "Suit Blazer": 2, "Sweatshirts": 3, "T-Shirts": 32, "Uncategorized": 12, "Washed Shorts": 1}, "12": {"Bundi": 1, "Chinos": 25, "Dress Pants": 60, "Gift Card": 7, "Jackets": 6, "Joggers": 2, "Kurta": 1, "Linen Shorts": 1, "Long Sleeve Polo T-Shirts": 12, "MTM Shirt": 208, "Metal Collar Stay": 11, "Metal Cufflinks": 2, "Mid Rise Stretch Jeans": 5, "Pocket Square": 1, "RTW Shirt": 229, "Relaxed Linen Pants": 23, "Relaxed Neapolitan Pants": 19, "Relaxed T-Shirts": 2, "Shackets": 10, "Smartpants": 6, "Soft Tailored Jackets": 1, "Stretch Denim": 3, "Suit Blazer": 5, "Sweatshirts": 1, "T-Shirts": 36, "Ties": 3, "Uncategorized": 25, "Washed Shorts": 1}, "13": {"Bundi": 1, "Chinos": 31, "Dress Pants": 46, "Fatigue Pants": 1, "Gift Card": 13, "Jackets": 3, "Joggers": 4, "Kurta": 4, "Long Sleeve Polo T-Shirts": 16, "MTM Shirt": 199, "Metal Collar Stay": 1, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 4, "Neapolitan Dress Pants": 1, "Oversized T-Shirts": 14, "Pocket Square": 2, "RTW Shirt": 171, "Relaxed Linen Pants": 17, "Relaxed Neapolitan Pants": 12, "Relaxed T-Shirts": 1, "Shackets": 1, "Smartpants": 10, "Soft Tailored Jackets": 1, "Suit Blazer": 4, "Sweatshirts": 4, "T-Shirts": 48, "Ties": 2, "Uncategorized": 25}, "14": {"Bundi": 3, "Chinos": 16, "Dress Pants": 64, "Fatigue Pants": 1, "Gift Card": 8, "Jackets": 3, "Kurta": 3, "Long Sleeve Polo T-Shirts": 1, "Lounge Pants": 2, "MTM Shirt": 183, "Mid Rise Stretch Jeans": 10, "Neapolitan Dress Pants": 1, "Oversized T-Shirts": 1, "RTW Shirt": 226, "Relaxed Linen Pants": 17, "Relaxed Neapolitan Pants": 8, "Shackets": 5, "Silk Knots": 1, "Smartpants": 10, "Soft Tailored Jackets": 2, "Stretch Denim": 2, "Suit Blazer": 3, "T-Shirts": 148, "Uncategorized": 151, "Wide Leg Pants": 1}, "15": {"Bundi": 3, "Chinos": 45, "Dress Pants": 151, "Fatigue Pants": 1, "Gift Card": 7, "Jackets": 12, "Joggers": 3, "Kurta": 2, "Long Sleeve Polo T-Shirts": 14, "Lounge Pants": 1, "MTM Shirt": 352, "Metal Collar Stay": 1, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 17, "Oversized T-Shirts": 2, "Pocket Square": 1, "RTW Shirt": 446, "Relaxed Linen Pants": 46, "Relaxed Neapolitan Pants": 16, "Relaxed T-Shirts": 6, "Shackets": 6, "Silk Knots": 2, "Smartpants": 20, "Soft Tailored Jackets": 2, "Suit Blazer": 5, "Sweatshirts": 7, "T-Shirts": 63, "Ties": 5, "Uncategorized": 34, "Wide Leg Pants": 3}, "16": {"Bundi": 5, "Chinos": 69, "Dress Pants": 184, "Gift Card": 1, "Jackets": 11, "Joggers": 5, "Kurta": 9, "Linen Pants": 2, "Linen Shorts": 1, "Long Sleeve Polo T-Shirts": 15, "Lounge Pants": 3, "MTM Shirt": 472, "Metal Collar Stay": 3, "Metal Cufflinks": 3, "Mid Rise Stretch Jeans": 12, "Neapolitan Dress Pants": 5, "Oversized T-Shirts": 2, "RTW Shirt": 537, "Relaxed Linen Pants": 58, "Relaxed Neapolitan Pants": 22, "Rigid Denim": 1, "Shackets": 7, "Smartpants": 38, "Soft Tailored Jackets": 2, "Suit Blazer": 8, "Suits": 1, "Sweatshirts": 4, "T-Shirts": 80, "Ties": 2, "Uncategorized": 98, "Washed Shorts": 2}, "17": {"Bundi": 1, "Chinos": 28, "Dress Pants": 64, "Gift Card": 3, "Jackets": 4, "Joggers": 2, "Kurta": 2, "Long Sleeve Polo T-Shirts": 4, "MTM Shirt": 184, "Mid Rise Stretch Jeans": 5, "Neapolitan Dress Pants": 2, "Pocket Square": 1, "RTW Shirt": 186, "Relaxed Linen Pants": 15, "Relaxed Neapolitan Pants": 7, "Shackets": 3, "Silk Knots": 1, "Smartpants": 9, "Suit Blazer": 3, "Sweatshirts": 2, "T-Shirts": 19, "Ties": 3, "Uncategorized": 11}, "18": {"Chinos": 39, "Dress Pants": 68, "Gift Card": 4, "Jackets": 1, "Kurta": 3, "Long Sleeve Polo T-Shirts": 9, "MTM Shirt": 159, "Metal Cufflinks": 2, "Mid Rise Stretch Jeans": 10, "Neapolitan Dress Pants": 1, "Oversized T-Shirts": 1, "Pocket Square": 6, "RTW Shirt": 194, "Relaxed Linen Pants": 26, "Relaxed Neapolitan Pants": 9, "Relaxed T-Shirts": 4, "Shackets": 5, "Smartpants": 15, "Stretch Denim": 1, "Suit Blazer": 6, "T-Shirts": 19, "Ties": 1, "Uncategorized": 46}, "19": {"Bundi": 1, "Chinos": 23, "Dress Pants": 60, "Gift Card": 6, "Jackets": 5, "Joggers": 3, "Kurta": 8, "Long Sleeve Polo T-Shirts": 9, "MTM Shirt": 147, "Metal Collar Stay": 1, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 3, "Oversized T-Shirts": 1, "RTW Shirt": 223, "Relaxed Linen Pants": 17, "Relaxed Neapolitan Pants": 13, "Relaxed T-Shirts": 2, "Shackets": 7, "Smartpants": 11, "Soft Tailored Jackets": 1, "Stretch Denim": 1, "Suit Blazer": 5, "Sweatshirts": 1, "T-Shirts": 40, "Ties": 2, "Uncategorized": 14, "Wide Leg Pants": 1}, "20": {"Bundi": 1, "Chinos": 27, "Dress Pants": 41, "Gift Card": 7, "Jackets": 4, "Kurta": 1, "Long Sleeve Polo T-Shirts": 10, "MTM Shirt": 159, "Metal Collar Stay": 2, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 6, "Oversized T-Shirts": 2, "Pocket Square": 1, "RTW Shirt": 214, "Relaxed Linen Pants": 16, "Relaxed Neapolitan Pants": 12, "Relaxed T-Shirts": 3, "Shackets": 5, "Smartpants": 8, "Soft Tailored Jackets": 1, "Stretch Denim": 4, "Suit Blazer": 6, "Sweatshirts": 1, "T-Shirts": 35, "Ties": 3, "Uncategorized": 36, "Wide Leg Pants": 1}, "21": {"Casual Chinos": 77, "Chinos": 33, "Dress Pants": 69, "Gift Card": 9, "Jackets": 3, "Joggers": 1, "Kurta": 2, "Long Sleeve Polo T-Shirts": 12, "MTM Shirt": 193, "Metal Collar Stay": 4, "Mid Rise Stretch Jeans": 12, "Neapolitan Dress Pants": 2, "Oversized T-Shirts": 8, "RTW Shirt": 359, "Relaxed Linen Pants": 23, "Relaxed Neapolitan Pants": 3, "Shackets": 28, "Smartpants": 24, "Stretch Denim": 3, "Suit Blazer": 2, "Sweatshirts": 1, "T-Shirts": 62, "Uncategorized": 64, "Washed Shorts": 1}, "22": {"Bundi": 1, "Casual Chinos": 40, "Chinos": 59, "Dress Pants": 110, "Gift Card": 8, "Jackets": 8, "Joggers": 3, "Kurta": 14, "Long Sleeve Polo T-Shirts": 13, "MTM Shirt": 317, "Metal Collar Stay": 3, "Metal Cufflinks": 2, "Mid Rise Stretch Jeans": 13, "Neapolitan Dress Pants": 3, "Oversized T-Shirts": 9, "Pocket Square": 2, "RTW Shirt": 452, "Relaxed Linen Pants": 25, "Relaxed Neapolitan Pants": 11, "Relaxed T-Shirts": 1, "Shackets": 23, "Smartpants": 25, "Soft Tailored Jackets": 2, "Stretch Denim": 5, "Suit Blazer": 7, "Sweatshirts": 2, "T-Shirts": 90, "Ties": 3, "Uncategorized": 44, "Washed Shorts": 1, "Wide Leg Pants": 1}, "23": {"Bundi": 7, "Casual Chinos": 97, "Chinos": 62, "Dress Pants": 122, "Gift Card": 10, "Jackets": 13, "Joggers": 3, "Kurta": 18, "Long Sleeve Polo T-Shirts": 14, "Lounge Pants": 1, "MTM Shirt": 408, "Metal Collar Stay": 1, "Mid Rise Stretch Jeans": 6, "Neapolitan Dress Pants": 7, "Oversized T-Shirts": 4, "Pocket Square": 1, "RTW Shirt": 636, "Relaxed Linen Pants": 37, "Relaxed Neapolitan Pants": 31, "Relaxed T-Shirts": 1, "Shackets": 22, "Smartpants": 26, "Soft Tailored Jackets": 1, "Stretch Denim": 27, "Suit Blazer": 8, "Sweatshirts": 3, "T-Shirts": 102, "Uncategorized": 59, "Washed Shorts": 1}, "24": {"Bundi": 2, "Casual Chinos": 3, "Chinos": 26, "Dress Pants": 59, "Gift Card": 7, "Jackets": 10, "Joggers": 3, "Kurta": 6, "Long Sleeve Polo T-Shirts": 13, "Lounge Pants": 2, "MTM Shirt": 157, "Mid Rise Stretch Jeans": 4, "Neapolitan Dress Pants": 1, "Oversized T-Shirts": 4, "RTW Shirt": 173, "Relaxed Linen Pants": 15, "Relaxed Neapolitan Pants": 20, "Shackets": 2, "Smartpants": 13, "Soft Tailored Jackets": 1, "Stretch Denim": 2, "Suit Blazer": 2, "Sweatshirts": 1, "T-Shirts": 29, "Ties": 3, "Uncategorized": 5, "Wide Leg Pants": 1}, "25": {"Bundi": 1, "Chinos": 20, "Dress Pants": 67, "Gift Card": 23, "Jackets": 6, "Kurta": 5, "Linen Pants": 2, "Long Sleeve Polo T-Shirts": 5, "MTM Shirt": 208, "Metal Cufflinks": 1, "Mid Rise Stretch Jeans": 7, "Neapolitan Dress Pants": 1, "Oversized T-Shirts": 5, "RTW Shirt": 185, "Relaxed Linen Pants": 11, "Relaxed Neapolitan Pants": 9, "Relaxed T-Shirts": 1, "Shackets": 1, "Smartpants": 13, "Suit Blazer": 6, "Sweatshirts": 2, "T-Shirts": 34, "Ties": 1, "Uncategorized": 25, "Wide Leg Pants": 1}, "26": {"Bundi": 1, "Chinos": 17, "Dress Pants": 64, "Gift Card": 14, "Jackets": 1, "Kurta": 8, "Linen Shorts": 1, "Long Sleeve Polo T-Shirts": 12, "MTM Shirt": 156, "Metal Collar Stay": 1, "Mid Rise Dress Pants": 3, "Mid Rise Stretch Jeans": 3, "Oversized T-Shirts": 2, "RTW Shirt": 300, "Relaxed Linen Pants": 9, "Relaxed Neapolitan Pants": 12, "Relaxed T-Shirts": 2, "Shackets": 1, "Smartpants": 17, "Suit Blazer": 2, "T-Shirts": 22, "Uncategorized": 22, "Washed Shorts": 1}, "27": {"Bundi": 1, "Casual Chinos": 1, "Chinos": 22, "Dress Pants": 37, "Gift Card": 22, "Jackets": 3, "Joggers": 1, "Kurta": 5, "Long Sleeve Polo T-Shirts": 9, "MTM Shirt": 132, "Mid Rise Dress Pants": 1, "Mid Rise Stretch Jeans": 2, "Oversized T-Shirts": 4, "Pocket Square": 1, "RTW Shirt": 212, "Relaxed Linen Pants": 21, "Relaxed Neapolitan Pants": 4, "Shackets": 6, "Smartpants": 13, "Soft Tailored Jackets": 1, "Stretch Denim": 1, "Suit Blazer": 6, "Sweatshirts": 1, "T-Shirts": 20, "Ties": 5, "Uncategorized": 24, "Wide Leg Pants": 2}, "28": {"Bundi": 1, "Chinos": 46, "Dress Pants": 68, "Gift Card": 28, "Kurta": 16, "Long Sleeve Polo T-Shirts": 16, "MTM Shirt": 185, "Metal Cufflinks": 2, "Mid Rise Dress Pants": 2, "Mid Rise Stretch Jeans": 16, "Neapolitan Dress Pants": 1, "Oversized T-Shirts": 5, "Pocket Square": 1, "RTW Shirt": 214, "Relaxed Linen Pants": 13, "Relaxed Neapolitan Pants": 6, "Shackets": 10, "Silk Knots": 2, "Smartpants": 17, "Soft Tailored Jackets": 1, "Suit Blazer": 2, "Sweatshirts": 2, "T-Shirts": 51, "Ties": 4, "Uncategorized": 30, "Wide Leg Pants": 1}, "29": {"Bundi": 3, "Casual Chinos": 2, "Chinos": 52, "Dress Pants": 93, "Gift Card": 10, "Jackets": 6, "Joggers": 1, "Kurta": 13, "Long Sleeve Polo T-Shirts": 35, "MTM Shirt": 324, "Mid Rise Dress Pants": 12, "Mid Rise Stretch Jeans": 6, "Neapolitan Dress Pants": 3, "Oversized T-Shirts": 2, "Pocket Square": 1, "RTW Shirt": 372, "Relaxed Linen Pants": 21, "Relaxed Neapolitan Pants": 18, "Relaxed T-Shirts": 1, "Shackets": 10, "Smartpants": 23, "Soft Tailored Jackets": 3, "Suit Blazer": 4, "Sweatshirts": 2, "T-Shirts": 60, "Ties": 3, "Uncategorized": 39, "Washed Shorts": 3, "Wide Leg Pants": 1}, "30": {"Bundi": 1, "Casual Chinos": 5, "Chinos": 68, "Dress Pants": 148, "Gift Card": 6, "Jackets": 9, "Joggers": 2, "Kurta": 11, "Linen Pants": 1, "Long Sleeve Polo T-Shirts": 29, "MTM Shirt": 349, "Metal Collar Stay": 2, "Metal Cufflinks": 1, "Mid Rise Dress Pants": 17, "Mid Rise Stretch Jeans": 17, "Oversized T-Shirts": 6, "RTW Shirt": 380, "Relaxed Linen Pants": 25, "Relaxed Neapolitan Pants": 20, "Shackets": 6, "Smartpants": 27, "Suit Blazer": 11, "Sweatshirts": 4, "T-Shirts": 54, "Ties": 1, "Uncategorized": 59}, "31": {"Bundi": 4, "Chinos": 39, "Dress Pants": 68, "Gift Card": 2, "Jackets": 6, "Kurta": 8, "Long Sleeve Polo T-Shirts": 11, "MTM Shirt": 198, "Mid Rise Dress Pants": 3, "Mid Rise Stretch Jeans": 5, "Neapolitan Dress Pants": 3, "Oversized T-Shirts": 4, "RTW Shirt": 182, "Relaxed Linen Pants": 20, "Relaxed Neapolitan Pants": 12, "Shackets": 3, "Smartpants": 9, "Suit Blazer": 1, "Sweatshirts": 1, "T-Shirts": 17, "Uncategorized": 12}}, // day-of-month -> category -> units, for exact MTD-vs-MTD comparison
   prevMonthCategoryUnits: {"Bundi": 67, "Casual Chinos": 225, "Chinos": 1074, "Dress Pants": 2685, "Fatigue Pants": 4, "Gift Card": 239, "Jackets": 197, "Joggers": 55, "Kurta": 141, "Linen Pants": 8, "Linen Shorts": 6, "Long Sleeve Polo T-Shirts": 374, "Lounge Pants": 23, "MTM Shirt": 7565, "Metal Collar Stay": 33, "Metal Cufflinks": 24, "Mid Rise Dress Pants": 38, "Mid Rise Stretch Jeans": 272, "Neapolitan Dress Pants": 61, "Oversized T-Shirts": 100, "Pocket Square": 25, "RTW Shirt": 9090, "Relaxed Linen Pants": 713, "Relaxed Neapolitan Pants": 398, "Relaxed T-Shirts": 44, "Rigid Denim": 2, "Shackets": 217, "Silk Knots": 6, "Smartpants": 583, "Soft Tailored Jackets": 40, "Stretch Denim": 61, "Suit Blazer": 147, "Suits": 1, "Sweaters": 1, "Sweatshirts": 64, "T-Shirts": 1505, "Ties": 61, "Uncategorized": 1155, "Washed Shorts": 17, "Wide Leg Pants": 30},
   prevMonthStoreUPT: {"Ambience Vasant Kunj": {"upt": 2.399, "newUpt": 2.325, "repUpt": 2.5}, "Andheri": {"upt": 3.349, "newUpt": 4.277, "repUpt": 2.944}, "Corporate Orders": {"upt": 3.176, "newUpt": 3.13, "repUpt": 3.0}, "DLF Midtown - Moti Nagar": {"upt": 2.6, "newUpt": 2.526, "repUpt": 2.727}, "Express Avenue": {"upt": 2.516, "newUpt": 2.484, "repUpt": 2.56}, "Gurugram": {"upt": 2.913, "newUpt": 2.758, "repUpt": 3.075}, "Indiranagar": {"upt": 3.36, "newUpt": 3.473, "repUpt": 3.357}, "Inorbit Mall Malad West": {"upt": 2.106, "newUpt": 2.15, "repUpt": 2.063}, "Inorbit mall Hyderabad": {"upt": 2.55, "newUpt": 2.195, "repUpt": 2.965}, "Jaipur Store": {"upt": 2.796, "newUpt": 2.458, "repUpt": 3.082}, "Jubilee Hills": {"upt": 4.108, "newUpt": 3.728, "repUpt": 4.304}, "Juhu Store": {"upt": 2.858, "newUpt": 2.789, "repUpt": 3.008}, "KNK Chennai": {"upt": 2.78, "newUpt": 2.677, "repUpt": 2.884}, "Kalaghoda, Fort": {"upt": 3.11, "newUpt": 2.798, "repUpt": 3.382}, "Kemps Corner": {"upt": 3.013, "newUpt": 3.131, "repUpt": 3.11}, "Khan Market": {"upt": 2.972, "newUpt": 2.924, "repUpt": 3.018}, "Kochi Store": {"upt": 2.184, "newUpt": 2.107, "repUpt": 2.246}, "Koregaon Park": {"upt": 2.678, "newUpt": 2.518, "repUpt": 2.759}, "LakeShore Mall": {"upt": 2.518, "newUpt": 2.5, "repUpt": 2.54}, "Lavelle Road": {"upt": 3.847, "newUpt": 3.403, "repUpt": 4.062}, "Mall of India, Noida": {"upt": 3.01, "newUpt": 2.077, "repUpt": 4.199}, "Oberoi Mall Store": {"upt": 2.898, "newUpt": 2.935, "repUpt": 2.896}, "Oberoi Sky City": {"upt": 2.422, "newUpt": 2.497, "repUpt": 2.325}, "Online": {"upt": 1.768, "newUpt": 1.573, "repUpt": 1.99}, "PMC Viman Nagar Pune": {"upt": 1.796, "newUpt": 1.681, "repUpt": 1.953}, "Pali Hill, Bandra": {"upt": 3.635, "newUpt": 3.107, "repUpt": 4.036}, "Phoenix Marketcity Kurla": {"upt": 2.429, "newUpt": 2.473, "repUpt": 2.406}, "Phoenix Marketcity, Whitefield": {"upt": 3.401, "newUpt": 3.232, "repUpt": 3.598}, "Phoenix Palassio": {"upt": 2.412, "newUpt": 1.938, "repUpt": 2.833}, "R.K. Salai": {"upt": 3.523, "newUpt": 3.065, "repUpt": 3.67}, "Sarath City-Hyderabad": {"upt": 3.285, "newUpt": 2.742, "repUpt": 3.792}, "Select City": {"upt": 2.589, "newUpt": 2.556, "repUpt": 2.608}, "Shakespearesarani": {"upt": 2.864, "newUpt": 2.5, "repUpt": 3.107}, "Sindhu Bhavan Marg": {"upt": 2.957, "newUpt": 2.86, "repUpt": 3.043}, "South Ex.": {"upt": 3.367, "newUpt": 2.933, "repUpt": 3.602}, "Vegas Dwarka": {"upt": 1.883, "newUpt": 1.609, "repUpt": 2.239}, "Virtual Stylist": {"upt": 1.5, "newUpt": 1.364, "repUpt": 1.528}, "Viviana Mall": {"upt": 2.484, "newUpt": 2.55, "repUpt": 2.431}},
   prevMonthStoreAOV: {"Ambience Vasant Kunj": {"aov": 11501.29, "newAov": 10858.29, "repAov": 12376.07}, "Andheri": {"aov": 15182.36, "newAov": 17480.63, "repAov": 14478.72}, "Corporate Orders": {"aov": 10560.69, "newAov": 10422.26, "repAov": 13856.58}, "DLF Midtown - Moti Nagar": {"aov": 10757.11, "newAov": 9848.52, "repAov": 12326.49}, "Express Avenue": {"aov": 11269.44, "newAov": 10954.08, "repAov": 11672.45}, "Gurugram": {"aov": 14185.36, "newAov": 13081.74, "repAov": 15354.11}, "Indiranagar": {"aov": 17591.95, "newAov": 16970.25, "repAov": 18970.28}, "Inorbit Mall Malad West": {"aov": 9033.8, "newAov": 9678.39, "repAov": 8342.85}, "Inorbit mall Hyderabad": {"aov": 11275.34, "newAov": 9493.22, "repAov": 13383.29}, "Jaipur Store": {"aov": 13244.37, "newAov": 11152.22, "repAov": 15016.29}, "Jubilee Hills": {"aov": 20483.54, "newAov": 21161.24, "repAov": 20134.28}, "Juhu Store": {"aov": 13955.01, "newAov": 14173.34, "repAov": 14866.44}, "KNK Chennai": {"aov": 11554.81, "newAov": 10791.88, "repAov": 12311.92}, "Kalaghoda, Fort": {"aov": 15545.0, "newAov": 13133.9, "repAov": 17626.63}, "Kemps Corner": {"aov": 14247.0, "newAov": 16921.18, "repAov": 14620.67}, "Khan Market": {"aov": 16025.34, "newAov": 17641.21, "repAov": 15216.22}, "Kochi Store": {"aov": 8966.96, "newAov": 7723.83, "repAov": 9975.87}, "Koregaon Park": {"aov": 12122.97, "newAov": 11133.68, "repAov": 12626.77}, "LakeShore Mall": {"aov": 11950.45, "newAov": 10041.13, "repAov": 14318.0}, "Lavelle Road": {"aov": 22860.78, "newAov": 18620.44, "repAov": 24914.69}, "Mall of India, Noida": {"aov": 10984.88, "newAov": 9624.81, "repAov": 12836.52}, "Oberoi Mall Store": {"aov": 13422.49, "newAov": 13390.41, "repAov": 13643.92}, "Oberoi Sky City": {"aov": 10230.13, "newAov": 10371.59, "repAov": 10176.5}, "Online": {"aov": 5174.96, "newAov": 4131.88, "repAov": 6416.45}, "PMC Viman Nagar Pune": {"aov": 7469.85, "newAov": 6548.68, "repAov": 8726.97}, "Pali Hill, Bandra": {"aov": 14630.7, "newAov": 12561.04, "repAov": 16404.17}, "Phoenix Marketcity Kurla": {"aov": 12674.21, "newAov": 12534.63, "repAov": 13202.79}, "Phoenix Marketcity, Whitefield": {"aov": 15812.5, "newAov": 14148.8, "repAov": 17739.96}, "Phoenix Palassio": {"aov": 14002.18, "newAov": 8671.8, "repAov": 18740.29}, "R.K. Salai": {"aov": 17192.14, "newAov": 13968.39, "repAov": 18222.42}, "Sarath City-Hyderabad": {"aov": 14365.56, "newAov": 11312.92, "repAov": 17263.57}, "Select City": {"aov": 12920.95, "newAov": 11816.37, "repAov": 13583.7}, "Shakespearesarani": {"aov": 13723.91, "newAov": 12087.79, "repAov": 14927.74}, "Sindhu Bhavan Marg": {"aov": 11057.2, "newAov": 11636.94, "repAov": 10721.07}, "South Ex.": {"aov": 16520.17, "newAov": 12936.0, "repAov": 18432.08}, "Vegas Dwarka": {"aov": 8468.26, "newAov": 7503.21, "repAov": 9721.4}, "Virtual Stylist": {"aov": 6443.19, "newAov": 7505.13, "repAov": 6222.79}, "Viviana Mall": {"aov": 11738.58, "newAov": 12343.28, "repAov": 11188.62}}, // Previous month (Aug 2026) store-wise AOV (all/new/repeat).
-  // August 2026 online revenue (₹) -- "Online" + "Corporate Orders" + "Virtual Stylist" POS locations
+  // Previous month online revenue (₹) -- "Online" + "Corporate Orders" + "Virtual Stylist" POS locations
   // (i.e. every row NOT mapped to a physical region in REGION_MAP), same definition the dashboard
   // uses for "online" elsewhere. Derived from the full Aug 1-31 sales export on 2026-09-18;
   // prevMonthDailyRegion/prevMonthCategory above are offline-only by design (see build_prev_month_baselines
@@ -292,11 +299,30 @@ function monthKeyFromHelper(helperStr){
   if(m) return m[1].charAt(0).toUpperCase()+m[1].slice(1,3).toLowerCase() + '-' + m[2];
   return null;
 }
-function currentMonthKey(){
-  const monNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const d = new Date();
-  return monNames[d.getMonth()] + '-' + d.getFullYear();
+// The month every tab shows: the one picked in the header dropdown, else the live month
+// (the month of the newest baked-in sales day). Deliberately NOT the calendar month -- on the
+// 1st, before any new-month data exists, the dashboard should keep showing last month, not blank.
+function liveMonthKey(){
+  const keys = typeof SEED_DAYS !== 'undefined' ? Object.keys(SEED_DAYS).sort() : [];
+  return keys.length ? currentMonthKeyForDate(new Date(keys[keys.length-1] + 'T00:00:00'))
+                     : currentMonthKeyForDate(new Date());
 }
+function currentMonthKey(){
+  return state.viewMonth || liveMonthKey();
+}
+function isArchiveView(){ return !!state.viewMonth; }
+// 'Sep-2026' -> {short:'Aug', full:'August 2026', key:'Aug-2026'} for monthOffset(mk, -1), etc.
+function monthOffset(mk, delta){
+  const monNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fullNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const [mon, yr] = mk.split('-');
+  const idx = parseInt(yr,10)*12 + monNames.indexOf(mon) + delta;
+  const y = Math.floor(idx/12), m = idx % 12;
+  return {short: monNames[m], full: fullNames[m] + ' ' + y, key: monNames[m] + '-' + y, yearShort: String(y).slice(2)};
+}
+// Labels for the two comparison baselines of the month being viewed.
+function prevMonthInfo(){ return monthOffset(currentMonthKey(), -1); }
+function lastYearInfo(){ return monthOffset(currentMonthKey(), -12); }
 function todayDateKey(){
   const d = new Date();
   const pad = (n) => String(n).padStart(2,'0');
@@ -820,6 +846,9 @@ function storeTargetForDay(store, dateStr){
   if(typeof DAILY_TARGETS !== 'undefined' && DAILY_TARGETS[store] && DAILY_TARGETS[store][dateStr] !== undefined){
     return DAILY_TARGETS[store][dateStr];
   }
+  // Past months use only their own target file -- never the live month's weekday/weekend split.
+  // 0 (not null) keeps the store's actuals counted when that month has no target for it.
+  if(isArchiveView()) return (offlineRegion(store) || (DAILY_TARGETS && DAILY_TARGETS[store])) ? 0 : null;
   // Fallback: derive from weekday/weekend split (only used for dates outside the daily target file's range).
   const rec = STORE_LOOKUP[store];
   if(!rec) return null;
@@ -832,7 +861,10 @@ function getSortedDays(){
 
 function computeStoreTotals(dayFilter){
   const totals = {}; // store -> {actual, target}
-  Object.keys(TARGETS.reduce((acc,t)=>{acc[t.pos_name]=1;return acc;},{})).forEach(s=>{
+  const storeSet = TARGETS.reduce((acc,t)=>{acc[t.pos_name]=1;return acc;},{});
+  // Past months: also count offline stores that aren't in the live target list (closed/renamed since).
+  if(isArchiveView()) Object.keys(REGION_MAP).forEach(s => { storeSet[s] = 1; });
+  Object.keys(storeSet).forEach(s=>{
     totals[s] = {actual: 0, target: 0, days: 0};
   });
   getSortedDays().filter(dayFilter).forEach(dk => {
@@ -853,9 +885,10 @@ function computeRegionTotals(storeTotals){
   const regions = {North:{actual:0,target:0}, South:{actual:0,target:0}, West:{actual:0,target:0}};
   Object.keys(storeTotals).forEach(store => {
     const rec = STORE_LOOKUP[store];
-    if(!rec) return;
-    regions[rec.region].actual += storeTotals[store].actual;
-    regions[rec.region].target += storeTotals[store].target;
+    const reg = rec ? rec.region : offlineRegion(store);
+    if(!reg) return;
+    regions[reg].actual += storeTotals[store].actual;
+    regions[reg].target += storeTotals[store].target;
   });
   return regions;
 }
@@ -875,9 +908,13 @@ function computeProjectedLanding(days){
   });
   if(monthDays.length === 0) return null;
 
+  // Same store set as computeStoreTotals, so a closed month's projected target equals its MTD target.
+  const targetStores = isArchiveView()
+    ? Array.from(new Set(Object.keys(STORE_LOOKUP).concat(Object.keys(REGION_MAP))))
+    : Object.keys(STORE_LOOKUP);
   const targetForDaySum = (dk) => {
     let t = 0;
-    Object.keys(STORE_LOOKUP).forEach(store => {
+    targetStores.forEach(store => {
       const v = storeTargetForDay(store, dk);
       if(v !== null) t += v;
     });
@@ -951,8 +988,11 @@ function fmtINR(n){
   if(Math.abs(n) >= 100000) return '\u20b9' + (n/100000).toFixed(2) + 'L';
   return '\u20b9' + n.toLocaleString('en-IN');
 }
-function fmtPct(n){ return (isFinite(n) ? n.toFixed(1) : '0.0') + '%'; }
+function fmtPct(n){ return isFinite(n) ? n.toFixed(1) + '%' : '—'; }
+// Achievement % -- NaN (rendered as a dash) when there's no target, rather than a red 0%.
+function achOf(actual, target){ return target ? actual/target*100 : NaN; }
 function achColor(pct){
+  if(!isFinite(pct)) return 'var(--text-mute)';
   if(pct >= 100) return 'var(--good)';
   if(pct >= 80) return 'var(--warn)';
   return 'var(--bad)';
@@ -974,7 +1014,32 @@ function render(){
       </div>
     </div>
   `;
+  // Month picker: the live month (baked into this file) + every archived month (data/months/*.json)
+  const monthWrap = document.createElement('div');
+  monthWrap.style.cssText = 'display:flex; align-items:center; gap:8px;';
+  const liveKey = LIVE_MONTH ? LIVE_MONTH.month : liveMonthKey();
+  const monthKeys = [liveKey].concat(ARCHIVE_MONTHS.map(e => e.key).filter(k => k !== liveKey));
+  const keyOrder = k => { const m = monthOffset(k, 0); return parseInt(m.key.split('-')[1],10)*12 + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(m.short); };
+  monthKeys.sort((a,b) => keyOrder(b) - keyOrder(a));
+  const shown = state.monthLoading || currentMonthKey();
+  monthWrap.innerHTML = `
+    <span style="font-size:11.5px; color:var(--text-mute);">Month</span>
+    <select id="bsc-month-select" ${state.monthLoading ? 'disabled' : ''} style="background:var(--panel); border:0.5px solid var(--line2); color:var(--text); font-size:13px; font-weight:600; padding:6px 10px; border-radius:6px; font-family:inherit; cursor:pointer;">
+      ${monthKeys.map(k => `<option value="${k}" ${k===shown?'selected':''}>${monthOffset(k,0).full}${k===liveKey?' (latest)':''}</option>`).join('')}
+    </select>
+    ${state.monthLoading ? '<span style="font-size:11.5px; color:var(--text-mute);">Loading' + String.fromCharCode(8230) + '</span>' : ''}
+  `;
+  header.appendChild(monthWrap);
   root.appendChild(header);
+  const monthSel = monthWrap.querySelector('#bsc-month-select');
+  monthSel.addEventListener('change', e => selectMonth(e.target.value));
+  if(state.monthLoading){
+    const loading = document.createElement('div');
+    loading.style.cssText = 'padding:60px 24px; text-align:center; color:var(--text-mute); font-size:13px;';
+    loading.textContent = 'Loading ' + monthOffset(state.monthLoading,0).full + String.fromCharCode(8230);
+    root.appendChild(loading);
+    return;
+  }
 
   
   const cmk = currentMonthKey();
@@ -1000,7 +1065,7 @@ function render(){
     <input type="date" id="bsc-range-end" value="${prefillEnd}"
       style="background:var(--panel); border:0.5px solid var(--line2); color:var(--text); font-size:12px; padding:5px 8px; border-radius:6px; font-family:inherit; color-scheme:dark;">
     <button id="bsc-range-apply" style="background:var(--brass); color:#1a1408; border:none; font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; font-family:inherit;">Apply</button>
-    ${usingCustomRange ? '<button id="bsc-range-reset" style="background:none; border:0.5px solid var(--line2); color:var(--text-dim); font-size:12px; padding:6px 12px; border-radius:6px; cursor:pointer; font-family:inherit;">Reset to current month</button>' : ''}
+    ${usingCustomRange ? '<button id="bsc-range-reset" style="background:none; border:0.5px solid var(--line2); color:var(--text-dim); font-size:12px; padding:6px 12px; border-radius:6px; cursor:pointer; font-family:inherit;">Reset to full month</button>' : ''}
   `;
   root.appendChild(rangeBar);
 
@@ -1024,7 +1089,7 @@ function render(){
         <div style="font-size:13px; color:var(--text-mute); margin-bottom:16px;">None of your uploaded days fall inside that range. Pick a different range above, or reset it.</div>
       `;
       const resetBtn = document.createElement('button');
-      resetBtn.textContent = 'Reset to current month';
+      resetBtn.textContent = 'Reset to full month';
       resetBtn.style.cssText = 'background:var(--brass); color:#1a1408; border:none; font-size:13px; font-weight:600; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:inherit;';
       resetBtn.onclick = () => { state.dateRange = null; render(); };
       empty.appendChild(resetBtn);
@@ -1062,7 +1127,7 @@ function render(){
     {id:'cohort1', label:'Training Cohort 1', icon:'ti-school'},
     {id:'cohort2', label:'Training Cohort 2', icon:'ti-school'},
     {id:'smcohort', label:'SM Cohort', icon:'ti-building-store'},
-  ];
+  ].filter(t => !isArchiveView() || !['cohort1','cohort2','smcohort'].includes(t.id)); // cohort tabs: live month only
   tabs.forEach(t => {
     const b = document.createElement('button');
     b.textContent = t.label;
@@ -1122,11 +1187,11 @@ function renderOverview(body, days){
     const cardsRow = document.createElement('div');
   cardsRow.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:24px;';
   const cards = [
-    {label: dayLabel(latestDay) + ' actual', val: fmtINR(todayActual), sub: 'vs target ' + fmtINR(todayTarget)},
-    {label: dayLabel(latestDay) + ' ach%', val: fmtPct(todayTarget?todayActual/todayTarget*100:0), color: achColor(todayTarget?todayActual/todayTarget*100:0)},
-    {label: 'Month-to-date actual', val: fmtINR(mtdActual), sub: 'vs target ' + fmtINR(mtdTarget)},
-    {label: 'MTD ach%', val: fmtPct(mtdTarget?mtdActual/mtdTarget*100:0), color: achColor(mtdTarget?mtdActual/mtdTarget*100:0)},
-    {label: 'Overall NPS', val: state.npsData && state.npsData.overall !== null && state.npsData.overall !== undefined ? state.npsData.overall.toFixed(1) : '\u2014', sub: state.npsData ? Object.keys(state.npsData.byStore||{}).length + ' stores' : 'Upload NPS file below'},
+    {label: dayLabel(latestDay) + ' actual', val: fmtINR(todayActual), sub: todayTarget ? 'vs target ' + fmtINR(todayTarget) : 'no target on file'},
+    {label: dayLabel(latestDay) + ' ach%', val: fmtPct(achOf(todayActual, todayTarget)), color: achColor(achOf(todayActual, todayTarget))},
+    {label: 'Month-to-date actual', val: fmtINR(mtdActual), sub: mtdTarget ? 'vs target ' + fmtINR(mtdTarget) : 'no target on file'},
+    {label: 'MTD ach%', val: fmtPct(achOf(mtdActual, mtdTarget)), color: achColor(achOf(mtdActual, mtdTarget))},
+    {label: 'Overall NPS', val: state.npsData && state.npsData.overall !== null && state.npsData.overall !== undefined ? state.npsData.overall.toFixed(1) : '\u2014', sub: state.npsData ? Object.keys(state.npsData.byStore||{}).length + ' stores' : 'No NPS on file for this month'},
   ];
   cards.forEach(c => {
     const card = document.createElement('div');
@@ -1151,8 +1216,8 @@ function renderOverview(body, days){
     '<td style="padding:6px 10px; text-align:right;">MTD ach%</td></tr>';
   ['North','South','West'].forEach(reg => {
     const t = regionTotalsToday[reg], m = regionTotalsMTD[reg];
-    const achT = t.target ? t.actual/t.target*100 : 0;
-    const achM = m.target ? m.actual/m.target*100 : 0;
+    const achT = achOf(t.actual, t.target);
+    const achM = achOf(m.actual, m.target);
     rows += `<tr style="border-top:1px solid var(--line);">
       <td style="padding:8px 10px; font-weight:500;">${reg}</td>
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(t.target)}</td>
@@ -1166,7 +1231,7 @@ function renderOverview(body, days){
 
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:14px; line-height:1.6;';
-  note.textContent = 'Targets are derived from each store\u2019s monthly target split into weekday/weekend daily figures using its own actual July performance ratio. ' + days.length + ' day(s) of data loaded.';
+  note.textContent = (state.targetsNote ? state.targetsNote + ' ' : isArchiveView() ? 'Targets are the day-wise store targets on file for ' + currentMonthKey() + '. ' : 'Targets are derived from each store\u2019s monthly target split into weekday/weekend daily figures using its own actual July performance ratio. ') + days.length + ' day(s) of data loaded.';
   body.appendChild(note);
 
   const proj = computeProjectedLanding(days);
@@ -1176,7 +1241,7 @@ function renderOverview(body, days){
     projHead.textContent = 'Projected month landing \u2014 weekday vs weekend run-rate';
     body.appendChild(projHead);
 
-    const achPct = proj.fullMonthTarget ? proj.projectedLanding/proj.fullMonthTarget*100 : 0;
+    const achPct = achOf(proj.projectedLanding, proj.fullMonthTarget);
     const projRow = document.createElement('div');
     projRow.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:8px;';
     const reqVsAvgColor = (req, avg) => {
@@ -1221,17 +1286,19 @@ function renderStores(body, days){
   const totals = computeStoreTotals(dayFilter);
   const rowsArr = Object.keys(totals).map(store => {
     const t = totals[store];
-    const ach = t.target ? t.actual/t.target*100 : 0;
+    const ach = achOf(t.actual, t.target);
     const aug25 = BASELINE.aug25StoreRevenue ? BASELINE.aug25StoreRevenue[store] : null;
     let sssg = null;
     if(aug25 && t.days > 0){
-      // Only a month total is available for Aug 2025, so pro-rate by the number of days
+      // Only a month total is available for last year, so pro-rate by the number of days
       // you've uploaded this month -- same approach as the region-level comparison.
       const proRatedLastYear = aug25 * (t.days / BASELINE.aug25.days);
       sssg = proRatedLastYear ? (t.actual - proRatedLastYear) / proRatedLastYear * 100 : null;
     }
-    return {store, region: STORE_LOOKUP[store] ? STORE_LOOKUP[store].region : '-', ...t, ach, sssg};
-  }).filter(r => r.days > 0).sort((a,b) => a.ach - b.ach);
+    return {store, region: STORE_LOOKUP[store] ? STORE_LOOKUP[store].region : (offlineRegion(store) || '-'), ...t, ach, sssg};
+  }).filter(r => r.days > 0 && (r.target > 0 || r.actual > 0))
+    // lowest ach% first; with no target on file, fall back to highest revenue first
+    .sort((a,b) => (isFinite(a.ach) && isFinite(b.ach)) ? a.ach - b.ach : (isFinite(a.ach) ? -1 : isFinite(b.ach) ? 1 : b.actual - a.actual));
 
   const storeOrder = rowsArr.map(r => r.store); // canonical order, reused by the AOV table below
 
@@ -1269,7 +1336,7 @@ function renderStores(body, days){
 
   const sssgNote = document.createElement('div');
   sssgNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:-20px; margin-bottom:28px; line-height:1.6;';
-  sssgNote.textContent = 'SSSG compares this store\u2019s revenue so far this month against its August 2025 revenue, pro-rated to the same number of days \u2014 an approximation, since only a full-month total exists for Aug 2025, not a daily breakdown. "New store" means it wasn\u2019t open (or had no comparable revenue) in August 2025.';
+  sssgNote.textContent = 'SSSG compares this store\u2019s revenue so far this month against its ' + lastYearInfo().full + ' revenue, pro-rated to the same number of days \u2014 an approximation, since only a full-month total exists for ' + lastYearInfo().full + ', not a daily breakdown. "New store" means it wasn\u2019t open (or had no comparable revenue) in ' + lastYearInfo().full + '.';
   body.appendChild(sssgNote);
 
   // ---- AOV / New vs Repeat / UPT breakdown ----
@@ -1314,7 +1381,7 @@ function renderStores(body, days){
 
   const headAov = document.createElement('div');
   headAov.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
-  headAov.textContent = 'AOV, UPT and new vs repeat, with change vs August 2026 \u2014 same store order as Target vs Achievement above';
+  headAov.textContent = 'AOV, UPT and new vs repeat, with change vs ' + prevMonthInfo().full + ' \u2014 same store order as Target vs Achievement above';
   body.appendChild(headAov);
 
   if(!hasSegmentData){
@@ -1334,10 +1401,10 @@ function renderStores(body, days){
   aovTable.style.cssText = 'font-size:13px;';
   let aovRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
     '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
-    '<td style="padding:6px 10px; text-align:right;">AOV</td><td style="padding:6px 10px; text-align:right;">vs Aug</td>' +
-    '<td style="padding:6px 10px; text-align:right;">UPT</td><td style="padding:6px 10px; text-align:right;">vs Aug</td>' +
-    '<td style="padding:6px 10px; text-align:right;">New AOV</td><td style="padding:6px 10px; text-align:right;">vs Aug</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Repeat AOV</td><td style="padding:6px 10px; text-align:right;">vs Aug</td>' +
+    '<td style="padding:6px 10px; text-align:right;">AOV</td><td style="padding:6px 10px; text-align:right;">vs ' + prevMonthInfo().short + '</td>' +
+    '<td style="padding:6px 10px; text-align:right;">UPT</td><td style="padding:6px 10px; text-align:right;">vs ' + prevMonthInfo().short + '</td>' +
+    '<td style="padding:6px 10px; text-align:right;">New AOV</td><td style="padding:6px 10px; text-align:right;">vs ' + prevMonthInfo().short + '</td>' +
+    '<td style="padding:6px 10px; text-align:right;">Repeat AOV</td><td style="padding:6px 10px; text-align:right;">vs ' + prevMonthInfo().short + '</td>' +
     '<td style="padding:6px 10px; text-align:right;">New bills</td><td style="padding:6px 10px; text-align:right;">Repeat bills</td>' +
     '<td style="padding:6px 10px; text-align:right;">New revenue</td><td style="padding:6px 10px; text-align:right;">Repeat revenue</td></tr>';
   function deltaCell(now, then){
@@ -1371,7 +1438,7 @@ function renderStores(body, days){
 
   const uptNote = document.createElement('div');
   uptNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:14px; line-height:1.6;';
-  uptNote.textContent = 'UPT = units sold \u00f7 bills (units per transaction), compared against August 2026\u2019s actual UPT for that store.';
+  uptNote.textContent = 'UPT = units sold \u00f7 bills (units per transaction), compared against ' + prevMonthInfo().full + '\u2019s actual UPT for that store.';
   body.appendChild(uptNote);
 }
 
@@ -1383,7 +1450,7 @@ function renderRegions(body, days){
   grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:24px;';
   ['North','South','West'].forEach(reg => {
     const r = regionTotals[reg];
-    const ach = r.target ? r.actual/r.target*100 : 0;
+    const ach = achOf(r.actual, r.target);
     const regStores = STORE_LOOKUP ? Object.keys(STORE_LOOKUP).filter(s => STORE_LOOKUP[s].region === reg) : [];
     const npsVals = (state.npsData && state.npsData.byStore) ? regStores.map(s => state.npsData.byStore[s]).filter(v => v !== undefined && v !== null) : [];
     const regNps = npsVals.length ? npsVals.reduce((a,b)=>a+b,0)/npsVals.length : null;
@@ -1514,8 +1581,8 @@ function renderRegions(body, days){
   compTable.style.cssText = 'font-size:13px;';
   let compRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
     '<td style="padding:6px 10px;">Region</td><td style="padding:6px 10px; text-align:right;">This period</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Aug 2026 (same dates)</td><td style="padding:6px 10px; text-align:right;">vs Aug</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Aug 2025 (pro-rated)</td><td style="padding:6px 10px; text-align:right;">vs Aug\u201925</td></tr>';
+    '<td style="padding:6px 10px; text-align:right;">' + prevMonthInfo().full + ' (same dates)</td><td style="padding:6px 10px; text-align:right;">vs ' + prevMonthInfo().short + '</td>' +
+    '<td style="padding:6px 10px; text-align:right;">' + lastYearInfo().full + ' (pro-rated)</td><td style="padding:6px 10px; text-align:right;">vs ' + lastYearInfo().short + '\u2019' + lastYearInfo().yearShort + '</td></tr>';
   ['North','South','West'].forEach(reg => {
     const now = regionTotals[reg].actual;
     const lm = lastMonthHasData ? lastMonthRegion[reg] : null;
@@ -1536,8 +1603,8 @@ function renderRegions(body, days){
 
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:14px; line-height:1.6;';
-  note.textContent = 'Aug 2026 figures are real day-by-day revenue for the same day-of-month range you\u2019ve uploaded so far. ' +
-    'Aug 2025 only exists as a full-month total in this dashboard, so it\u2019s pro-rated by day count (day ' + maxDayNum + ' of ' + BASELINE.aug25.days + ') as an approximation \u2014 ' +
+  note.textContent = prevMonthInfo().full + ' figures are real day-by-day revenue for the same day-of-month range you\u2019ve uploaded so far. ' +
+    lastYearInfo().full + ' only exists as a full-month total in this dashboard, so it\u2019s pro-rated by day count (day ' + maxDayNum + ' of ' + BASELINE.aug25.days + ') as an approximation \u2014 ' +
     'not a true day-for-day comparison, since footfall isn\u2019t evenly spread across a month.';
   body.appendChild(note);
 }
@@ -1597,7 +1664,7 @@ function renderTrend(body, days){
     '<td style="padding:6px 10px;">Day</td><td style="padding:6px 10px; text-align:right;">Target</td>' +
     '<td style="padding:6px 10px; text-align:right;">Actual</td><td style="padding:6px 10px; text-align:right;">Ach%</td></tr>';
   dailyTotals.slice().reverse().forEach(d => {
-    const ach = d.target ? d.actual/d.target*100 : 0;
+    const ach = achOf(d.actual, d.target);
     rows += `<tr style="border-top:1px solid var(--line);">
       <td style="padding:8px 10px;">${dayLabel(d.dk)}</td>
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(d.target)}</td>
@@ -2237,15 +2304,15 @@ function renderCategoryAOV(body, days){
 
   const catHead = document.createElement('div');
   catHead.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
-  catHead.textContent = 'Category-wise sales vs last month (August 2026) \u2014 all uploaded days combined';
+  catHead.textContent = 'Category-wise sales vs last month (' + prevMonthInfo().full + ') \u2014 all uploaded days combined';
   body.appendChild(catHead);
 
   const catTable = document.createElement('table');
   catTable.style.cssText = 'font-size:13px;';
   let catRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
     '<td style="padding:6px 10px;">Category</td><td style="padding:6px 10px; text-align:right;">Revenue</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Units</td><td style="padding:6px 10px; text-align:right;">Units vs Aug (MTD)</td>' +
-    '<td style="padding:6px 10px; text-align:right;">% of sales</td><td style="padding:6px 10px; text-align:right;">Aug % of sales</td>' +
+    '<td style="padding:6px 10px; text-align:right;">Units</td><td style="padding:6px 10px; text-align:right;">Units vs ' + prevMonthInfo().short + ' (MTD)</td>' +
+    '<td style="padding:6px 10px; text-align:right;">% of sales</td><td style="padding:6px 10px; text-align:right;">' + prevMonthInfo().short + ' % of sales</td>' +
     '<td style="padding:6px 10px; text-align:right;">Change (pp)</td></tr>';
   catArr.forEach(c => {
     const pctNow = catTotal ? c.rev/catTotal*100 : 0;
@@ -2269,8 +2336,8 @@ function renderCategoryAOV(body, days){
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:14px; line-height:1.6;';
   note.textContent = 'MTM vs RTW Shirt: SKUs with a dash (e.g. BOM-SHI-33034) are RTW; SKUs without one (e.g. BOMSH04CM00256) are MTM. ' +
-    '"Units vs Aug (MTD)" matches each of your ' + days.length + ' selected day(s) to the SAME day-of-month in August 2026 (' + matchedDayCount + ' day(s) matched) \u2014 a real MTD-vs-MTD comparison, not a pro-rated estimate. ' +
-    'The August % of sales column is a fixed baseline from August 2026\u2019s full month \u2014 ' +
+    '"Units vs ' + prevMonthInfo().short + ' (MTD)" matches each of your ' + days.length + ' selected day(s) to the SAME day-of-month in ' + prevMonthInfo().full + ' (' + matchedDayCount + ' day(s) matched) \u2014 a real MTD-vs-MTD comparison, not a pro-rated estimate. ' +
+    'The ' + prevMonthInfo().short + ' % of sales column is a fixed baseline from ' + prevMonthInfo().full + '\u2019s full month \u2014 ' +
     'a rising % here means that category is taking a bigger share of the mix than it did last month, not necessarily that its revenue is up in absolute terms. ' +
     'AOV and UPT by store live on the Store-wise tab.';
   body.appendChild(note);
@@ -2281,7 +2348,7 @@ function renderRefunds(body){
 
   const rangeNote = document.createElement('div');
   rangeNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-bottom:16px;';
-  rangeNote.textContent = 'This tab always shows the current calendar month (' + cmk + ') and doesn\u2019t follow the date range picker above \u2014 refund/CN data is only tracked at month-level, not day-by-day.';
+  rangeNote.textContent = 'This tab shows the month picked at the top (' + cmk + ') and doesn\u2019t follow the date range picker above \u2014 refund/CN data is only tracked at month-level, not day-by-day.';
   body.appendChild(rangeNote);
 
   
@@ -2291,7 +2358,9 @@ function renderRefunds(body){
   if(!refundMonth && !cnMonth){
     const empty = document.createElement('div');
     empty.style.cssText = 'padding:30px 14px; text-align:center; color:var(--text-mute); font-size:13px;';
-    empty.textContent = 'No refund or credit note data uploaded for ' + cmk + ' yet. Upload the CSVs above to see it here.';
+    empty.textContent = isArchiveView()
+      ? 'No refund or credit note file on record for ' + cmk + ' (only Jul-2026 onwards are archived in the standard format).'
+      : 'No refund or credit note data uploaded for ' + cmk + ' yet.';
     body.appendChild(empty);
     attachRefundHandlers();
     return;
@@ -2505,7 +2574,7 @@ function renderRefunds(body){
       });
     }
     const augOnlineRev = (typeof BASELINE !== 'undefined' && BASELINE.prevMonthOnlineRevenue) ? BASELINE.prevMonthOnlineRevenue : 0;
-    const augMonthLabel = prevBaseline ? prevBaseline.month : 'Aug';
+    const augMonthLabel = prevBaseline ? prevBaseline.month : prevMonthInfo().key;
 
     const head = document.createElement('div');
     head.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
@@ -2816,14 +2885,85 @@ async function init(){
   render();
 }
 
+// The live month's data as baked into this file, kept so the dropdown can switch back to it
+// after an archived month has been swapped into the shared globals below.
+let LIVE_MONTH = null;
+const archiveCache = {};
+const clone = (o) => JSON.parse(JSON.stringify(o));
+// Swap a const object's contents in place (BASELINE etc. are consts the render code reads directly).
+function replaceContents(target, src){
+  Object.keys(target).forEach(k => delete target[k]);
+  Object.assign(target, src || {});
+}
+
+function applyMonthBundle(b){
+  ['days','billDays','catDays','newRevDays','repRevDays','newBillDays','repBillDays','catUnitDays',
+   'stylistRevDays','stylistBillDays','storeUnitDays','stylistStoreRevDays','stylistStoreBillsDays',
+   'stylistStoreUnitsDays','stylistUnitDays'].forEach(k => { state[k] = {}; });
+  loadSeedDays(b.days);
+  replaceContents(BASELINE, b.baseline);
+  replaceContents(DAILY_TARGETS, b.dailyTargets);
+  replaceContents(PREV_MONTH_REFUND_CN, b.prevRefundCn);
+  state.refundsData = b.refunds;
+  state.cnData = b.cn;
+  state.npsData = b.nps;
+  state.targetsNote = b.targetsNote || null;
+}
+
+async function selectMonth(mk){
+  state.dateRange = null;
+  if(!mk || mk === LIVE_MONTH.month){
+    state.viewMonth = null;
+    applyMonthBundle(LIVE_MONTH);
+    render();
+    return;
+  }
+  const entry = ARCHIVE_MONTHS.find(e => e.key === mk);
+  if(!entry) return;
+  if(!archiveCache[mk]){
+    state.monthLoading = mk;
+    render();
+    try{
+      const r = await fetch(entry.file, {cache: 'no-cache'});
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      archiveCache[mk] = await r.json();
+    }catch(e){
+      state.monthLoading = null;
+      alert('Could not load ' + mk + ' (' + e.message + ').');
+      render();
+      return;
+    }
+    state.monthLoading = null;
+  }
+  state.viewMonth = mk;
+  applyMonthBundle(clone(archiveCache[mk]));
+  // Training/SM cohort tabs track live programmes against fixed baselines -- live month only.
+  if(['cohort1','cohort2','smcohort'].includes(state.activeTab)) state.activeTab = 'overview';
+  render();
+}
+
 function loadBakedInData(){
   // This dashboard is read-only: everything it shows comes directly from the data
-  // baked into this file when it was last published -- never from browser storage.
-  // That guarantees every visitor always sees exactly the same, current numbers,
-  // with no risk of an old cached version lingering in someone's browser.
-  if(typeof SEED_DAYS !== 'undefined'){
-    for(const dk of Object.keys(SEED_DAYS)){
-      const d = SEED_DAYS[dk];
+  // baked into this file (live month) or its data/months/*.json archive files (past months)
+  // -- never from browser storage. That guarantees every visitor sees exactly the same numbers.
+  LIVE_MONTH = {
+    month: liveMonthKey(),
+    days: typeof SEED_DAYS !== 'undefined' ? SEED_DAYS : {},
+    baseline: clone(BASELINE),
+    dailyTargets: clone(DAILY_TARGETS),
+    prevRefundCn: clone(PREV_MONTH_REFUND_CN),
+    refunds: typeof SEED_REFUNDS !== 'undefined' ? SEED_REFUNDS : null,
+    cn: typeof SEED_CN !== 'undefined' ? SEED_CN : null,
+    nps: typeof SEED_NPS !== 'undefined' ? SEED_NPS : null,
+    targetsNote: null,
+  };
+  applyMonthBundle(LIVE_MONTH);
+}
+
+function loadSeedDays(seedDays){
+  if(seedDays){
+    for(const dk of Object.keys(seedDays)){
+      const d = seedDays[dk];
       state.days[dk] = d.stores;
       state.billDays[dk] = d.bills || {};
       state.catDays[dk] = d.categories || {};
@@ -2841,9 +2981,6 @@ function loadBakedInData(){
       state.stylistStoreUnitsDays[dk] = d.stylistStoreUnits || {};
     }
   }
-  if(typeof SEED_REFUNDS !== 'undefined') state.refundsData = SEED_REFUNDS;
-  if(typeof SEED_CN !== 'undefined') state.cnData = SEED_CN;
-  if(typeof SEED_NPS !== 'undefined') state.npsData = SEED_NPS;
 }
 init();
 

@@ -27,8 +27,8 @@ import openpyxl
 import pandas as pd
 
 from bsc_common import (
-    REGION_MAP, load_sales_csv, build_seed_days, find_refund_and_cn_sheets,
-    process_refund_sheet, replace_const, syntax_check_html_js,
+    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, find_refund_and_cn_sheets,
+    process_refund_sheet, replace_const, replace_baseline_key, last_year_baseline, syntax_check_html_js,
 )
 
 
@@ -89,10 +89,11 @@ def build_nps(nps_xlsx_path):
     return {'byStore': by_store, 'overall': overall}
 
 
-def build_prev_month_baselines(prev_month_sales_path):
-    """Rebuild the prevMonth* constants from a complete prior month's sales CSV. Call this
-    whenever --new-month is set and you have the just-closed month's full data available."""
-    df = load_sales_csv(prev_month_sales_path)
+def build_prev_month_baselines(prev_month_sales):
+    """Rebuild the prevMonth* constants from a complete prior month's sales CSV (path, or a df
+    already through load_sales_csv/prepare_sales_df). Call this whenever --new-month is set and
+    you have the just-closed month's full data available."""
+    df = load_sales_csv(prev_month_sales) if isinstance(prev_month_sales, str) else prev_month_sales.copy()
     df['Day_num'] = df['Day_str'].str[-2:].astype(int)
     df['Region'] = df['POS location name'].map(REGION_MAP)
 
@@ -213,8 +214,18 @@ def main():
             print(f"Rebuilding prevMonth* baselines from: {args.prev_month_sales}")
             baselines = build_prev_month_baselines(args.prev_month_sales)
             for key, val in baselines.items():
-                content = replace_const(content, key, json.dumps(val))
+                content = replace_baseline_key(content, key, json.dumps(val))
             print("  prevMonth* baselines updated.")
+        # Same month last year (SSSG / region "vs last year"), from data/sales_history_daily.csv
+        last = max(seed_days)
+        new_mk = '%s-%s' % (MONTHS[int(last[5:7]) - 1], last[:4])
+        ly, ly_stores = last_year_baseline(new_mk)
+        if ly:
+            content = replace_baseline_key(content, 'aug25', json.dumps(ly))
+            content = replace_baseline_key(content, 'aug25StoreRevenue', json.dumps(ly_stores))
+            print(f"  Last-year baseline set for {new_mk}: Rs{ly['total']:,.0f} offline")
+        else:
+            print(f"WARNING: no last-year history for {new_mk}; last-year baseline left unchanged.", file=sys.stderr)
 
     with open(args.html, 'w', encoding='utf-8') as f:
         f.write(content)

@@ -43,7 +43,12 @@ def categorize(product_type, sku):
 
 def load_sales_csv(path):
     """Load a Shopify sales export, filtered to order rows, with the standard derived columns."""
-    df = pd.read_csv(path, low_memory=False)
+    return prepare_sales_df(pd.read_csv(path, low_memory=False))
+
+
+def prepare_sales_df(df):
+    """load_sales_csv's transforms, for a raw export already in memory (e.g. a month sliced out of
+    a multi-year file)."""
     df = df[df['Order or return'] == 'order'].copy()
     df['Day_str'] = df['Day'].str[:10]
     df['Revenue'] = df['Gross sales'].fillna(0) + df['Taxes'].fillna(0)  # established revenue basis -- do not change
@@ -223,6 +228,34 @@ def replace_const(content, const_name, new_json_str):
     while content[j] != ';':
         j += 1
     return content[:start_idx] + f"const {const_name} = " + new_json_str + content[j:]
+
+
+def replace_baseline_key(content, key, new_json_str):
+    """Replace one `  key: <value>,` line inside index.html's BASELINE object. Its keys are not
+    top-level consts, so replace_const can't reach them; each value sits on a single line."""
+    pattern = re.compile(r'^(\s*)' + re.escape(key) + r':\s*.*?,\s*$', re.MULTILINE)
+    if not pattern.search(content):
+        raise ValueError(f'BASELINE key {key!r} not found')
+    return pattern.sub(lambda m: f'{m.group(1)}{key}: {new_json_str},', content, count=1)
+
+
+def last_year_baseline(month_key, history_csv='data/sales_history_daily.csv'):
+    """Same-month-last-year totals for a 'Mon-YYYY' month, from the daily sales history the
+    forecast keeps (same Gross sales + Taxes basis). Returns the BASELINE.aug25 /
+    aug25StoreRevenue pair -- those key names are historical; they hold "same month last year"."""
+    mon, year = month_key.split('-')
+    prefix = '%d-%02d' % (int(year) - 1, MONTHS.index(mon) + 1)
+    h = pd.read_csv(history_csv)
+    h = h[h['date'].str.startswith(prefix)]
+    if h.empty:
+        return None, None
+    h = h.assign(region=h['loc'].map(REGION_MAP))
+    off = h[h['region'].notna()]
+    days = pd.Period(prefix).days_in_month
+    ly = {'total': int(round(off['rev'].sum())), 'days': days,
+          'region': {k: int(round(v)) for k, v in off.groupby('region')['rev'].sum().items()}}
+    store_rev = {k: int(round(v)) for k, v in off.groupby('loc')['rev'].sum().items()}
+    return ly, store_rev
 
 
 def extract_const(content, const_name, is_array=False):
