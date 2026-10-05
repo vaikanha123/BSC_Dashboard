@@ -36,6 +36,24 @@ def build_daily_targets(targets_xlsx_path):
     wb = openpyxl.load_workbook(targets_xlsx_path, data_only=True)
     ws = wb['Sheet1'] if 'Sheet1' in wb.sheetnames else wb[wb.sheetnames[0]]
     targets = {}
+    header = next(ws.iter_rows(min_row=1, max_row=1, values_only=True))
+    date_cols = [(i, c) for i, c in enumerate(header) if hasattr(c, 'strftime')]
+    if date_cols:
+        # Wide layout (Oct-26 onwards): 'Sr. No., POS Location Name, Staff Name, <one column per
+        # date>, Total' -- one row per stylist plus a 'Store Total' row per store, which is the
+        # store's target. The sheet's own 'Total' column is ignored (Kalaghoda's was stale in Oct-26).
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            store, staff = row[1], row[2]
+            if store is None or str(staff).strip().lower() != 'store total':
+                continue
+            store = str(store).strip()
+            if store in targets:
+                raise ValueError(f"Two 'Store Total' rows for {store!r} in {targets_xlsx_path}")
+            targets[store] = {d.strftime('%Y-%m-%d'): round(row[i] or 0, 2) for i, d in date_cols}
+        unknown = [s for s in targets if s not in REGION_MAP]
+        if unknown:
+            raise ValueError(f"Target stores not in REGION_MAP (spelling?): {unknown}")
+        return targets
     for row in ws.iter_rows(min_row=2, values_only=True):
         store, date, new_rev, rep_rev = row[0], row[1], row[2], row[3]
         if store is None or date is None:

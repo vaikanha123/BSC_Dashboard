@@ -51,7 +51,7 @@ Rotate this token periodically for security; if this document is ever shared out
 
 **Refund/CN Excel** — two sheets, one refund one CN (names/order vary: `refund`/`CN`, `refund`/`cn`, etc. — detect by header content, not sheet name). Columns (0-indexed): `Channel`(0), `Customer Name`(1), `Order ID`(2), `Order Date`(3), `POS Location / Store`(4), `Line Item`(5)... amount is column index 7, reason is index 9 for refunds / index 8 for CN, processed-date is index 10 for refunds / index 9 for CN, category is index 6. "Channel" = "Online" identifies online vs offline.
 
-**Targets Excel** — `Daywise_Targets_<Mon>-26.xlsx`, single sheet, columns: `POS location name`, `Date`, `New Revenue`, `Repeat Revenue`, `New orders`, `Repeat orders`. Target per store per day = New Revenue + Repeat Revenue.
+**Targets Excel** — `Daywise_Targets_<Mon>-26.xlsx`, single sheet, columns: `POS location name`, `Date`, `New Revenue`, `Repeat Revenue`, `New orders`, `Repeat orders`. Target per store per day = New Revenue + Repeat Revenue. **From Oct-26 the file is wide instead** (`Daywise October target.xlsx`): `Sr. No., POS Location Name, Staff Name, <one column per date>, Total`, one row per stylist plus a `Store Total` row per store. `build_daily_targets()` detects the date-column header and takes the `Store Total` rows (it ignores the sheet's own `Total` column, which was stale for Kalaghoda in Oct). The quarter's `OND overall target.xlsx` (one sheet per month: Rev, New/Rep revenue, New/Repeat AOV, customers, conversion, footfall per store) is the monthly summary; its Oct `Rev` differed from the day-wise store totals for Shakespearesarani, Oberoi Sky City, Jaipur and PMC Viman Nagar, and the dashboard uses the day-wise file.
 
 **NPS Excel** — sheet named like `Final Pivto` or similar; the SECOND table within the sheet (starting a few rows down) has store name, NPS as a decimal fraction (multiply by 100), respondent counts. Look for a "Grand Total" row for the overall figure.
 
@@ -94,9 +94,11 @@ def categorize(product_type, sku):
 **Month transition checklist** (do this whenever a new month's first file arrives):
 0. **Archive the closing month first.** Load its final refund/CN file into the live page as usual, then run `scripts/month_archive.py snapshot --html index.html`. That writes `data/months/<YYYY-MM>.json` (days, baselines, targets, refunds/CN, NPS exactly as shown) and adds it to `ARCHIVE_MONTHS`, which feeds the month dropdown in the header. Skip this and the month disappears from the dropdown once step 1 overwrites it. Commit `data/months/` with the HTML.
 1. Replace `SEED_DAYS` entirely with the new month's data only.
-2. Replace `DAILY_TARGETS` with the new month's target file.
-3. Replace `SEED_REFUNDS`/`SEED_CN` with the new month (current-month key like `Sep-2026`).
+2. Replace `DAILY_TARGETS` with the new month's target file (`--targets`), and refresh `TARGETS` (`month_target` / `weekday_target` / `weekend_target` per store) from it: the forecast page shows `month_target` as each store's target.
+3. Replace `SEED_REFUNDS`/`SEED_CN` with the new month (current-month key like `Sep-2026`) once its first refund file arrives; until then the tab says no data is uploaded for the month. Pass the closed month's final refund file as `--prev-month-refund ... --prev-month-key Sep-2026` so `PREV_MONTH_REFUND_CN` rolls forward.
 4. Rebuild the **`prevMonth*`** baseline constants (`prevMonthStoreAOV`, `prevMonthStoreUPT`, `prevMonthCategory`, `prevMonthCategoryUnits`, `prevMonthDailyRegion`, `prevMonthDailyCategoryUnits`) from the *just-closed* month's complete data — these drive all "vs last month" comparisons (Store-wise, Category, Region-wise daily trend). These are generically named (not `july26...` or `aug26...`) specifically so this step is a pure data swap, no code changes needed.
+4b. Add the closed month to `priorClosedMonths` for both cohorts in `COHORT_CONFIGS` (a `<MON>_CLOSED_COHORT1/2` const pooled from the tracker's `BATCHn_RAW[].<mon>` / `BATCHn_REST_POOLED.<mon>`), and add the new month to the stylist tracker (see "Tracker's period selector" below).
+4c. SM Cohort tab: the AOV columns follow the live month vs the month before automatically. NPS and audit columns are fixed constants (`AUG_/SEP_NPS_BYSTORE`, `AUG_/SEP_AUDIT_BYSTORE`), still Aug vs Sep as of Oct-26; move them on when a newer NPS file / compliance sheet arrives. `SEED_NPS` carries a `month` tag, and the Overview card labels it while it is older than the month shown; `--nps` rewrites it without the tag.
 5. The Training Cohort tab's July baseline (`JULY_COHORT_BASELINE`, `JULY_STYLIST_DETAIL`) is **fixed and does not change** on month transitions — it's the training program's permanent reference point, not a rolling comparison.
 6. The "vs last year" baseline (`BASELINE.aug25` / `aug25StoreRevenue` -- historical key names, they hold the *same month last year*) is refreshed automatically by `--new-month` from `data/sales_history_daily.csv`. (`--new-month` writes the `prevMonth*` keys inside `BASELINE` via `replace_baseline_key`; before 2026-10-01 it called `replace_const` for them, which would have failed because they are not top-level consts.)
 
@@ -452,11 +454,13 @@ def categorize(product_type, sku):
 ]
 ```
 
-Batch 2's period selector is locked to "August → September" only (no July option) since there's no July baseline for this batch.
+Batch 2's period selector has every July-based option disabled, since there's no July baseline for this batch.
 
 ### Tracker's period selector
 
-Three modes exist (Batch 1 only): `jul-aug`, `aug-sep`, `jul-sep`. Each stylist's RAW entry carries `jul`, `mtd` (= frozen August final, kept for backward compatibility), `weeks` (August week-by-week, Mon–Sun boundaries with partial weeks at month start/end), `aug` (same as `mtd`), `sep` (live September MTD — this is the one that keeps changing as new September files arrive).
+Six modes: `jul-aug`, `aug-sep`, `jul-sep`, `sep-oct`, `aug-oct`, `jul-oct` (the `jul-*` ones are Batch 1 only; Batch 2 defaults to `aug-oct`). Each stylist's RAW entry carries `jul`, `mtd` (= frozen August final, kept for backward compatibility), `weeks` (August week-by-week, Mon–Sun boundaries with partial weeks at month start/end), `aug` (same as `mtd`), `sep` (frozen September final) and `oct` (live October MTD — the one that keeps changing as new files arrive).
+
+**Adding a month to the tracker** (done for October on 2026-10-05): run `update_tracker.py --period <mon>` with the new month's first file, then in the HTML add the `PERIOD_META` entries (`<prev>-<mon>`, `aug-<mon>`, `jul-<mon>`; the first two need a `b2Desc`), the period and "Did not grow" dropdown options plus `GROWTH_FILTERS`, a table column (`renderHeader`, `sortValue`, `renderTable`), `restKeyMap`, and a detail-panel row. Reword the month that just closed so it no longer says "MTD" / "Sep 1–30 only": `daily_refresh.py` bumps every `Data as of … — <Month> MTD`, `<Month> MTD (N days)` and `<Mon> 1–N only|MTD` string it finds, and needs at least 4 / 3 of the first two for the live month.
 
 ## 6b. Forecast page (`forecast-1ad8b79c.html`, `scripts/forecast.py`, `data/`)
 
