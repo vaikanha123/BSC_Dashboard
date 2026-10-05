@@ -31,7 +31,7 @@ How it learns:
     forecasts (inverse error), and an optional small bias correction -- but only in the policy the
     backtest chose (equal / adaptive / adaptive+bias).
   * Forecast ranges (80%) come from the logged error distribution for the same horizon window.
-Revenue basis and store lists come from bsc_common (Gross sales + Taxes; REGION_MAP = offline).
+Revenue basis and store lists come from bsc_common (Gross sales + Taxes + Shipping charges; REGION_MAP = offline).
 Closed stores and the festival calendar live in data/forecast_config.json.
 """
 import argparse
@@ -70,11 +70,13 @@ def log(msg):
 # ---------------------------------------------------------------- history
 
 def aggregate_sales(path):
-    cols = ['Day', 'Order name', 'Order or return', 'POS location name', 'Gross sales', 'Taxes', 'Quantity ordered']
+    cols = ['Day', 'Order name', 'Order or return', 'POS location name', 'Gross sales', 'Taxes', 'Shipping charges',
+            'Quantity ordered']
     df = pd.read_csv(path, usecols=cols, low_memory=False)
     df = df[df['Order or return'] == 'order']
     df['date'] = df['Day'].str[:10]
-    df['rev'] = df['Gross sales'].fillna(0) + df['Taxes'].fillna(0)  # established revenue basis
+    # revenue basis -- same formula as bsc_common.prepare_sales_df
+    df['rev'] = df['Gross sales'].fillna(0) + df['Taxes'].fillna(0) + df['Shipping charges'].fillna(0)
     df['loc'] = df['POS location name'].fillna('Online').str.strip()
     g = df.groupby(['date', 'loc']).agg(rev=('rev', 'sum'), bills=('Order name', 'nunique'),
                                         units=('Quantity ordered', 'sum')).reset_index()

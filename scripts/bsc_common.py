@@ -51,9 +51,14 @@ def prepare_sales_df(df):
     a multi-year file)."""
     df = df[df['Order or return'] == 'order'].copy()
     df['Day_str'] = df['Day'].str[:10]
-    df['Revenue'] = df['Gross sales'].fillna(0) + df['Taxes'].fillna(0)  # established revenue basis -- do not change
+    # Revenue basis (since 2026-10-05, per Vaibhav): Gross sales + Taxes + Shipping charges. Keep
+    # forecast.py's aggregate_sales() and index.html's handleFiles() on the same formula.
+    df['Revenue'] = df['Gross sales'].fillna(0) + df['Taxes'].fillna(0) + df['Shipping charges'].fillna(0)
     df['POS location name'] = df['POS location name'].fillna('Online').str.strip()
     df['Category'] = df.apply(lambda r: categorize(r['Product type'], r['Product variant SKU']), axis=1)
+    # Shipping is its own line ('Line type' = shipping: no product type, no stylist, qty 0) -- give it
+    # its own row on the Category tab rather than burying it in Uncategorized.
+    df.loc[df['Line type'] == 'shipping', 'Category'] = 'Shipping'
     df['Segment'] = df['New or returning customer'].fillna('').str.strip().str.lower()
     df['Stylist'] = df['Assisting staff member name'].fillna('').str.strip()
     df['StylistNorm'] = df['Stylist'].str.lower()
@@ -241,7 +246,7 @@ def replace_baseline_key(content, key, new_json_str):
 
 def last_year_baseline(month_key, history_csv='data/sales_history_daily.csv'):
     """Same-month-last-year totals for a 'Mon-YYYY' month, from the daily sales history the
-    forecast keeps (same Gross sales + Taxes basis). Returns the BASELINE.aug25 /
+    forecast keeps (same Gross sales + Taxes + Shipping charges basis). Returns the BASELINE.aug25 /
     aug25StoreRevenue pair -- those key names are historical; they hold "same month last year"."""
     mon, year = month_key.split('-')
     prefix = '%d-%02d' % (int(year) - 1, MONTHS.index(mon) + 1)
