@@ -198,6 +198,10 @@ const SEP_NPS_BYSTORE = {"Juhu Store": 58.3, "PMC Viman Nagar Pune": 66.7, "Phoe
 // available in that sheet (only week 1 audited so far this month) -- fractions x100 for percent.
 const AUG_AUDIT_BYSTORE = {"Juhu Store": 86.0, "PMC Viman Nagar Pune": 96.0, "Phoenix Marketcity, Whitefield": 88.0, "Express Avenue": 92.0, "Gurugram": 80.0, "Vegas Dwarka": 99.0, "Mall of India, Noida": 92.0};
 const SEP_AUDIT_BYSTORE = {"Juhu Store": 97.0, "PMC Viman Nagar Pune": 95.0, "Phoenix Marketcity, Whitefield": 88.0, "Express Avenue": 91.0, "Gurugram": 72.0, "Vegas Dwarka": 96.0, "Mall of India, Noida": 91.0};
+// August 2026 revenue and bills per store (summed from data/months/2026-08.json) -- the SM Cohort's fixed
+// AOV baseline: the batch started in September on the basis of August performance, so AOV is always
+// August vs the month shown, never "vs the month before". Regenerate if the revenue basis changes.
+const AUG_SM_SALES_BYSTORE = {"Juhu Store": {"rev": 3437034.9, "bills": 246}, "PMC Viman Nagar Pune": {"rev": 1506567.43, "bills": 201}, "Phoenix Marketcity, Whitefield": {"rev": 2799612.23, "bills": 177}, "Express Avenue": {"rev": 2818561.24, "bills": 250}, "Gurugram": {"rev": 4242423.79, "bills": 299}, "Vegas Dwarka": {"rev": 1308239.42, "bills": 154}, "Mall of India, Noida": {"rev": 3372758.49, "bills": 307}};
 
 const STORE_LOOKUP = {}; // pos_name -> target record
 TARGETS.forEach(t => STORE_LOOKUP[t.pos_name] = t);
@@ -1940,10 +1944,10 @@ function renderTrainingCohort(body, days, cfg){
 
 function renderSMCohort(body, days){
   const cmk = currentMonthKey();
-  const curLbl = cmk.split('-')[0], prevLbl = prevMonthInfo().short; // AOV columns: live month vs the month before
+  const curLbl = cmk.split('-')[0], prevLbl = 'Aug'; // AOV columns: month shown vs the fixed August baseline
 
   // Per-store live-month figures (the sep*/aug* names below date from when this tab was Sep vs Aug:
-  // for AOV they now mean live month / previous month; for NPS and audit they are still Sep / Aug).
+  // for AOV, sep* now means the month shown and aug* is still August; for NPS and audit they are still Sep / Aug).
   const sepRev = {}, sepBills = {};
   SM_COHORT_STORES.forEach(s => { sepRev[s] = 0; sepBills[s] = 0; });
   days.forEach(dk => {
@@ -1957,7 +1961,8 @@ function renderSMCohort(body, days){
 
   const rows = SM_COHORT_STORES.map(store => {
     const sepAov = sepBills[store] ? sepRev[store]/sepBills[store] : null;
-    const augAov = BASELINE.prevMonthStoreAOV && BASELINE.prevMonthStoreAOV[store] ? BASELINE.prevMonthStoreAOV[store].aov : null;
+    const augSales = AUG_SM_SALES_BYSTORE[store];
+    const augAov = augSales && augSales.bills ? augSales.rev/augSales.bills : null;
     const aovDelta = (sepAov !== null && augAov) ? (sepAov-augAov)/augAov*100 : null;
     const npsSep = SEP_NPS_BYSTORE[store];
     const npsAug = AUG_NPS_BYSTORE[store];
@@ -1984,9 +1989,10 @@ function renderSMCohort(body, days){
     const v = vals.filter(x => x !== null && x !== undefined);
     return v.length ? v.reduce((a,b) => a+b, 0)/v.length : null;
   }
-  // August AOV is a simple average of each store's AOV, not a revenue-weighted pool like September --
-  // per-store August bill counts aren't retained on this dashboard, so true pooling isn't possible for it.
-  const avgAugAov = avg(rows.map(r => r.augAov));
+  // August AOV is pooled the same way as the month shown (sum revenue / sum bills across the cohort's stores).
+  const totalAugRev = SM_COHORT_STORES.reduce((a,s) => a + (AUG_SM_SALES_BYSTORE[s] ? AUG_SM_SALES_BYSTORE[s].rev : 0), 0);
+  const totalAugBills = SM_COHORT_STORES.reduce((a,s) => a + (AUG_SM_SALES_BYSTORE[s] ? AUG_SM_SALES_BYSTORE[s].bills : 0), 0);
+  const avgAugAov = totalAugBills ? totalAugRev/totalAugBills : null;
   const pooledAovDelta = avgAugAov ? (pooledSepAov-avgAugAov)/avgAugAov*100 : null;
   const avgNpsAug = avg(rows.map(r => r.npsAug));
   const avgNpsSep = avg(rows.map(r => r.npsSep));
@@ -2001,7 +2007,7 @@ function renderSMCohort(body, days){
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort AOV — ${cmk}</div>
       <div style="font-size:22px; font-weight:700; color:${pooledAovDelta===null?'var(--text)':(pooledAovDelta>=0?'var(--good)':'var(--bad)')};" class="bsc-mono">${fmtINR(pooledSepAov)}</div>
-      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs ${prevLbl} avg ${avgAugAov ? fmtINR(avgAugAov) : '—'}</div>
+      <div style="font-size:11.5px; color:var(--text-mute); margin-top:6px;">vs ${prevLbl} ${avgAugAov ? fmtINR(avgAugAov) : '—'}</div>
     </div>
     <div style="background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid var(--brass);">
       <div style="font-size:11px; color:var(--text-mute); margin-bottom:6px;">Cohort NPS — Sep, avg across stores</div>
@@ -2018,7 +2024,7 @@ function renderSMCohort(body, days){
 
   const rollupNote = document.createElement('div');
   rollupNote.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:24px; line-height:1.6;';
-  rollupNote.textContent = 'Cohort AOV is pooled (sum revenue ÷ sum bills) for ' + curLbl + ', live from whatever date range is selected above; ' + prevLbl + ' is a simple average of each store’s AOV, since per-store bill counts for a closed month aren’t retained on this dashboard for a true revenue-weighted pool. NPS and Audit Score still compare September with August — no ' + curLbl + ' survey or audit data has been loaded yet. They are simple averages across the cohort’s stores in each month — a store with no data that period is excluded from the average rather than counted as zero.';
+  rollupNote.textContent = 'Cohort AOV is pooled (sum revenue ÷ sum bills) for ' + curLbl + ', live from whatever date range is selected above, and compared with the same pooled figure for full-month August — the cohort’s baseline, since the batch started in September on the basis of August performance. NPS and Audit Score still compare September with August — no ' + curLbl + ' survey or audit data has been loaded yet. They are simple averages across the cohort’s stores in each month — a store with no data that period is excluded from the average rather than counted as zero.';
   body.appendChild(rollupNote);
 
   // ---- Per-store table ----
@@ -2062,7 +2068,7 @@ function renderSMCohort(body, days){
 
   const note = document.createElement('div');
   note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:16px; line-height:1.6;';
-  note.textContent = 'AOV ' + curLbl + ' recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest audit on file, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. NPS Sep and Audit Sep are colored green where the store improved vs August, red where it declined; AOV ' + curLbl + ' is colored against ' + prevLbl + '.';
+  note.textContent = 'AOV ' + curLbl + ' recalculates from whatever date range you’ve selected above, so it updates automatically as new sales data is added. Audit Sep is the "Sep W1" column from the Compliance Score Sheet — the latest audit on file, not a full-month figure like Audit Aug, so that comparison is more directional than the AOV/NPS ones. NPS Sep and Audit Sep are colored green where the store improved vs August, red where it declined; AOV ' + curLbl + ' is colored against August too.';
   body.appendChild(note);
 }
 
