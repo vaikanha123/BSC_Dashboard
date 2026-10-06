@@ -9,7 +9,7 @@ leaving the files as they were -- it never touches git):
   1. Sanity-checks the CSV: single month, last date == yesterday, latest day not suspiciously low.
   2. Refuses to run on a new-month transition (needs --new-month + the full previous month's file;
      do that by hand per BSC_Dashboard_Runbook.md).
-  3. Runs update_main_dashboard.py and update_tracker.py.
+  3. Runs update_main_dashboard.py, update_tracker.py and update_sm_cohort.py (the tracker's SM Cohort tab).
   4. Bumps the tracker's hand-written "as of" labels, which update_tracker.py never touches.
   5. Runs verify_cohort_match.js (pooled Training Cohort 1 AOV must match between the two files).
   6. Runs forecast.py run (separate forecast page FORECAST_PAGE + data/ history/log). Non-fatal: on failure data/ is restored
@@ -118,6 +118,11 @@ def main():
             '--period', period]) != 0:
         restore(html_files)
         stop('update_tracker.py failed')
+    # SM Cohort tab of the tracker (7 stores, stylist-wise, vs target and vs August). Its month history and
+    # targets live in data/sm_cohort.json; a month with no targets loaded still refreshes, without the target columns.
+    if run([py, 'scripts/update_sm_cohort.py', '--html', 'stylist-weekly-tracker.html', '--sales', a.sales]) != 0:
+        restore(html_files + ['data/sm_cohort.json'])
+        stop('update_sm_cohort.py failed')
 
     # Bump the tracker's hand-written "as of" labels
     p = os.path.join(ROOT, 'stylist-weekly-tracker.html')
