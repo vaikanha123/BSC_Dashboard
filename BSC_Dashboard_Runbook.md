@@ -475,9 +475,12 @@ report is shared (new SKUs otherwise land in "Other (not in Base file)"):
 
 - `bsc_common.prepare_sales_df` adds `CatL1`/`CatL2`; each `SEED_DAYS` day carries a `catTree`
   (`{Category: {Sub-category 1: [revenue, units]}}`) next to the old flat `categories`.
-- Lines whose SKU is not in Base keep the old flat rule: dash-SKU shirts (all `BOM-SHI-CU-*` so far)
-  → RTW Shirts / "Not in Base file"; no-dash shirts → MTM Shirts / "MTM Shirt"; shipping, gift cards
-  and no-product-type lines stay as their own rows.
+- Made-to-measure shirts are not stock items, so they are not in Base. `categorize()` marks a shirt as MTM
+  when its SKU has no dash (`BOMSH...`) or starts `BOM-SHI-CU-` (custom shirts from RTW-range fabrics --
+  confirmed MTM by Vaibhav 2026-10-07; counted as RTW before that). They show under MTM Shirts as two
+  sub-rows by SKU family. Shipping, gift cards and no-product-type lines stay as their own rows.
+- Months archived before 2026-10-07 (`data/months/`, Sep 2026 and earlier) still carry the old split
+  with BOM-SHI-CU inside "RTW Shirt".
 - Last-month comparison uses `BASELINE.prevMonthCatTree` / `prevMonthDailyCatTreeUnits`, rebuilt by
   `--new-month --prev-month-sales` like the other prevMonth* keys.
 - Archived months saved before 2026-10-07 have no `catTree` and still show the flat category list.

@@ -34,11 +34,14 @@ MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec
 
 
 def categorize(product_type, sku):
-    """MTM vs RTW shirt split, used for the Category tab's revenue/unit breakdown."""
+    """MTM vs RTW shirt split, used for the Category tab's revenue/unit breakdown.
+    MTM = SKUs without a dash (BOMSH04CM00256) and the custom BOM-SHI-CU-* SKUs (made to measure
+    from RTW-range fabrics; no size/colour variant, not in the stock report). Confirmed by Vaibhav
+    2026-10-07 -- before that BOM-SHI-CU-* was counted as RTW by the dash rule."""
     pt = str(product_type).strip() if pd.notna(product_type) else ''
     if pt.lower() == 'shirt':
         sku = str(sku) if pd.notna(sku) else ''
-        return 'RTW Shirt' if '-' in sku else 'MTM Shirt'
+        return 'RTW Shirt' if '-' in sku and not sku.strip().upper().startswith('BOM-SHI-CU-') else 'MTM Shirt'
     return pt if pt else 'Uncategorized'
 
 
@@ -67,7 +70,8 @@ def category_tree_pair(flat_category, sku):
     if flat_category == 'RTW Shirt':
         return ('RTW Shirts', 'Not in Base file')
     if flat_category == 'MTM Shirt':
-        return ('MTM Shirts', 'MTM Shirt')
+        custom_rtw_fabric = str(sku).strip().upper().startswith('BOM-SHI-CU-')
+        return ('MTM Shirts', 'MTM Shirt - BOM-SHI-CU SKUs' if custom_rtw_fabric else 'MTM Shirt - BOMSH SKUs')
     if flat_category in ('Shipping', 'Uncategorized', 'Gift Card'):
         return (flat_category, flat_category)
     return ('Other (not in Base file)', flat_category)
