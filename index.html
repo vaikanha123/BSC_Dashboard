@@ -1179,7 +1179,86 @@ function render(){
   if(state.activeTab === 'cohort2') renderTrainingCohort(body, days, COHORT_CONFIGS.cohort2);
   if(state.activeTab === 'smcohort') renderSMCohort(body, days);
 
+  makeTablesSortable(body);
   attachHandlers();
+}
+
+// ---- Click-to-sort on every table's column headers ----
+// First click on a column sorts high to low (A-Z for text columns), second click reverses.
+// The chosen sort is remembered per tab + table so filter changes / re-renders keep it.
+const TABLE_SORT = {};
+
+function sortCellValue(text){
+  const t = (text || '').replace(/−/g, '-').trim();
+  const m = t.match(/^[+\-]?\s*₹?\s*[+\-]?[\d,]*\.?\d+/);
+  if(!m) return null;
+  let v = parseFloat(m[0].replace(/[₹,\s+]/g, ''));
+  if(isNaN(v)) return null;
+  const unit = t.slice(m[0].length).trim();
+  if(/^Cr/.test(unit)) v *= 10000000;
+  else if(/^L/.test(unit)) v *= 100000;
+  return v;
+}
+
+function sortTableBy(table, col, dir){
+  const rows = Array.from(table.rows);
+  const dataRows = rows.slice(1);
+  const pinned = dataRows.filter(r => /^(grand\s+)?total\b/i.test(r.cells[0] ? r.cells[0].textContent.trim() : ''));
+  const sortable = dataRows.filter(r => !pinned.includes(r));
+  const txt = r => r.cells[col] ? r.cells[col].textContent.trim() : '';
+  const dayRe = /^[A-Za-z]{3} \d{2} [A-Za-z]{3}$/;
+  let keyOf, numeric = true;
+  if(sortable.length && sortable.every(r => dayRe.test(txt(r)))){
+    keyOf = r => { const d = Date.parse(txt(r).slice(4) + ' 2000'); return isNaN(d) ? null : d; };
+  } else {
+    const nums = sortable.map(r => sortCellValue(txt(r)));
+    numeric = nums.filter(v => v !== null).length * 2 > sortable.length;
+    keyOf = numeric ? (r => sortCellValue(txt(r))) : (r => txt(r).toLowerCase());
+  }
+  // dir 'desc' = high to low for numbers; for text columns the first click gives A-Z.
+  const sign = (dir === 'desc') === numeric ? -1 : 1;
+  const keyed = sortable.map((r, i) => ({r, i, k: keyOf(r)}));
+  keyed.sort((a, b) => {
+    if(a.k === null || b.k === null) return (a.k === null ? 1 : 0) - (b.k === null ? 1 : 0) || a.i - b.i;
+    if(a.k < b.k) return -sign;
+    if(a.k > b.k) return sign;
+    return a.i - b.i;
+  });
+  const parent = rows[0].parentNode;
+  keyed.forEach(x => parent.appendChild(x.r));
+  pinned.forEach(r => parent.appendChild(r));
+  Array.from(rows[0].cells).forEach((c, i) => {
+    const arrow = c.querySelector('.bsc-sort-arrow');
+    if(arrow) arrow.textContent = i === col ? (sign === -1 ? ' ▼' : ' ▲') : '';
+  });
+}
+
+function makeTablesSortable(root){
+  Array.from(root.querySelectorAll('table')).forEach((table, idx) => {
+    const head = table.rows[0];
+    if(!head || table.rows.length < 3) return;
+    if(Array.from(table.rows).some(r => Array.from(r.cells).some(c => c.colSpan > 1 || c.rowSpan > 1))) return;
+    const key = state.activeTab + ':' + idx;
+    Array.from(head.cells).forEach((cell, col) => {
+      const label = cell.textContent.trim();
+      if(!label) return;
+      cell.style.cursor = 'pointer';
+      cell.style.userSelect = 'none';
+      cell.title = 'Click to sort';
+      const arrow = document.createElement('span');
+      arrow.className = 'bsc-sort-arrow';
+      arrow.style.color = 'var(--brass)';
+      cell.appendChild(arrow);
+      cell.addEventListener('click', () => {
+        const cur = TABLE_SORT[key];
+        const dir = cur && cur.col === col && cur.label === label && cur.dir === 'desc' ? 'asc' : 'desc';
+        TABLE_SORT[key] = {col, label, dir};
+        sortTableBy(table, col, dir);
+      });
+    });
+    const saved = TABLE_SORT[key];
+    if(saved && head.cells[saved.col] && head.cells[saved.col].textContent.trim() === saved.label) sortTableBy(table, saved.col, saved.dir);
+  });
 }
 
 function dayLabel(dk){
