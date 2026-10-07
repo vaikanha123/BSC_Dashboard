@@ -2496,6 +2496,14 @@ function renderRefunds(body){
         <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${rev?fmtPct(regCN/rev*100):'\u2014'}</td>
       </tr>`;
     });
+    regRows += `<tr style="border-top:1px solid var(--line);">
+        <td style="padding:8px 10px; font-weight:500;">Online</td>
+        <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(onlineRev)}</td>
+        <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(onlineRefund)}</td>
+        <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${onlineRev?fmtPct(onlineRefund/onlineRev*100):'—'}</td>
+        <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(onlineCN)}</td>
+        <td style="padding:8px 10px; text-align:right; color:var(--brass); font-weight:600;" class="bsc-mono">${onlineRev?fmtPct(onlineCN/onlineRev*100):'—'}</td>
+      </tr>`;
     regTable.innerHTML = regRows;
     body.appendChild(regTable);
 
