@@ -226,6 +226,7 @@ let state = {
   stylistFilterStore: 'all',
   refundStoreFilterRegion: 'all',
   refundStoreSortBy: 'refund', // 'refund' | 'cn' | 'revenue'
+  catExpanded: {}, // Category tab: { 'RTW Shirts': true } = that category's sub-categories are shown
   reasonType: 'refund',        // 'refund' | 'cn'
   reasonChannel: 'both',       // 'online' | 'offline' | 'both'
   reasonBreakdown: 'reason',   // 'reason' | 'category'
@@ -1208,7 +1209,7 @@ function sortTableBy(table, col, dir){
   const dataRows = rows.slice(1);
   const pinned = dataRows.filter(r => /^(grand\s+)?total\b/i.test(r.cells[0] ? r.cells[0].textContent.trim() : ''));
   const sortable = dataRows.filter(r => !pinned.includes(r));
-  const txt = r => r.cells[col] ? r.cells[col].textContent.trim() : '';
+  const txt = r => r.cells[col] ? r.cells[col].textContent.replace(/^[\u25B8\u25BE]\s*/, '').trim() : '';
   const dayRe = /^[A-Za-z]{3} \d{2} [A-Za-z]{3}$/;
   let keyOf, numeric = true;
   if(sortable.length && sortable.every(r => dayRe.test(txt(r)))){
@@ -2495,6 +2496,49 @@ function renderCategoryAOV(body, days){
     });
   }
   catTable.innerHTML = catRows;
+  if(useTree){
+    // Sub-categories start collapsed; clicking a category row expands / collapses its breakdown.
+    const parents = [];
+    let cur = null;
+    Array.from(catTable.rows).slice(1).forEach(r => {
+      if(r.dataset.sortChild){ if(cur) cur.kids.push(r); }
+      else { cur = {row: r, name: r.cells[0].textContent.trim(), kids: []}; parents.push(cur); }
+    });
+    const paint = g => {
+      const open = !!state.catExpanded[g.name];
+      g.kids.forEach(k => { k.style.display = open ? '' : 'none'; });
+      if(g.caret) g.caret.textContent = open ? '▾ ' : '▸ ';
+    };
+    parents.forEach(g => {
+      const caret = document.createElement('span');
+      caret.style.cssText = 'display:inline-block; width:16px; color:var(--brass);';
+      g.row.cells[0].insertBefore(caret, g.row.cells[0].firstChild);
+      if(g.kids.length){
+        g.caret = caret;
+        g.row.style.cursor = 'pointer';
+        g.row.title = 'Click to show / hide sub-categories';
+        g.row.addEventListener('click', () => { state.catExpanded[g.name] = !state.catExpanded[g.name]; paint(g); });
+      }
+      paint(g);
+    });
+    const withKids = parents.filter(g => g.kids.length);
+    const toggleAll = document.createElement('div');
+    toggleAll.style.cssText = 'font-size:12px; color:var(--text-mute); margin-bottom:10px;';
+    const link = document.createElement('span');
+    link.style.cssText = 'color:var(--brass); cursor:pointer; font-weight:600;';
+    const allOpen = () => withKids.every(g => state.catExpanded[g.name]);
+    const label = () => { link.textContent = allOpen() ? 'Collapse all' : 'Expand all'; };
+    link.addEventListener('click', () => {
+      const open = !allOpen();
+      withKids.forEach(g => { state.catExpanded[g.name] = open; paint(g); });
+      label();
+    });
+    catTable.addEventListener('click', label);
+    label();
+    toggleAll.appendChild(document.createTextNode('Click a category to see its sub-categories · '));
+    toggleAll.appendChild(link);
+    body.appendChild(toggleAll); // the table itself is appended just below, so this sits above it
+  }
   body.appendChild(catTable);
 
   const note = document.createElement('div');
