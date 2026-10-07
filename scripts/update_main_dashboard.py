@@ -27,7 +27,7 @@ import openpyxl
 import pandas as pd
 
 from bsc_common import (
-    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, find_refund_and_cn_sheets,
+    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, build_cat_tree, find_refund_and_cn_sheets,
     process_refund_sheet, replace_const, replace_baseline_key, last_year_baseline, syntax_check_html_js,
 )
 
@@ -146,7 +146,17 @@ def build_prev_month_baselines(prev_month_sales):
         d = g.groupby('Category')['Qty'].sum().to_dict()
         prev_month_daily_category_units[str(int(day_num))] = {k: int(v) for k, v in d.items()}
 
+    # Same two baselines on the Base-sheet hierarchy (Category -> Sub-Category 1), for the Category tab.
+    prev_month_cat_tree = {l1: {l2: v[0] for l2, v in subs.items()}
+                           for l1, subs in build_cat_tree(offline, ('Revenue',)).items()}
+    prev_month_daily_cat_tree_units = {}
+    for day_num, g in offline.groupby('Day_num'):
+        prev_month_daily_cat_tree_units[str(int(day_num))] = {
+            l1: {l2: int(v[0]) for l2, v in subs.items()} for l1, subs in build_cat_tree(g, ('Qty',)).items()}
+
     return {
+        'prevMonthCatTree': prev_month_cat_tree,
+        'prevMonthDailyCatTreeUnits': prev_month_daily_cat_tree_units,
         'prevMonthStoreAOV': prev_month_store_aov,
         'prevMonthStoreUPT': prev_month_store_upt,
         'prevMonthCategory': prev_month_category,

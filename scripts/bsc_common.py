@@ -6,6 +6,7 @@ or from an interactive session for one-off analysis). See BSC_Dashboard_Runbook.
 for the full narrative explanation of what these pieces mean and why they exist.
 """
 import json
+import os
 import re
 from collections import defaultdict
 
@@ -41,6 +42,45 @@ def categorize(product_type, sku):
     return pt if pt else 'Uncategorized'
 
 
+SKU_CATEGORY_MAP_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'sku_category_map.csv')
+_sku_category_map = None
+
+
+def load_sku_category_map():
+    """{SKU (upper) -> (Category, Sub-Category 1)} from the stock report's Base sheet; built by
+    build_sku_category_map.py. Empty if the file is missing (the Category tab then stays flat)."""
+    global _sku_category_map
+    if _sku_category_map is None:
+        _sku_category_map = {}
+        if os.path.exists(SKU_CATEGORY_MAP_CSV):
+            m = pd.read_csv(SKU_CATEGORY_MAP_CSV, dtype=str, keep_default_na=False)
+            _sku_category_map = {s: (c, sc) for s, c, sc in zip(m['sku'], m['category'], m['sub_category_1'])}
+    return _sku_category_map
+
+
+def category_tree_pair(flat_category, sku):
+    """(Category, Sub-Category 1) for a sales line. Stock SKUs come from the Base sheet; lines it
+    doesn't know (custom shirts, shipping, alterations) fall back to the flat category."""
+    hit = load_sku_category_map().get(str(sku).strip().upper()) if pd.notna(sku) else None
+    if hit:
+        return hit
+    if flat_category == 'RTW Shirt':
+        return ('RTW Shirts', 'Not in Base file')
+    if flat_category == 'MTM Shirt':
+        return ('MTM Shirts', 'MTM Shirt')
+    if flat_category in ('Shipping', 'Uncategorized', 'Gift Card'):
+        return (flat_category, flat_category)
+    return ('Other (not in Base file)', flat_category)
+
+
+def build_cat_tree(df, value_cols=('Revenue', 'Qty')):
+    """{Category: {Sub-Category 1: [revenue, units]}} for a prepared sales df."""
+    tree = {}
+    for (l1, l2), g in df.groupby(['CatL1', 'CatL2']):
+        tree.setdefault(l1, {})[l2] = [round(float(g[c].sum()), 2) for c in value_cols]
+    return tree
+
+
 def load_sales_csv(path):
     """Load a Shopify sales export, filtered to order rows, with the standard derived columns."""
     return prepare_sales_df(pd.read_csv(path, low_memory=False))
@@ -59,6 +99,9 @@ def prepare_sales_df(df):
     # Shipping is its own line ('Line type' = shipping: no product type, no stylist, qty 0) -- give it
     # its own row on the Category tab rather than burying it in Uncategorized.
     df.loc[df['Line type'] == 'shipping', 'Category'] = 'Shipping'
+    pairs = [category_tree_pair(c, s) for c, s in zip(df['Category'], df['Product variant SKU'])]
+    df['CatL1'] = [p[0] for p in pairs]
+    df['CatL2'] = [p[1] for p in pairs]
     df['Segment'] = df['New or returning customer'].fillna('').str.strip().str.lower()
     df['Stylist'] = df['Assisting staff member name'].fillna('').str.strip()
     df['StylistNorm'] = df['Stylist'].str.lower()
@@ -100,6 +143,7 @@ def build_seed_days(df):
             'stylistRev': stylistRev, 'stylistBills': stylistBills, 'storeUnits': storeUnits,
             'stylistStoreRev': stylistStoreRev, 'stylistUnits': stylistUnits,
             'stylistStoreBills': stylistStoreBills, 'stylistStoreUnits': stylistStoreUnits,
+            'catTree': build_cat_tree(day_df),
         }
     return seed_days
 

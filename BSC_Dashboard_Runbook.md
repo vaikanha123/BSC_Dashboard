@@ -464,6 +464,24 @@ Six modes: `jul-aug`, `aug-sep`, `jul-sep`, `sep-oct`, `aug-oct`, `jul-oct` (the
 
 **Adding a month to the tracker** (done for October on 2026-10-05): run `update_tracker.py --period <mon>` with the new month's first file, then in the HTML add the `PERIOD_META` entries (`<prev>-<mon>`, `aug-<mon>`, `jul-<mon>`; the first two need a `b2Desc`), the period and "Did not grow" dropdown options plus `GROWTH_FILTERS`, a table column (`renderHeader`, `sortValue`, `renderTable`), `restKeyMap`, and a detail-panel row. Reword the month that just closed so it no longer says "MTD" / "Sep 1–30 only": `daily_refresh.py` bumps every `Data as of … — <Month> MTD`, `<Month> MTD (N days)` and `<Mon> 1–N only|MTD` string it finds, and needs at least 4 / 3 of the first two for the live month.
 
+## 6a. Category tab hierarchy (Category → Sub-category 1)
+
+The Category tab groups sales by merchandising's own hierarchy, taken from the **Base** sheet of the
+ENIGMA stock report (`sku_code` → `Category` → `Sub-Category 1`), matched to the sales file on
+`Product variant SKU`. The map lives in `data/sku_category_map.csv`; rebuild it whenever a newer stock
+report is shared (new SKUs otherwise land in "Other (not in Base file)"):
+
+    python scripts/build_sku_category_map.py --stock "ENIGMA STOCK REPORT dd.mm.yyyy ....xlsb"   # needs pyxlsb
+
+- `bsc_common.prepare_sales_df` adds `CatL1`/`CatL2`; each `SEED_DAYS` day carries a `catTree`
+  (`{Category: {Sub-category 1: [revenue, units]}}`) next to the old flat `categories`.
+- Lines whose SKU is not in Base keep the old flat rule: dash-SKU shirts (all `BOM-SHI-CU-*` so far)
+  → RTW Shirts / "Not in Base file"; no-dash shirts → MTM Shirts / "MTM Shirt"; shipping, gift cards
+  and no-product-type lines stay as their own rows.
+- Last-month comparison uses `BASELINE.prevMonthCatTree` / `prevMonthDailyCatTreeUnits`, rebuilt by
+  `--new-month --prev-month-sales` like the other prevMonth* keys.
+- Archived months saved before 2026-10-07 have no `catTree` and still show the flat category list.
+
 ## 6b. Forecast page (`forecast-1ad8b79c.html`, `scripts/forecast.py`, `data/`)
 
 Offline-store revenue forecast: current-month landing vs target, next 7 days, next month, per region/store, "why this forecast" explanations, plus an accuracy section. Added 2026-09-25 as a tab in index.html, then **moved the same day to its own unlinked page `forecast-1ad8b79c.html`** at the user's request — the main dashboard link is widely shared and they don't want those viewers to see the forecast. Never link to it from index.html or other pages. It is *unlisted, not private*: the repo and GitHub Pages site are public, so anyone browsing the repo can find it. Its month/daily/store targets are copied in by `forecast.py` from index.html's `TARGETS`/`DAILY_TARGETS` (`--dashboard index.html`), using the same exact-daily-else-weekday/weekend rule as `storeTargetForDay()`, and only when those targets are for the current month.
