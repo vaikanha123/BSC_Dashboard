@@ -15,6 +15,8 @@ leaving the files as they were -- it never touches git):
   6. Runs forecast.py run (separate forecast page FORECAST_PAGE + data/ history/log). Non-fatal: on failure data/ is restored
      and a WARNING is printed, but the sales refresh still counts as OK.
   7. Runs footfall.py fetch (HO's footfall Google Sheet -> data/footfall_history_daily.csv). Non-fatal.
+  8. Runs update_store_briefing.py (store-briefing.html: per-store numbers + "What to do today"
+     call-outs; needs the month's targets in data/briefing_targets.json). Non-fatal.
 On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
 """
 import argparse
@@ -160,7 +162,13 @@ def main():
         restore(['data/footfall_history_daily.csv'])
         print('WARNING: footfall fetch failed -- footfall history not updated.')
 
-    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/ and %s).'
+    # Store briefing page: after the footfall fetch, since conversion uses it. Non-fatal -- on failure the
+    # page keeps yesterday's briefing (its own "Sales data through" date shows that).
+    if run([py, 'scripts/update_store_briefing.py', '--html', 'store-briefing.html', '--sales', a.sales]) != 0:
+        restore(['store-briefing.html'])
+        print('WARNING: update_store_briefing.py failed -- store-briefing.html NOT updated (still shows the previous day).')
+
+    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/, %s and store-briefing.html).'
           % (last, '' if forecast_ok else ' (forecast step failed, see WARNING)', FORECAST_PAGE))
 
 
