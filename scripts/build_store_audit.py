@@ -16,6 +16,10 @@ The auditor's remarks are left out of the data file unless --verbatim is passed:
 customers, and the page is served publicly. --dump-notes prints a month's remarks for writing
 the feedback summaries.
 
+Store-wise NPS comes from the WhatsApp survey workbook (its "Data" tab, one row per response):
+  python scripts/build_store_audit.py --raw-dir <folder> --nps "NPS_Fit_Assessment_....xlsx"
+That writes data/store_audit_nps.json (counts only, no customer details), which later builds reuse.
+
 Weeks follow the tracker's own Period column ("Oct W1"); call and behaviour audits are
 placed in the tracker period that their interaction date falls in.
 Feedback summaries written by hand live in data/store_audit_feedback.json and are merged in.
@@ -31,6 +35,19 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(REPO, 'data', 'store_audit_data.js')
 FEEDBACK = os.path.join(REPO, 'data', 'store_audit_feedback.json')
+NPS = os.path.join(REPO, 'data', 'store_audit_nps.json')
+
+# Store names in the NPS workbook (Shopify POS locations) -> names used in the audit tracker.
+NPS_STORES = {
+    'Ambience Vasant Kunj': 'Ambience Vasnt Kunj', 'DLF Midtown - Moti Nagar': 'DLF Midtown',
+    'Inorbit mall Hyderabad': 'Inorbit mall', 'Jaipur Store': 'Jaipur', 'Juhu Store': 'Juhu',
+    'Kochi Store': 'Kochi', 'LakeShore Mall': 'Lakeshore mall, Kukatpally', 'Mall of India, Noida': 'Mall of India',
+    'Oberoi Mall Store': 'Oberoi Mall', 'Oberoi Sky City': 'Sky City Borivali', 'PMC Viman Nagar Pune': 'Phoenix Viman Nagar',
+    'Pali Hill, Bandra': 'Pali Hill, Khar', 'Phoenix Marketcity Kurla': 'PMC Kurla',
+    'Phoenix Marketcity, Whitefield': 'PMC Whitefield', 'Phoenix Palassio': 'Phoenix Lucknow',
+    'Sarath City-Hyderabad': 'Sharath City', 'Select City': 'Select City Mall', 'Shakespearesarani': 'Shakespear Sarani',
+    'Vegas Dwarka': 'Vegas Mall Dwarka',
+}
 
 MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
@@ -95,6 +112,30 @@ def clean(text):
 
 def short(d):
     return '%d %s' % (d.day, MONTH_NAMES[d.month - 1][:3])
+
+
+def build_nps(xlsx):
+    """Promoter / neutral / detractor counts per store and calendar month, store responses only."""
+    import openpyxl
+    rows = openpyxl.load_workbook(xlsx, data_only=True, read_only=True)['Data'].iter_rows(values_only=True)
+    head = [str(h or '').strip() for h in next(rows)]
+    col = {h: i for i, h in enumerate(head)}
+    slot = {'Promoter': 0, 'Neutral': 1, 'Detractor': 2}
+    stores, dates = {}, collections.defaultdict(list)
+    for r in rows:
+        if r[col['Campaign']] != 'NPS' or r[col['Counted in scores']] != 'Yes' or r[col['Channel']] != 'Offline (stores)':
+            continue
+        d = r[col['Response date']]
+        mk = '%d-%02d' % (d.year, d.month)
+        name = str(r[col['Store']]).strip()
+        counts = stores.setdefault(NPS_STORES.get(name, name), {}).setdefault(mk, [0, 0, 0])
+        counts[slot[r[col['Class']]]] += 1
+        dates[mk].append(d)
+    months = []
+    for mk in sorted(dates):
+        lo, hi = min(dates[mk]), max(dates[mk])
+        months.append({'key': mk, 'label': MONTH_NAMES[lo.month - 1][:3], 'range': '%d–%s' % (lo.day, short(hi))})
+    return {'source': os.path.basename(xlsx), 'months': months, 'stores': stores}
 
 
 def build(raw_dir, pulled):
@@ -223,9 +264,16 @@ def build(raw_dir, pulled):
         with open(FEEDBACK, encoding='utf-8') as f:
             feedback = json.load(f)
 
+    nps = {'months': [], 'stores': {}}
+    if os.path.exists(NPS):
+        with open(NPS, encoding='utf-8') as f:
+            nps = json.load(f)
+        for name in sorted(set(nps['stores']) - stores):
+            report['NPS store not in tracker: ' + name] += 1
+
     data = {'pulledAt': pulled.isoformat(), 'months': months, 'stores': sorted(stores, key=str.lower),
             'compParams': COMP_PARAMS, 'comp': comp, 'ba': audits['ba'], 'inb': audits['inb'], 'sal': audits['sal'],
-            'notes': notes, 'feedback': feedback}
+            'notes': notes, 'feedback': feedback, 'nps': nps}
     return data, report
 
 
@@ -246,9 +294,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--raw-dir', required=True)
     ap.add_argument('--pulled', default=dt.date.today().isoformat())
+    ap.add_argument('--nps', metavar='XLSX', help='NPS survey workbook; refreshes data/store_audit_nps.json first')
     ap.add_argument('--verbatim', action='store_true', help='include the auditor remarks word for word')
     ap.add_argument('--dump-notes', metavar='YYYY-MM', help='print that month\'s auditor comments instead of writing the data file')
     a = ap.parse_args()
+    if a.nps:
+        with open(NPS, 'w', encoding='utf-8') as f:
+            json.dump(build_nps(a.nps), f, ensure_ascii=False, indent=1)
     data, report = build(a.raw_dir, dt.date.fromisoformat(a.pulled))
     if a.dump_notes:
         dump_notes(data, a.dump_notes)
