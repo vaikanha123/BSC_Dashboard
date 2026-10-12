@@ -40,11 +40,11 @@ MALL_STORES = [
 HS_STORES = [s for s in REGION_MAP if s not in MALL_STORES]
 
 # Training Cohort 3 (training from October 2026, September baseline). Roster picked by Vaibhav in the
-# "Cohort 3" Google Sheet on 2026-10-12. Split by the stylist's store format.
+# "Cohort 3" Google Sheet on 2026-10-12 (Mustaq Ahmed Siraj dropped the same day). Split by the stylist's store format.
 COHORT3_HS = ['kuldeep sharma', 'navjot vegas', 'vijay kumar', 'mudasser maverick', 'vikash tiwari', 'adi qureshi',
               'naushad ahmed', 'mohammed abdul farhan', 'alisha a', 'rupini rupini', 'nimmy christapher']
 COHORT3_MALL = ['konda swamy nitturi', 'abdul kadher', 'vijay baskar', 'firoz firoz', 'sahadat ali ahmed',
-                'ritika rana', 'aziz sayeed', 'mustaq ahmed siraj', 'shilpa singh', 'kuldeep kanaujia',
+                'ritika rana', 'aziz sayeed', 'shilpa singh', 'kuldeep kanaujia',
                 'saquib shaikh']
 
 # Do NOT add "Online", "Corporate Orders", etc. to this dict for ad-hoc scripts -- a store not
