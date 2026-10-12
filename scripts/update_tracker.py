@@ -20,7 +20,7 @@ import json
 
 from bsc_common import (
     load_sales_csv, extract_const, replace_const, syntax_check_html_js,
-    STORE_SCOPING_OVERRIDES,
+    STORE_SCOPING_OVERRIDES, MALL_STORES, HS_STORES, COHORT3_HS, COHORT3_MALL,
 )
 
 
@@ -49,34 +49,53 @@ def calc_mix(sub):
     }
 
 
-def update_batch(content, raw_const_name, rest_const_name, df, period_key, is_array=True):
+def update_batch(content, raw_const_name, rest_const_name, df, period_key, is_array=True,
+                 segment=None, rest_stores=None, rest_exclude=None):
+    """segment: only count this customer segment's bills ('returning' for Cohort 3's mall track).
+    rest_stores: limit "rest of network" to these stores (Cohort 3 compares within a store format).
+    rest_exclude: extra stylist names to keep out of "rest" (the other half of Cohort 3)."""
     raw = extract_const(content, raw_const_name, is_array=is_array)
     cohort_names = set(r['name'].strip().lower() for r in raw)
+    seg_df = df[df['Segment'] == segment] if segment else df
 
     updated = 0
     for r in raw:
         norm = r['name'].strip().lower()
-        sub = df[df['StylistNorm'] == norm]
+        sub = seg_df[seg_df['StylistNorm'] == norm]
+        full = df[df['StylistNorm'] == norm]
         override = STORE_SCOPING_OVERRIDES.get(norm, {})
         target_store = override.get(period_key)
         if target_store:
             sub = sub[sub['POS location name'] == target_store]
+            full = full[full['POS location name'] == target_store]
         r[period_key] = calc_metrics(sub)
         if 'mix' not in r:
             r['mix'] = {}
-        r['mix'][period_key] = calc_mix(sub)
+        r['mix'][period_key] = calc_mix(full)
         updated += 1
     content = replace_const(content, raw_const_name, json.dumps(raw))
     print(f"  {raw_const_name}: updated {updated} stylists for period '{period_key}'")
 
     # Rest of network = everyone in this sales file NOT in this batch's cohort
-    rest = df[~df['StylistNorm'].isin(cohort_names) & (df['Stylist'] != '')]
+    rest = seg_df[~seg_df['StylistNorm'].isin(cohort_names | set(rest_exclude or [])) & (seg_df['Stylist'] != '')]
+    if rest_stores is not None:
+        rest = rest[rest['POS location name'].isin(rest_stores)]
     rest_metrics = calc_metrics(rest)
     rest_pooled = extract_const(content, rest_const_name, is_array=False)
     rest_pooled[period_key] = rest_metrics
     content = replace_const(content, rest_const_name, json.dumps(rest_pooled))
     print(f"  {rest_const_name}.{period_key}: Rs{rest_metrics['revenue']:,.0f} ({rest_metrics['bills']} bills)")
 
+    return content
+
+
+def update_cohort3(content, df, period_key):
+    """Cohort 3: high street on overall AOV vs the rest of high-street stores; mall on repeat-customer
+    AOV vs the rest of mall stores' repeat bills."""
+    content = update_batch(content, 'BATCH3HS_RAW', 'BATCH3HS_REST_POOLED', df, period_key,
+                           rest_stores=HS_STORES, rest_exclude=COHORT3_MALL)
+    content = update_batch(content, 'BATCH3MALL_RAW', 'BATCH3MALL_REST_POOLED', df, period_key,
+                           segment='returning', rest_stores=MALL_STORES, rest_exclude=COHORT3_HS)
     return content
 
 
@@ -102,6 +121,10 @@ def main():
     if not args.batch1_only:
         print("Updating Batch 2 (BATCH2_RAW / BATCH2_REST_POOLED)...")
         content = update_batch(content, 'BATCH2_RAW', 'BATCH2_REST_POOLED', df, args.period)
+
+    if not args.batch1_only and not args.batch2_only and 'const BATCH3HS_RAW' in content:
+        print("Updating Cohort 3 (BATCH3HS_* / BATCH3MALL_*)...")
+        content = update_cohort3(content, df, args.period)
 
     with open(args.html, 'w', encoding='utf-8') as f:
         f.write(content)

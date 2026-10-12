@@ -26,6 +26,27 @@ REGION_MAP = {
     'Oberoi Sky City': 'West', 'Pali Hill, Bandra': 'West', 'Phoenix Marketcity Kurla': 'West',
     'Sindhu Bhavan Marg': 'West', 'Viviana Mall': 'West', 'PMC Viman Nagar Pune': 'West',
 }
+# Mall stores (everything else in REGION_MAP is high street). Used by Training Cohort 3, which tracks
+# its high-street stylists on overall AOV and its mall stylists on repeat-customer AOV, each against
+# the rest of the same store format. Gurugram is treated as high street and DLF Midtown as mall --
+# both were Claude's reading of the store names (2026-10), not confirmed by Vaibhav. Keep in step
+# with C3_MALL_STORES in index.html.
+MALL_STORES = [
+    'Ambience Vasant Kunj', 'DLF Midtown - Moti Nagar', 'Mall of India, Noida', 'Select City', 'Vegas Dwarka',
+    'Phoenix Palassio', 'Express Avenue', 'Inorbit mall Hyderabad', 'LakeShore Mall',
+    'Phoenix Marketcity, Whitefield', 'Sarath City-Hyderabad', 'Inorbit Mall Malad West', 'Oberoi Mall Store',
+    'Oberoi Sky City', 'Phoenix Marketcity Kurla', 'Viviana Mall', 'PMC Viman Nagar Pune',
+]
+HS_STORES = [s for s in REGION_MAP if s not in MALL_STORES]
+
+# Training Cohort 3 (training from October 2026, September baseline). Roster picked by Vaibhav in the
+# "Cohort 3" Google Sheet on 2026-10-12. Split by the stylist's store format.
+COHORT3_HS = ['kuldeep sharma', 'navjot vegas', 'vijay kumar', 'mudasser maverick', 'vikash tiwari', 'adi qureshi',
+              'naushad ahmed', 'mohammed abdul farhan', 'alisha a', 'rupini rupini', 'nimmy christapher']
+COHORT3_MALL = ['konda swamy nitturi', 'abdul kadher', 'vijay baskar', 'firoz firoz', 'sahadat ali ahmed',
+                'ritika rana', 'aziz sayeed', 'mustaq ahmed siraj', 'shilpa singh', 'kuldeep kanaujia',
+                'saquib shaikh']
+
 # Do NOT add "Online", "Corporate Orders", etc. to this dict for ad-hoc scripts -- a store not
 # present here is correctly treated as non-offline. Adding a catch-all entry was a real bug before
 # (a truthy-check on REGION_MAP.get(store) wrongly counted Online revenue as offline).
@@ -141,12 +162,22 @@ def build_seed_days(df):
             stylistStoreBills.setdefault(styl, {})[store] = int(grp['Order name'].nunique())
             stylistStoreUnits.setdefault(styl, {})[store] = float(grp['Qty'].sum())
 
+        # Repeat-customer slice of the per-stylist-per-store figures. Training Cohort 3's mall track is
+        # measured on repeat-customer AOV only, so the dashboard needs this split per day.
+        stylistRepStoreRev, stylistRepStoreBills, stylistRepStoreUnits = {}, {}, {}
+        for (styl, store), grp in styl_df[styl_df['Segment'] == 'returning'].groupby(['Stylist', 'POS location name']):
+            stylistRepStoreRev.setdefault(styl, {})[store] = float(grp['Revenue'].sum())
+            stylistRepStoreBills.setdefault(styl, {})[store] = int(grp['Order name'].nunique())
+            stylistRepStoreUnits.setdefault(styl, {})[store] = float(grp['Qty'].sum())
+
         seed_days[dk] = {
             'date': dk, 'stores': stores, 'bills': bills, 'categories': categories, 'categoryUnits': categoryUnits,
             'newRev': newRev, 'repRev': repRev, 'newBills': newBills, 'repBills': repBills,
             'stylistRev': stylistRev, 'stylistBills': stylistBills, 'storeUnits': storeUnits,
             'stylistStoreRev': stylistStoreRev, 'stylistUnits': stylistUnits,
             'stylistStoreBills': stylistStoreBills, 'stylistStoreUnits': stylistStoreUnits,
+            'stylistRepStoreRev': stylistRepStoreRev, 'stylistRepStoreBills': stylistRepStoreBills,
+            'stylistRepStoreUnits': stylistRepStoreUnits,
             'catTree': build_cat_tree(day_df),
         }
     return seed_days
