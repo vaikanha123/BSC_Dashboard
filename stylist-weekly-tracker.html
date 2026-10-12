@@ -486,16 +486,18 @@ let RAW = BATCH1_RAW;
 let REST_POOLED = BATCH1_REST_POOLED;
 // One entry per option in the batch dropdown. `firstMonth` is the earliest month the batch has data
 // for (earlier period options are disabled); `defaultPeriod` is what the period dropdown jumps to.
+// `sepBaseline` batches (Cohort 3) began training in October off their September figures, so the table
+// and the stylist panel show September as the plain baseline and nothing earlier.
 // Cohort 3 has two tracks, each compared with the rest of its own store format: high street on
 // overall AOV, mall on repeat-customer AOV (every BATCH3MALL_* figure is repeat customers only).
 const BATCHES = {
   batch1: {raw: BATCH1_RAW, rest: BATCH1_REST_POOLED, title: 'Training Cohort', restLabel: 'Rest of Network', blocked: []},
   batch2: {raw: BATCH2_RAW, rest: BATCH2_REST_POOLED, title: 'Batch 2', restLabel: 'Rest of Network', blocked: ['jul'], defaultPeriod: 'aug-oct'},
   batch3hs: {raw: BATCH3HS_RAW, rest: BATCH3HS_REST_POOLED, title: 'Cohort 3 · High street', restLabel: 'Rest of high-street stores',
-    blocked: ['jul'], defaultPeriod: 'sep-oct', forceDefault: true,
+    blocked: ['jul','aug'], defaultPeriod: 'sep-oct', forceDefault: true, sepBaseline: true,
     desc: (n, pm) => `${pm.curColLabel} for the ${n} high-street stylists in Cohort 3, on <b>overall AOV / ASP / UPT</b>. This cohort starts training in October, so September is its baseline. It is compared with all other stylists at high-street stores (the Cohort 3 mall stylists are tracked separately). Offline POS sales only, order rows only.`},
   batch3mall: {raw: BATCH3MALL_RAW, rest: BATCH3MALL_REST_POOLED, title: 'Cohort 3 · Mall (repeat customers)', restLabel: 'Rest of mall stores (repeat)',
-    blocked: ['jul'], defaultPeriod: 'sep-oct', forceDefault: true,
+    blocked: ['jul','aug'], defaultPeriod: 'sep-oct', forceDefault: true, sepBaseline: true,
     desc: (n, pm) => `${pm.curColLabel} for the ${n} mall stylists in Cohort 3, on <b>repeat-customer bills only</b>: every AOV / ASP / UPT and bill count here excludes new customers. This cohort starts training in October, so September is its baseline. It is compared with repeat-customer bills of all other stylists at mall stores. Offline POS sales only, order rows only.`},
 };
 
@@ -667,7 +669,8 @@ function renderHeader(){
     {key:'aug', label:'Aug vs Jul'},
     {key:'sep', label:'Sep vs Aug'},
     {key:'oct', label:'Oct MTD vs Sep'},
-  ];
+  ].filter(c => !BATCHES[currentBatch].sepBaseline || !['jul','aug'].includes(c.key))
+   .map(c => (BATCHES[currentBatch].sepBaseline && c.key==='sep') ? {key:'sep', label:'September (baseline)'} : c);
   tr.innerHTML = cols.map(c=>{
     const arrow = sortCol===c.key ? (sortDir===1?'▲':'▼') : '';
     return `<th data-col="${c.key}">${c.label} <span class="arrow">${arrow}</span></th>`;
@@ -691,6 +694,7 @@ function sortValue(d, col){
     return dp==null? -Infinity : dp;
   }
   if(col==='sep'){
+    if(BATCHES[currentBatch].sepBaseline) return (d.sep ? d.sep[currentMetric] : null) ?? -Infinity;
     const dp = deltaPct(d.sep ? d.sep[currentMetric] : null, d.aug ? d.aug[currentMetric] : null);
     return dp==null? -Infinity : dp;
   }
@@ -748,15 +752,16 @@ function renderTable(){
     const julCell = `<td class="base-cell">${meta.fmt(julVal)}${julLowSample?' <span class="delta-pill low" style="padding:1px 5px;">*</span>':''}${mixLine(d, 'jul')}</td>`;
     const augCell = pillCell(d.aug ? d.aug[currentMetric] : null, d.aug ? d.aug.bills : null, julVal, 'aug');
     const sepCell = pillCell(d.sep ? d.sep[currentMetric] : null, d.sep ? d.sep.bills : null, d.aug ? d.aug[currentMetric] : null, 'sep');
+    const sepIsBase = BATCHES[currentBatch].sepBaseline;
+    const sepBills = d.sep ? d.sep.bills : null;
+    const sepBaseCell = `<td class="base-cell">${meta.fmt(d.sep ? d.sep[currentMetric] : null)}${sepBills!=null && sepBills<3?' <span class="delta-pill low" style="padding:1px 5px;">*</span>':''}${mixLine(d, 'sep')}</td>`;
     const octCell = pillCell(d.oct ? d.oct[currentMetric] : null, d.oct ? d.oct.bills : null, d.sep ? d.sep[currentMetric] : null, 'oct');
 
     return `<tr data-name="${d.name.replace(/"/g,'&quot;')}">
       <td class="name-cell">${d.name}</td>
       <td class="store-cell">${d.store}</td>
       <td><span class="region-pill">${d.region}</span></td>
-      ${julCell}
-      ${augCell}
-      ${sepCell}
+      ${sepIsBase ? sepBaseCell : julCell + augCell + sepCell}
       ${octCell}
     </tr>`;
   }).join('');
@@ -933,7 +938,7 @@ function openPanel(name){
     const sepVal = d.sep ? d.sep[m] : null;
     const octVal = d.oct ? d.oct[m] : null;
     const weekVals = WEEKS.map(w=> d.weeks[w] ? d.weeks[w][m] : null);
-    const maxScale = Math.max(julVal||0, augVal||0, sepVal||0, octVal||0, ...weekVals.filter(v=>v!=null)) * 1.15 || 1;
+    const maxScale = Math.max(BATCHES[currentBatch].sepBaseline ? 0 : Math.max(julVal||0, augVal||0), sepVal||0, octVal||0, ...weekVals.filter(v=>v!=null)) * 1.15 || 1;
 
     function row(label, val, base, bills, bold){
       const dp = base!=null ? deltaPct(val, base) : null;
@@ -948,13 +953,18 @@ function openPanel(name){
       <div class="baseline-tag" style="margin-left:120px;margin-top:-4px;margin-bottom:6px;">${tag}</div>`;
     }
 
-    let rowsHtml = row('July', julVal, null, d.jul ? d.jul.bills : null, false);
-    rowsHtml += row('August', augVal, julVal, d.aug ? d.aug.bills : null, true);
-    WEEKS.forEach((w,i)=>{
-      const wk = d.weeks[w];
-      rowsHtml += row('&nbsp;&nbsp;'+WEEK_SHORT[i]+(wk && wk.bills<3 ? ' *' : ''), weekVals[i], julVal, wk ? wk.bills : null, false);
-    });
-    rowsHtml += row('September', sepVal, augVal, d.sep ? d.sep.bills : null, true);
+    let rowsHtml = '';
+    if(BATCHES[currentBatch].sepBaseline){
+      rowsHtml = row('September', sepVal, null, d.sep ? d.sep.bills : null, true);
+    } else {
+      rowsHtml = row('July', julVal, null, d.jul ? d.jul.bills : null, false);
+      rowsHtml += row('August', augVal, julVal, d.aug ? d.aug.bills : null, true);
+      WEEKS.forEach((w,i)=>{
+        const wk = d.weeks[w];
+        rowsHtml += row('&nbsp;&nbsp;'+WEEK_SHORT[i]+(wk && wk.bills<3 ? ' *' : ''), weekVals[i], julVal, wk ? wk.bills : null, false);
+      });
+      rowsHtml += row('September', sepVal, augVal, d.sep ? d.sep.bills : null, true);
+    }
     rowsHtml += row('Oct MTD', octVal, sepVal, d.oct ? d.oct.bills : null, true);
     metricsHtml += `<div class="panel-metric"><h3>${meta.label}</h3>${rowsHtml}</div>`;
   });
@@ -1013,9 +1023,9 @@ function switchBatch(batchName){
   const periodSel = document.getElementById('periodMode');
   if(cfg.defaultPeriod && (cfg.forceDefault || isBlocked(periodMode))) periodMode = cfg.defaultPeriod;
   periodSel.value = periodMode;
-  periodSel.querySelectorAll('option').forEach(o => { o.disabled = isBlocked(o.value); });
+  periodSel.querySelectorAll('option').forEach(o => { o.disabled = o.hidden = isBlocked(o.value); });
   const growthSel = document.getElementById('growthFilter');
-  growthSel.querySelectorAll('option').forEach(o => { o.disabled = isBlocked(o.value); });
+  growthSel.querySelectorAll('option').forEach(o => { o.disabled = o.hidden = isBlocked(o.value); });
   if(isBlocked(growthSel.value)) growthSel.value = 'all';
   document.getElementById('searchBox').value = '';
   document.getElementById('regionFilter').value = '';
