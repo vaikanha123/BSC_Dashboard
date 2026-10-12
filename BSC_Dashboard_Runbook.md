@@ -110,6 +110,14 @@ def categorize(product_type, sku):
 - Comparison numbers between the two dashboards are **pooled** (sum revenue ÷ sum bills across the whole cohort), not a simple average of each stylist's individual AOV. A separate "% of stylists individually improved" stat also exists on both — that one *is* a simple per-stylist headcount. Don't conflate the two.
 - **Rest of Network** = everyone NOT in the relevant cohort (Batch 1 excludes Batch 1 members; Batch 2 excludes Batch 2 members — these are computed independently, not nested).
 
+### Staff-uniform orders are left out of stylist figures (since 2026-10-12)
+
+- An order is a uniform order if any line's "Product title at time of sale" contains "uniform". They are billed at zero value: no revenue, but a bill and units, which pulls a stylist's AOV down.
+- `prepare_sales_df` flags them (`UniformOrder`). `build_seed_days` leaves them out of every per-stylist field in `SEED_DAYS` (Stylists tab and all Training Cohort tabs), and `update_tracker.py` drops them before updating any batch.
+- Store-level figures (revenue, bills, AOV, store briefing, SM Cohort) still count them. Revenue is unaffected either way.
+- Cohort 3's August and September figures were rebuilt without them. Batch 1 and 2's closed months (Jul, Aug, Sep) were not, so their October figures exclude uniform orders while their baselines include the handful there were (2 in September across both batches).
+- The in-browser CSV upload (`handleFiles`) does not apply this filter.
+
 ### Training Cohort 3 (added 2026-10-12): two tracks, high street and mall
 
 - 21 stylists picked by Vaibhav (Google Sheet "Cohort 3"), training from October 2026, **September baseline**. Roster lives in `scripts/bsc_common.py` (`COHORT3_HS`, `COHORT3_MALL`) and is mirrored in `index.html` (`TRAINING_COHORT_3_HS` / `_MALL`).

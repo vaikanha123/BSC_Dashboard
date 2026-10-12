@@ -21,6 +21,7 @@ import json
 from bsc_common import (
     load_sales_csv, extract_const, replace_const, syntax_check_html_js,
     STORE_SCOPING_OVERRIDES, MALL_STORES, HS_STORES, COHORT3_HS, COHORT3_MALL,
+    drop_uniform_orders,
 )
 
 
@@ -113,6 +114,9 @@ def main():
 
     print(f"Loading sales file: {args.sales}")
     df = load_sales_csv(args.sales)
+    n_before = df['Order name'].nunique()
+    df = drop_uniform_orders(df)
+    print(f"Left out {n_before - df['Order name'].nunique()} staff-uniform order(s).")
 
     if not args.batch2_only:
         print("Updating Batch 1 (BATCH1_RAW / BATCH1_REST_POOLED)...")

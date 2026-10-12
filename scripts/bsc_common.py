@@ -131,7 +131,18 @@ def prepare_sales_df(df):
     df['Stylist'] = df['Assisting staff member name'].fillna('').str.strip()
     df['StylistNorm'] = df['Stylist'].str.lower()
     df['Qty'] = df['Quantity ordered'].fillna(0)
+    # Staff-uniform orders: any order with a line whose product title contains "uniform". They are
+    # billed at zero value, so they add a bill and units but no revenue and pull a stylist's AOV down.
+    # Per Vaibhav (2026-10-12) they are left out of every stylist-level figure (Stylists tab, Training
+    # Cohort tabs, tracker batches). Store-level totals still count them.
+    is_uniform_line = df['Product title at time of sale'].fillna('').str.contains('uniform', case=False)
+    df['UniformOrder'] = df['Order name'].isin(set(df.loc[is_uniform_line, 'Order name']))
     return df
+
+
+def drop_uniform_orders(df):
+    """A prepared sales df without staff-uniform orders (see prepare_sales_df)."""
+    return df[~df['UniformOrder']]
 
 
 def build_seed_days(df):
@@ -151,7 +162,7 @@ def build_seed_days(df):
         newBills = new_df.groupby('POS location name')['Order name'].nunique().to_dict()
         repBills = rep_df.groupby('POS location name')['Order name'].nunique().to_dict()
 
-        styl_df = day_df[day_df['Stylist'] != '']
+        styl_df = day_df[(day_df['Stylist'] != '') & ~day_df['UniformOrder']]  # stylist figures skip uniform orders
         stylistRev = styl_df.groupby('Stylist')['Revenue'].sum().to_dict()
         stylistBills = styl_df.groupby('Stylist')['Order name'].nunique().to_dict()
         stylistUnits = styl_df.groupby('Stylist')['Qty'].sum().to_dict()
