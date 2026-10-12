@@ -113,7 +113,7 @@ const AUDITS = {
   inb: {title:'Inbound Audit', unit:'calls', params:['Greeting & Introduction','Need Understanding','Product & Process Knowledge','Objection / Concern Handling','Resolution & Assistance','Communication Skills','Call Closure','Compliance & Documentation']},
   sal: {title:'Sales Audit', unit:'calls', params:['Greeting and Introduction','Customer connection','Need discovery','Personalized recommendation','Store visit conversion','Objection handling','Communication skills','Closing','Documentation']}
 };
-const COMP_CORE = 6; // first six compliance parameters make up the Avg; Staff Grooming is shown separately
+const COMP_CORE = 7; // all seven compliance parameters, Staff Grooming included, make up the Avg
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cls = p => p == null ? 'x' : p >= 80 ? 'g' : p >= 60 ? 'w' : 'b';
@@ -168,7 +168,6 @@ function compCard(mk, month, sel){
   let body = '';
   for (let pi = 0; pi < COMP_CORE; pi++) body += row(D.compParams[pi], ws => compPct(mk, stores, ws, pi));
   body += row('Avg', ws => compAvg(mk, stores, ws), 'total');
-  body += row('Staff Grooming (not in Avg)', ws => compPct(mk, stores, ws, COMP_CORE), 'aside');
   const low = lowest(D.compParams.map((p, pi) => [p, compPct(mk, stores, WEEKS, pi)]));
   return `<div class="card"><h2>Compliance <span>score ÷ max score</span></h2><div class="scroll"><table>${headRow(month)}<tbody>${body}</tbody></table></div>${feedback('comp', mk, sel, low)}</div>`;
 }
@@ -185,7 +184,7 @@ function auditCard(key, mk, month, sel){
 
 function tiles(mk, stores){
   const t = (k, p, n) => `<div class="tile"><div class="k">${k}</div><div class="v ${cls(p)}">${fmt(p)}</div><div class="n">${n}</div></div>`;
-  let h = t('Compliance', compAvg(mk, stores, WEEKS), 'average of six parameters');
+  let h = t('Compliance', compAvg(mk, stores, WEEKS), 'average of seven parameters');
   ['ba', 'inb', 'sal'].forEach(k => { const n = auditCount(k, mk, stores, WEEKS); h += t(AUDITS[k].title, auditPct(k, mk, stores, WEEKS, -1), n ? `${n} ${n === 1 ? AUDITS[k].unit.slice(0, -1) : AUDITS[k].unit}` : 'none this month'); });
   return h;
 }
