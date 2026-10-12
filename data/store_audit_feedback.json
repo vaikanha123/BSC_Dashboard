@@ -1,0 +1,194 @@
+{
+  "2026-10": {
+    "Ambience Vasnt Kunj": {
+      "comp": ["Alterations pending: IND-405915 in progress since 3 Oct; IND-241299 has had an RTO open since 25 Sep with no update."],
+      "inb": ["Naveen's call (72%) had no proper opening or closing."]
+    },
+    "Andheri": {
+      "comp": ["Four alterations sitting in progress: IND-435522 since 30 Sep, IND-438236 since 3 Oct, IND-427689 since 4 Oct, IND-439115 since 5 Oct."],
+      "inb": [
+        "Samir's call (48%): the customer had been calling the store for three days with no answer, was left on an open line for over two minutes, and could hear staff chatting about leaving early.",
+        "On the same call a callback was promised although Enigma already showed the alteration in progress. Give the status on the call and come back only with a confirmed shipping date.",
+        "Shraddha and Adnan (72% each): no proper opening or closing."
+      ]
+    },
+    "DLF Midtown": {
+      "comp": ["IND-424808 has been in alteration since 28 Sep with no update."],
+      "ba": [
+        "Nitish Sharma was not in complete attire.",
+        "Mohammad Meharwan opened the conversation and then stepped back while the store manager handled the customer. They need more energy and confidence in their approach."
+      ],
+      "inb": ["Nitish's call (72%) had no proper opening or closing."]
+    },
+    "Express Avenue": {
+      "comp": ["IND-425995 was delivered to the store on 7 Oct and has not moved since."]
+    },
+    "Gurugram": {
+      "comp": [
+        "Longest-pending alterations in the network: IND-374980 in progress for 30 days, IND-269717 and IND-368028 in alter request for 29 days, IND-332118 for 20 days.",
+        "Also open: IND-435551 (9 days), IND-427436 and IND-435556 (7 days), IND-431444 (5 days), IND-440888 (4 days), IND-431435 (2 days)."
+      ]
+    },
+    "Indiranagar": {
+      "comp": ["IND-432636 has been in alteration since 24 Sep; IND-426653 has been in alter request for 7 days."]
+    },
+    "Inorbit mall": {
+      "inb": ["Mohammed (76%) and Konda Swamy (72%): no proper opening or closing on either call."]
+    },
+    "Inorbit Mall Malad West": {
+      "inb": ["Rahul (80%) had no proper opening or closing; Inderjit (76%) had no proper closing."]
+    },
+    "Jaipur": {
+      "comp": ["IND-292174 has been in alteration at Jubilee Hills for a long time; get an update."],
+      "inb": [
+        "Yogesh's call (44%): a customer callback was answered with \"What?\" and the phone was handed over on an open mic. This is well below the expected tone.",
+        "The customer was only told the shirt had arrived. Store hours, trial availability and dispatch options were not offered."
+      ]
+    },
+    "Jubilee Hills": {
+      "inb": ["Seneen's call (72%): no proper opening or closing, and no apology for the confusion caused by a split delivery before giving the tracking ETA."]
+    },
+    "Juhu": {
+      "comp": [
+        "Alterations in progress: IND-434794 since 29 Sep, IND-398873 since 1 Oct, IND-433369 since 4 Oct; IND-442120 in alter request for 2 days.",
+        "IND-438107 and IND-432879: CCP delivered to the store on 1 Oct and still not closed."
+      ],
+      "inb": ["Sushant's call (72%) had no proper opening or closing."]
+    },
+    "Kalaghoda, Fort": {
+      "comp": [
+        "Stuck since mid-September: IND-182787 (in progress since 16 Sep) and IND-324821 (received at factory since 16 Sep).",
+        "Also open: IND-423376 at the factory since 28 Sep, IND-426332 in alter request for 2 days, IND-420387 CCP delivered to store and not closed."
+      ],
+      "inb": [
+        "Mohammed Ammar's call (52%): exchange IND-437230 reached the factory on 29 Sep and was still not dispatched by 11 Oct, three days after the customer called. Nobody followed up.",
+        "Yasin's call (76%) had no proper opening or closing."
+      ]
+    },
+    "Kemps Corner": {
+      "comp": [
+        "IND-430493 (since 24 Sep) and IND-436132 (since 25 Sep) were flagged on both audits and are still in progress.",
+        "Also in progress: IND-421149 since 29 Sep, IND-391076 and IND-388120 since 2 Oct, IND-172779 since 6 Oct."
+      ],
+      "inb": ["Rashi's call (72%) had no proper opening or closing."]
+    },
+    "Khan Market": {
+      "comp": [
+        "IND-430026: CCP has been in process at the factory since 10 Sep. IND-436205: reverse pickup not done since 27 Sep.",
+        "IND-416687 in alter request for 6 days and IND-437469 for 4 days."
+      ]
+    },
+    "KNK Chennai": {
+      "comp": ["IND-435969 in alteration since 3 Oct. IND-411275 is waiting for fabric; confirm when it is expected."]
+    },
+    "Kochi": {
+      "comp": ["IND-330748 has been in alter request for 4 days."],
+      "inb": ["Nimmy had no proper opening or closing on both audited calls (72% each)."]
+    },
+    "Koregaon Park": {
+      "comp": [
+        "IND-164472 and IND-439844 in alter request for 3 days; IND-376978 for 3 days.",
+        "IND-405052 moved from request to in progress only after four days; IND-431418 is taking unusually long."
+      ],
+      "inb": ["Kris (72%) and Omkar (76%): no proper opening or closing."]
+    },
+    "Lavelle Road": {
+      "comp": ["IND-431798: reverse pickup pending since 29 Sep. IND-120458 in alter request for 4 days; IND-438066 in progress since 4 Oct."],
+      "inb": ["Sachin's call (76%) had no proper opening or closing."]
+    },
+    "Mall of India": {
+      "inb": [
+        "Arman's call (64%): other floor staff were shouting and talking right next to the phone for much of the call.",
+        "Arman and Akash Kumar (72%) both had no proper opening or closing."
+      ]
+    },
+    "Oberoi Mall": {
+      "inb": [
+        "Mustaq's call (40%): the customer had been promised early delivery of a trial shirt, but was given the standard timeline. If unsure, check and call back with a proper update.",
+        "Abdul Aziz's call (68%): no proper opening or closing, and no apology for a shirt delayed by a fabric shortage."
+      ]
+    },
+    "Pali Hill, Khar": {
+      "comp": ["IND-422961 in alter request for 4 days; IND-427210 in progress since 3 Oct."],
+      "inb": [
+        "Vikas's call (48%): no empathy or ownership for a garment given for alteration a week earlier. The customer was left with \"in progress\" and no delivery date.",
+        "The stylist should have checked the shipping date with the factory and called back. Irfan's call (76%) had no proper closing."
+      ]
+    },
+    "Phoenix Lucknow": {
+      "inb": ["Amay's call (72%) had no proper opening or closing."]
+    },
+    "Phoenix Viman Nagar": {
+      "comp": ["IND-439666 in alteration since 2 Oct."],
+      "inb": [
+        "Aaryan's call (72%): no proper opening or closing, and no apology for the delay.",
+        "Firoz's call (68%): no proper opening or closing, and no discovery questions asked."
+      ]
+    },
+    "PMC Kurla": {
+      "inb": [
+        "Saquib Sultan's call (16%): the order showed \"at store\", so the customer could have been told it was ready. Instead they went to check with the stylist who took the order.",
+        "Shwet's call (68%): no proper opening or closing, and no discovery questions asked."
+      ]
+    },
+    "PMC Whitefield": {
+      "comp": ["IND-432666 was flagged twice and has now been in alter request for 6 days. IND-435480: reverse pickup pending for a long time."]
+    },
+    "Select City Mall": {
+      "comp": [
+        "IND-431875 flagged on both audits, now 5 days in alter request; IND-344371 for 4 days. IND-241299 is stuck with no status.",
+        "IND-425257 and IND-377280: CCP delivered to the store on 20 Sep and still not closed."
+      ],
+      "ba": [
+        "Customer approaching is the main gap: one of Ritika Rana's interactions (54%) had no approach at all, and Sahil's (60%) needs to be better.",
+        "Ritika looked rigid at first and waited for the customer to start. They should initiate.",
+        "Twice, garments were handed to the customer instead of being hung in the trial room."
+      ],
+      "inb": [
+        "Ritika's call (64%): no proper opening or closing.",
+        "When an item was sold out nationwide they did not suggest other colours or styles, and did not apologise when the customer said other stores were unreachable."
+      ]
+    },
+    "Shakespear Sarani": {
+      "inb": [
+        "Augustine (60%) and Suchita (64%): no proper opening or closing, and no apology on delivery delays or for a confusing system email about a split dispatch.",
+        "Background noise from the floor was audible on Suchita's call."
+      ]
+    },
+    "Sharath City": {
+      "inb": [
+        "Mohammed's call (36%) was a lost sale: they did not ask about measurements, timeline or colour, gave contradictory answers on trial garments, and did not explain how custom T-shirt sizing works.",
+        "They were dismissive (\"in other option we don't have, sir\"), did not check with colleagues or Jubilee Hills, and did not take the customer's details.",
+        "Vankudoth's call (68%): no proper opening or closing. They promised to send pictures without confirming the WhatsApp number or a time."
+      ]
+    },
+    "Sindhu Bhavan Marg": {
+      "comp": [
+        "IND-425934: reverse pickup pending for a month; close it.",
+        "IND-428297: CCP delivered to store since 29 Sep. IND-434762: received at store on 2 Oct, no update."
+      ]
+    },
+    "Sky City Borivali": {
+      "ba": [
+        "Pranita Meshram (41%): when a second customer asked for help they switched attention and the first customer left. Ask the second customer to wait a moment.",
+        "Arbaaz (55% and 58%): poor start to the interaction and weak customer approach on both audits."
+      ],
+      "inb": ["Arbaaz's call (72%) had no proper opening or closing."]
+    },
+    "South Ex.": {
+      "comp": ["IND-431875 flagged on both audits, now 5 days in alter request. IND-439654 and IND-286800 in alter request for 2 days."],
+      "inb": ["Vijay's call (64%): no proper opening or closing, and no apology when the customer said they had thrown away a pair of bespoke trousers because of poor fit. No complaint email was found on record."]
+    },
+    "Vegas Mall Dwarka": {
+      "inb": ["Priyajeet's call (76%) had no proper closing."]
+    },
+    "Viviana Mall": {
+      "comp": ["IND-434864 in alteration since 3 Oct with no update."],
+      "inb": [
+        "Tarannum's call (0%): the customer reported a wrong monogram (MF instead of MK) on all three shirts of order 440611, for the second order running. The store blamed the factory, but the order sheet shows the stylist entered the wrong initials.",
+        "The customer was also put on an unmuted hold while staff discussed it on the floor.",
+        "Aaquib's call (76%) had no proper opening or closing."
+      ]
+    }
+  }
+}
