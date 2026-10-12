@@ -37,6 +37,9 @@ OUT = os.path.join(REPO, 'data', 'store_audit_data.js')
 FEEDBACK = os.path.join(REPO, 'data', 'store_audit_feedback.json')
 NPS = os.path.join(REPO, 'data', 'store_audit_nps.json')
 
+# The survey file starts on 26 Aug 2026, so August is only six days; it is left off the page.
+NPS_SKIP_MONTHS = {'2026-08'}
+
 # Store names in the NPS workbook (Shopify POS locations) -> names used in the audit tracker.
 NPS_STORES = {
     'Ambience Vasant Kunj': 'Ambience Vasnt Kunj', 'DLF Midtown - Moti Nagar': 'DLF Midtown',
@@ -127,6 +130,8 @@ def build_nps(xlsx):
             continue
         d = r[col['Response date']]
         mk = '%d-%02d' % (d.year, d.month)
+        if mk in NPS_SKIP_MONTHS:
+            continue
         name = str(r[col['Store']]).strip()
         counts = stores.setdefault(NPS_STORES.get(name, name), {}).setdefault(mk, [0, 0, 0])
         counts[slot[r[col['Class']]]] += 1

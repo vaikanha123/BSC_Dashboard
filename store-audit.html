@@ -201,7 +201,7 @@ function npsCard(mk, sel){
   if (!NPS.months.length) return '';
   const stores = storesFor(sel), all = NPS.months.map(m => m.key);
   const cols = NPS.months.map(m => ({on: m.key === mk, head: `${esc(m.label)}<small>${esc(m.range)}</small>`, c: npsCounts(stores, [m.key])}));
-  cols.push({avg: true, head: 'All<small>whole period</small>', c: npsCounts(stores, all)});
+  cols.push({avg: true, head: `All<small>${esc(NPS.months[0].label)}–${esc(NPS.months[NPS.months.length - 1].label)}</small>`, c: npsCounts(stores, all)});
   const k = col => ((col.on ? 'on ' : '') + (col.avg ? 'avg' : '')).trim();
   const row = (label, f, c) => `<tr class="${c || ''}"><td>${label}</td>${cols.map(col => f(col)).join('')}</tr>`;
   const count = i => col => `<td class="${k(col)}">${npsN(col.c) ? col.c[i] : '–'}</td>`;
