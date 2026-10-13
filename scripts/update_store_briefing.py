@@ -12,8 +12,11 @@ Sources:
     and --store-targets (monthly sheet: New Rev %, New/Repeat AOV, New/Rpt Cust, NC Conversion,
     New FF), then kept in data/briefing_targets.json so the daily run needs no xlsx.
   - Footfall: data/footfall_history_daily.csv (footfall.py fetch).
-  - NPS and last month's ASP/UPT: index.html. Audit score: --compliance, else carried forward
-    from the page's previous BRIEFING_DATA (it keeps its own period label).
+  - NPS and audit (compliance) score: the sales month's figures from the store audit report card's
+    data (data/store_audit_nps.json, data/store_audit_data.js), so the two pages agree. A store
+    with no survey responses yet this month shows no NPS. --compliance still overrides the audit
+    score; with neither, it is carried forward from the page's previous BRIEFING_DATA.
+  - Last month's ASP/UPT: index.html.
 
 Target basis (same as the Store Pulse page, so the two can be cross-checked):
   month revenue target = the day-wise file's Store Total row; New/Repeat revenue targets = that
@@ -38,11 +41,14 @@ import os
 import openpyxl
 
 from bsc_common import REGION_MAP, load_sales_csv, replace_const, extract_const, syntax_check_html_js
+from build_store_audit import NPS_STORES
 from generate_briefing_data import build_stylist_breakdown, load_compliance, load_index_context
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TARGETS_PATH = os.path.join(ROOT, 'data', 'briefing_targets.json')
 FOOTFALL_PATH = os.path.join(ROOT, 'data', 'footfall_history_daily.csv')
+AUDIT_DATA_PATH = os.path.join(ROOT, 'data', 'store_audit_data.js')
+AUDIT_NPS_PATH = os.path.join(ROOT, 'data', 'store_audit_nps.json')
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 STORE_TARGET_ALIASES = {'MOI': 'Mall of India, Noida'}
 MAX_FOCUS = 3
@@ -321,6 +327,44 @@ def build_store(store, sub, tg, ff, ctx, last_day, d_el, d_in, prev_audit):
     }
 
 
+def load_audit_scores(month):
+    """This month's NPS and compliance score per store, worked out the way store-audit.html does.
+
+    Returns (nps, audit), both keyed by the briefing's store names:
+      nps[store]   = {'score': promoters minus detractors over responses x 100, 'n': responses}
+      audit[store] = {'current': mean of the parameters' score/max over the month's weeks, 'currentLabel': 'Oct W1'}
+    plus nps['_label'] = the survey's date range for the month (e.g. '1–11 Oct').
+    """
+    name = lambda audit_store: next((k for k, v in NPS_STORES.items() if v == audit_store), audit_store)
+    nps, audit = {}, {}
+    if os.path.exists(AUDIT_NPS_PATH):
+        with open(AUDIT_NPS_PATH, encoding='utf-8') as f:
+            raw = json.load(f)
+        m = next((x for x in raw.get('months', []) if x['key'] == month), None)
+        if m:
+            nps['_label'] = m['range']
+            for st, by_month in raw.get('stores', {}).items():
+                c = by_month.get(month)
+                if c and sum(c):
+                    nps[name(st)] = {'score': round((c[0] - c[2]) / sum(c) * 100, 1), 'n': sum(c)}
+    if os.path.exists(AUDIT_DATA_PATH):
+        with open(AUDIT_DATA_PATH, encoding='utf-8') as f:
+            js = f.read()
+        raw = json.loads(js[js.index('{'):js.rindex('}') + 1])
+        weeks = sorted(next((x['weeks'] for x in raw['months'] if x['key'] == month), {}))
+        label = MONTHS[int(month[5:]) - 1] + ' ' + (weeks[0] if len(weeks) == 1 else f'{weeks[0]}–{weeks[-1]}') if weeks else None
+        for st, by_week in raw.get('comp', {}).get(month, {}).items():
+            pcts = []
+            for pi in range(len(raw['compParams'])):
+                cells = [w[pi] for w in by_week.values() if pi < len(w) and w[pi]]
+                mx = sum(c[1] for c in cells)
+                if mx > 0:
+                    pcts.append(sum(c[0] for c in cells) / mx * 100)
+            if pcts:
+                audit[name(st)] = {'current': round(sum(pcts) / len(pcts), 1), 'currentLabel': label}
+    return nps, audit
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--html', required=True)
@@ -374,6 +418,8 @@ def main():
     index_path = a.index or os.path.join(os.path.dirname(os.path.abspath(a.html)), 'index.html')
     ctx = load_index_context(index_path)
     footfall = load_footfall(month)
+    month_nps, month_audit = load_audit_scores(month)
+    nps_label = month_nps.pop('_label', None)
 
     stores = {}
     for store in sorted(targets):
@@ -381,8 +427,14 @@ def main():
         if sub.empty:
             print(f'  [skip] {store}: has targets but no sales this month -- no briefing')
             continue
-        audit = compliance.get(store) or (prev_stores.get(store) or {}).get('audit')
+        audit = compliance.get(store) or month_audit.get(store) or (prev_stores.get(store) or {}).get('audit')
         stores[store] = build_store(store, sub, targets[store], footfall.get(store, {}), ctx, last_day, d_el, d_in, audit)
+        if nps_label:
+            # the report card has this month's survey: use it, and show nothing rather than an
+            # older month's score for a store with no responses yet
+            got = month_nps.get(store)
+            stores[store]['nps'] = got['score'] if got else None
+            stores[store]['npsMeta'] = {'label': nps_label, 'n': got['n'] if got else 0}
 
     payload = {
         'generatedAt': datetime.datetime.now().isoformat(timespec='seconds'),
@@ -397,6 +449,8 @@ def main():
     no_focus = [s for s, v in stores.items() if not v['today']['focus']]
     print(f"OK. {a.html}: {len(stores)} stores through {last_day} ({d_in - d_el} days left); "
           f"{len(no_focus)} with no focus item; briefing for {payload['briefingFor']}.")
+    print(f"  NPS {nps_label or 'from index.html'}: {sum(1 for v in stores.values() if v.get('nps') is not None)} stores; "
+          f"audit score from the report card: {sum(1 for s in stores if s in month_audit and s not in compliance)} stores.")
 
 
 if __name__ == '__main__':
