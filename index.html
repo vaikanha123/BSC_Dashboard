@@ -2614,6 +2614,66 @@ function renderCategoryAOV(body, days){
   body.appendChild(note);
 }
 
+// Refund/CN files spell a couple of stores differently from the sales export's POS names.
+const REFUND_STORE_ALIAS = {'Viman Nagar': 'PMC Viman Nagar Pune', 'KEMPS CORNER': 'Kemps Corner'};
+function foldRefundStores(byStore){
+  const out = {};
+  Object.keys(byStore || {}).forEach(s => {
+    const k = REFUND_STORE_ALIAS[s] || s;
+    out[k] = (out[k] || 0) + byStore[s];
+  });
+  return out;
+}
+
+// One month's refund/CN picture against that month's revenue, in the shape the trend tables read.
+function refundMonthSummary(storeRev, refundM, cnM){
+  let onlineRev = 0, offlineRev = 0;
+  Object.keys(storeRev).forEach(s => { if(offlineRegion(s)) offlineRev += storeRev[s]; else onlineRev += storeRev[s]; });
+  return {
+    hasData: !!(refundM || cnM), storeRev, onlineRev, offlineRev, totalRev: onlineRev + offlineRev,
+    refundTotal: refundM ? refundM.total : 0, cnTotal: cnM ? cnM.total : 0,
+    onlineRefund: refundM ? refundM.onlineTotal : 0, storeRefund: refundM ? refundM.storeTotal : 0,
+    onlineCN: cnM ? cnM.onlineTotal : 0, storeCN: cnM ? cnM.storeTotal : 0,
+    rfByStore: foldRefundStores(refundM && refundM.byStore), cnByStore: foldRefundStores(cnM && cnM.byStore),
+  };
+}
+
+// The two months before `cmk`, oldest first, read from the month archives. An archive that isn't
+// in archiveCache yet is fetched in the background and the tab re-renders once it lands.
+const refundTrendPending = {};
+function refundTrendPriorMonths(cmk){
+  return [-2, -1].map(delta => {
+    const mo = monthOffset(cmk, delta);
+    const out = {key: mo.key, short: mo.short, summary: null, loading: false};
+    const entry = ARCHIVE_MONTHS.find(e => e.key === mo.key);
+    if(!entry) return out;
+    const b = archiveCache[mo.key];
+    if(b){
+      const storeRev = {};
+      Object.keys(b.days || {}).forEach(dk => {
+        const st = b.days[dk].stores || {};
+        Object.keys(st).forEach(s => { storeRev[s] = (storeRev[s] || 0) + st[s]; });
+      });
+      const s = refundMonthSummary(storeRev,
+        b.refunds && b.refunds.byMonth ? b.refunds.byMonth[mo.key] : null,
+        b.cn && b.cn.byMonth ? b.cn.byMonth[mo.key] : null);
+      if(s.hasData && s.totalRev > 0) out.summary = s;
+      return out;
+    }
+    if(refundTrendPending[mo.key] === 'failed') return out;
+    out.loading = true;
+    if(!refundTrendPending[mo.key]){
+      refundTrendPending[mo.key] = 'loading';
+      fetch(entry.file, {cache: 'no-cache'})
+        .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(j => { archiveCache[mo.key] = j; delete refundTrendPending[mo.key]; })
+        .catch(() => { refundTrendPending[mo.key] = 'failed'; })
+        .then(() => { if(state.activeTab === 'refunds') render(); });
+    }
+    return out;
+  });
+}
+
 function renderRefunds(body){
   const cmk = currentMonthKey();
 
@@ -2689,6 +2749,55 @@ function renderRefunds(body){
   });
   body.appendChild(cardsRow);
 
+  // ---- This month against the two before it ----
+  const rfByStore = foldRefundStores(refundMonth && refundMonth.byStore);
+  const cnByStore = foldRefundStores(cnMonth && cnMonth.byStore);
+  const rfCountByStore = foldRefundStores(refundMonth && refundMonth.byStoreCount);
+  const cnCountByStore = foldRefundStores(cnMonth && cnMonth.byStoreCount);
+  const curLabel = monthOffset(cmk, 0).short + (isArchiveView() ? '' : ' MTD');
+  const trendMonths = hasRevenue ? refundTrendPriorMonths(cmk).concat([
+    {key: cmk, short: curLabel, summary: refundMonthSummary(storeRev, refundMonth, cnMonth), loading: false}
+  ]) : [];
+  const trendLoading = trendMonths.some(m => m.loading);
+  const trendReady = trendMonths.filter(m => m.summary);
+
+  if(hasRevenue && (trendReady.length > 1 || trendLoading)){
+    const trHead = document.createElement('div');
+    trHead.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
+    trHead.textContent = 'Monthly trend — ' + trendMonths.map(m => m.short).join(' / ');
+    body.appendChild(trHead);
+
+    const td = 'padding:8px 10px; text-align:right;';
+    const pctOf = (a, b) => b ? fmtPct(a/b*100) : '—';
+    let trRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
+      '<td style="padding:6px 10px;">Month</td>' +
+      ['Revenue','Refunds','Refund %','CN','CN %','Refund + CN %','Online total %','Offline total %']
+        .map(h => `<td style="padding:6px 10px; text-align:right;">${h}</td>`).join('') + '</tr>';
+    trendMonths.forEach(m => {
+      const s = m.summary;
+      const isCur = m.key === cmk;
+      const name = `<td style="padding:8px 10px; font-weight:${isCur?700:500};">${isCur ? curLabel + ' ' + cmk.split('-')[1] : m.key}</td>`;
+      if(!s){
+        trRows += `<tr style="border-top:1px solid var(--line);">${name}<td colspan="8" style="padding:8px 10px; color:var(--text-mute);">${m.loading ? 'Loading…' : 'No refund/CN file on record'}</td></tr>`;
+        return;
+      }
+      trRows += `<tr style="border-top:1px solid var(--line);">${name}
+        <td style="${td}" class="bsc-mono">${fmtINR(s.totalRev)}</td>
+        <td style="${td}" class="bsc-mono">${fmtINR(s.refundTotal)}</td>
+        <td style="${td} font-weight:600;" class="bsc-mono">${pctOf(s.refundTotal, s.totalRev)}</td>
+        <td style="${td}" class="bsc-mono">${fmtINR(s.cnTotal)}</td>
+        <td style="${td} font-weight:600;" class="bsc-mono">${pctOf(s.cnTotal, s.totalRev)}</td>
+        <td style="${td} font-weight:600; color:var(--brass);" class="bsc-mono">${pctOf(s.refundTotal + s.cnTotal, s.totalRev)}</td>
+        <td style="${td}" class="bsc-mono">${pctOf(s.onlineRefund + s.onlineCN, s.onlineRev)}</td>
+        <td style="${td}" class="bsc-mono">${pctOf(s.storeRefund + s.storeCN, s.offlineRev)}</td>
+      </tr>`;
+    });
+    const trTable = document.createElement('table');
+    trTable.style.cssText = 'font-size:13px; margin-bottom:24px;';
+    trTable.innerHTML = trRows;
+    body.appendChild(trTable);
+  }
+
   // ---- Online vs Offline ----
   if(hasRevenue){
     const channelHead = document.createElement('div');
@@ -2736,8 +2845,8 @@ function renderRefunds(body){
       '<td style="padding:6px 10px; text-align:right;">CN</td><td style="padding:6px 10px; text-align:right;">CN %</td></tr>';
     ['North','South','West'].forEach(reg => {
       let regRefund = 0, regCN = 0;
-      if(refundMonth) Object.keys(refundMonth.byStore || {}).forEach(s => { if(offlineRegion(s) === reg) regRefund += refundMonth.byStore[s]; });
-      if(cnMonth) Object.keys(cnMonth.byStore || {}).forEach(s => { if(offlineRegion(s) === reg) regCN += cnMonth.byStore[s]; });
+      Object.keys(rfByStore).forEach(s => { if(offlineRegion(s) === reg) regRefund += rfByStore[s]; });
+      Object.keys(cnByStore).forEach(s => { if(offlineRegion(s) === reg) regCN += cnByStore[s]; });
       const rev = regionRev[reg];
       regRows += `<tr style="border-top:1px solid var(--line);">
         <td style="padding:8px 10px; font-weight:500;">${reg}</td>
@@ -2766,20 +2875,55 @@ function renderRefunds(body){
     body.appendChild(stHead);
 
     const allStores = new Set(Object.keys(storeRev).filter(s => offlineRegion(s)));
-    if(refundMonth) Object.keys(refundMonth.byStore || {}).forEach(s => { if(offlineRegion(s)) allStores.add(s); });
-    if(cnMonth) Object.keys(cnMonth.byStore || {}).forEach(s => { if(offlineRegion(s)) allStores.add(s); });
+    Object.keys(rfByStore).forEach(s => { if(offlineRegion(s)) allStores.add(s); });
+    Object.keys(cnByStore).forEach(s => { if(offlineRegion(s)) allStores.add(s); });
 
     let stArr = Array.from(allStores).map(s => {
       const rev = storeRev[s] || 0;
       const bills = storeBills[s] || 0;
-      const rf = refundMonth && refundMonth.byStore ? (refundMonth.byStore[s] || 0) : 0;
-      const cn = cnMonth && cnMonth.byStore ? (cnMonth.byStore[s] || 0) : 0;
-      const rfCount = refundMonth && refundMonth.byStoreCount ? (refundMonth.byStoreCount[s] || 0) : 0;
-      const cnCount = cnMonth && cnMonth.byStoreCount ? (cnMonth.byStoreCount[s] || 0) : 0;
+      const rf = rfByStore[s] || 0;
+      const cn = cnByStore[s] || 0;
+      const rfCount = rfCountByStore[s] || 0;
+      const cnCount = cnCountByStore[s] || 0;
       const rfBillPct = bills ? rfCount/bills*100 : 0;
       const cnBillPct = bills ? cnCount/bills*100 : 0;
       return {store:s, region: offlineRegion(s), rev, bills, rf, cn, rfCount, cnCount, rfBillPct, cnBillPct, rfPct: rev?rf/rev*100:0, cnPct: rev?cn/rev*100:0};
     });
+
+    // ---- Store trend over the same three months. A store is "consistently high" on refunds (or CN)
+    // when its % of revenue is above the all-store offline rate in every one of the three months. ----
+    const trendFull = trendMonths.length === 3 && trendReady.length === 3;
+    const storeTrend = {};
+    if(trendFull){
+      stArr.forEach(st => {
+        const t = {rf: [], cn: [], rfHigh: [], cnHigh: []};
+        trendMonths.forEach(m => {
+          const s = m.summary, rev = s.storeRev[st.store] || 0;
+          const rfP = rev ? (s.rfByStore[st.store] || 0)/rev*100 : null;
+          const cnP = rev ? (s.cnByStore[st.store] || 0)/rev*100 : null;
+          t.rf.push(rfP); t.cn.push(cnP);
+          t.rfHigh.push(rfP !== null && s.offlineRev > 0 && rfP > s.storeRefund/s.offlineRev*100);
+          t.cnHigh.push(cnP !== null && s.offlineRev > 0 && cnP > s.storeCN/s.offlineRev*100);
+        });
+        t.rfAll = t.rfHigh.every(Boolean);
+        t.cnAll = t.cnHigh.every(Boolean);
+        storeTrend[st.store] = t;
+      });
+
+      const monthsText = trendMonths.map(m => m.short).join(', ');
+      const listFor = (key, allKey) => stArr.filter(st => storeTrend[st.store][allKey])
+        .sort((a,b) => storeTrend[b.store][key][2] - storeTrend[a.store][key][2])
+        .map(st => `<b>${st.store}</b> <span class="bsc-mono" style="color:var(--text-mute);">(${storeTrend[st.store][key].map(v => fmtPct(v)).join(' → ')})</span>`)
+        .join(', ');
+      const rfList = listFor('rf', 'rfAll'), cnList = listFor('cn', 'cnAll');
+      const flagBox = document.createElement('div');
+      flagBox.style.cssText = 'font-size:12.5px; line-height:1.7; margin-bottom:16px; padding:12px 14px; background:var(--panel); border-left:3px solid var(--bad); border-radius:8px;';
+      flagBox.innerHTML = `<div style="font-weight:600; color:var(--bad); margin-bottom:4px;">Consistently high stores</div>
+        <div style="color:var(--text-mute); font-size:11.5px; margin-bottom:6px;">Above the all-store rate in each of ${monthsText}.</div>
+        <div><span style="color:var(--text-dim);">Refunds:</span> ${rfList || 'none'}</div>
+        <div><span style="color:var(--text-dim);">Credit notes:</span> ${cnList || 'none'}</div>`;
+      body.appendChild(flagBox);
+    }
 
     // ---- Filter bar: region + sort ----
     const availableRegions = ['North','South','West'].filter(reg => stArr.some(s => s.region === reg));
@@ -2830,6 +2974,53 @@ function renderRefunds(body){
     });
     stTable.innerHTML = stRows;
     body.appendChild(stTable);
+
+    // ---- Store-wise trend table (same filter and sort as the table above) ----
+    if(trendFull){
+      const stTrHead = document.createElement('div');
+      stTrHead.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin:8px 0 4px;';
+      stTrHead.textContent = 'Store-wise trend — ' + trendMonths.map(m => m.short).join(' / ');
+      body.appendChild(stTrHead);
+      const stTrNote = document.createElement('div');
+      stTrNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-bottom:10px;';
+      stTrNote.textContent = 'Each figure is % of that month’s store revenue. Red = above the all-store rate for that month.';
+      body.appendChild(stTrNote);
+
+      const th = (t, extra) => `<td style="padding:6px 10px; text-align:right;${extra||''}">${t}</td>`;
+      const sep = ' border-left:1px solid var(--line2);';
+      let rows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
+        '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
+        trendMonths.map((m,i) => th('Refund % ' + m.short, i === 0 ? sep : '')).join('') +
+        trendMonths.map((m,i) => th('CN % ' + m.short, i === 0 ? sep : '')).join('') +
+        '<td style="padding:6px 10px;">High all 3 months</td></tr>';
+      const avgCell = (v, i) => `<td style="padding:8px 10px; text-align:right; font-weight:600;${i === 0 ? sep : ''}" class="bsc-mono">${fmtPct(v)}</td>`;
+      rows += '<tr style="border-top:1px solid var(--line); background:var(--panel);">' +
+        '<td style="padding:8px 10px; font-weight:600;">All stores</td><td style="padding:8px 10px; color:var(--text-mute);">Offline</td>' +
+        trendMonths.map((m,i) => avgCell(m.summary.offlineRev ? m.summary.storeRefund/m.summary.offlineRev*100 : NaN, i)).join('') +
+        trendMonths.map((m,i) => avgCell(m.summary.offlineRev ? m.summary.storeCN/m.summary.offlineRev*100 : NaN, i)).join('') +
+        '<td></td></tr>';
+      const cell = (v, high, i) => `<td style="padding:8px 10px; text-align:right;${i === 0 ? sep : ''}${high ? ' color:var(--bad); font-weight:600;' : ''}" class="bsc-mono">${v === null ? '—' : fmtPct(v)}</td>`;
+      const pill = (t) => `<span style="display:inline-block; font-size:11px; font-weight:600; color:var(--bad); border:1px solid var(--bad); border-radius:10px; padding:1px 8px; margin-right:4px;">${t}</span>`;
+      stArr.forEach(st => {
+        const t = storeTrend[st.store];
+        rows += `<tr style="border-top:1px solid var(--line);">
+          <td style="padding:8px 10px; font-weight:500;">${st.store}</td>
+          <td style="padding:8px 10px; color:var(--text-mute);">${st.region}</td>
+          ${t.rf.map((v,i) => cell(v, t.rfHigh[i], i)).join('')}
+          ${t.cn.map((v,i) => cell(v, t.cnHigh[i], i)).join('')}
+          <td style="padding:8px 10px;">${(t.rfAll ? pill('Refunds') : '') + (t.cnAll ? pill('CN') : '')}</td>
+        </tr>`;
+      });
+      const stTrTable = document.createElement('table');
+      stTrTable.style.cssText = 'font-size:13px; margin-bottom:16px;';
+      stTrTable.innerHTML = rows;
+      body.appendChild(stTrTable);
+    } else if(trendLoading){
+      const ld = document.createElement('div');
+      ld.style.cssText = 'font-size:12px; color:var(--text-mute); margin-bottom:16px;';
+      ld.textContent = 'Loading the previous two months for the store-wise trend…';
+      body.appendChild(ld);
+    }
 
     attachRefundStoreFilterHandlers();
   }
