@@ -28,9 +28,24 @@
   .bsc-mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
   select.bsc-select{background:var(--panel2); color:var(--text); border:1px solid var(--line2); border-radius:8px;
     padding:8px 12px; font-size:13.5px; font-family:inherit; cursor:pointer;}
+  /* The briefing is three pages: 1 Synopsis, 2 New / Repeat / Stylist-wise, 3 General Briefing.
+     On screen they stack with a page band between them; in print each starts a fresh sheet. */
+  .brief-page + .brief-page{margin-top:34px;}
+  .brief-page-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; padding-bottom:9px; margin-bottom:14px;
+    border-bottom:1px solid var(--line2);}
+  .brief-page-num{font-size:10.5px; font-weight:600; color:var(--brass); text-transform:uppercase; letter-spacing:.08em;}
+  .brief-page-title{font-size:15px; font-weight:700; color:var(--text);}
+  .brief-page-meta{margin-left:auto; font-size:11.5px; color:var(--text-mute);}
   @media print {
-    .bsc-dash{border:none; border-radius:0; background:#fff; color:#111;}
-    :root{ --panel:#f7f7f7; --panel2:#f0f0f0; --text:#111; --text-dim:#333; --text-mute:#555; --line:#ccc; }
+    @page { size:A4; margin:12mm; }
+    /* page breaks are ignored inside a flex container or an overflow:hidden box */
+    body{display:block;}
+    .bsc-dash{border:none; border-radius:0; background:#fff; color:#111; overflow:visible;}
+    :root{ --panel:#f7f7f7; --panel2:#f0f0f0; --text:#111; --text-dim:#333; --text-mute:#555; --line:#ccc; --line2:#bbb; }
+    /* 0.9 is what keeps the longest page 2 (an 11-stylist store) on a single A4 sheet */
+    #briefing-body{zoom:.9;}
+    .brief-page + .brief-page{margin-top:0; break-before:page; page-break-before:always;}
+    .brief-keep, .brief-page tr{break-inside:avoid; page-break-inside:avoid;}
   }
 </style>
 
@@ -53,7 +68,7 @@ const BRIEFING_DATA = {"generatedAt": "2026-10-13T11:21:47", "lastSalesDay": "20
 // policy note instead of a product spotlight), so this isn't parsed automatically. Update this
 // block whenever a new day's PDF comes in; everything else in this file (BRIEFING_DATA) is
 // regenerated separately by scripts/generate_briefing_data.py.
-const BRIEFING_CONTENT = {"date": "2026-10-12", "talkingPoints": [{"title": "Review Sales Performance", "body": ["Discuss last month’s Store Tgt. vs. Ach. and review progress against the month’s target.", "Highlight store’s SSSG, FF conversion and achievers of the target.", "Conclude by discussing this week’s plan and ways to achieve the target."]}, {"title": "Two separate black folders: Formal Suits and Casual Suits / Co-ord Sets", "intro": "Going forward, we will maintain two separate black folders for Formal Suits and Casual Suits/Co-ord Sets. Action items:", "body": ["<b>Formal Suits Folder:</b> You should have received a sticker labelled “Formal Suits”. Kindly paste it on your existing Suits Folder. All Formal Suit swatches must be retained in this folder.", "<b>Casual Suits &amp; Co-ord Sets Folder:</b> You should have received a new black folder with a sticker labelled “Casual Suits &amp; Co-ord Sets”. Please shift all Casual Blazer, Soft Tailored, and Co-ord Set swatches into this new folder.", "<b>Important note:</b> These two folders are exclusively for suit options where we offer both the top and bottom. They must not be used for individual blazers or shackets, as separate folders for these categories are already available."]}, {"title": "FIT samples: 21 dummy profiles and how to punch the order", "intro": "To address the challenges faced by the stores to get FIT samples, 21 dummy profiles with standard measurements have been created of Average, Athletic, and Healthy body types (refer to the profiles below). To punch the Fit sample order, follow these guidelines:", "body": ["<b>Order punching:</b> Use only the designated customer name (e.g. Fit Sample Average 36) and the correct fabric (design name / SKU code, see the fabric table below). No changes to measurements or styling are permitted.", "<b>Email intimation:</b> Share the punched order IDs with Swati, keeping Store RM, Vishnu, Parag D, Pramod, and the Shipment Team in CC.", "<b>TAT &amp; QC:</b> 7 working days subject to fabric availability. Also add logistic comments for double QC and measurement tags."], "tables": [{"title": "Fit sample fabrics", "columns": ["SKU", "Design name", "Fabric code"], "rows": [["BOM-SHI-CU-8133", "Healthy Body - MTM Fit Sample", "Dark Grey Oxford - Healthy Body Fit Sample"], ["BOM-SHI-CU-8134", "Athletic Body - MTM Fit Sample", "Sky Blue Oxford - Athletic Body Fit Sample"], ["BOM-SHI-CU-8135", "Average Body - MTM Fit Sample", "Green Oxford - Average Body Fit Sample"]]}, {"title": "Dummy profiles", "columns": ["S. No", "Body type", "Size", "Customer ID", "Customer name"], "rows": [[1, "Average", 36, 726323, "Fit Sample Average 36"], [2, "Average", 38, 726324, "Fit Sample Average 38"], [3, "Average", 40, 726325, "Fit Sample Average 40"], [4, "Average", 42, 726326, "Fit Sample Average 42"], [5, "Average", 44, 726327, "Fit Sample Average 44"], [6, "Average", 46, 726328, "Fit Sample Average 46"], [7, "Average", 48, 726329, "Fit Sample Average 48"], [8, "Athletic", 36, 726330, "Fit Sample Athletic 36"], [9, "Athletic", 38, 726331, "Fit Sample Athletic 38"], [10, "Athletic", 40, 726332, "Fit Sample Athletic 40"], [11, "Athletic", 42, 726334, "Fit Sample Athletic 42"], [12, "Athletic", 44, 726335, "Fit Sample Athletic 44"], [13, "Healthy", 40, 726336, "Fit Sample Healthy 40"], [14, "Healthy", 42, 726337, "Fit Sample Healthy 42"], [15, "Healthy", 44, 726339, "Fit Sample Healthy 44"], [16, "Healthy", 46, 726340, "Fit Sample Healthy 46"], [17, "Healthy", 48, 726341, "Fit Sample Healthy 48"], [18, "Healthy", 50, 726342, "Fit Sample Healthy 50"], [19, "Healthy", 52, 726343, "Fit Sample Healthy 52"], [20, "Healthy", 54, 726344, "Fit Sample Healthy 54"], [21, "Healthy", 56, 726345, "Fit Sample Healthy 56"]]}]}]};
+const BRIEFING_CONTENT = {"date": "2026-10-13", "talkingPoints": [{"title": "Use the Escalation Matrix live link to reach factory POCs", "body": ["Please use the ‘Escalation Matrix live link’ while reaching out to factory POCs.", "You can now search for the POC directly by typing the issue, or by selecting the ‘Issue’ and ‘Sub category’.", "Link: <a href=\"https://sites.google.com/bombayshirts.com/bsc-escalation-matrix?usp=sharing\" target=\"_blank\" rel=\"noopener\" style=\"color:var(--brass); word-break:break-all;\">https://sites.google.com/bombayshirts.com/bsc-escalation-matrix?usp=sharing</a>"]}, {"title": "Rid Burman Washed T-Shirts: MRP revised", "body": ["The MRP for Rid Burman Washed T-Shirts has been revised to <b>Rs2,490</b> from Rs3,490."]}], "spotlightTitle": "3 kurtas for 3 very different festive occasions", "productSpotlight": [{"name": "1. The short Bandhgala kurta (Beige and Grey)", "mrp": 4990, "customerSays": "I want to wear a kurta, but I still want to look sharp.", "description": "A clean, modern kurta with a Bandhgala-style neckline. The modal-linen fabric makes it light, breathable and comfortable.", "rememberAs": "the smart kurta", "bestFor": "Festive occasions, family celebrations and dinners", "pairIt": "Light trousers or chinos", "sayThis": "This is for someone who wants the traditional look, but still wants to keep it modern."}, {"name": "2. The short Popover kurta (Ecru and Rust)", "mrp": 3990, "customerSays": "I want something festive, but I don't want to look too traditional.", "description": "A relaxed kurta with a simple popover design and small silk knot buttons. Easy to wear and less formal than a traditional kurta.", "rememberAs": "the easy festive kurta", "bestFor": "Festive lunches, casual celebrations and family occasions", "pairIt": "Trousers or chinos", "sayThis": "This gives you the festive look without making the outfit feel too formal."}, {"name": "3. The Chambray & Cotton-Linen Popover (Blue and Pink)", "mrp": 3290, "customerSays": "I want a kurta, but I want it to feel relaxed.", "description": "These are our more casual kurtas. The Blue Chambray has a slightly rugged, relaxed feel, while the Pink Cotton-Linen is light and airy.", "rememberAs": "the casual kurta", "bestFor": "Day celebrations, summer occasions and relaxed festive dressing", "pairIt": "Light-coloured trousers or casual pants", "sayThis": "This is the kurta for someone who wants to be comfortable but still look dressed for the occasion."}], "spotlightNote": "Fit sample in-store: use the available kurta fit samples."};
 
 (function(){
 
@@ -174,7 +189,7 @@ function todaySection(d){
     <div style="font-size:12.5px; color:var(--text-dim); margin-top:8px; line-height:1.6;">
       <i class="ti ${noteIcon[n.kind]||'ti-user'}" style="color:${noteColor[n.kind]||'var(--text-mute)'};"></i>&nbsp; ${n.text}</div>`).join('');
   return sectionHead('ti-checklist', 'What to do today', fmtDateNice(BRIEFING_DATA.briefingFor) || '') + `
-    <div style="background:var(--panel); border-radius:10px; padding:16px 18px; border-left:3px solid var(--brass);">
+    <div class="brief-keep" style="background:var(--panel); border-radius:10px; padding:16px 18px; border-left:3px solid var(--brass);">
       <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
         ${statTile("Today's target", p.todayTarget ? fmtINR(p.todayTarget) : '&mdash;')}
         ${statTile(`Yesterday (${fmtDateNice(y.date).replace(/ \d{4}$/, '')})`, `${fmtINR(y.rev)}${yPct !== null ? ` <span style="font-size:12px; color:var(--text-mute); font-weight:500;">${yPct.toFixed(0)}% of target &middot; ${y.bills} bills</span>` : ''}`, yPct === null ? 'var(--text)' : achColor(yPct))}
@@ -423,20 +438,33 @@ function renderBriefing(store){
   const body = document.getElementById('briefing-body');
   if(!d){ body.innerHTML = '<div style="color:var(--text-mute); padding:20px;">No briefing data for this store.</div>'; return; }
 
+  // Every page repeats the store name in its band, so a printed sheet that gets separated from the
+  // other two still says whose it is.
+  const pageHead = (n, title, meta) => `<div class="brief-page-head">
+      <span class="brief-page-num">Page ${n} of 3</span>
+      <span class="brief-page-title">${title}</span>
+      <span class="brief-page-meta">${meta}</span>
+    </div>`;
+  const hoDate = BRIEFING_CONTENT && BRIEFING_CONTENT.date ? fmtDateNice(BRIEFING_CONTENT.date) : '';
+
   body.innerHTML = `
-    <div style="font-size:12px; color:var(--text-mute); margin-bottom:4px;">
-      As of day ${BRIEFING_DATA.daysElapsed} of the month (${BRIEFING_DATA.lastSalesDay}) &mdash;
-      ${BRIEFING_DATA.daysRemaining} day(s) remaining
-    </div>
-    <div style="font-size:20px; font-weight:700; margin-bottom:14px;">${store}</div>
-    ${targetHero(d)}
-    ${todaySection(d)}
-    ${newCustomerSection(d)}
-    ${repeatCustomerSection(d)}
-    ${scoresSection(d)}
-    ${stylistSection(d, store)}
-    ${sectionHead('ti-notes', 'General Briefing', BRIEFING_CONTENT && BRIEFING_CONTENT.date ? fmtDateNice(BRIEFING_CONTENT.date) : '')}
-    ${renderHOContent(store)}
+    <section class="brief-page">
+      ${pageHead(1, 'Synopsis', `As of day ${BRIEFING_DATA.daysElapsed} of the month (${BRIEFING_DATA.lastSalesDay}) &middot; ${BRIEFING_DATA.daysRemaining} day(s) remaining`)}
+      <div style="font-size:20px; font-weight:700; margin-bottom:14px;">${store}</div>
+      ${targetHero(d)}
+      ${todaySection(d)}
+      ${scoresSection(d)}
+    </section>
+    <section class="brief-page">
+      ${pageHead(2, 'New, Repeat &amp; Stylist-wise', store)}
+      ${newCustomerSection(d)}
+      ${repeatCustomerSection(d)}
+      ${stylistSection(d, store)}
+    </section>
+    <section class="brief-page">
+      ${pageHead(3, 'General Briefing', `${store}${hoDate ? ` &middot; HO points dated ${hoDate}` : ''}`)}
+      ${renderHOContent(store)}
+    </section>
   `;
 }
 
@@ -471,12 +499,12 @@ function renderHOContent(store){
     </div>`).join('');
 
   const spotlight = (c.productSpotlight || []).map(p => `
-    <div style="background:var(--panel2); border-radius:8px; padding:12px 14px; margin-bottom:10px;">
+    <div class="brief-keep" style="background:var(--panel2); border-radius:8px; padding:12px 14px; margin-bottom:10px;">
       <div style="font-size:12px; color:var(--text-mute); font-style:italic; margin-bottom:6px;">Customer says: "${p.customerSays}"</div>
       <div style="font-size:13.5px; font-weight:600; color:var(--brass);">${p.name}</div>
       <div style="font-size:12.5px; color:var(--text-dim); margin-top:4px;">${p.description}</div>
       <div style="font-size:12px; color:var(--text-mute); margin-top:6px; line-height:1.5;">
-        <b>Best for:</b> ${p.bestFor} &nbsp;&middot;&nbsp; <b>Pair it:</b> ${p.pairIt} &nbsp;&middot;&nbsp; <b>MRP:</b> ${fmtINR(p.mrp)}
+        ${p.rememberAs ? `<b>Remember it as:</b> ${p.rememberAs} &nbsp;&middot;&nbsp; ` : ''}<b>Best for:</b> ${p.bestFor} &nbsp;&middot;&nbsp; <b>Pair it:</b> ${p.pairIt} &nbsp;&middot;&nbsp; <b>MRP:</b> ${fmtINR(p.mrp)}
       </div>
       <div style="font-size:12.5px; color:var(--text); margin-top:6px; font-style:italic;">Say this: "${p.sayThis}"</div>
     </div>`).join('');
@@ -541,7 +569,8 @@ function renderHOContent(store){
   return `
     <div>
       ${points}
-      ${spotlight ? `<div style="font-size:13px; font-weight:600; color:var(--text); margin:14px 0 8px;">Know Your Product</div>${spotlight}` : ''}
+      ${spotlight ? `<div style="font-size:13px; font-weight:600; color:var(--text); margin:14px 0 8px;">Know Your Product${c.spotlightTitle ? ` <span style="font-weight:400; color:var(--text-dim);">&mdash; ${c.spotlightTitle}</span>` : ''}</div>${spotlight}` : ''}
+      ${spotlight && c.spotlightNote ? `<div style="font-size:12.5px; color:var(--text-dim); margin:0 0 14px;"><i class="ti ti-ruler-measure" style="color:var(--brass);"></i>&nbsp; ${c.spotlightNote}</div>` : ''}
       ${cheatSheet}
       ${goldenRule}
       ${extendedTAT}
