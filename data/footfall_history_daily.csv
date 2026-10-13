@@ -11649,6 +11649,7 @@ date,store,new,repeat,total
 2026-09-29,Jaipur Store,3.0,2.0,5.0
 2026-09-29,Jubilee Hills,6.0,7.0,13.0
 2026-09-29,Juhu Store,5.0,3.0,8.0
+2026-09-29,KNK Chennai,1.0,3.0,4.0
 2026-09-29,"Kalaghoda, Fort",5.0,11.0,16.0
 2026-09-29,Kemps Corner,3.0,18.0,21.0
 2026-09-29,Khan Market,6.0,2.0,8.0
@@ -11673,6 +11674,7 @@ date,store,new,repeat,total
 2026-09-29,Viviana Mall,12.0,2.0,14.0
 2026-09-30,Ambience Vasant Kunj,7.0,2.0,9.0
 2026-09-30,Andheri,0.0,2.0,2.0
+2026-09-30,DLF Midtown - Moti Nagar,3.0,0.0,3.0
 2026-09-30,Express Avenue,7.0,2.0,9.0
 2026-09-30,Gurugram,1.0,4.0,5.0
 2026-09-30,Indiranagar,2.0,0.0,2.0
@@ -11681,7 +11683,7 @@ date,store,new,repeat,total
 2026-09-30,Jaipur Store,3.0,1.0,4.0
 2026-09-30,Jubilee Hills,4.0,8.0,12.0
 2026-09-30,Juhu Store,5.0,2.0,7.0
-2026-09-30,KNK Chennai,0.0,,0.0
+2026-09-30,KNK Chennai,0.0,2.0,2.0
 2026-09-30,"Kalaghoda, Fort",12.0,10.0,22.0
 2026-09-30,Kemps Corner,5.0,4.0,9.0
 2026-09-30,Khan Market,6.0,1.0,7.0
@@ -11742,6 +11744,7 @@ date,store,new,repeat,total
 2026-10-02,Andheri,6.0,9.0,15.0
 2026-10-02,DLF Midtown - Moti Nagar,4.0,2.0,6.0
 2026-10-02,Express Avenue,18.0,6.0,24.0
+2026-10-02,Gurugram,3.0,6.0,9.0
 2026-10-02,Indiranagar,5.0,9.0,14.0
 2026-10-02,Inorbit Mall Malad West,16.0,5.0,21.0
 2026-10-02,Inorbit mall Hyderabad,37.0,7.0,44.0
@@ -11842,6 +11845,7 @@ date,store,new,repeat,total
 2026-10-05,Ambience Vasant Kunj,8.0,0.0,8.0
 2026-10-05,Andheri,0.0,3.0,3.0
 2026-10-05,DLF Midtown - Moti Nagar,2.0,1.0,3.0
+2026-10-05,Express Avenue,7.0,0.0,7.0
 2026-10-05,Gurugram,3.0,1.0,4.0
 2026-10-05,Indiranagar,3.0,2.0,5.0
 2026-10-05,Inorbit Mall Malad West,5.0,1.0,6.0
@@ -11883,11 +11887,12 @@ date,store,new,repeat,total
 2026-10-06,Juhu Store,6.0,1.0,7.0
 2026-10-06,KNK Chennai,0.0,2.0,2.0
 2026-10-06,"Kalaghoda, Fort",10.0,7.0,17.0
+2026-10-06,Kemps Corner,5.0,8.0,13.0
 2026-10-06,Khan Market,4.0,4.0,8.0
 2026-10-06,Kochi Store,0.0,1.0,1.0
 2026-10-06,Koregaon Park,4.0,8.0,12.0
 2026-10-06,LakeShore Mall,4.0,4.0,8.0
-2026-10-06,Lavelle Road,0.0,0.0,0.0
+2026-10-06,Lavelle Road,0.0,1.0,1.0
 2026-10-06,"Mall of India, Noida",10.0,0.0,10.0
 2026-10-06,Oberoi Mall Store,5.0,3.0,8.0
 2026-10-06,Oberoi Sky City,6.0,1.0,7.0
@@ -11988,7 +11993,7 @@ date,store,new,repeat,total
 2026-10-09,Kochi Store,0.0,3.0,3.0
 2026-10-09,Koregaon Park,10.0,6.0,16.0
 2026-10-09,LakeShore Mall,3.0,2.0,5.0
-2026-10-09,Lavelle Road,0.0,1.0,1.0
+2026-10-09,Lavelle Road,0.0,0.0,0.0
 2026-10-09,"Mall of India, Noida",9.0,1.0,10.0
 2026-10-09,Oberoi Mall Store,7.0,3.0,10.0
 2026-10-09,Oberoi Sky City,16.0,1.0,17.0
@@ -12072,11 +12077,37 @@ date,store,new,repeat,total
 2026-10-11,South Ex.,7.0,6.0,13.0
 2026-10-11,Vegas Dwarka,5.0,5.0,10.0
 2026-10-11,Viviana Mall,30.0,5.0,35.0
-2026-10-12,Andheri,0.0,0.0,0.0
-2026-10-12,Indiranagar,0.0,0.0,0.0
-2026-10-12,Inorbit Mall Malad West,0.0,0.0,0.0
+2026-10-12,Ambience Vasant Kunj,11.0,1.0,12.0
+2026-10-12,Andheri,3.0,4.0,7.0
+2026-10-12,DLF Midtown - Moti Nagar,1.0,1.0,2.0
+2026-10-12,Express Avenue,10.0,4.0,14.0
+2026-10-12,Gurugram,6.0,2.0,8.0
+2026-10-12,Indiranagar,7.0,4.0,11.0
+2026-10-12,Inorbit Mall Malad West,3.0,1.0,4.0
+2026-10-12,Inorbit mall Hyderabad,12.0,5.0,17.0
 2026-10-12,Jaipur Store,0.0,0.0,0.0
-2026-10-12,Koregaon Park,6.0,,6.0
+2026-10-12,Jubilee Hills,6.0,20.0,26.0
+2026-10-12,Juhu Store,4.0,2.0,6.0
+2026-10-12,KNK Chennai,2.0,1.0,3.0
+2026-10-12,"Kalaghoda, Fort",12.0,6.0,18.0
+2026-10-12,Kemps Corner,3.0,2.0,5.0
+2026-10-12,Khan Market,10.0,5.0,15.0
+2026-10-12,Kochi Store,1.0,2.0,3.0
+2026-10-12,Koregaon Park,3.0,,3.0
+2026-10-12,LakeShore Mall,3.0,1.0,4.0
 2026-10-12,Lavelle Road,0.0,0.0,0.0
+2026-10-12,"Mall of India, Noida",5.0,1.0,6.0
+2026-10-12,Oberoi Mall Store,6.0,1.0,7.0
+2026-10-12,Oberoi Sky City,9.0,4.0,13.0
 2026-10-12,PMC Viman Nagar Pune,0.0,,0.0
-2026-10-12,Viviana Mall,0.0,0.0,0.0
+2026-10-12,"Pali Hill, Bandra",2.0,8.0,10.0
+2026-10-12,Phoenix Marketcity Kurla,8.0,4.0,12.0
+2026-10-12,"Phoenix Marketcity, Whitefield",2.0,2.0,4.0
+2026-10-12,Phoenix Palassio,11.0,4.0,15.0
+2026-10-12,Sarath City-Hyderabad,11.0,1.0,12.0
+2026-10-12,Select City,7.0,1.0,8.0
+2026-10-12,Shakespearesarani,2.0,9.0,11.0
+2026-10-12,Sindhu Bhavan Marg,5.0,5.0,10.0
+2026-10-12,South Ex.,1.0,5.0,6.0
+2026-10-12,Vegas Dwarka,4.0,1.0,5.0
+2026-10-12,Viviana Mall,11.0,1.0,12.0
