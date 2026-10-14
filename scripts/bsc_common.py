@@ -107,6 +107,13 @@ def build_cat_tree(df, value_cols=('Revenue', 'Qty')):
     return tree
 
 
+def build_cat_tree_by_region(df, value_cols=('Revenue', 'Qty')):
+    """{Region: cat tree} with every non-store POS location (Online, Corporate Orders, Virtual
+    Stylist, ...) under 'Online', for the Category tab's region filter."""
+    region = df['POS location name'].map(REGION_MAP).fillna('Online')
+    return {reg: build_cat_tree(g, value_cols) for reg, g in df.groupby(region)}
+
+
 def load_sales_csv(path):
     """Load a Shopify sales export, filtered to order rows, with the standard derived columns."""
     return prepare_sales_df(pd.read_csv(path, low_memory=False))
@@ -191,6 +198,7 @@ def build_seed_days(df):
             'stylistRepStoreRev': stylistRepStoreRev, 'stylistRepStoreBills': stylistRepStoreBills,
             'stylistRepStoreUnits': stylistRepStoreUnits,
             'catTree': build_cat_tree(day_df),
+            'catTreeRegion': build_cat_tree_by_region(day_df),
         }
     return seed_days
 
@@ -326,12 +334,17 @@ def replace_const(content, const_name, new_json_str):
     return content[:start_idx] + f"const {const_name} = " + new_json_str + content[j:]
 
 
-def replace_baseline_key(content, key, new_json_str):
+def replace_baseline_key(content, key, new_json_str, insert_missing=False):
     """Replace one `  key: <value>,` line inside index.html's BASELINE object. Its keys are not
     top-level consts, so replace_const can't reach them; each value sits on a single line."""
     pattern = re.compile(r'^(\s*)' + re.escape(key) + r':\s*.*?,\s*$', re.MULTILINE)
     if not pattern.search(content):
-        raise ValueError(f'BASELINE key {key!r} not found')
+        if not insert_missing:
+            raise ValueError(f'BASELINE key {key!r} not found')
+        # New key: add it as the first entry of the BASELINE object.
+        marker = 'const BASELINE = {\n'
+        i = content.index(marker) + len(marker)
+        return content[:i] + f'  {key}: {new_json_str},\n' + content[i:]
     return pattern.sub(lambda m: f'{m.group(1)}{key}: {new_json_str},', content, count=1)
 
 

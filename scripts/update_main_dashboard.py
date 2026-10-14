@@ -27,7 +27,7 @@ import openpyxl
 import pandas as pd
 
 from bsc_common import (
-    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, build_cat_tree, find_refund_and_cn_sheets,
+    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, build_cat_tree, build_cat_tree_by_region, find_refund_and_cn_sheets,
     process_refund_sheet, replace_const, replace_baseline_key, last_year_baseline, syntax_check_html_js,
 )
 
@@ -154,8 +154,20 @@ def build_prev_month_baselines(prev_month_sales):
         prev_month_daily_cat_tree_units[str(int(day_num))] = {
             l1: {l2: int(v[0]) for l2, v in subs.items()} for l1, subs in build_cat_tree(g, ('Qty',)).items()}
 
+    # Per region (non-store locations as 'Online'), for the Category tab's region filter. Unlike the
+    # two above these include online, so the filter's "All" view compares online with online.
+    prev_month_cat_tree_region = {reg: {l1: {l2: v[0] for l2, v in subs.items()} for l1, subs in t.items()}
+                                  for reg, t in build_cat_tree_by_region(df, ('Revenue',)).items()}
+    prev_month_daily_cat_tree_units_region = {}
+    for day_num, g in df.groupby('Day_num'):
+        for reg, t in build_cat_tree_by_region(g, ('Qty',)).items():
+            prev_month_daily_cat_tree_units_region.setdefault(reg, {})[str(int(day_num))] = {
+                l1: {l2: int(v[0]) for l2, v in subs.items()} for l1, subs in t.items()}
+
     return {
         'prevMonthCatTree': prev_month_cat_tree,
+        'prevMonthCatTreeRegion': prev_month_cat_tree_region,
+        'prevMonthDailyCatTreeUnitsRegion': prev_month_daily_cat_tree_units_region,
         'prevMonthDailyCatTreeUnits': prev_month_daily_cat_tree_units,
         'prevMonthStoreAOV': prev_month_store_aov,
         'prevMonthStoreUPT': prev_month_store_upt,
@@ -242,7 +254,7 @@ def main():
             print(f"Rebuilding prevMonth* baselines from: {args.prev_month_sales}")
             baselines = build_prev_month_baselines(args.prev_month_sales)
             for key, val in baselines.items():
-                content = replace_baseline_key(content, key, json.dumps(val))
+                content = replace_baseline_key(content, key, json.dumps(val), insert_missing=True)
             print("  prevMonth* baselines updated.")
         # Same month last year (SSSG / region "vs last year"), from data/sales_history_daily.csv
         last = max(seed_days)
