@@ -6,10 +6,13 @@ Refunds & CN tab's long-run trend (finance-booked refunds and credit notes as a 
 Reads the per-store blocks of the "Revenue Info (FY26)" and "Revenue Info (FY27)" sheets: row 4
 names each block (store, "Online", "Corporate Order", ..., "GRAND TOTAL"), row 5 holds the month
 dates, and these rows hold the figures:
-  FY27: 14 Merchandise Gross Revenue, 11 GV (Credit Note Issued), 12 Refunds and Cancellations
-  FY26: 17 Gross Revenue,             13 GV (Credit Note Issued), 14 Refunds and Cancellations
-Online = the Online, Myntra Online, international online and Corporate Order blocks (the same
-"not a store" definition the dashboard uses); offline = every other block. Each month's
+  FY27 and FY26: 8 Gross Revenue (Exl SDCD) -- the base the CX deck uses;
+  FY27: 11 GV (Credit Note Issued), 12 Refunds and Cancellations
+  FY26: 13 GV (Credit Note Issued), 14 Refunds and Cancellations
+Online = the Online, Myntra Online and international online blocks; offline = every other block,
+including Corporate Order -- the MIS's own ONLINE/OFFLINE split (MIS (Reclassified) rows 18/26),
+which the CX deck also uses. This matches those rows exactly from Aug 2025; Apr-Jul 2025 differ by
+a few lakh because the MIS classified some early blocks differently. Each month's
 online + offline must equal the GRAND TOTAL block, or the script stops.
 
 Usage:
@@ -26,13 +29,13 @@ import openpyxl
 
 from bsc_common import replace_const, syntax_check_html_js
 
-ONLINE_BLOCKS = {'Online', 'Myntra Online', 'Intl - New York, USA - Online', 'Corporate Order'}
+ONLINE_BLOCKS = {'Online', 'Myntra Online', 'Intl - New York, USA - Online'}
 SKIP_BLOCKS = {'Particulars', 'For SSG', 'Offline', 'STORES - GRAND TOTAL'}
 SHEETS = {
-    'Revenue Info (FY26)': {'rev': 17, 'cn': 13, 'ref': 14},
-    'Revenue Info (FY27)': {'rev': 14, 'cn': 11, 'ref': 12},
+    'Revenue Info (FY26)': {'rev': 8, 'cn': 13, 'ref': 14},
+    'Revenue Info (FY27)': {'rev': 8, 'cn': 11, 'ref': 12},
 }
-ROW_LABELS = {'rev': ('gross revenue', 'merchandise gross revenue'), 'cn': ('gv (credit note issued)',),
+ROW_LABELS = {'rev': ('gross revenue (exl sdcd)',), 'cn': ('gv (credit note issued)',),
               'ref': ('refunds and cancellations',)}
 
 
