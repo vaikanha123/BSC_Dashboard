@@ -55,8 +55,10 @@ def find_node():
 
 
 def run(cmd):
+    sys.stdout.reconfigure(errors='replace')
     print('$ ' + ' '.join(cmd))
-    res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding='utf-8', errors='replace')
+    env = dict(os.environ, PYTHONIOENCODING='utf-8')
+    res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding='utf-8', errors='replace', env=env)
     tail = '\n'.join(res.stdout.strip().splitlines()[-8:])
     if tail:
         print(tail)
