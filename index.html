@@ -2767,35 +2767,59 @@ function renderRefunds(body){
     trHead.textContent = 'Monthly trend — ' + trendMonths.map(m => m.short).join(' / ');
     body.appendChild(trHead);
 
-    const td = 'padding:8px 10px; text-align:right;';
-    const pctOf = (a, b) => b ? fmtPct(a/b*100) : '—';
+    // Refund %, CN % and combined % for each channel, so each rate can be read down the months.
+    const groups = [
+      {label:'Online', rev:'onlineRev', rf:'onlineRefund', cn:'onlineCN'},
+      {label:'Offline', rev:'offlineRev', rf:'storeRefund', cn:'storeCN'},
+      {label:'Total', rev:'totalRev', rf:'refundTotal', cn:'cnTotal'},
+    ];
+    const metrics = [
+      {label:'Refund %', val:(s, g) => s[g.rf]},
+      {label:'CN %', val:(s, g) => s[g.cn]},
+      {label:'Refund + CN %', val:(s, g) => s[g.rf] + s[g.cn]},
+    ];
+    const rate = (s, g, mt) => s && s[g.rev] ? mt.val(s, g) / s[g.rev] * 100 : null;
+    const hd = 'padding:6px 10px; text-align:right;';
+    const sep = 'border-left:1px solid var(--line);';
     let trRows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
-      '<td style="padding:6px 10px;">Month</td>' +
-      ['Revenue','Refunds','Refund %','CN','CN %','Refund + CN %','Online total %','Offline total %']
-        .map(h => `<td style="padding:6px 10px; text-align:right;">${h}</td>`).join('') + '</tr>';
+      '<td style="padding:6px 10px;" rowspan="2">Month</td>' +
+      groups.map(g => `<td colspan="3" style="padding:6px 10px; text-align:center; ${sep} color:var(--text-dim); font-weight:600;">${g.label}</td>`).join('') +
+      '</tr><tr style="color:var(--text-mute); font-size:11px; text-transform:uppercase; letter-spacing:.04em;">' +
+      groups.map(() => metrics.map((mt, i) => `<td style="${hd} ${i === 0 ? sep : ''}">${mt.label}</td>`).join('')).join('') + '</tr>';
+    let prev = null;
     trendMonths.forEach(m => {
       const s = m.summary;
       const isCur = m.key === cmk;
-      const name = `<td style="padding:8px 10px; font-weight:${isCur?700:500};">${isCur ? curLabel + ' ' + cmk.split('-')[1] : m.key}</td>`;
+      const name = `<td style="padding:8px 10px; font-weight:${isCur?700:500}; white-space:nowrap;">${isCur ? curLabel + ' ' + cmk.split('-')[1] : m.key}</td>`;
       if(!s){
-        trRows += `<tr style="border-top:1px solid var(--line);">${name}<td colspan="8" style="padding:8px 10px; color:var(--text-mute);">${m.loading ? 'Loading…' : 'No refund/CN file on record'}</td></tr>`;
+        trRows += `<tr style="border-top:1px solid var(--line);">${name}<td colspan="9" style="padding:8px 10px; color:var(--text-mute);">${m.loading ? 'Loading…' : 'No refund/CN file on record'}</td></tr>`;
+        prev = null;
         return;
       }
-      trRows += `<tr style="border-top:1px solid var(--line);">${name}
-        <td style="${td}" class="bsc-mono">${fmtINR(s.totalRev)}</td>
-        <td style="${td}" class="bsc-mono">${fmtINR(s.refundTotal)}</td>
-        <td style="${td} font-weight:600;" class="bsc-mono">${pctOf(s.refundTotal, s.totalRev)}</td>
-        <td style="${td}" class="bsc-mono">${fmtINR(s.cnTotal)}</td>
-        <td style="${td} font-weight:600;" class="bsc-mono">${pctOf(s.cnTotal, s.totalRev)}</td>
-        <td style="${td} font-weight:600; color:var(--brass);" class="bsc-mono">${pctOf(s.refundTotal + s.cnTotal, s.totalRev)}</td>
-        <td style="${td}" class="bsc-mono">${pctOf(s.onlineRefund + s.onlineCN, s.onlineRev)}</td>
-        <td style="${td}" class="bsc-mono">${pctOf(s.storeRefund + s.storeCN, s.offlineRev)}</td>
-      </tr>`;
+      trRows += `<tr style="border-top:1px solid var(--line);">${name}` + groups.map(g => metrics.map((mt, i) => {
+        const v = rate(s, g, mt), pv = rate(prev, g, mt);
+        // Up vs the previous month is bad (red), down is good (green); within 0.05 pts is flat.
+        let arrow = '';
+        if(v !== null && pv !== null && Math.abs(v - pv) >= 0.05){
+          arrow = v > pv ? ' <span style="color:var(--bad); font-size:10px;">▲</span>' : ' <span style="color:var(--good); font-size:10px;">▼</span>';
+        }
+        const tip = `${g.label} ${mt.label.replace(' %','')}: ${fmtINR(mt.val(s, g))} of ${fmtINR(s[g.rev])} revenue`;
+        const strong = mt.label === 'Refund + CN %' ? ' font-weight:600;' + (g.label === 'Total' ? ' color:var(--brass);' : '') : '';
+        return `<td style="padding:8px 10px; text-align:right; white-space:nowrap; ${i === 0 ? sep : ''}${strong}" class="bsc-mono" title="${tip}">${v === null ? '—' : fmtPct(v)}${arrow}</td>`;
+      }).join('')).join('') + '</tr>';
+      prev = s;
     });
+    const trWrap = document.createElement('div');
+    trWrap.style.cssText = 'overflow-x:auto; margin-bottom:6px;';
     const trTable = document.createElement('table');
-    trTable.style.cssText = 'font-size:13px; margin-bottom:24px;';
+    trTable.style.cssText = 'font-size:13px;';
     trTable.innerHTML = trRows;
-    body.appendChild(trTable);
+    trWrap.appendChild(trTable);
+    body.appendChild(trWrap);
+    const trNote = document.createElement('div');
+    trNote.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:24px;';
+    trNote.textContent = 'Each rate is that channel’s refunds or credit notes as a % of the same channel’s revenue. ▲/▼ = up/down vs the month before. Hover a cell for the ₹ amounts.';
+    body.appendChild(trNote);
   }
 
   // ---- Online vs Offline ----
