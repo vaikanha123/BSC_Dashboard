@@ -2661,7 +2661,7 @@ function renderMisRefundTrend(body){
   body.appendChild(head);
   const sub = document.createElement('div');
   sub.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:10px;';
-  sub.textContent = 'Refunds & cancellations and credit notes issued as booked by finance, as a % of the same channel’s gross revenue excluding SDCD (' + MIS_REFUND_CN.source + '). Corporate orders count as offline, as in the MIS. This basis differs slightly from the table above, so compare months within this chart rather than against it.';
+  sub.textContent = 'Refunds & cancellations and credit notes issued as booked by finance, as a % of the same channel’s gross revenue excluding SDCD (' + MIS_REFUND_CN.source + '). Corporate orders count as offline, as in the MIS. Closed months in the table above use these same figures.';
   body.appendChild(sub);
 
   const tabs = document.createElement('div');
@@ -2772,9 +2772,27 @@ function renderMisRefundTrend(body){
   requestAnimationFrame(() => draw());
 }
 
+// Refunds & CN tab channel split: stores plus corporate orders are offline, as in the finance MIS
+// and the CX deck. (Elsewhere the dashboard counts corporate orders with online.)
+function refundChannelOffline(store){
+  return !!offlineRegion(store) || store === 'Corporate Orders';
+}
+
+// A month's channel totals from the finance MIS (MIS_REFUND_CN), keyed like 'Aug-2026'; null if absent.
+function misRefundSummary(monthKey){
+  if(typeof MIS_REFUND_CN === 'undefined') return null;
+  const [mon, y] = monthKey.split('-');
+  const mm = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(mon) + 1;
+  const r = MIS_REFUND_CN.months.find(x => x.month === y + '-' + String(mm).padStart(2, '0'));
+  if(!r) return null;
+  return {source: 'MIS', onlineRev: r.onRev, offlineRev: r.offRev, totalRev: r.onRev + r.offRev,
+    onlineRefund: r.onRef, storeRefund: r.offRef, refundTotal: r.onRef + r.offRef,
+    onlineCN: r.onCn, storeCN: r.offCn, cnTotal: r.onCn + r.offCn};
+}
+
 function refundMonthSummary(storeRev, refundM, cnM){
   let onlineRev = 0, offlineRev = 0;
-  Object.keys(storeRev).forEach(s => { if(offlineRegion(s)) offlineRev += storeRev[s]; else onlineRev += storeRev[s]; });
+  Object.keys(storeRev).forEach(s => { if(refundChannelOffline(s)) offlineRev += storeRev[s]; else onlineRev += storeRev[s]; });
   return {
     hasData: !!(refundM || cnM), storeRev, onlineRev, offlineRev, totalRev: onlineRev + offlineRev,
     refundTotal: refundM ? refundM.total : 0, cnTotal: cnM ? cnM.total : 0,
@@ -2790,7 +2808,7 @@ const refundTrendPending = {};
 function refundTrendPriorMonths(cmk){
   return [-2, -1].map(delta => {
     const mo = monthOffset(cmk, delta);
-    const out = {key: mo.key, short: mo.short, summary: null, loading: false};
+    const out = {key: mo.key, short: mo.short, summary: null, loading: false, mis: misRefundSummary(mo.key)};
     const entry = ARCHIVE_MONTHS.find(e => e.key === mo.key);
     if(!entry) return out;
     const b = archiveCache[mo.key];
@@ -2859,8 +2877,9 @@ function renderRefunds(body){
       const reg = offlineRegion(store);
       storeRev[store] = (storeRev[store] || 0) + revs[store];
       storeBills[store] = (storeBills[store] || 0) + (bills[store] || 0);
-      if(reg){ offlineRev += revs[store]; regionRev[reg] += revs[store]; }
-      else { onlineRev += revs[store]; }
+      if(reg) regionRev[reg] += revs[store];
+      if(refundChannelOffline(store)) offlineRev += revs[store];
+      else onlineRev += revs[store];
     });
   });
   const totalRev = onlineRev + offlineRev;
@@ -2905,9 +2924,10 @@ function renderRefunds(body){
     {key: cmk, short: curLabel, summary: refundMonthSummary(storeRev, refundMonth, cnMonth), loading: false}
   ]) : [];
   const trendLoading = trendMonths.some(m => m.loading);
-  const trendReady = trendMonths.filter(m => m.summary);
+  const trendReady = trendMonths.filter(m => m.summary);  // archived per-store data, for the store flags
+  const rateReady = trendMonths.filter(m => m.summary || m.mis);  // channel rates, for the trend table
 
-  if(hasRevenue && (trendReady.length > 1 || trendLoading)){
+  if(hasRevenue && (rateReady.length > 1 || trendMonths.some(m => m.loading && !m.mis))){
     const trHead = document.createElement('div');
     trHead.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
     trHead.textContent = 'Monthly trend — ' + trendMonths.map(m => m.short).join(' / ');
@@ -2934,9 +2954,10 @@ function renderRefunds(body){
       groups.map(() => metrics.map((mt, i) => `<td style="${hd} ${i === 0 ? sep : ''}">${mt.label}</td>`).join('')).join('') + '</tr>';
     let prev = null;
     trendMonths.forEach(m => {
-      const s = m.summary;
+      const s = m.mis || m.summary;
       const isCur = m.key === cmk;
-      const name = `<td style="padding:8px 10px; font-weight:${isCur?700:500}; white-space:nowrap;">${isCur ? curLabel + ' ' + cmk.split('-')[1] : m.key}</td>`;
+      const src = m.mis ? 'finance MIS' : (isCur ? 'refund ledger' : 'CX refund file');
+      const name = `<td style="padding:8px 10px; font-weight:${isCur?700:500}; white-space:nowrap;">${isCur ? curLabel + ' ' + cmk.split('-')[1] : m.key}<div style="font-size:10.5px; font-weight:400; color:var(--text-mute);">${src}</div></td>`;
       if(!s){
         trRows += `<tr style="border-top:1px solid var(--line);">${name}<td colspan="9" style="padding:8px 10px; color:var(--text-mute);">${m.loading ? 'Loading…' : 'No refund/CN file on record'}</td></tr>`;
         prev = null;
@@ -2964,7 +2985,7 @@ function renderRefunds(body){
     body.appendChild(trWrap);
     const trNote = document.createElement('div');
     trNote.style.cssText = 'font-size:11px; color:var(--text-mute); margin-bottom:24px;';
-    trNote.textContent = 'Each rate is that channel’s refunds or credit notes as a % of the same channel’s revenue. ▲/▼ = up/down vs the month before. Hover a cell for the ₹ amounts.';
+    trNote.textContent = 'Each rate is that channel’s refunds or credit notes as a % of the same channel’s revenue; corporate orders count as offline. Closed months use the finance MIS (as in the CX deck); the live month uses the refund ledger and Shopify revenue, so read its change as approximate. ▲/▼ = up/down vs the month before. Hover a cell for the ₹ amounts.';
     body.appendChild(trNote);
   }
 
