@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 load_refund_ledger.py -- Replace one month of SEED_REFUNDS in index.html from the finance
-refund ledger ("Refund_Data_<range>.xlsx"), leaving SEED_CN untouched.
+refund ledger ("Refund_Data_<range>.xlsx"). If the file also has a CX-format credit-note
+sheet, that month of SEED_CN is replaced too; otherwise SEED_CN is left untouched.
 
 The ledger is one row per refund payout, not per line item: Sr No, Order ID, Location
 (region-coded, e.g. "SOU-TEL-HYD_Jubliee Hills"), Refund Amount, Taxable, GST, rate, date,
@@ -19,13 +20,15 @@ Usage:
 """
 import argparse
 import json
+import re
 import sys
 from collections import Counter, defaultdict
 
 import openpyxl
 import pandas as pd
 
-from bsc_common import extract_const, month_key_from_date, replace_const, syntax_check_html_js, find_refund_and_cn_sheets
+from bsc_common import (extract_const, find_refund_and_cn_sheets, month_key_from_date, process_refund_sheet,
+                        replace_const, syntax_check_html_js)
 
 # Ledger location code -> store name used by the CX refund/CN files (and SEED_REFUNDS.byStore).
 LOCATION_MAP = {
@@ -87,6 +90,9 @@ PRODUCT_TYPE_TO_REFUND_CAT = {
 }
 
 
+REGION_CODE = re.compile(r'^(NOR|SOU|WST|EST)-')
+
+
 def norm_reason(r):
     if not r or not str(r).strip():
         return 'Unspecified'
@@ -95,19 +101,30 @@ def norm_reason(r):
 
 
 def load_ledger(path):
+    """Rows of the ledger's refund sheet. Two layouts seen: Oct 1-11 had a totals row, then a
+    header with Sr No / Order ID / Location / Refund Amount / GST ... and a second block to the
+    right; Oct 1-13 has just Order ID / Location / Amount / Payment gateway / Date / Ref / Reason."""
     wb = openpyxl.load_workbook(path, data_only=True)
-    ws = wb.worksheets[0]
-    header = [str(c or '').strip().lower() for c in next(ws.iter_rows(min_row=2, max_row=2, values_only=True))]
-    if header[1] != 'order id' or header[3] != 'refund amount' or 'reason for refund' not in header:
-        raise ValueError(f'{path}: unexpected ledger header {header[:16]}')
+    for ws in wb.worksheets:
+        for hdr_row, r in enumerate(ws.iter_rows(min_row=1, max_row=3, values_only=True), start=1):
+            header = [str(c or '').strip().lower() for c in r]
+            if 'order id' in header and 'reason for refund' in header:
+                break
+        else:
+            continue
+        break
+    else:
+        raise ValueError(f'{path}: no sheet with an Order ID / Reason for Refund header')
+    i_order, i_loc = header.index('order id'), header.index('location')
+    i_amt = header.index('refund amount') if 'refund amount' in header else header.index('amount')
     i_reason, i_date, i_gw = header.index('reason for refund'), header.index('date'), header.index('payment gateway')
     rows = []
-    for r in ws.iter_rows(min_row=3, values_only=True):
-        if not r[1] or not r[3]:
+    for r in ws.iter_rows(min_row=hdr_row + 1, values_only=True):
+        if not r[i_order] or not r[i_amt]:
             continue
-        rows.append({'order': str(r[1]).strip(), 'loc': str(r[2] or '').strip(), 'amt': float(r[3]),
-                     'date': r[i_date] or r[7], 'reason': norm_reason(r[i_reason]), 'gateway': r[i_gw]})
-    return rows
+        rows.append({'order': str(r[i_order]).strip(), 'loc': str(r[i_loc] or '').strip(), 'amt': float(r[i_amt]),
+                     'date': r[i_date], 'reason': norm_reason(r[i_reason]), 'gateway': r[i_gw]})
+    return rows, wb
 
 
 def cx_categories(path):
@@ -149,6 +166,8 @@ def build_month(rows, cx, sales):
     src = Counter()
     for r in rows:
         store = LOCATION_MAP.get(r['loc'])
+        if store is None and r['loc'] and not REGION_CODE.match(r['loc']):
+            store = r['loc']  # newer ledgers name some stores plainly, e.g. "Oberoi Sky City"
         if store is None:
             store = (sales.get(r['order']) or ({}, None))[1]
             if store is None:
@@ -194,7 +213,7 @@ def main():
     ap.add_argument('--month', required=True, help='e.g. Oct-2026')
     a = ap.parse_args()
 
-    rows = load_ledger(a.ledger)
+    rows, ledger_wb = load_ledger(a.ledger)
     months = Counter(month_key_from_date(r['date'], a.month) or a.month for r in rows)
     if set(months) != {a.month}:
         sys.exit(f'STOP: ledger has rows outside {a.month}: {dict(months)}')
@@ -208,12 +227,25 @@ def main():
     seed = extract_const(content, 'SEED_REFUNDS')
     seed['byMonth'][a.month] = month
     content = replace_const(content, 'SEED_REFUNDS', json.dumps(seed))
+    # From Oct 1-13 the ledger file also carries the CX credit-note sheet; load it when present.
+    _, cn_sheet = find_refund_and_cn_sheets(ledger_wb)
+    cn = None
+    if cn_sheet:
+        cn_by_month = process_refund_sheet(ledger_wb[cn_sheet], amount_idx=7, reason_idx=8, date_idx=9,
+                                           current_month=a.month)
+        cn = cn_by_month.get(a.month)
+        if cn:
+            cn_seed = extract_const(content, 'SEED_CN')
+            cn_seed['byMonth'][a.month] = cn
+            content = replace_const(content, 'SEED_CN', json.dumps(cn_seed))
     with open(a.html, 'w', encoding='utf-8') as f:
         f.write(content)
     syntax_check_html_js(a.html)  # raises if the page's JS no longer parses
 
     print(f"OK. SEED_REFUNDS[{a.month}]: Rs{month['total']:,.0f} over {month['orders']} orders "
           f"({month['lineItems']} payouts); online Rs{month['onlineTotal']:,.0f}, stores Rs{month['storeTotal']:,.0f}")
+    if cn:
+        print(f"  SEED_CN[{a.month}] from the ledger's CN sheet: Rs{cn['total']:,.0f} over {cn['orders']} orders")
     print(f"  categories from CX tracker: {src['cx']} payouts, from sales lines: {src['sales']}, none: {src['none']}")
     dup = Counter(r['order'] for r in rows)
     for oid, n in dup.items():
