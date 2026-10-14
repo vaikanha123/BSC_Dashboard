@@ -40,8 +40,9 @@ MALL_STORES = [
 HS_STORES = [s for s in REGION_MAP if s not in MALL_STORES]
 
 # Training Cohort 3 (training from October 2026, September baseline). Roster picked by Vaibhav in the
-# "Cohort 3" Google Sheet on 2026-10-12 (Mustaq Ahmed Siraj dropped the same day). Split by the stylist's store format.
-COHORT3_HS = ['kuldeep sharma', 'navjot vegas', 'vijay kumar', 'mudasser maverick', 'vikash tiwari', 'adi qureshi',
+# "Cohort 3" Google Sheet on 2026-10-12 (Mustaq Ahmed Siraj dropped the same day; Kuldeep Sharma
+# dropped 2026-10-14 after absconding). Split by the stylist's store format.
+COHORT3_HS = ['navjot vegas', 'vijay kumar', 'mudasser maverick', 'vikash tiwari', 'adi qureshi',
               'naushad ahmed', 'mohammed abdul farhan', 'alisha a', 'rupini rupini', 'nimmy christapher']
 COHORT3_MALL = ['konda swamy nitturi', 'abdul kadher', 'vijay baskar', 'firoz firoz', 'sahadat ali ahmed',
                 'ritika rana', 'aziz sayeed', 'shilpa singh', 'kuldeep kanaujia',

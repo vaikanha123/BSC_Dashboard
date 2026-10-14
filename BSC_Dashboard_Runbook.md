@@ -124,8 +124,8 @@ def categorize(product_type, sku):
 
 ### Training Cohort 3 (added 2026-10-12): two tracks, high street and mall
 
-- 21 stylists picked by Vaibhav (Google Sheet "Cohort 3"), training from October 2026, **September baseline**. Roster lives in `scripts/bsc_common.py` (`COHORT3_HS`, `COHORT3_MALL`) and is mirrored in `index.html` (`TRAINING_COHORT_3_HS` / `_MALL`).
-- **High street (11):** overall AOV / ASP / UPT, compared with every other stylist's bills at high-street stores.
+- 20 stylists picked by Vaibhav (Google Sheet "Cohort 3"; Kuldeep Sharma dropped 2026-10-14 after absconding), training from October 2026, **September baseline**. Roster lives in `scripts/bsc_common.py` (`COHORT3_HS`, `COHORT3_MALL`) and is mirrored in `index.html` (`TRAINING_COHORT_3_HS` / `_MALL`).
+- **High street (10):** overall AOV / ASP / UPT, compared with every other stylist's bills at high-street stores.
 - **Mall (10):** **repeat-customer bills only**, compared with every other stylist's repeat bills at mall stores. Every `BATCH3MALL_*` figure in the tracker and every number in the mall section of the main dashboard excludes new customers.
 - Mall vs high street is `MALL_STORES` in `bsc_common.py` (mirrored as `C3_MALL_STORES` in `index.html`); everything else in `REGION_MAP` is high street. Gurugram = high street and DLF Midtown = mall were Claude's reading of the store names, not confirmed.
 - Main dashboard: the "Training Cohort 3" tab calls the shared `renderTrainingCohort` twice (`COHORT_CONFIGS.cohort3hs`, `cohort3mall`). The repeat split comes from three per-day `SEED_DAYS` fields, `stylistRepStoreRev` / `Bills` / `Units`, written by `build_seed_days`. Days loaded through the in-browser CSV upload do not carry them, so the mall track only fills from the scripted refresh.
