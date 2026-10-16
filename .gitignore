@@ -3,3 +3,6 @@ __pycache__/
 
 # Raw Shopify order exports (customer PII) - local only, never commit
 data/shopify_orders/
+
+# Escalation tracker task state (Gmail thread ids already logged)
+data/escalation_tracker_state.json
