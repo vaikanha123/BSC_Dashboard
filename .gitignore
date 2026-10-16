@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+
+# Raw Shopify order exports (customer PII) - local only, never commit
+data/shopify_orders/

@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dashboard",
+      "runtimeExecutable": "C:/Users/omkar/AppData/Local/Programs/Python/Python312/python.exe",
+      "runtimeArgs": ["-m", "http.server", "8765"],
+      "port": 8765
+    },
+    {
+      "name": "dashboard-alt",
+      "runtimeExecutable": "C:/Users/omkar/AppData/Local/Programs/Python/Python312/python.exe",
+      "runtimeArgs": ["-m", "http.server", "8766"],
+      "port": 8766
+    },
+    {
+      "name": "dashboard-alt2",
+      "runtimeExecutable": "C:/Users/omkar/AppData/Local/Programs/Python/Python312/python.exe",
+      "runtimeArgs": ["-m", "http.server", "8767"],
+      "port": 8767
+    }
+  ]
+}
