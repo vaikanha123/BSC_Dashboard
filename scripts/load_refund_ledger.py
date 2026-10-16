@@ -225,6 +225,7 @@ def main():
     with open(a.html, encoding='utf-8') as f:
         content = f.read()
     seed = extract_const(content, 'SEED_REFUNDS')
+    month['source'] = 'ledger'  # the Refunds & CN trend table labels the live month by this
     seed['byMonth'][a.month] = month
     content = replace_const(content, 'SEED_REFUNDS', json.dumps(seed))
     # From Oct 1-13 the ledger file also carries the CX credit-note sheet; load it when present.
