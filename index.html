@@ -1048,6 +1048,47 @@ function computeProjectedLanding(days){
     reqWdAvg, reqWeAvg, remainingNeeded};
 }
 
+// Per-store version of computeProjectedLanding: each store's weekday/weekend revenue is averaged over
+// the month's observed weekday/weekend days (the same counts the network figure uses, so the stores
+// add up to the Overview's projected landing), then the remaining days are filled at those averages.
+function computeStoreLandings(days, stores){
+  const out = {};
+  if(days.length === 0) return out;
+  const lastDate = new Date(days[days.length-1] + 'T00:00:00');
+  const year = lastDate.getFullYear(), month = lastDate.getMonth();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const pad = n => String(n).padStart(2,'0');
+  const monthDays = days.filter(dk => {
+    const d = new Date(dk+'T00:00:00');
+    return d.getFullYear()===year && d.getMonth()===month;
+  });
+  if(monthDays.length === 0) return out;
+  let wdCount=0, weCount=0;
+  monthDays.forEach(dk => { if(dayType(dk) === 'weekend') weCount++; else wdCount++; });
+  const remaining = [];
+  for(let d=1; d<=daysInMonth; d++){
+    const dk = year + '-' + pad(month+1) + '-' + pad(d);
+    if(!monthDays.includes(dk)) remaining.push(dk);
+  }
+  stores.forEach(store => {
+    let wd=0, we=0, mtdTarget=0;
+    monthDays.forEach(dk => {
+      const v = (state.days[dk] || {})[store] || 0;
+      if(dayType(dk) === 'weekend') we += v; else wd += v;
+      mtdTarget += storeTargetForDay(store, dk) || 0;
+    });
+    const wdAvg = wdCount ? wd/wdCount : null, weAvg = weCount ? we/weCount : null;
+    const wdUse = wdAvg !== null ? wdAvg : (weAvg || 0), weUse = weAvg !== null ? weAvg : (wdAvg || 0);
+    let rest=0, restTarget=0;
+    remaining.forEach(dk => {
+      rest += dayType(dk) === 'weekend' ? weUse : wdUse;
+      restTarget += storeTargetForDay(store, dk) || 0;
+    });
+    out[store] = {landing: wd + we + rest, fullTarget: mtdTarget + restTarget};
+  });
+  return out;
+}
+
 function fmtINR(n){
   n = Math.round(n);
   if(Math.abs(n) >= 10000000) return '\u20b9' + (n/10000000).toFixed(2) + 'Cr';
@@ -1463,6 +1504,13 @@ function renderStores(body, days){
     .sort((a,b) => (isFinite(a.ach) && isFinite(b.ach)) ? a.ach - b.ach : (isFinite(a.ach) ? -1 : isFinite(b.ach) ? 1 : b.actual - a.actual));
 
   const storeOrder = rowsArr.map(r => r.store); // canonical order, reused by the AOV table below
+  const landings = computeStoreLandings(days, storeOrder);
+  rowsArr.forEach(r => {
+    const l = landings[r.store];
+    r.landing = l ? l.landing : null;
+    r.fullTarget = l ? l.fullTarget : 0;
+    r.landingAch = l ? achOf(l.landing, l.fullTarget) : NaN;
+  });
 
   const headTvA = document.createElement('div');
   headTvA.style.cssText = 'font-size:13px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
@@ -1474,7 +1522,13 @@ function renderStores(body, days){
   let rows = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
     '<td style="padding:6px 10px;">Store</td><td style="padding:6px 10px;">Region</td>' +
     '<td style="padding:6px 10px; text-align:right;">Target</td><td style="padding:6px 10px; text-align:right;">Actual</td>' +
-    '<td style="padding:6px 10px; text-align:right;">Ach%</td><td style="padding:6px 10px; text-align:right;">SSSG</td><td style="padding:6px 10px; text-align:right;">NPS</td></tr>';
+    '<td style="padding:6px 10px; text-align:right;">Ach%</td>' +
+    '<td style="padding:6px 10px; text-align:right;">Landing</td><td style="padding:6px 10px; text-align:right;">Landing ach%</td>' +
+    '<td style="padding:6px 10px; text-align:right;">SSSG</td><td style="padding:6px 10px; text-align:right;">NPS</td></tr>';
+  const landingCells = (landing, ach) => landing === null
+    ? '<td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">—</td><td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">—</td>'
+    : `<td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(landing)}</td>
+      <td style="padding:8px 10px; text-align:right; color:${achColor(ach)}; font-weight:600;" class="bsc-mono">${fmtPct(ach)}</td>`;
   rowsArr.forEach(r => {
     const sssgCell = r.sssg === null
       ? '<td style="padding:8px 10px; text-align:right; color:var(--text-mute);" class="bsc-mono">New store</td>'
@@ -1489,16 +1543,42 @@ function renderStores(body, days){
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(r.target)}</td>
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(r.actual)}</td>
       <td style="padding:8px 10px; text-align:right; color:${achColor(r.ach)}; font-weight:600;" class="bsc-mono">${fmtPct(r.ach)}</td>
+      ${landingCells(r.landing, r.landingAch)}
       ${sssgCell}
       ${npsCell}
     </tr>`;
   });
+  if(rowsArr.length){
+    const sum = f => rowsArr.reduce((s,r) => s + (r[f] || 0), 0);
+    const tTarget = sum('target'), tActual = sum('actual');
+    const hasLanding = rowsArr.some(r => r.landing !== null);
+    const tLanding = sum('landing'), tFullTarget = sum('fullTarget');
+    // SSSG over the stores that have a last-year figure, pro-rated the same way as each row.
+    let lyActual = 0, lyProRated = 0;
+    rowsArr.forEach(r => {
+      const ly = BASELINE.aug25StoreRevenue ? BASELINE.aug25StoreRevenue[r.store] : null;
+      if(r.sssg !== null && ly){ lyActual += r.actual; lyProRated += ly * (r.days / BASELINE.aug25.days); }
+    });
+    const tSssg = lyProRated ? (lyActual - lyProRated) / lyProRated * 100 : null;
+    const tNps = state.npsData && state.npsData.overall !== undefined && state.npsData.overall !== null ? state.npsData.overall : null;
+    rows += `<tr style="border-top:2px solid var(--line); font-weight:700;">
+      <td style="padding:8px 10px;">Total</td>
+      <td style="padding:8px 10px; color:var(--text-mute);">${rowsArr.length} stores</td>
+      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(tTarget)}</td>
+      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(tActual)}</td>
+      <td style="padding:8px 10px; text-align:right; color:${achColor(achOf(tActual, tTarget))};" class="bsc-mono">${fmtPct(achOf(tActual, tTarget))}</td>
+      ${landingCells(hasLanding ? tLanding : null, achOf(tLanding, tFullTarget))}
+      <td style="padding:8px 10px; text-align:right; color:${tSssg === null ? 'var(--text-mute)' : tSssg>=0?'var(--good)':'var(--bad)'};" class="bsc-mono">${tSssg === null ? '—' : (tSssg>=0?'+':'') + tSssg.toFixed(1) + '%'}</td>
+      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${tNps === null ? '—' : Number(tNps).toFixed(1)}</td>
+    </tr>`;
+  }
   table.innerHTML = rows;
   body.appendChild(table);
 
   const sssgNote = document.createElement('div');
   sssgNote.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:-20px; margin-bottom:28px; line-height:1.6;';
-  sssgNote.textContent = 'SSSG compares this store\u2019s revenue so far this month against its ' + lastYearInfo().full + ' revenue, pro-rated to the same number of days \u2014 an approximation, since only a full-month total exists for ' + lastYearInfo().full + ', not a daily breakdown. "New store" means it wasn\u2019t open (or had no comparable revenue) in ' + lastYearInfo().full + '.';
+  sssgNote.textContent = 'Landing projects each store’s remaining days this month at its own weekday and weekend average so far, the same method as the Overview’s projected landing; Landing ach% is against the store’s full-month target. ' +
+    'SSSG compares this store\u2019s revenue so far this month against its ' + lastYearInfo().full + ' revenue, pro-rated to the same number of days \u2014 an approximation, since only a full-month total exists for ' + lastYearInfo().full + ', not a daily breakdown. "New store" means it wasn\u2019t open (or had no comparable revenue) in ' + lastYearInfo().full + '.';
   body.appendChild(sssgNote);
 
   // ---- AOV / New vs Repeat / UPT breakdown ----
