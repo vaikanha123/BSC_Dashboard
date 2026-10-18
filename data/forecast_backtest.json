@@ -1,8 +1,7 @@
 {
- "generated": "2026-09-25",
- "dataThrough": "2026-09-24",
+ "generated": "2026-10-18",
+ "dataThrough": "2026-10-17",
  "months": [
-  "2025-03",
   "2025-04",
   "2025-05",
   "2025-06",
@@ -20,181 +19,182 @@
   "2026-06",
   "2026-07",
   "2026-08",
-  "2026-09"
+  "2026-09",
+  "2026-10"
  ],
- "champion": "adaptive",
+ "champion": "equal",
  "policies": {
   "equal": {
-   "day": 0.1405,
-   "week": 0.0758,
-   "month": 0.0497,
-   "landing14": 0.04
+   "day": 0.1408,
+   "week": 0.0727,
+   "month": 0.0637,
+   "landing14": 0.0364
   },
   "adaptive": {
-   "day": 0.1396,
-   "week": 0.0753,
-   "month": 0.0507,
-   "landing14": 0.0399
+   "day": 0.1403,
+   "week": 0.0729,
+   "month": 0.0639,
+   "landing14": 0.0369
   },
   "adaptive_bias": {
-   "day": 0.1428,
-   "week": 0.083,
-   "month": 0.0698,
-   "landing14": 0.0456
+   "day": 0.1419,
+   "week": 0.0779,
+   "month": 0.0814,
+   "landing14": 0.0388
   }
  },
  "perMonth": [
   {
-   "day": 0.2299,
-   "week": 0.1684,
-   "landing14": -0.1014,
-   "full": true,
-   "monthAhead": 0.0073,
-   "month": "2025-03"
+   "month": "2025-04",
+   "day": 0.1845,
+   "week": 0.0596,
+   "monthAhead": -0.0311,
+   "landing14": 0.0142,
+   "full": true
   },
   {
-   "day": 0.1874,
-   "week": 0.0569,
-   "landing14": 0.0218,
-   "full": true,
-   "monthAhead": -0.0448,
-   "month": "2025-04"
+   "month": "2025-05",
+   "day": 0.175,
+   "week": 0.0797,
+   "monthAhead": 0.0034,
+   "landing14": 0.0561,
+   "full": true
   },
   {
-   "day": 0.1731,
-   "week": 0.0817,
-   "landing14": 0.0563,
-   "full": true,
-   "monthAhead": 0.0088,
-   "month": "2025-05"
+   "month": "2025-06",
+   "day": 0.1517,
+   "week": 0.0793,
+   "monthAhead": -0.034,
+   "landing14": 0.0328,
+   "full": true
   },
   {
-   "day": 0.1441,
-   "week": 0.0724,
-   "landing14": 0.0237,
-   "full": true,
-   "monthAhead": -0.0408,
-   "month": "2025-06"
+   "month": "2025-07",
+   "day": 0.112,
+   "week": 0.0772,
+   "monthAhead": -0.0767,
+   "landing14": -0.0576,
+   "full": true
   },
   {
-   "day": 0.11,
-   "week": 0.0767,
-   "landing14": -0.0578,
-   "full": true,
-   "monthAhead": -0.0748,
-   "month": "2025-07"
+   "month": "2025-08",
+   "day": 0.1583,
+   "week": 0.0827,
+   "monthAhead": 0.032,
+   "landing14": 0.0414,
+   "full": true
   },
   {
-   "day": 0.1567,
-   "week": 0.0903,
-   "landing14": 0.0444,
-   "full": true,
-   "monthAhead": 0.0483,
-   "month": "2025-08"
+   "month": "2025-09",
+   "day": 0.1203,
+   "week": 0.0699,
+   "monthAhead": 0.0693,
+   "landing14": 0.0314,
+   "full": true
   },
   {
-   "day": 0.1214,
-   "week": 0.0514,
-   "landing14": -0.0067,
-   "full": true,
-   "monthAhead": 0.0337,
-   "month": "2025-09"
-  },
-  {
-   "day": 0.1671,
-   "week": 0.0753,
-   "landing14": 0.0503,
-   "full": true,
-   "monthAhead": -0.0793,
-   "month": "2025-10"
-  },
-  {
-   "day": 0.0961,
-   "week": 0.0496,
-   "landing14": -0.0213,
-   "full": true,
-   "monthAhead": -0.0795,
-   "month": "2025-11"
-  },
-  {
-   "day": 0.1749,
-   "week": 0.1335,
-   "landing14": 0.0557,
-   "full": true,
-   "monthAhead": 0.1517,
-   "month": "2025-12"
-  },
-  {
-   "day": 0.1335,
+   "month": "2025-10",
+   "day": 0.1699,
    "week": 0.0775,
-   "landing14": -0.0278,
-   "full": true,
-   "monthAhead": -0.0028,
-   "month": "2026-01"
+   "monthAhead": -0.1399,
+   "landing14": 0.0072,
+   "full": true
   },
   {
-   "day": 0.1296,
-   "week": 0.081,
-   "landing14": -0.0714,
-   "full": true,
-   "monthAhead": -0.0584,
-   "month": "2026-02"
+   "month": "2025-11",
+   "day": 0.0965,
+   "week": 0.0512,
+   "monthAhead": -0.0774,
+   "landing14": -0.0223,
+   "full": true
   },
   {
-   "day": 0.1778,
-   "week": 0.0786,
-   "landing14": 0.0687,
-   "full": true,
-   "monthAhead": 0.0072,
-   "month": "2026-03"
+   "month": "2025-12",
+   "day": 0.1707,
+   "week": 0.1287,
+   "monthAhead": 0.1443,
+   "landing14": 0.0505,
+   "full": true
   },
   {
-   "day": 0.1603,
-   "week": 0.0604,
-   "landing14": 0.0288,
-   "full": true,
-   "monthAhead": -0.0605,
-   "month": "2026-04"
+   "month": "2026-01",
+   "day": 0.1336,
+   "week": 0.0747,
+   "monthAhead": 0.0021,
+   "landing14": -0.0229,
+   "full": true
   },
   {
-   "day": 0.1177,
-   "week": 0.0544,
-   "landing14": -0.0231,
-   "full": true,
-   "monthAhead": -0.0132,
-   "month": "2026-05"
+   "month": "2026-02",
+   "day": 0.1313,
+   "week": 0.0849,
+   "monthAhead": -0.0698,
+   "landing14": -0.0784,
+   "full": true
   },
   {
-   "day": 0.1394,
-   "week": 0.0774,
-   "landing14": -0.0416,
-   "full": true,
-   "monthAhead": -0.0135,
-   "month": "2026-06"
+   "month": "2026-03",
+   "day": 0.1694,
+   "week": 0.0713,
+   "monthAhead": 0.0344,
+   "landing14": 0.0608,
+   "full": true
   },
   {
-   "day": 0.1346,
-   "week": 0.0423,
-   "landing14": -0.0291,
-   "full": true,
-   "monthAhead": -0.0435,
-   "month": "2026-07"
+   "month": "2026-04",
+   "day": 0.1589,
+   "week": 0.0623,
+   "monthAhead": -0.0626,
+   "landing14": 0.0272,
+   "full": true
   },
   {
-   "day": 0.0903,
-   "week": 0.0653,
-   "landing14": -0.0317,
-   "full": true,
-   "monthAhead": -0.0952,
-   "month": "2026-08"
+   "month": "2026-05",
+   "day": 0.1191,
+   "week": 0.0554,
+   "monthAhead": -0.0154,
+   "landing14": -0.0236,
+   "full": true
   },
   {
-   "day": 0.1461,
-   "week": 0.112,
-   "landing14": null,
-   "full": false,
+   "month": "2026-06",
+   "day": 0.1438,
+   "week": 0.0807,
+   "monthAhead": -0.0125,
+   "landing14": -0.0422,
+   "full": true
+  },
+  {
+   "month": "2026-07",
+   "day": 0.1347,
+   "week": 0.0388,
+   "monthAhead": -0.0437,
+   "landing14": -0.0235,
+   "full": true
+  },
+  {
+   "month": "2026-08",
+   "day": 0.0895,
+   "week": 0.0706,
+   "monthAhead": -0.0817,
+   "landing14": -0.0202,
+   "full": true
+  },
+  {
+   "month": "2026-09",
+   "day": 0.1429,
+   "week": 0.0705,
+   "monthAhead": 0.1232,
+   "landing14": 0.0399,
+   "full": true
+  },
+  {
+   "month": "2026-10",
+   "day": 0.1904,
+   "week": 0.0607,
    "monthAhead": null,
-   "month": "2026-09"
+   "landing14": null,
+   "full": false
   }
  ]
 }

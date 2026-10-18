@@ -23,9 +23,10 @@ Usage (from the repo root):
 How it learns:
   * Three forecasters per store per day, summed to region/network:
       A  mean of the store's last 4 same-weekday days
-      B  A x how the network moved over the same weeks last year
+      B  A x how the network moved over the same weeks last year -- around a moving festival, the same
+         distance from last year's occurrence (ly_index), so last year's festival bump lands on this year's dates
       G  gradient boosting on target/level ratio (weekday, month, festival distance, store age,
-         store's weekday profile, 3-month momentum, last-year seasonal factor, horizon)
+         store's weekday profile, 3-month momentum, festival-aligned last-year seasonal factor, horizon)
   * Every forecast is logged (data/forecast_log.csv) and scored once actuals arrive.
   * Blend weights per horizon bucket are re-learned every run from the last 120 days of scored
     forecasts (inverse error), and an optional small bias correction -- but only in the policy the
@@ -152,6 +153,38 @@ def fest_matrix(dates, festivals, windows):
     return np.stack(cols, 1)
 
 
+# Festivals whose date moves from year to year, in priority order where their windows overlap (Dussehra falls
+# inside Diwali's long window, and the two move together). Fixed-date holidays need no alignment: 364 days back
+# is already within a day of them.
+MOVING_FESTIVALS = ['diwali', 'dussehra', 'holi', 'eid', 'rakhi', 'ganesh']
+FEST_ALIGN = True
+
+
+def ly_index(dates, festivals, windows, align=FEST_ALIGN):
+    """Index of each date's last-year comparable day. Normally 364 days back (same weekday). Inside a moving
+    festival's window it is the same distance from last year's occurrence instead -- so 8-Nov-2026 (Diwali)
+    compares with 20-Oct-2025 (Diwali), not with an ordinary 9-Nov-2025. -1 = before the history starts."""
+    n = len(dates)
+    idx = np.arange(n) - 364
+    if align:
+        pos = {t: i for i, t in enumerate(dates)}
+        done = np.zeros(n, bool)
+        for name in MOVING_FESTIVALS:
+            ds = sorted(pd.to_datetime(festivals.get(name, [])))
+            lo, hi = windows.get(name, (-10, 5))
+            for D in ds:
+                prev = [p for p in ds if 300 <= (D - p).days <= 430]
+                if not prev:
+                    continue
+                P = prev[0]
+                for k in range(lo, hi + 1):
+                    i, j = pos.get(D + pd.Timedelta(days=k)), pos.get(P + pd.Timedelta(days=k))
+                    if i is not None and not done[i]:
+                        idx[i] = j if j is not None else -1
+                        done[i] = True
+    return np.where(idx >= 0, idx, -1)
+
+
 class Data:
     def __init__(self, Y, last, reg, cfg):
         self.Y, self.last, self.cfg = Y, last, cfg
@@ -174,6 +207,7 @@ class Data:
         self.dleft = (self.dates.days_in_month - self.dates.day).values
         wins = {k: tuple(v) for k, v in cfg.get('festival_windows', {}).items()}
         self.F = fest_matrix(self.dates, cfg['festivals'], wins)
+        self.LY = ly_index(self.dates, cfg['festivals'], wins)
         self.region_names = ['North', 'South', 'West']
         self.reg = np.array([self.region_names.index(reg[c]) for c in Y])
         per = obs.sum(axis=1) / obs.notna().sum(axis=1)
@@ -206,8 +240,8 @@ class Data:
         dA = self.D[self.dow[t], o, s]
         fbA = lev * self.dowf[o, self.dow[t]]
         dA = np.where(model_row & ~np.isnan(dA), dA, fbA)
-        ly_ok = (t - 364 >= 0) & (o - 364 >= 27)
-        tb, ob = np.where(ly_ok, t - 364, 0), np.where(ly_ok, o - 364, 0)
+        ly_ok = (self.LY[t] >= 0) & (self.LY[o] >= 27)
+        tb, ob = np.where(ly_ok, self.LY[t], 0), np.where(ly_ok, self.LY[o], 0)
         lyf = np.where(ly_ok, self.P7[tb] / self.P28[ob], np.nan)
         age_t = np.minimum((self.didx[t] - self.first[s]).astype(int), 730)
         l91 = np.where(np.isnan(self.L91[o, s]), lev, self.L91[o, s])
