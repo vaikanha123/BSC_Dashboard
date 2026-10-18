@@ -904,6 +904,11 @@ function dayType(dateStr){
   return (dow === 0 || dow === 6) ? 'weekend' : 'weekday';
 }
 
+// Online (Online + Virtual Stylist + Corporate Orders) daily revenue expectation, from the online team's
+// "Daily Expectation - Online" Google Sheet (one tab per month, Date + Total Rev columns). Load each new month by hand.
+const ONLINE_DAILY_TARGETS = {"2026-10-01":585545,"2026-10-02":585545,"2026-10-03":790889,"2026-10-04":790889,"2026-10-05":585545,"2026-10-06":585545,"2026-10-07":585545,"2026-10-08":585545,"2026-10-09":585545,"2026-10-10":790889,"2026-10-11":790889,"2026-10-12":585545,"2026-10-13":585545,"2026-10-14":585545,"2026-10-15":585545,"2026-10-16":585545,"2026-10-17":790889,"2026-10-18":790889,"2026-10-19":585545,"2026-10-20":585545,"2026-10-21":585545,"2026-10-22":585545,"2026-10-23":585545,"2026-10-24":790889,"2026-10-25":790889,"2026-10-26":585545,"2026-10-27":585545,"2026-10-28":585545,"2026-10-29":585545,"2026-10-30":585545,"2026-10-31":790889};
+function onlineTargetForDay(dk){ return ONLINE_DAILY_TARGETS[dk] !== undefined ? ONLINE_DAILY_TARGETS[dk] : null; }
+
 function offlineRegion(store){
   return REGION_MAP[store] || null;
 }
@@ -1854,7 +1859,7 @@ function renderRegions(body, days){
 
 function renderTrend(body, days){
   // Scope filter. Online = every POS location outside REGION_MAP (Online, Virtual Stylist, Corporate Orders),
-  // same definition as elsewhere. Online has no target, so target/ach% only show for store scopes.
+  // same definition as elsewhere. Online's target is ONLINE_DAILY_TARGETS; target/ach% hide when a day lacks one.
   const TREND_SCOPES = [
     {key:'stores', label:'All stores (offline)'},
     {key:'North', label:'North'},
@@ -1862,6 +1867,7 @@ function renderTrend(body, days){
     {key:'West', label:'West'},
     {key:'Online', label:'Online'},
     {key:'all', label:'All (stores + online)'},
+    {key:'split', label:'Online vs offline'},
   ];
   const scope = TREND_SCOPES.find(o => o.key === state.trendScope) || TREND_SCOPES[0];
   const inScope = store => {
@@ -1871,7 +1877,9 @@ function renderTrend(body, days){
     if(scope.key === 'Online') return !r;
     return r === scope.key;
   };
-  const hasTarget = scope.key !== 'Online' && scope.key !== 'all';
+  const onlineTargetsAll = days.every(dk => onlineTargetForDay(dk) !== null);
+  const hasTarget = (scope.key !== 'Online' && scope.key !== 'all') || onlineTargetsAll;
+  if(scope.key === 'split') return renderTrendSplit(body, days, TREND_SCOPES, scope, onlineTargetsAll);
 
   const dailyTotals = days.map(dk => {
     let actual = 0, target = 0;
@@ -1879,11 +1887,12 @@ function renderTrend(body, days){
       if(inScope(store)) actual += state.days[dk][store];
     });
     if(hasTarget){
-      Object.keys(STORE_LOOKUP).forEach(store => {
+      if(scope.key !== 'Online') Object.keys(STORE_LOOKUP).forEach(store => {
         if(!inScope(store)) return;
         const t = storeTargetForDay(store, dk);
         if(t !== null) target += t;
       });
+      if(scope.key === 'Online' || scope.key === 'all') target += onlineTargetForDay(dk);
     }
     return {dk, actual, target};
   });
@@ -1901,7 +1910,7 @@ function renderTrend(body, days){
     '<select id="bsc-trend-scope" style="background:var(--panel); color:var(--text); border:1px solid var(--line2); border-radius:6px; padding:5px 8px; font-size:12px;">' +
     TREND_SCOPES.map(o => `<option value="${o.key}"${o.key === scope.key ? ' selected' : ''}>${o.label}</option>`).join('') +
     '</select>' +
-    `<span>${fmtINR(totalActual)} this period` + (hasTarget ? ` · ${fmtPct(achOf(totalActual, totalTarget))} of target` : ' · no target for online') + '</span>';
+    `<span>${fmtINR(totalActual)} this period` + (hasTarget ? ` · ${fmtPct(achOf(totalActual, totalTarget))} of target` : ' · no online target loaded for this month') + '</span>';
   bar.querySelector('select').addEventListener('change', e => { state.trendScope = e.target.value; render(); });
   body.appendChild(bar);
 
@@ -1913,6 +1922,7 @@ function renderTrend(body, days){
   requestAnimationFrame(() => {
     const ctx = document.getElementById('bsc-trend-chart');
     if(!ctx || !window.Chart) return;
+    const prior = Chart.getChart(ctx); if(prior) prior.destroy();
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -1963,6 +1973,87 @@ function renderTrend(body, days){
   body.appendChild(table);
 }
 
+
+// Daily trend, "Online vs offline": each channel's daily achievement against its own target
+// (store targets for offline, ONLINE_DAILY_TARGETS for online), so two very different-sized channels share one axis.
+function renderTrendSplit(body, days, scopes, scope, onlineTargetsAll){
+  const rows = days.map(dk => {
+    let off = 0, on = 0, offT = 0;
+    Object.keys(state.days[dk]).forEach(store => { if(offlineRegion(store)) off += state.days[dk][store]; else on += state.days[dk][store]; });
+    Object.keys(STORE_LOOKUP).forEach(store => {
+      if(!offlineRegion(store)) return;
+      const t = storeTargetForDay(store, dk);
+      if(t !== null) offT += t;
+    });
+    const onT = onlineTargetForDay(dk);
+    return {dk, off, on, offT, onT, offAch: achOf(off, offT), onAch: onT === null ? null : achOf(on, onT), share: (off + on) ? on / (off + on) * 100 : null};
+  });
+  const sum = k => rows.reduce((a, r) => a + (r[k] || 0), 0);
+  const tOff = sum('off'), tOn = sum('on'), tOffT = sum('offT'), tOnT = sum('onT');
+
+  const bar = document.createElement('div');
+  bar.style.cssText = 'display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; font-size:12px; color:var(--text-mute);';
+  bar.innerHTML = '<label for="bsc-trend-scope">Show</label>' +
+    '<select id="bsc-trend-scope" style="background:var(--panel); color:var(--text); border:1px solid var(--line2); border-radius:6px; padding:5px 8px; font-size:12px;">' +
+    scopes.map(o => `<option value="${o.key}"${o.key === scope.key ? ' selected' : ''}>${o.label}</option>`).join('') +
+    '</select>' +
+    `<span>Offline ${fmtINR(tOff)} (${fmtPct(achOf(tOff, tOffT))} of target) · Online ${fmtINR(tOn)}` +
+    (onlineTargetsAll ? ` (${fmtPct(achOf(tOn, tOnT))} of expectation)` : '') +
+    ` · online share ${(tOn / (tOff + tOn) * 100).toFixed(1)}%</span>`;
+  bar.querySelector('select').addEventListener('change', e => { state.trendScope = e.target.value; render(); });
+  body.appendChild(bar);
+
+  const canvasWrap = document.createElement('div');
+  canvasWrap.style.cssText = 'position:relative; height:280px; margin-bottom:16px;';
+  canvasWrap.innerHTML = `<canvas id="bsc-trend-chart" role="img" aria-label="Daily achievement vs target, online vs offline"></canvas>`;
+  body.appendChild(canvasWrap);
+  requestAnimationFrame(() => {
+    const ctx = document.getElementById('bsc-trend-chart');
+    if(!ctx || !window.Chart) return;
+    const prior = Chart.getChart(ctx); if(prior) prior.destroy();
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: rows.map(r => dayLabel(r.dk)),
+        datasets: [
+          {label:'100% of target', data: rows.map(() => 100), borderColor:'#5f5e5a', borderDash:[4,3], pointRadius:0, borderWidth:1},
+          {label:'Offline', data: rows.map(r => isFinite(r.offAch) ? +r.offAch.toFixed(1) : null), borderColor:'#c9a15b', pointRadius:3, tension:0.15},
+          {label:'Online', data: rows.map(r => r.onAch !== null && isFinite(r.onAch) ? +r.onAch.toFixed(1) : null), borderColor:'#3987e5', pointRadius:3, tension:0.15},
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        scales: {
+          x: {ticks:{color:'#9a9da5', maxRotation:45, autoSkip:false}, grid:{display:false}},
+          y: {ticks:{color:'#9a9da5', callback:(v)=>v + '%'}, grid:{color:'#2c313a'}, title:{display:true, text:'% of daily target', color:'#9a9da5'}}
+        },
+        plugins: { legend: { display:false }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.formattedValue + '%' } } }
+      }
+    });
+  });
+
+  const legend = document.createElement('div');
+  legend.style.cssText = 'display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px; font-size:12px; color:var(--text-dim);';
+  legend.innerHTML = [['#c9a15b','Offline (vs store targets)'],['#3987e5','Online (vs online expectation sheet)'],['#5f5e5a','100% of target']]
+    .map(([c, l]) => `<span style="display:flex; align-items:center; gap:5px;"><span style="width:14px;height:2px;background:${c};"></span>${l}</span>`).join('');
+  body.appendChild(legend);
+
+  const table = document.createElement('table');
+  table.style.cssText = 'font-size:13px;';
+  const th = t => `<td style="padding:6px 10px; text-align:right;">${t}</td>`;
+  let html = '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;"><td style="padding:6px 10px;">Day</td>' +
+    th('Offline') + th('Offline ach%') + th('Online') + th('Online target') + th('Online ach%') + th('Online share') + '</tr>';
+  const td = (v, style) => `<td style="padding:8px 10px; text-align:right;${style || ''}" class="bsc-mono">${v}</td>`;
+  rows.slice().reverse().forEach(r => {
+    html += `<tr style="border-top:1px solid var(--line);"><td style="padding:8px 10px;">${dayLabel(r.dk)}</td>` +
+      td(fmtINR(r.off)) + td(fmtPct(r.offAch), ` color:${achColor(r.offAch)}; font-weight:600;`) +
+      td(fmtINR(r.on)) + td(r.onT === null ? '—' : fmtINR(r.onT)) +
+      td(r.onAch === null ? '—' : fmtPct(r.onAch), r.onAch === null ? '' : ` color:${achColor(r.onAch)}; font-weight:600;`) +
+      td(r.share === null ? '—' : r.share.toFixed(1) + '%') + '</tr>';
+  });
+  table.innerHTML = html;
+  body.appendChild(table);
+}
 
 function renderTrainingCohort(body, days, cfg){
   const cmk = currentMonthKey();
