@@ -1974,8 +1974,8 @@ function renderTrend(body, days){
 }
 
 
-// Daily trend, "Online vs offline": each channel's daily achievement against its own target
-// (store targets for offline, ONLINE_DAILY_TARGETS for online), so two very different-sized channels share one axis.
+// Daily trend, "Online vs offline": daily revenue of each channel with its target as a dashed line
+// (store targets for offline, ONLINE_DAILY_TARGETS for online). Offline is ~6x online, so online gets its own right-hand axis.
 function renderTrendSplit(body, days, scopes, scope, onlineTargetsAll){
   const rows = days.map(dk => {
     let off = 0, on = 0, offT = 0;
@@ -2005,7 +2005,7 @@ function renderTrendSplit(body, days, scopes, scope, onlineTargetsAll){
 
   const canvasWrap = document.createElement('div');
   canvasWrap.style.cssText = 'position:relative; height:280px; margin-bottom:16px;';
-  canvasWrap.innerHTML = `<canvas id="bsc-trend-chart" role="img" aria-label="Daily achievement vs target, online vs offline"></canvas>`;
+  canvasWrap.innerHTML = `<canvas id="bsc-trend-chart" role="img" aria-label="Daily revenue, online vs offline"></canvas>`;
   body.appendChild(canvasWrap);
   requestAnimationFrame(() => {
     const ctx = document.getElementById('bsc-trend-chart');
@@ -2016,25 +2016,28 @@ function renderTrendSplit(body, days, scopes, scope, onlineTargetsAll){
       data: {
         labels: rows.map(r => dayLabel(r.dk)),
         datasets: [
-          {label:'100% of target', data: rows.map(() => 100), borderColor:'#5f5e5a', borderDash:[4,3], pointRadius:0, borderWidth:1},
-          {label:'Offline', data: rows.map(r => isFinite(r.offAch) ? +r.offAch.toFixed(1) : null), borderColor:'#c9a15b', pointRadius:3, tension:0.15},
-          {label:'Online', data: rows.map(r => r.onAch !== null && isFinite(r.onAch) ? +r.onAch.toFixed(1) : null), borderColor:'#3987e5', pointRadius:3, tension:0.15},
+          {label:'Offline target', yAxisID:'y', data: rows.map(r => Math.round(r.offT)), borderColor:'rgba(201,161,91,0.55)', borderDash:[4,3], pointRadius:0, borderWidth:1.5, tension:0.15},
+          {label:'Offline', yAxisID:'y', data: rows.map(r => Math.round(r.off)), borderColor:'#c9a15b', pointRadius:3, tension:0.15},
+          ...(onlineTargetsAll ? [{label:'Online target', yAxisID:'y1', data: rows.map(r => Math.round(r.onT)), borderColor:'rgba(57,135,229,0.55)', borderDash:[4,3], pointRadius:0, borderWidth:1.5, tension:0.15}] : []),
+          {label:'Online', yAxisID:'y1', data: rows.map(r => Math.round(r.on)), borderColor:'#3987e5', pointRadius:3, tension:0.15},
         ]
       },
       options: {
         responsive:true, maintainAspectRatio:false,
         scales: {
           x: {ticks:{color:'#9a9da5', maxRotation:45, autoSkip:false}, grid:{display:false}},
-          y: {ticks:{color:'#9a9da5', callback:(v)=>v + '%'}, grid:{color:'#2c313a'}, title:{display:true, text:'% of daily target', color:'#9a9da5'}}
+          y: {position:'left', beginAtZero:true, ticks:{color:'#c9a15b', callback:(v)=>fmtINR(v)}, grid:{color:'#2c313a'}, title:{display:true, text:'Offline revenue', color:'#c9a15b'}},
+          y1: {position:'right', beginAtZero:true, ticks:{color:'#3987e5', callback:(v)=>fmtINR(v)}, grid:{display:false}, title:{display:true, text:'Online revenue', color:'#3987e5'}}
         },
-        plugins: { legend: { display:false }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.formattedValue + '%' } } }
+        interaction: {mode:'index', intersect:false},
+        plugins: { legend: { display:false }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmtINR(c.raw) } } }
       }
     });
   });
 
   const legend = document.createElement('div');
   legend.style.cssText = 'display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px; font-size:12px; color:var(--text-dim);';
-  legend.innerHTML = [['#c9a15b','Offline (vs store targets)'],['#3987e5','Online (vs online expectation sheet)'],['#5f5e5a','100% of target']]
+  legend.innerHTML = [['#c9a15b','Offline (left axis)'],['#3987e5','Online (right axis)'],['#5f5e5a','Dashed: each channel\u2019s target']]
     .map(([c, l]) => `<span style="display:flex; align-items:center; gap:5px;"><span style="width:14px;height:2px;background:${c};"></span>${l}</span>`).join('');
   body.appendChild(legend);
 
