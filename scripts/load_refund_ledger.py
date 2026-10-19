@@ -115,15 +115,23 @@ def load_ledger(path):
         break
     else:
         raise ValueError(f'{path}: no sheet with an Order ID / Reason for Refund header')
-    i_order, i_loc = header.index('order id'), header.index('location')
-    i_amt = header.index('refund amount') if 'refund amount' in header else header.index('amount')
+    # With two blocks, read the right-hand one: it holds the typed values, while the left-hand one
+    # is formulas (=I3 ...) that have no cached value once the file is re-saved outside Excel.
+    last = lambda name: len(header) - 1 - header[::-1].index(name)
+    i_order, i_loc = last('order id'), last('location')
+    i_amt = header.index('amount') if 'amount' in header else header.index('refund amount')
     i_reason, i_date, i_gw = header.index('reason for refund'), header.index('date'), header.index('payment gateway')
+    # Enriched ledgers (Oct 1-18 on) also carry per-payout Category ("A, B" when several) and Store.
+    i_cat = header.index('category') if 'category' in header else None
+    i_store = header.index('store') if 'store' in header else None
     rows = []
     for r in ws.iter_rows(min_row=hdr_row + 1, values_only=True):
         if not r[i_order] or not r[i_amt]:
             continue
+        cats = [c.strip() for c in str(r[i_cat]).split(',') if c.strip()] if i_cat is not None and r[i_cat] else []
         rows.append({'order': str(r[i_order]).strip(), 'loc': str(r[i_loc] or '').strip(), 'amt': float(r[i_amt]),
-                     'date': r[i_date], 'reason': norm_reason(r[i_reason]), 'gateway': r[i_gw]})
+                     'date': r[i_date], 'reason': norm_reason(r[i_reason]), 'gateway': r[i_gw], 'cats': cats,
+                     'store': str(r[i_store]).strip() if i_store is not None and r[i_store] else None})
     return rows, wb
 
 
@@ -168,12 +176,21 @@ def build_month(rows, cx, sales):
         store = LOCATION_MAP.get(r['loc'])
         if store is None and r['loc'] and not REGION_CODE.match(r['loc']):
             store = r['loc']  # newer ledgers name some stores plainly, e.g. "Oberoi Sky City"
+        if store is None and r.get('store'):
+            store = r['store']
         if store is None:
             store = (sales.get(r['order']) or ({}, None))[1]
             if store is None:
                 raise ValueError(f"unknown ledger location {r['loc']!r} (order {r['order']}); add it to LOCATION_MAP")
         online = store == 'Online Store'
-        if r['order'] in cx:
+        if r.get('cats'):
+            # Ledger names this payout's categories; split by the CX amounts for them where known.
+            known = cx.get(r['order'], {})
+            weights = {c: known.get(c, 0) for c in r['cats']}
+            if not sum(weights.values()):
+                weights = {c: 1.0 for c in r['cats']}
+            src['ledger'] += 1
+        elif r['order'] in cx:
             weights, src['cx'] = cx[r['order']], src['cx'] + 1
         elif r['order'] in sales:
             weights, src['sales'] = sales[r['order']][0], src['sales'] + 1
@@ -209,6 +226,8 @@ def main():
     ap.add_argument('--html', required=True)
     ap.add_argument('--ledger', required=True)
     ap.add_argument('--cx', help='CX refund tracker (refund + CN sheets) to take line-item categories from')
+    ap.add_argument('--cn-from-cx', action='store_true',
+                    help='Also load SEED_CN from the --cx file credit-note sheet (when the ledger has none)')
     ap.add_argument('--sales-history', required=True, help='Sales CSV covering the refunded orders\' purchase dates')
     ap.add_argument('--month', required=True, help='e.g. Oct-2026')
     a = ap.parse_args()
@@ -228,11 +247,19 @@ def main():
     month['source'] = 'ledger'  # the Refunds & CN trend table labels the live month by this
     seed['byMonth'][a.month] = month
     content = replace_const(content, 'SEED_REFUNDS', json.dumps(seed))
-    # From Oct 1-13 the ledger file also carries the CX credit-note sheet; load it when present.
-    _, cn_sheet = find_refund_and_cn_sheets(ledger_wb)
+    # From Oct 1-13 the ledger file also carries the CX credit-note sheet; load it when present,
+    # else from the CX file when asked.
+    cn_wb = ledger_wb
+    _, cn_sheet = find_refund_and_cn_sheets(cn_wb)
+    if not cn_sheet and a.cn_from_cx and a.cx:
+        cn_wb = openpyxl.load_workbook(a.cx, data_only=True)
+        _, cn_sheet = find_refund_and_cn_sheets(cn_wb)
     cn = None
     if cn_sheet:
-        cn_by_month = process_refund_sheet(ledger_wb[cn_sheet], amount_idx=7, reason_idx=8, date_idx=9,
+        cn_hdr = [str(c or '').strip().lower() for c in next(cn_wb[cn_sheet].iter_rows(max_row=1, values_only=True))]
+        # The Oct 1-18 CX file put helper columns before "Date Processed", so find it by name.
+        date_idx = cn_hdr.index('date processed') if 'date processed' in cn_hdr else 9
+        cn_by_month = process_refund_sheet(cn_wb[cn_sheet], amount_idx=7, reason_idx=8, date_idx=date_idx,
                                            current_month=a.month)
         cn = cn_by_month.get(a.month)
         if cn:
@@ -246,8 +273,8 @@ def main():
     print(f"OK. SEED_REFUNDS[{a.month}]: Rs{month['total']:,.0f} over {month['orders']} orders "
           f"({month['lineItems']} payouts); online Rs{month['onlineTotal']:,.0f}, stores Rs{month['storeTotal']:,.0f}")
     if cn:
-        print(f"  SEED_CN[{a.month}] from the ledger's CN sheet: Rs{cn['total']:,.0f} over {cn['orders']} orders")
-    print(f"  categories from CX tracker: {src['cx']} payouts, from sales lines: {src['sales']}, none: {src['none']}")
+        print(f"  SEED_CN[{a.month}] from {'the ledger' if cn_wb is ledger_wb else 'the CX file'}'s CN sheet: Rs{cn['total']:,.0f} over {cn['orders']} orders")
+    print(f"  categories from the ledger's Category column: {src['ledger']} payouts, from CX tracker: {src['cx']}, from sales lines: {src['sales']}, none: {src['none']}")
     dup = Counter(r['order'] for r in rows)
     for oid, n in dup.items():
         if n > 1:
