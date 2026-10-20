@@ -1,0 +1,270 @@
+"""Store-wise NPS by month from the WhatsApp survey Google Sheet ("bombay_shirt_company_whatsapp_data",
+1U0-PZ33Tq2IICmv0_QCGUDHjrq5bLJG1qUMXVKC8cZU, tab Sheet1). The sheet is refreshed every morning by
+HO with one row per button reply; it is not link-shared, so it is pulled with the Google Sheets
+connector (get_values 'Sheet1!A1:M5000'), whose oversized result is saved as a JSON file:
+
+  python scripts/update_nps.py --sheet-json <saved get_values result> --sales <MTD sales csv>
+
+The sheet has no store or order. A response is put against the POS location of the customer's
+order, matched by email, using the same rule as the NPS_Fit_Assessment workbook (Notes tab): the
+customer's latest order placed at least 7 days before the response, else their latest order on or
+before the response date. On the September responses whose true order is known, that rule picks
+the right store about 93% of the time. When a customer answers more than once for the same order,
+only the latest answer counts.
+
+Order history is a git-ignored email -> orders file (CUSTOMER_ORDERS below, it holds customer
+emails) kept in the main checkout. Each run adds the --sales file to it; --seed adds older sales
+reports (the 2025 report only has a Month column, so those orders are dated to the 1st).
+
+Writes:
+  data/store_audit_nps.json   promoter / neutral / detractor counts per store and month
+                              (audit-tracker store names); read by store-audit.html (through
+                              data/store_audit_data.js, whose "nps" key is rewritten here too)
+                              and by update_store_briefing.py
+  index.html SEED_NPS         the latest month's NPS per POS location, "Online", and overall
+
+September 2026 is kept as it is in store_audit_nps.json: it was built from the September survey
+files, which carry the true order of most responses, so it is better than an email match.
+"""
+import argparse
+import collections
+import datetime as dt
+import json
+import os
+import re
+import subprocess
+import sys
+
+import pandas as pd
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from bsc_common import REGION_MAP, extract_const, replace_const, syntax_check_html_js  # noqa: E402
+from build_store_audit import NPS_STORES, MONTH_NAMES, PAGE  # noqa: E402
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+NPS_JSON = os.path.join(ROOT, 'data', 'store_audit_nps.json')
+AUDIT_JS = os.path.join(ROOT, 'data', 'store_audit_data.js')
+NPS_CAMPAIGN = '~3fp3nn'
+SLOT = {'Very likely': 0, 'Neutral': 1, 'Not likely': 2}
+FIRST_MONTH = '2026-09'          # August starts on the 26th; it is left off, as before
+FROZEN_MONTHS = {'2026-09'}      # see the docstring
+MIN_GAP_DAYS = 7
+SHEET_HEAD = ['user_id', 'campaign_id', 'event_date', 'event_name', 'button_label', 'button_type',
+              'response_time', 'email', 'first_name', 'last_name', 'phone']
+
+
+def main_checkout():
+    """The order history sits in the main checkout's git-ignored data/, also when run from a worktree."""
+    try:
+        common = subprocess.run(['git', 'rev-parse', '--path-format=absolute', '--git-common-dir'], cwd=ROOT,
+                                capture_output=True, text=True, check=True).stdout.strip()
+        return os.path.dirname(common)
+    except (OSError, subprocess.CalledProcessError):
+        return ROOT
+
+
+CUSTOMER_ORDERS = os.path.join(main_checkout(), 'data', 'shopify_orders', 'customer_orders.csv.gz')
+
+
+def read_orders(path):
+    """Distinct orders (email, order, day, pos) from a Shopify "Sales Data Report" CSV."""
+    head = pd.read_csv(path, nrows=0).columns
+    date_col = 'Day' if 'Day' in head else 'Month'
+    df = pd.read_csv(path, usecols=[date_col, 'Order name', 'Order or return', 'Customer email', 'POS location name'],
+                     dtype=str)
+    df = df[(df['Order or return'] == 'order') & df['Customer email'].notna()]
+    out = pd.DataFrame({'email': df['Customer email'].str.strip().str.lower(), 'order': df['Order name'],
+                        'day': df[date_col].str[:10], 'pos': df['POS location name'].fillna('')})
+    return out.drop_duplicates('order')
+
+
+def load_order_history(sales, seeds):
+    frames = []
+    if os.path.exists(CUSTOMER_ORDERS):
+        frames.append(pd.read_csv(CUSTOMER_ORDERS, dtype=str, keep_default_na=False))
+    for p in list(seeds) + ([sales] if sales else []):
+        frames.append(read_orders(p))
+    if not frames:
+        sys.exit('STOP: no order history at %s -- pass --seed <sales report csv> once' % CUSTOMER_ORDERS)
+    hist = pd.concat(frames, ignore_index=True)
+    # A later file wins for the same order (e.g. a Day-dated row over a Month-dated one).
+    hist = hist.drop_duplicates('order', keep='last').sort_values(['email', 'day', 'order'])
+    os.makedirs(os.path.dirname(CUSTOMER_ORDERS), exist_ok=True)
+    hist.to_csv(CUSTOMER_ORDERS, index=False, compression='gzip')
+    by_email = collections.defaultdict(list)
+    for e, o, d, p in hist[['email', 'order', 'day', 'pos']].itertuples(index=False):
+        by_email[e].append((d, o, p))
+    print('order history: %d orders, %d customers, %s -> %s' % (len(hist), len(by_email), hist['day'].min(),
+                                                              hist['day'].max()))
+    return by_email
+
+
+def match(orders, resp_day):
+    """The customer's latest order placed >= 7 days before the response, else latest on/before it."""
+    cutoff = (dt.date.fromisoformat(resp_day) - dt.timedelta(days=MIN_GAP_DAYS)).isoformat()
+    early = [x for x in orders if x[0] <= cutoff]
+    if early:
+        return early[-1]
+    same = [x for x in orders if x[0] <= resp_day]
+    return same[-1] if same else None
+
+
+def load_sheet(path):
+    with open(path, encoding='utf-8') as f:
+        values = json.load(f)['values']
+    head = [h.strip() for h in values[0][:len(SHEET_HEAD)]]
+    if head != SHEET_HEAD:
+        sys.exit('STOP: survey sheet columns changed: %s' % head)
+    stamp = next((c for c in values[0][len(SHEET_HEAD):] if 'refreshed' in c.lower()), '')
+    rows = [r + [''] * (len(SHEET_HEAD) - len(r)) for r in values[1:] if r and len(r) > 6]
+    return rows, stamp
+
+
+def build(rows, by_email):
+    """Counts [promoters, neutral, detractors] per (month, POS location or channel), latest answer per order."""
+    latest = {}
+    report = collections.Counter()
+    for r in rows:
+        if r[1] != NPS_CAMPAIGN or r[4] not in SLOT:
+            continue
+        day, email = r[2][:10], r[7].strip().lower()
+        if day[:7] < FIRST_MONTH:
+            continue
+        m = match(by_email.get(email, []), day)
+        pos = m[2] if m else None
+        key = (email, m[1] if m else None)
+        if key in latest:
+            report['repeat answers for the same order (older ones dropped)'] += 1
+            if latest[key][0] >= r[6]:
+                continue
+        latest[key] = (r[6], day, pos, SLOT[r[4]])
+    counts = collections.defaultdict(lambda: collections.defaultdict(lambda: [0, 0, 0]))
+    dates = collections.defaultdict(list)
+    for _, day, pos, slot in latest.values():
+        mk = day[:7]
+        if pos is None:
+            where = 'Not matched'
+        elif pos in REGION_MAP:
+            where = pos
+        elif pos == '':
+            where = 'Online'
+        else:
+            where = pos              # Virtual Stylist, Corporate Orders, Head Office
+        counts[mk][where][slot] += 1
+        dates[mk].append(day)
+        report['responses ' + ('at a store' if pos in REGION_MAP else 'not at a store: ' + where)] += 1
+    return counts, dates, report
+
+
+def month_meta(mk, days):
+    lo, hi = dt.date.fromisoformat(min(days)), dt.date.fromisoformat(max(days))
+    return {'key': mk, 'label': MONTH_NAMES[lo.month - 1][:3],
+            'range': '%d–%d %s' % (lo.day, hi.day, MONTH_NAMES[hi.month - 1][:3])}
+
+
+def score(c):
+    n = sum(c)
+    return round((c[0] - c[2]) / n * 100, 1) if n else None
+
+
+def write_audit_nps(counts, dates, source):
+    old = {'months': [], 'stores': {}}
+    if os.path.exists(NPS_JSON):
+        with open(NPS_JSON, encoding='utf-8') as f:
+            old = json.load(f)
+    months = [m for m in old['months'] if m['key'] in FROZEN_MONTHS]
+    stores = {s: {mk: c for mk, c in v.items() if mk in FROZEN_MONTHS} for s, v in old['stores'].items()}
+    for mk in sorted(counts):
+        if mk in FROZEN_MONTHS:
+            continue
+        months.append(month_meta(mk, dates[mk]))
+        for pos, c in counts[mk].items():
+            if pos in REGION_MAP:
+                stores.setdefault(NPS_STORES.get(pos, pos), {})[mk] = c
+    months.sort(key=lambda m: m['key'])
+    stores = {s: v for s, v in stores.items() if v}
+    data = {'source': source, 'months': months, 'stores': stores}
+    with open(NPS_JSON, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=1)
+    # store-audit.html reads the copy embedded in store_audit_data.js; swap just that key.
+    with open(AUDIT_JS, encoding='utf-8') as f:
+        js = f.read()
+    m = re.search(r'^window\.AUDIT_DATA = (.*);\s*$', js, re.MULTILINE | re.DOTALL)
+    if not m:
+        sys.exit('STOP: window.AUDIT_DATA not found in %s' % AUDIT_JS)
+    audit = json.loads(m.group(1))
+    audit['nps'] = data
+    with open(AUDIT_JS, 'w', encoding='utf-8', newline='') as f:
+        f.write(js[:m.start(1)] + json.dumps(audit, ensure_ascii=False, separators=(',', ':')) + ';\n')
+    # Version the data file's URL (as build_store_audit.py does) so browsers drop yesterday's cached copy.
+    with open(PAGE, encoding='utf-8') as f:
+        page = f.read()
+    page, n = re.subn(r'src="data/store_audit_data\.js(\?v=[^"]*)?"',
+                      'src="data/store_audit_data.js?v=%s"' % dt.date.today().isoformat(), page)
+    if n != 1:
+        sys.exit('STOP: data script tag not found in store-audit.html')
+    with open(PAGE, 'w', encoding='utf-8', newline='') as f:
+        f.write(page)
+    return data
+
+
+def write_seed_nps(html, counts, dates):
+    """SEED_NPS follows the dashboard's live month (newest SEED_DAYS month), not the newest survey month,
+    so on the 1st -- before the month transition -- it keeps the closing month, and the archive
+    snapshot (month_archive.py) picks up that month's NPS."""
+    with open(html, encoding='utf-8', newline='') as f:
+        content = f.read()
+    mk = max(extract_const(content, 'SEED_DAYS'))[:7]
+    if mk not in counts:
+        print('NOTE: no survey responses yet for the live month %s -- SEED_NPS left as it is' % mk)
+        return None
+    c = counts[mk]
+    by_store = {pos: score(v) for pos, v in sorted(c.items()) if pos in REGION_MAP}
+    if c.get('Online'):
+        by_store['Online'] = score(c['Online'])
+    total = [sum(v[i] for v in c.values()) for i in range(3)]
+    y, mo = int(mk[:4]), int(mk[5:])
+    seed = {'month': '%s-%d' % (MONTH_NAMES[mo - 1][:3], y), 'range': month_meta(mk, dates[mk])['range'],
+            'responses': sum(total), 'byStore': by_store, 'overall': score(total)}
+    new = replace_const(content, 'SEED_NPS', json.dumps(seed, ensure_ascii=False))
+    with open(html, 'w', encoding='utf-8', newline='') as f:
+        f.write(new)
+    try:
+        syntax_check_html_js(html)
+    except Exception:
+        with open(html, 'w', encoding='utf-8', newline='') as f:
+            f.write(content)    # leave the page as it was
+        raise
+    return seed
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--sheet-json', required=True, help="saved Sheets-connector get_values result for 'Sheet1!A1:M5000'")
+    ap.add_argument('--sales', help='month-to-date sales CSV, added to the order history')
+    ap.add_argument('--seed', nargs='*', default=[], help='older sales report CSVs to add to the order history')
+    ap.add_argument('--html', default=os.path.join(ROOT, 'index.html'))
+    a = ap.parse_args()
+
+    rows, stamp = load_sheet(a.sheet_json)
+    print('survey sheet: %d rows. %s' % (len(rows), stamp))
+    by_email = load_order_history(a.sales, a.seed)
+    counts, dates, report = build(rows, by_email)
+    if not counts:
+        sys.exit('STOP: no NPS responses from %s on in the sheet' % FIRST_MONTH)
+    data = write_audit_nps(counts, dates, 'WhatsApp survey sheet (%s)' % (stamp or 'refresh time not shown'))
+    seed = write_seed_nps(a.html, counts, dates)
+    for k, v in sorted(report.items()):
+        print('  %5d  %s' % (v, k))
+    print('store_audit_nps.json months: %s' % ', '.join('%s (%s)' % (m['key'], m['range']) for m in data['months']))
+    if seed:
+        print('OK. SEED_NPS %s (%s): %d responses, overall NPS %s, %d stores'
+              % (seed['month'], seed['range'], seed['responses'], seed['overall'],
+                 sum(1 for s in seed['byStore'] if s in REGION_MAP)))
+    else:
+        print('OK. store_audit_nps.json updated; SEED_NPS unchanged')
+
+
+if __name__ == '__main__':
+    sys.stdout.reconfigure(encoding='utf-8')
+    main()

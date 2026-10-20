@@ -17,6 +17,8 @@ leaving the files as they were -- it never touches git):
   7. Runs footfall.py fetch (HO's footfall Google Sheet -> data/footfall_history_daily.csv). Non-fatal.
   8. Runs update_store_briefing.py (store-briefing.html: per-store numbers + "What to do today"
      call-outs; needs the month's targets in data/briefing_targets.json). Non-fatal.
+     Just before it, with --nps-sheet, runs update_nps.py (store-wise NPS by month from the WhatsApp
+     survey sheet -> data/store_audit_nps.json, data/store_audit_data.js, index.html SEED_NPS). Non-fatal.
 On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
 """
 import argparse
@@ -75,6 +77,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--sales', required=True)
     ap.add_argument('--refund')
+    ap.add_argument('--nps-sheet', help="saved Sheets-connector get_values result of the WhatsApp NPS survey sheet "
+                                        "('Sheet1!A1:M5000'); refreshes store-wise NPS (update_nps.py)")
     ap.add_argument('--today', help='override today (YYYY-MM-DD), for testing')
     a = ap.parse_args()
 
@@ -164,6 +168,19 @@ def main():
         restore(['data/footfall_history_daily.csv'])
         print('WARNING: footfall fetch failed -- footfall history not updated.')
 
+    # NPS: WhatsApp survey sheet -> store-wise NPS by month (data/store_audit_nps.json, store_audit_data.js,
+    # index.html SEED_NPS). Before the briefing, which reads store_audit_nps.json. Non-fatal -- update_nps.py
+    # leaves index.html untouched on failure, so only its two data files need restoring.
+    nps_note = ''
+    if a.nps_sheet:
+        if run([py, 'scripts/update_nps.py', '--sheet-json', a.nps_sheet, '--sales', a.sales]) != 0:
+            restore(['data/store_audit_nps.json', 'data/store_audit_data.js'])
+            print('WARNING: update_nps.py failed -- NPS NOT updated (still shows the previous run).')
+            nps_note = ' (NPS step failed, see WARNING)'
+    else:
+        print('NOTE: no --nps-sheet given -- NPS not refreshed this run.')
+        nps_note = ' (NPS not refreshed: no --nps-sheet)'
+
     # Store briefing page: after the footfall fetch, since conversion uses it. Non-fatal -- on failure the
     # page keeps yesterday's briefing (its own "Sales data through" date shows that).
     if run([py, 'scripts/update_store_briefing.py', '--html', 'store-briefing.html', '--sales', a.sales]) != 0:
@@ -171,7 +188,7 @@ def main():
         print('WARNING: update_store_briefing.py failed -- store-briefing.html NOT updated (still shows the previous day).')
 
     print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/, %s and store-briefing.html).'
-          % (last, '' if forecast_ok else ' (forecast step failed, see WARNING)', FORECAST_PAGE))
+          % (last, ('' if forecast_ok else ' (forecast step failed, see WARNING)') + nps_note, FORECAST_PAGE))
 
 
 if __name__ == '__main__':
