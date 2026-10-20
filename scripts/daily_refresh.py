@@ -15,7 +15,7 @@ leaving the files as they were -- it never touches git):
   6. Runs forecast.py run (separate forecast page FORECAST_PAGE + data/ history/log). Non-fatal: on failure data/ is restored
      and a WARNING is printed, but the sales refresh still counts as OK.
   7. Runs footfall.py fetch (HO's footfall Google Sheet -> data/footfall_history_daily.csv), then
-     update_footfall_dashboard.py (SEED_FOOTFALL in index.html: footfall + conversion views). Non-fatal.
+     update_footfall_dashboard.py (footfall + conversion views in index.html and the tracker's SM view). Non-fatal.
   8. Runs update_store_briefing.py (store-briefing.html: per-store numbers + "What to do today"
      call-outs; needs the month's targets in data/briefing_targets.json). Non-fatal.
      Just before it, with --nps-sheet, runs update_nps.py (store-wise NPS by month from the WhatsApp
@@ -168,10 +168,10 @@ def main():
     if run([py, 'scripts/footfall.py', 'fetch']) != 0:
         restore(['data/footfall_history_daily.csv'])
         print('WARNING: footfall fetch failed -- footfall history not updated.')
-    # Footfall + conversion views on index.html (SEED_FOOTFALL). Non-fatal; the script leaves index.html
-    # untouched when it fails, so yesterday's footfall just stays on the page.
-    if run([py, 'scripts/update_footfall_dashboard.py', '--html', 'index.html']) != 0:
-        print('WARNING: update_footfall_dashboard.py failed -- footfall/conversion on index.html NOT updated.')
+    # Footfall + conversion views: index.html SEED_FOOTFALL and the tracker's SM_FOOTFALL. Non-fatal; the script
+    # leaves a page untouched when its JS check fails, so yesterday's footfall just stays on it.
+    if run([py, 'scripts/update_footfall_dashboard.py', '--html', 'index.html', '--tracker', 'stylist-weekly-tracker.html']) != 0:
+        print('WARNING: update_footfall_dashboard.py failed -- footfall/conversion NOT updated.')
 
     # NPS: WhatsApp survey sheet -> store-wise NPS by month (data/store_audit_nps.json, store_audit_data.js,
     # index.html SEED_NPS). Before the briefing, which reads store_audit_nps.json. Non-fatal -- update_nps.py
