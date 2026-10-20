@@ -489,6 +489,10 @@ Six modes: `jul-aug`, `aug-sep`, `jul-sep`, `sep-oct`, `aug-oct`, `jul-oct` (the
 
 **Adding a month to the tracker** (done for October on 2026-10-05): run `update_tracker.py --period <mon>` with the new month's first file, then in the HTML add the `PERIOD_META` entries (`<prev>-<mon>`, `aug-<mon>`, `jul-<mon>`; the first two need a `b2Desc`), the period and "Did not grow" dropdown options plus `GROWTH_FILTERS`, a table column (`renderHeader`, `sortValue`, `renderTable`), `restKeyMap`, and a detail-panel row. Reword the month that just closed so it no longer says "MTD" / "Sep 1–30 only": `daily_refresh.py` bumps every `Data as of … — <Month> MTD`, `<Month> MTD (N days)` and `<Mon> 1–N only|MTD` string it finds, and needs at least 4 / 3 of the first two for the live month.
 
+## 5a. Footfall and conversion (Overview, Region-wise, Store-wise; added 2026-10-20)
+
+Each of the three tabs ends with a footfall and conversion table, comparing the last 7 days with the 7 days before, and month to date with the same dates last month. Both windows end on the last day of the selected range, or on the last footfall day if footfall is a day behind. Conversion = bills ÷ walk-ins and new-customer conversion = new-customer bills ÷ new walk-ins (HO's "NC conversion"). Both count only store-days whose footfall was logged. Above 100% is shown muted with a `*`: the store under-logged walk-ins (several high-street stores do). The data is `SEED_FOOTFALL` in index.html, written by `scripts/update_footfall_dashboard.py`, which `daily_refresh.py` runs right after `footfall.py fetch`. It holds walk-ins per store per day from the 1st of last month, plus last month's daily bills from `data/months/<prev>.json`; the live month's bills come from SEED_DAYS. So at a month transition, the archive snapshot must exist before the next daily run, or last-month conversion shows "—". The tables are hidden on archived-month views.
+
 ## 6a. Category tab hierarchy (Category → Sub-category 1)
 
 The Category tab groups sales by merchandising's own hierarchy, taken from the **Base** sheet of the
