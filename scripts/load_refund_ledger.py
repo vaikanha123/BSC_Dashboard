@@ -27,7 +27,7 @@ from collections import Counter, defaultdict
 import openpyxl
 import pandas as pd
 
-from bsc_common import (extract_const, find_refund_and_cn_sheets, month_key_from_date, process_refund_sheet,
+from bsc_common import (extract_const, find_refund_and_cn_sheets, iso_from_date, month_key_from_date, process_refund_sheet,
                         replace_const, syntax_check_html_js)
 
 # Ledger location code -> store name used by the CX refund/CN files (and SEED_REFUNDS.byStore).
@@ -245,6 +245,7 @@ def main():
         content = f.read()
     seed = extract_const(content, 'SEED_REFUNDS')
     month['source'] = 'ledger'  # the Refunds & CN trend table labels the live month by this
+    month['through'] = max((d for d in (iso_from_date(r['date']) for r in rows) if d), default=None)
     seed['byMonth'][a.month] = month
     content = replace_const(content, 'SEED_REFUNDS', json.dumps(seed))
     # From Oct 1-13 the ledger file also carries the CX credit-note sheet; load it when present,

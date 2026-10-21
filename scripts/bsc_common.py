@@ -223,6 +223,23 @@ def month_key_from_date(v, current_month_fallback):
     return None
 
 
+def mk_iso(mk):
+    """'Oct-2026' -> '2026-10'."""
+    mon, y = mk.split('-')
+    return f"{y}-{MONTHS.index(mon) + 1:02d}"
+
+
+def iso_from_date(v):
+    """A refund/CN date cell as 'YYYY-MM-DD' (a date, or text like '18-Oct-2026'), else None."""
+    if hasattr(v, 'year'):
+        return v.strftime('%Y-%m-%d') if 2020 <= v.year <= 2100 else None
+    m = re.match(r'(\d{1,2})[-\s]([A-Za-z]{3,9})[-\s](\d{4})', str(v or '').strip())
+    mons = [mn.lower() for mn in MONTHS]
+    if m and m.group(2)[:3].lower() in mons:
+        return f"{m.group(3)}-{mons.index(m.group(2)[:3].lower()) + 1:02d}-{int(m.group(1)):02d}"
+    return None
+
+
 def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, cat_idx=6, channel_idx=0, store_idx=4):
     """Aggregate one refund or CN sheet (openpyxl worksheet) into the by-month structure baked
     into SEED_REFUNDS / SEED_CN. Column indices match the established Refund/CN export format --
@@ -233,6 +250,7 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
         'byStoreCount': defaultdict(int),
         'byReasonOnline': defaultdict(float), 'byReasonOffline': defaultdict(float),
         'byCategoryOnline': defaultdict(float), 'byCategoryOffline': defaultdict(float),
+        'through': None,
     })
     for row in ws.iter_rows(min_row=2, values_only=True):
         amt = row[amount_idx]
@@ -258,6 +276,9 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
         store = (row[store_idx] or '').strip() if row[store_idx] else ''
         order_id = row[2] or ''
         m = by_month[mk]
+        d = iso_from_date(row[date_idx])
+        if d and d[:7] == mk_iso(mk) and (m['through'] is None or d > m['through']):
+            m['through'] = d   # latest processed date in the month: what the store briefing rates against
         m['total'] += amt
         if is_online:
             m['onlineTotal'] += amt
@@ -286,6 +307,7 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
             'byStoreCount': dict(m['byStoreCount']),
             'byReasonOnline': dict(m['byReasonOnline']), 'byReasonOffline': dict(m['byReasonOffline']),
             'byCategoryOnline': dict(m['byCategoryOnline']), 'byCategoryOffline': dict(m['byCategoryOffline']),
+            'through': m['through'],
         }
     return out
 

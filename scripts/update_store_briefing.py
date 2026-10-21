@@ -17,6 +17,8 @@ Sources:
     with no survey responses yet this month shows no NPS. --compliance still overrides the audit
     score; with neither, it is carried forward from the page's previous BRIEFING_DATA.
   - Last month's ASP/UPT: index.html.
+  - Refunds and credit notes by store: index.html (SEED_REFUNDS / SEED_CN, as on its Refunds & CN
+    tab), rated against the store's own revenue over the days those files cover.
 
 Target basis (same as the Store Pulse page, so the two can be cross-checked):
   month revenue target = the day-wise file's Store Total row; New/Repeat revenue targets = that
@@ -28,6 +30,10 @@ picked from four store-team levers (new-customer conversion, New AOV, repeat cus
 AOV) -- only the ones behind target, ranked by the revenue they have cost month to date -- and a
 stylist line naming who is behind / ahead of their own day-wise target. Nothing is shown that the
 store cannot act on today (see BSC_Dashboard_Runbook.md, briefing conventions).
+
+Refunds and CNs: a store whose refunds + credit notes, as a % of its revenue, run at HIGH_RETURNS_X
+times the all-store rate or more (and at least MIN_RETURNS_AMT) gets a call-out at the top of its
+briefing and is listed on the store-select page, worst first.
 """
 import argparse
 import calendar
@@ -56,6 +62,14 @@ MIN_MISSED_BILLS = 3         # conversion is a call-out only once the gap is wor
 MIN_BILLS_FOR_AOV = 5        # fewer bills than this and an AOV gap is noise, not a call-out
 STYLIST_BEHIND = 0.8         # below 80% of own target-to-date = named as behind
 UNTAGGED_SHARE = 0.08        # share of store revenue with no stylist on the bill worth calling out
+# Refunds + credit notes: a store is called out at the top of its briefing when, as a % of its own
+# revenue over the same dates, they run at this multiple of the all-store rate or more, and come
+# to at least MIN_RETURNS_AMT (so one large return at a small store is not a call-out on its own).
+HIGH_RETURNS_X = 1.25
+MIN_RETURNS_AMT = 50000
+REFUND_STORE_ALIAS = {'Viman Nagar': 'PMC Viman Nagar Pune', 'KEMPS CORNER': 'Kemps Corner'}  # as in index.html
+REASON_NAMES = {'FITS': 'fit', 'FABS': 'fabric', 'CANC': 'cancelled orders', 'CUSTOMER CHANGED MIND': 'customer changed mind',
+                'DELAYED DISPATCH': 'delayed dispatch', 'WRONG SIZE': 'wrong size', 'WRONG GARMENT': 'wrong garment'}
 
 
 def inr(n):
@@ -327,6 +341,93 @@ def build_store(store, sub, tg, ff, ctx, last_day, d_el, d_in, prev_audit):
     }
 
 
+def load_returns(index_path, month):
+    """This month's refunds and credit notes by store from index.html (SEED_REFUNDS / SEED_CN), or
+    None when the month has neither. 'through' is the earlier of the two files' last processed
+    date, so revenue can be taken over the same days."""
+    with open(index_path, encoding='utf-8') as f:
+        content = f.read()
+    key = MONTHS[int(month[5:]) - 1] + '-' + month[:4]
+    out, throughs = {'reasons': {}}, []
+    for kind, const in (('refund', 'SEED_REFUNDS'), ('cn', 'SEED_CN')):
+        try:
+            m = extract_const(content, const)['byMonth'].get(key)
+        except Exception:
+            m = None
+        if not m:
+            return None
+        amt, cnt = {}, {}
+        for st, v in m.get('byStore', {}).items():
+            n = m.get('byStoreCount', {}).get(st, 0)
+            st = REFUND_STORE_ALIAS.get(st, st)
+            amt[st] = amt.get(st, 0) + v
+            cnt[st] = cnt.get(st, 0) + n
+        out[kind] = {'amt': amt, 'cnt': cnt}
+        reasons = m.get('byReasonOffline') or {}
+        tot = sum(reasons.values())
+        top = max(reasons, key=reasons.get) if reasons else None
+        out['reasons'][kind] = (REASON_NAMES.get(top), reasons[top] / tot) if top and tot else (None, 0)
+        throughs.append(m.get('through'))
+    out['through'] = min(throughs) if all(throughs) else None
+    return out
+
+
+def returns_watch(stores, subs, returns, last_day):
+    """Adds 'returns' to each store's briefing and returns (through, all-store rate, stores to call
+    out worst first). Rates are refunds / credit notes as a % of the store's own revenue over the
+    days the refund and CN files cover, against the same rate across all briefing stores."""
+    through = min(returns['through'] or last_day.isoformat(), last_day.isoformat())
+    rows = {}
+    for store, sub in subs.items():
+        rows[store] = {'rev': float(sub[sub['Day_str'] <= through]['Revenue'].sum()),
+                       'refund': returns['refund']['amt'].get(store, 0), 'cn': returns['cn']['amt'].get(store, 0),
+                       'refundCount': returns['refund']['cnt'].get(store, 0), 'cnCount': returns['cn']['cnt'].get(store, 0)}
+    tot_rev = sum(r['rev'] for r in rows.values())
+    if not tot_rev:
+        return through, None, []
+    net = {k: sum(r[k] for r in rows.values()) / tot_rev for k in ('refund', 'cn')}
+    net_all = net['refund'] + net['cn']
+    day = datetime.date.fromisoformat(through)
+    period = f"1–{day.day} {MONTHS[day.month - 1]}"
+    label = {'refund': 'refunds', 'cn': 'credit notes'}
+    flagged = []
+    for store, r in rows.items():
+        if not r['rev']:
+            continue
+        rate = {k: r[k] / r['rev'] for k in ('refund', 'cn')}
+        both = r['refund'] + r['cn']
+        high = both / r['rev'] >= net_all * HIGH_RETURNS_X and both >= MIN_RETURNS_AMT
+        block = {'through': through, 'rev': round(r['rev']), 'refund': round(r['refund']), 'cn': round(r['cn']),
+                 'refundCount': r['refundCount'], 'cnCount': r['cnCount'], 'refundRate': round(rate['refund'], 4),
+                 'cnRate': round(rate['cn'], 4), 'rate': round(both / r['rev'], 4), 'netRefundRate': round(net['refund'], 4),
+                 'netCnRate': round(net['cn'], 4), 'netRate': round(net_all, 4), 'high': high}
+        if high:
+            # name whichever of the two is above the all-store rate (usually both)
+            parts = [k for k in ('refund', 'cn') if rate[k] > net[k]] or ['refund', 'cn']
+            figs = '; '.join(f"{label[k]} {inr(r[k])} over {r[k + 'Count']} item{'s' if r[k + 'Count'] != 1 else ''}, {rate[k] * 100:.1f}% of revenue against "
+                             f"{net[k] * 100:.1f}% across stores" for k in ('refund', 'cn') if r[k])
+            detail = (f"{inr(both)} went back as refunds and credit notes in {period}, {both / r['rev'] * 100:.1f}% of the store's "
+                      f"revenue and {both / r['rev'] / net_all:.1f}x the all-store rate of {net_all * 100:.1f}%. "
+                      f"{figs[0].upper() + figs[1:]}.")
+            actions = []
+            if 'refund' in parts:
+                why, share = returns['reasons']['refund']
+                actions.append("No refund without the SM's sign-off. For a complaint, offer an alteration, a remake or an "
+                               "exchange first" + (f" (across stores, {why} is behind {pct(share)} of store refunds this month)"
+                                                    if why else '') + '.')
+            if 'cn' in parts:
+                why, share = returns['reasons']['cn']
+                actions.append("Before raising a credit note, try to solve it on the spot with an alteration or exchange. "
+                               "At the time of order, recheck measurements, fabric and the delivery date with the customer"
+                               + (f" (across stores, the biggest reason for credit notes is {why}, {pct(share)})" if why else '')
+                               + '.')
+            block.update({'title': 'High ' + ' and '.join(label[k] for k in parts), 'detail': detail, 'actions': actions})
+            flagged.append(store)
+        stores[store]['returns'] = block
+    flagged.sort(key=lambda s: -stores[s]['returns']['rate'])
+    return through, net_all, flagged
+
+
 def load_audit_scores(month):
     """This month's NPS and compliance score per store, worked out the way store-audit.html does.
 
@@ -421,7 +522,7 @@ def main():
     month_nps, month_audit = load_audit_scores(month)
     nps_label = month_nps.pop('_label', None)
 
-    stores = {}
+    stores, subs = {}, {}
     for store in sorted(targets):
         sub = df[df['POS location name'] == store]
         if sub.empty:
@@ -429,6 +530,7 @@ def main():
             continue
         audit = compliance.get(store) or month_audit.get(store) or (prev_stores.get(store) or {}).get('audit')
         stores[store] = build_store(store, sub, targets[store], footfall.get(store, {}), ctx, last_day, d_el, d_in, audit)
+        subs[store] = sub
         if nps_label:
             # the report card has this month's survey: use it, and show nothing rather than an
             # older month's score for a store with no responses yet
@@ -436,8 +538,16 @@ def main():
             stores[store]['nps'] = got['score'] if got else None
             stores[store]['npsMeta'] = {'label': nps_label, 'n': got['n'] if got else 0}
 
+    returns = load_returns(index_path, month)
+    watch = None
+    if returns:
+        through, net_rate, flagged = returns_watch(stores, subs, returns, last_day)
+        if net_rate is not None:
+            watch = {'through': through, 'netRate': round(net_rate, 4), 'stores': flagged}
+
     payload = {
         'generatedAt': datetime.datetime.now().isoformat(timespec='seconds'),
+        'returnsWatch': watch,
         'lastSalesDay': last_day.isoformat(),
         'briefingFor': (last_day + datetime.timedelta(days=1)).isoformat(),
         'daysElapsed': d_el, 'daysRemaining': d_in - d_el, 'daysInMonth': d_in, 'stores': stores,
@@ -451,6 +561,11 @@ def main():
           f"{len(no_focus)} with no focus item; briefing for {payload['briefingFor']}.")
     print(f"  NPS {nps_label or 'from index.html'}: {sum(1 for v in stores.values() if v.get('nps') is not None)} stores; "
           f"audit score from the report card: {sum(1 for s in stores if s in month_audit and s not in compliance)} stores.")
+    if watch:
+        print(f"  refunds + CN through {watch['through']}: all-store rate {watch['netRate'] * 100:.1f}%; called out at the top: "
+              + (', '.join(f"{s} {stores[s]['returns']['rate'] * 100:.1f}%" for s in watch['stores']) or 'none'))
+    else:
+        print(f"  no refund/CN data for {month} in index.html -- no refund/CN call-outs")
 
 
 if __name__ == '__main__':
