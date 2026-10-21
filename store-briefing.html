@@ -508,6 +508,18 @@ function renderHOContent(store){
         </div>
       </div>`;
 
+  // A store flagged for high refunds + CNs (see returnsAlert) also gets it as the first talking point
+  // here, so it is read out with the HO points and not only seen on page 1.
+  const r = (BRIEFING_DATA.stores[store] || {}).returns;
+  const returnsPoint = r && r.high ? `
+    <div class="brief-keep" style="margin-bottom:12px; padding:10px 14px; background:var(--panel2); border-radius:8px; border-left:3px solid var(--bad);">
+      <div style="font-size:13px; font-weight:600; color:var(--bad);">${store}: ${r.title}, ${(r.rate*100).toFixed(1)}% of revenue</div>
+      <div style="font-size:13px; color:var(--text-dim); line-height:1.6; margin-top:4px;">${r.detail}</div>
+      <ul style="margin:4px 0 0 18px; padding:0; font-size:13px; color:var(--text-dim); line-height:1.6;">
+        ${(r.actions || []).map(a => `<li>${a}</li>`).join('')}
+      </ul>
+    </div>` : '';
+
   const points = (c.talkingPoints || []).map(p => `
     <div style="margin-bottom:10px;">
       <div style="font-size:13px; font-weight:600; color:var(--text);">${p.title}</div>
@@ -588,6 +600,7 @@ function renderHOContent(store){
 
   return `
     <div>
+      ${returnsPoint}
       ${points}
       ${spotlight ? `<div style="font-size:13px; font-weight:600; color:var(--text); margin:14px 0 8px;">Know Your Product${c.spotlightTitle ? ` <span style="font-weight:400; color:var(--text-dim);">&mdash; ${c.spotlightTitle}</span>` : ''}</div>${spotlight}` : ''}
       ${spotlight && c.spotlightNote ? `<div style="font-size:12.5px; color:var(--text-dim); margin:0 0 14px;"><i class="ti ti-ruler-measure" style="color:var(--brass);"></i>&nbsp; ${c.spotlightNote}</div>` : ''}
