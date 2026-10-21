@@ -65,6 +65,14 @@
   .rank tbody tr:hover td{background:var(--panel2);}
   .rank tr.sel td{background:var(--panel2); box-shadow:inset 2px 0 0 var(--brass);}
   .rank td small{color:var(--text-mute); margin-left:4px;}
+  .reg{margin-bottom:16px;}
+  .reg th.grp{text-align:center; border-left:1px solid var(--line2); color:var(--brass);}
+  .reg td.gs, .reg th.gs{border-left:1px solid var(--line2);}
+  .reg td.d{font-size:11.5px;}
+  .reg td small{color:var(--text-mute); margin-left:4px;}
+  .reg td:first-child{white-space:nowrap;}
+  .reg tr.sel td{box-shadow:inset 2px 0 0 var(--brass);}
+  .reg .note{border-top:1px solid var(--line); padding:10px 14px; font-size:12px; color:var(--text-mute);}
   @media (max-width:1100px){ .grid{grid-template-columns:1fr;} }
   @media (max-width:860px){
     html, body{padding:12px;} .dash{padding:16px;}
@@ -92,6 +100,7 @@
     </div>
   </div>
   <div class="tiles" id="tiles"></div>
+  <div class="card reg" id="reg"></div>
   <div class="grid" id="grid"></div>
   <div class="legend">
     <span><b class="g">■</b> 80% and above</span>
@@ -223,6 +232,57 @@ function tiles(mk, stores){
   return h;
 }
 
+// Region of each store, named as in the audit tracker. Same North / South / West split as REGION_MAP in scripts/bsc_common.py.
+const REGION = {
+  'Ambience Vasnt Kunj':'North', 'DLF Midtown':'North', 'Gurugram':'North', 'Jaipur':'North', 'Khan Market':'North',
+  'Mall of India':'North', 'Phoenix Lucknow':'North', 'Select City Mall':'North', 'Shakespear Sarani':'North',
+  'South Ex.':'North', 'Vegas Mall Dwarka':'North',
+  'Express Avenue':'South', 'Indiranagar':'South', 'Inorbit mall':'South', 'Jayanagar':'South', 'Jubilee Hills':'South',
+  'KNK Chennai':'South', 'Kochi':'South', 'Lakeshore mall, Kukatpally':'South', 'Lavelle Road':'South',
+  'PMC Whitefield':'South', 'R.K. Salai':'South', 'Sharath City':'South',
+  'Andheri':'West', 'Inorbit Mall Malad West':'West', 'Juhu':'West', 'Kalaghoda, Fort':'West', 'Kemps Corner':'West',
+  'Koregaon Park':'West', 'Oberoi Mall':'West', 'Pali Hill, Khar':'West', 'Phoenix Viman Nagar':'West', 'PMC Kurla':'West',
+  'Sindhu Bhavan Marg':'West', 'Sky City Borivali':'West', 'Viviana Mall':'West'
+};
+const REGIONS = ['North', 'South', 'West'];
+const regionStores = r => D.stores.filter(st => REGION[st] === r);
+
+// Region-wise scores for the month picked, next to the month before. Change is in percentage points (NPS in points).
+function regionCard(mk, sel){
+  const i = D.months.findIndex(m => m.key === mk), prev = i > 0 ? D.months[i - 1] : null, cur = D.months[i];
+  const pk = prev && prev.key;
+  const measures = [
+    {h:'Compliance', v:(m, st) => compAvg(m, st, WEEKS)},
+    {h:'Behaviour', v:(m, st) => auditPct('ba', m, st, WEEKS, -1), n:(m, st) => auditCount('ba', m, st, WEEKS)},
+    {h:'Inbound', v:(m, st) => auditPct('inb', m, st, WEEKS, -1), n:(m, st) => auditCount('inb', m, st, WEEKS)},
+    {h:'Sales', v:(m, st) => auditPct('sal', m, st, WEEKS, -1), n:(m, st) => auditCount('sal', m, st, WEEKS)},
+    {h:'NPS', nps:true, v:(m, st) => npsScore(npsCounts(st, [m])), n:(m, st) => npsN(npsCounts(st, [m]))}
+  ];
+  const curL = cur.label.slice(0, 3), prevL = prev ? prev.label.slice(0, 3) : 'Prev';
+  const val = (ms, m, st) => {
+    if (!m) return '<td class="x">–</td>';
+    const v = ms.v(m, st), n = ms.n ? ms.n(m, st) : 0;
+    return ms.nps ? `<td class="${npsCls(v)}">${npsFmt(v)}${n ? `<small>(${n})</small>` : ''}</td>`
+                  : `<td class="${cls(v)}">${fmt(v)}${n ? `<small>(${n})</small>` : ''}</td>`;
+  };
+  const delta = (ms, st) => {
+    const a = ms.v(mk, st), b = pk ? ms.v(pk, st) : null;
+    if (a == null || b == null) return '<td class="d x">–</td>';
+    const d = Math.round(a - b);
+    return `<td class="d ${d > 0 ? 'g' : d < 0 ? 'b' : 'x'}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '0'}${ms.nps ? '' : ' pts'}</td>`;
+  };
+  const row = (label, st, c) => `<tr class="${c || ''}"><td>${esc(label)}<small>${st.length} stores</small></td>` +
+    measures.map(ms => val(ms, mk, st).replace('<td class="', '<td class="gs ') + val(ms, pk, st) + delta(ms, st)).join('') + '</tr>';
+  const selReg = sel !== 'ALL' ? REGION[sel] : null;
+  const body = REGIONS.map(r => row(r, regionStores(r), r === selReg ? 'sel' : '')).join('') + row('All stores', D.stores, 'total');
+  const head = '<thead><tr><th rowspan="2">Region</th>' + measures.map(ms => `<th class="grp" colspan="3">${ms.h}</th>`).join('') + '</tr><tr>' +
+    measures.map(() => `<th class="gs">${esc(curL)}</th><th>${esc(prevL)}</th><th>Change</th>`).join('') + '</tr></thead>';
+  const partial = Object.keys(cur.weeks).length < 4 ? ` ${cur.label} so far covers ${Object.keys(cur.weeks).join(', ')} only (${Object.values(cur.weeks).join(', ')}), against the full ${prev ? prev.label : 'previous month'}.` : '';
+  return `<h2>Region-wise scores, ${esc(cur.label)} vs ${prev ? esc(prev.label) : 'previous month'} <span>change in percentage points; NPS change in points</span></h2>` +
+    `<div class="scroll"><table>${head}<tbody>${body}</tbody></table></div>` +
+    `<div class="note">Region scores use the same method as the store figures: compliance is total score ÷ max across the region's stores, audits are the average of audit scores, NPS is pooled responses. Figures in brackets are audits, calls or responses.${partial}</div>`;
+}
+
 let sortCol = 0, sortDir = 1;
 function renderRank(mk, sel){
   const rows = D.stores.map(st => ({st, v:[compAvg(mk, [st], WEEKS), auditPct('ba', mk, [st], WEEKS, -1), auditPct('inb', mk, [st], WEEKS, -1), auditPct('sal', mk, [st], WEEKS, -1), npsScore(npsCounts([st], [mk]))],
@@ -246,6 +306,7 @@ const pickStore = document.getElementById('store'), pickMonth = document.getElem
 function render(){
   const sel = pickStore.value, mk = pickMonth.value, month = D.months.find(m => m.key === mk), stores = storesFor(sel);
   document.getElementById('tiles').innerHTML = tiles(mk, stores);
+  document.getElementById('reg').innerHTML = regionCard(mk, sel);
   document.getElementById('grid').innerHTML = compCard(mk, month, sel) + auditCard('ba', mk, month, sel) + auditCard('inb', mk, month, sel) + auditCard('sal', mk, month, sel) + npsCard(mk, sel);
   renderRank(mk, sel);
 }
