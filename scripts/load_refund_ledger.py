@@ -27,7 +27,7 @@ from collections import Counter, defaultdict
 import openpyxl
 import pandas as pd
 
-from bsc_common import (extract_const, find_refund_and_cn_sheets, iso_from_date, month_key_from_date, process_refund_sheet,
+from bsc_common import (extract_const, find_refund_and_cn_sheets, iso_from_date, month_key_from_date, process_refund_sheet, store_top_orders,
                         replace_const, syntax_check_html_js)
 
 # Ledger location code -> store name used by the CX refund/CN files (and SEED_REFUNDS.byStore).
@@ -168,7 +168,8 @@ def sales_categories(path, orders):
 def build_month(rows, cx, sales):
     m = {'total': 0, 'onlineTotal': 0, 'storeTotal': 0, 'lineItems': 0, 'orders': set(),
          'byReason': defaultdict(float), 'byCategory': defaultdict(float), 'byStore': defaultdict(float),
-         'byStoreCount': defaultdict(int), 'byReasonOnline': defaultdict(float),
+         'byStoreCount': defaultdict(int), 'byStoreReason': defaultdict(lambda: defaultdict(float)),
+         'storeOrders': defaultdict(lambda: defaultdict(lambda: defaultdict(float))), 'byReasonOnline': defaultdict(float),
          'byReasonOffline': defaultdict(float), 'byCategoryOnline': defaultdict(float),
          'byCategoryOffline': defaultdict(float)}
     src = Counter()
@@ -205,6 +206,8 @@ def build_month(rows, cx, sales):
         m['byReason'][r['reason']] += amt
         m['byStore'][store] += amt
         m['byStoreCount'][store] += 1
+        m['byStoreReason'][store][r['reason']] += amt
+        m['storeOrders'][store][r['order']][r['reason']] += amt
         m['byReasonOnline' if online else 'byReasonOffline'][r['reason']] += amt
         for cat, w in weights.items():
             share = amt * w / wsum
@@ -214,6 +217,10 @@ def build_month(rows, cx, sales):
     for k, v in m.items():
         if k == 'orders':
             out[k] = len(v)
+        elif k == 'storeOrders':
+            out['byStoreTop'] = store_top_orders(v)
+        elif k == 'byStoreReason':
+            out[k] = {st: {r: round(a, 2) for r, a in rs.items()} for st, rs in v.items()}
         elif isinstance(v, dict):
             out[k] = {kk: round(vv, 2) for kk, vv in v.items()} if not k.endswith('Count') else dict(v)
         else:

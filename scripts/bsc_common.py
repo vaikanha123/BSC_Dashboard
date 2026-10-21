@@ -240,6 +240,16 @@ def iso_from_date(v):
     return None
 
 
+def store_top_orders(store_orders, n=3):
+    """{store: {order: {reason: amt}}} -> {store: [[order, amt, main reason], ...]}, the store's
+    n largest orders. The store briefing uses them to tell one large return from a pattern."""
+    out = {}
+    for store, orders in store_orders.items():
+        tops = sorted(((o, sum(r.values()), max(r, key=r.get)) for o, r in orders.items()), key=lambda t: -t[1])[:n]
+        out[store] = [[o, round(a, 2), why] for o, a, why in tops]
+    return out
+
+
 def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, cat_idx=6, channel_idx=0, store_idx=4):
     """Aggregate one refund or CN sheet (openpyxl worksheet) into the by-month structure baked
     into SEED_REFUNDS / SEED_CN. Column indices match the established Refund/CN export format --
@@ -247,7 +257,8 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
     by_month = defaultdict(lambda: {
         'total': 0, 'onlineTotal': 0, 'storeTotal': 0, 'lineItems': 0, 'orders': set(),
         'byReason': defaultdict(float), 'byCategory': defaultdict(float), 'byStore': defaultdict(float),
-        'byStoreCount': defaultdict(int),
+        'byStoreCount': defaultdict(int), 'byStoreReason': defaultdict(lambda: defaultdict(float)),
+        'storeOrders': defaultdict(lambda: defaultdict(lambda: defaultdict(float))),
         'byReasonOnline': defaultdict(float), 'byReasonOffline': defaultdict(float),
         'byCategoryOnline': defaultdict(float), 'byCategoryOffline': defaultdict(float),
         'through': None,
@@ -292,6 +303,8 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
         if store:
             m['byStore'][store] += amt
             m['byStoreCount'][store] += 1
+            m['byStoreReason'][store][reason] += amt
+            m['storeOrders'][store][order_id or '?'][reason] += amt
         if is_online:
             m['byReasonOnline'][reason] += amt
             m['byCategoryOnline'][category] += amt
@@ -305,6 +318,8 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
             'lineItems': m['lineItems'], 'orders': len(m['orders']),
             'byReason': dict(m['byReason']), 'byCategory': dict(m['byCategory']), 'byStore': dict(m['byStore']),
             'byStoreCount': dict(m['byStoreCount']),
+            'byStoreReason': {st: dict(r) for st, r in m['byStoreReason'].items()},
+            'byStoreTop': store_top_orders(m['storeOrders']),
             'byReasonOnline': dict(m['byReasonOnline']), 'byReasonOffline': dict(m['byReasonOffline']),
             'byCategoryOnline': dict(m['byCategoryOnline']), 'byCategoryOffline': dict(m['byCategoryOffline']),
             'through': m['through'],

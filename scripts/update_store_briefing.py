@@ -68,7 +68,29 @@ UNTAGGED_SHARE = 0.08        # share of store revenue with no stylist on the bil
 REFUND_LIMIT = 0.006
 REFUND_STORE_ALIAS = {'Viman Nagar': 'PMC Viman Nagar Pune', 'KEMPS CORNER': 'Kemps Corner'}  # as in index.html
 REASON_NAMES = {'FITS': 'fit', 'FABS': 'fabric', 'CANC': 'cancelled orders', 'CUSTOMER CHANGED MIND': 'customer changed mind',
-                'DELAYED DISPATCH': 'delayed dispatch', 'WRONG SIZE': 'wrong size', 'WRONG GARMENT': 'wrong garment'}
+                'DELAYED DISPATCH': 'delayed dispatch', 'WRONG SIZE': 'wrong size', 'WRONG GARMENT': 'wrong garment',
+                'FOOS': 'out of stock', 'DELAYED DELIVERY': 'delayed delivery', 'LOST': 'lost in transit', 'SDCD': 'SDCD'}
+# What the store can do about its own main reason; added first to a flagged store's actions.
+REASON_ACTIONS = {
+    'fit': "Fit is the main reason here: recheck measurements and do a trial before handing over, and for ready-to-wear "
+           "check the size against the customer's earlier orders.",
+    'wrong size': "Wrong size is the main reason here: check the size on the bag against the bill before the customer leaves.",
+    'fabric': "Fabric is the main reason here: at the time of order, show how the fabric behaves (creasing, shrinkage, "
+              "sheerness), and tell HO if the complaints share a fabric or batch.",
+    'cancelled orders': "Cancelled orders are the main reason here: before booking, confirm the delivery date, design and "
+                        "measurements with the customer, and note why each one cancels.",
+    'customer changed mind': "Customers changing their mind is the main reason here: confirm the choice and the exchange policy "
+                             "at billing, and offer an exchange or alteration before any refund.",
+    'out of stock': "Out of stock is the main reason here: check stock or fabric availability before confirming an order.",
+}
+ONE_OFF_SHARE = 0.5          # one order this share of a store's refunds + CNs = a single case, not a pattern
+MAIN_REASON_SHARE = 0.3      # below this share no reason is "the main one" (no reason-specific action)
+
+
+def reason_name(code):
+    """Ledger / CX reason code -> plain name. Combined codes ('FITS / FOOS') count as the first."""
+    first = str(code or '').replace(',', '/').split('/')[0].strip().upper()
+    return REASON_NAMES.get(first, 'other')
 
 
 def inr(n):
@@ -355,13 +377,21 @@ def load_returns(index_path, month):
             m = None
         if not m:
             return None
-        amt, cnt = {}, {}
+        amt, cnt, why, top = {}, {}, {}, {}
         for st, v in m.get('byStore', {}).items():
             n = m.get('byStoreCount', {}).get(st, 0)
+            reasons = m.get('byStoreReason', {}).get(st, {})
+            orders = m.get('byStoreTop', {}).get(st, [])
             st = REFUND_STORE_ALIAS.get(st, st)
             amt[st] = amt.get(st, 0) + v
             cnt[st] = cnt.get(st, 0) + n
-        out[kind] = {'amt': amt, 'cnt': cnt}
+            for code, a in reasons.items():
+                why.setdefault(st, {})
+                why[st][reason_name(code)] = why[st].get(reason_name(code), 0) + a
+            top.setdefault(st, []).extend((o, a, reason_name(code)) for o, a, code in orders)
+        # byStoreReason / byStoreTop are absent for files loaded before 2026-10-21: reasons are then
+        # left out of the call-out rather than guessed.
+        out[kind] = {'amt': amt, 'cnt': cnt, 'why': why, 'top': top}
         reasons = m.get('byReasonOffline') or {}
         tot = sum(reasons.values())
         top = max(reasons, key=reasons.get) if reasons else None
@@ -369,6 +399,44 @@ def load_returns(index_path, month):
         throughs.append(m.get('through'))
     out['through'] = min(throughs) if all(throughs) else None
     return out
+
+
+def store_reasons(why, net_why, returns, store, r, net_cn):
+    """(sentence on why the store's refunds + CNs are high, its main reason, order no. if one order is
+    ONE_OFF_SHARE or more of the total). ('', None, None) when the files carry no per-store reasons."""
+    both, rev = r['refund'] + r['cn'], r['rev']
+    if not why or not both:
+        return '', None, None
+    ranked = sorted(why.items(), key=lambda kv: -kv[1])
+    main, main_amt = ranked[0]
+    parts = [f"{main} {inr(main_amt)} ({pct(main_amt / both)} of it; {main_amt / rev * 100:.1f}% of revenue against "
+             f"{net_why.get(main, 0) * 100:.1f}% across stores)"]
+    parts += [f"{w} {inr(a)} ({pct(a / both)})" for w, a in ranked[1:3] if a / both >= 0.1]
+    line = ('Why: ' if main_amt / both >= MAIN_REASON_SHARE else 'Why: no single reason stands out; ') + ', then '.join(parts) + '.'
+    if main_amt / both < MAIN_REASON_SHARE:
+        main = None
+    # The same order can have both a refund and a credit note: add them up before ranking.
+    orders = {}
+    for k in ('refund', 'cn'):
+        for o, a, w in returns[k]['top'].get(store, []):
+            amt, ws, by = orders.get(o, (0, {}, {'refund': 0, 'cn': 0}))
+            ws[w] = ws.get(w, 0) + a
+            by[k] += a
+            orders[o] = (amt + a, ws, by)
+    one_off = None
+    if orders:
+        o, (a, ws, by) = max(orders.items(), key=lambda kv: kv[1][0])
+        w = max(ws, key=ws.get).replace('cancelled orders', 'cancelled order')
+        if a / both >= ONE_OFF_SHARE:
+            one_off = o
+            rest = {k: (r[k] - by[k]) / rev for k in ('refund', 'cn')}
+            below = rest['refund'] <= REFUND_LIMIT and rest['cn'] <= net_cn
+            line += (f" One order, {o} ({w}, {inr(a)}), is {pct(a / both)} of the total; without it refunds are "
+                     f"{rest['refund'] * 100:.1f}% and credit notes {rest['cn'] * 100:.1f}% of revenue"
+                     + (", below the call-out lines." if below else '.'))
+        elif a / both >= 0.2:
+            line += f" Largest single case: {o} ({w}, {inr(a)}), {pct(a / both)} of the total."
+    return line, main, one_off
 
 
 def returns_watch(stores, subs, returns, last_day):
@@ -386,6 +454,16 @@ def returns_watch(stores, subs, returns, last_day):
         return through, None, []
     net = {k: sum(r[k] for r in rows.values()) / tot_rev for k in ('refund', 'cn')}
     net_all = net['refund'] + net['cn']
+    # Reasons per store, refunds and CNs together, and the all-store rate of each reason
+    store_why = {s: {} for s in rows}
+    for s in rows:
+        for k in ('refund', 'cn'):
+            for why, a in returns[k]['why'].get(s, {}).items():
+                store_why[s][why] = store_why[s].get(why, 0) + a
+    net_why = {}
+    for s in rows:
+        for why, a in store_why[s].items():
+            net_why[why] = net_why.get(why, 0) + a / tot_rev
     day = datetime.date.fromisoformat(through)
     period = f"1–{day.day} {MONTHS[day.month - 1]}"
     label = {'refund': 'refunds', 'cn': 'credit notes'}
@@ -409,6 +487,12 @@ def returns_watch(stores, subs, returns, last_day):
             detail = (f"{inr(both)} went back as refunds and credit notes in {period}, {both / r['rev'] * 100:.1f}% of the store's revenue. "
                       f"{figs[0].upper() + figs[1:]}.")
             actions = []
+            why_line, main_why, one_off = store_reasons(store_why[store], net_why, returns, store, r, net['cn'])
+            if one_off:
+                actions.append(f"Check order {one_off} with HO first: it is most of this, so the store may not have a "
+                               "wider problem.")
+            elif main_why in REASON_ACTIONS:
+                actions.append(REASON_ACTIONS[main_why])
             if 'refund' in parts:
                 why, share = returns['reasons']['refund']
                 actions.append("No refund without the SM's sign-off. For a complaint, offer an alteration, a remake or an "
@@ -420,7 +504,8 @@ def returns_watch(stores, subs, returns, last_day):
                                "At the time of order, recheck measurements, fabric and the delivery date with the customer"
                                + (f" (across stores, the biggest reason for credit notes is {why}, {pct(share)})" if why else '')
                                + '.')
-            block.update({'title': 'High ' + ' and '.join(label[k] for k in parts), 'detail': detail, 'actions': actions})
+            block.update({'title': 'High ' + ' and '.join(label[k] for k in parts), 'detail': detail, 'actions': actions,
+                          'why': why_line, 'mainReason': 'one large case' if one_off else (main_why or 'mixed')})
             flagged.append(store)
         stores[store]['returns'] = block
     flagged.sort(key=lambda s: -stores[s]['returns']['rate'])
