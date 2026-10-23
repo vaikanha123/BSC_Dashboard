@@ -281,6 +281,7 @@ let state = {
   refundsData: null,  // uploaded refund summary, or null to use fallback snapshot
   cnData: null,        // uploaded credit note summary, or null to use fallback snapshot
   activeTab: 'overview',
+  ldDay: null,       // Last day tab: 'YYYY-MM-DD' picked, or null for the latest day
   viewMonth: null,     // 'Mon-YYYY' of an archived month being viewed, or null for the live month
   monthLoading: null,  // 'Mon-YYYY' while its archive file is being fetched
   showManagePanel: false,
@@ -1234,6 +1235,7 @@ function render(){
   tabBar.style.cssText = 'display:flex; gap:2px; padding:16px 24px 0; border-bottom:1px solid var(--line);';
   const tabs = [
     {id:'overview', label:'Overview', icon:'ti-layout-dashboard'},
+    {id:'lastday', label:'Last day', icon:'ti-calendar-event'},
     {id:'stores', label:'Store-wise', icon:'ti-building-store'},
     {id:'regions', label:'Region-wise', icon:'ti-map-2'},
     {id:'trend', label:'Daily trend', icon:'ti-chart-line'},
@@ -1271,6 +1273,7 @@ function render(){
   root.appendChild(body);
 
   if(state.activeTab === 'overview') renderOverview(body, days);
+  if(state.activeTab === 'lastday') renderLastDay(body, days);
   if(state.activeTab === 'stores') renderStores(body, days);
   if(state.activeTab === 'regions') renderRegions(body, days);
   if(state.activeTab === 'trend') renderTrend(body, days);
@@ -1545,6 +1548,200 @@ function renderFFCompare(body, days, groups, title){
   wrap.appendChild(t);
   body.appendChild(wrap);
   body.appendChild(ffNoteEl(P, ' LW = the 7 days before, LM = last month; conversion changes are in percentage points (pp). * = more bills than logged walk-ins, so that store’s footfall looks under-recorded.'));
+}
+
+// ---- Last day: how one day's sales happened (defaults to the latest day; any day of the period can be picked) ----
+// Revenue/bills/AOV split new vs repeat from the sales export; footfall + conversion from SEED_FOOTFALL (live month
+// only, store-days with footfall logged). Compared with the same weekday a week earlier.
+function ldStats(dk, stores){
+  const rev = state.days[dk] || {}, bills = state.billDays[dk] || {};
+  const nR = state.newRevDays[dk] || {}, rR = state.repRevDays[dk] || {}, nB = state.newBillDays[dk] || {}, rB = state.repBillDays[dk] || {};
+  const ffDay = (!isArchiveView() && typeof SEED_FOOTFALL !== 'undefined') ? SEED_FOOTFALL.ff[dk] : null;
+  const a = {rev:0, target:0, bills:0, newRev:0, repRev:0, newBills:0, repBills:0,
+             ffNew:0, ffRep:0, ffBills:0, ffNewBills:0, ffRepBills:0, ffStores:0};
+  stores.forEach(s => {
+    a.rev += rev[s] || 0; a.bills += bills[s] || 0;
+    a.newRev += nR[s] || 0; a.repRev += rR[s] || 0; a.newBills += nB[s] || 0; a.repBills += rB[s] || 0;
+    const t = offlineRegion(s) ? storeTargetForDay(s, dk) : null;
+    if(t) a.target += t;
+    const f = ffDay && ffDay[s];
+    if(f){
+      const b = ffBills(dk, s);
+      a.ffNew += f[0]; a.ffRep += f[1]; a.ffBills += b[0]; a.ffNewBills += b[1]; a.ffRepBills += b[2]; a.ffStores++;
+    }
+  });
+  // online locations share one daily expectation -- only applied to an online-only group
+  if(stores.length && stores.every(s => !offlineRegion(s))) a.target = onlineTargetForDay(dk) || 0;
+  a.ff = a.ffNew + a.ffRep;
+  a.aov = a.bills ? a.rev / a.bills : null;
+  a.newAov = a.newBills ? a.newRev / a.newBills : null;
+  a.repAov = a.repBills ? a.repRev / a.repBills : null;
+  a.conv = a.ff ? a.ffBills / a.ff : null;
+  a.newConv = a.ffNew ? a.ffNewBills / a.ffNew : null;
+  a.repConv = a.ffRep ? a.ffRepBills / a.ffRep : null;
+  a.newShare = a.bills ? a.newBills / a.bills : null;
+  return a;
+}
+function renderLastDay(body, days){
+  if(!state.ldDay || !days.includes(state.ldDay)) state.ldDay = days[days.length-1];
+  const dk = state.ldDay, lw = ffAddDays(dk, -7);
+  const allLocs = new Set();
+  [dk, lw].forEach(d => Object.keys(state.days[d] || {}).forEach(s => allLocs.add(s)));
+  if(typeof SEED_FOOTFALL !== 'undefined' && SEED_FOOTFALL.ff[dk]) Object.keys(SEED_FOOTFALL.ff[dk]).forEach(s => allLocs.add(s));
+  Object.keys(STORE_LOOKUP).forEach(s => { if(storeTargetForDay(s, dk)) allLocs.add(s); });
+  const offline = [...allLocs].filter(s => offlineRegion(s)).sort();
+  const online = [...allLocs].filter(s => !offlineRegion(s)).sort();
+  const hasLW = !!state.days[lw];
+  const ffOn = !isArchiveView() && typeof SEED_FOOTFALL !== 'undefined' && !!SEED_FOOTFALL.ff[dk];
+
+  // ---- day picker ----
+  const bar = document.createElement('div');
+  bar.style.cssText = 'display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px;';
+  bar.innerHTML = `<span style="font-size:15px; font-weight:600;">How ${dayLabel(dk)} went</span>
+    <select id="bsc-ld-day" style="background:var(--panel); border:0.5px solid var(--line2); color:var(--text); font-size:12px; padding:5px 8px; border-radius:6px; font-family:inherit; color-scheme:dark;">
+      ${days.slice().reverse().map(d => `<option value="${d}"${d===dk?' selected':''}>${dayLabel(d)}</option>`).join('')}
+    </select>
+    <span style="font-size:11.5px; color:var(--text-mute);">compared with ${dayLabel(lw)}, the same day last week${hasLW?'':' (not loaded, so no comparison)'}</span>`;
+  body.appendChild(bar);
+  bar.querySelector('#bsc-ld-day').addEventListener('change', e => { state.ldDay = e.target.value; render(); });
+
+  const S = ldStats(dk, offline), L = hasLW ? ldStats(lw, offline) : null;
+  const O = ldStats(dk, online), OL = hasLW ? ldStats(lw, online) : null;
+  const chg = (now, then, money) => {
+    if(then === null || then === undefined || !then || now === null) return '';
+    const p = (now - then) / then * 100;
+    return `<span style="color:${p>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${p>=0?'+':''}${p.toFixed(1)}%</span> vs LW (${money ? fmtINR(then) : ffNum(then)})`;
+  };
+  const pp = (now, then) => {
+    if(now === null || then === null || then === undefined) return '';
+    const v = (now - then) * 100;
+    return `<span style="color:${v>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${v>=0?'+':''}${v.toFixed(1)} pp</span> vs LW (${ffPct(then)})`;
+  };
+  const achS = achOf(S.rev, S.target), achO = achOf(O.rev, O.target);
+  const cards = [
+    {label: 'Store revenue', val: fmtINR(S.rev), sub: (S.target ? `target ${fmtINR(S.target)} · <span style="color:${achColor(achS)}; font-weight:600;">${fmtPct(achS)}</span><br>` : '') + chg(S.rev, L && L.rev, true)},
+    {label: 'Online revenue', val: fmtINR(O.rev), sub: (O.target ? `expectation ${fmtINR(O.target)} · <span style="color:${achColor(achO)}; font-weight:600;">${fmtPct(achO)}</span><br>` : '') + chg(O.rev, OL && OL.rev, true)},
+    {label: 'Store bills', val: ffNum(S.bills), sub: ffNum(S.newBills) + ' new · ' + ffNum(S.repBills) + ' repeat<br>' + chg(S.bills, L && L.bills)},
+    {label: 'Store AOV', val: S.aov === null ? '—' : fmtINR(S.aov), sub: chg(S.aov, L && L.aov, true)},
+    {label: 'New-customer AOV', val: S.newAov === null ? '—' : fmtINR(S.newAov), sub: chg(S.newAov, L && L.newAov, true)},
+    {label: 'Repeat-customer AOV', val: S.repAov === null ? '—' : fmtINR(S.repAov), sub: chg(S.repAov, L && L.repAov, true)},
+  ];
+  if(ffOn){
+    cards.push(
+      {label: 'New footfall', val: ffNum(S.ffNew), sub: S.ffStores + ' stores logged<br>' + chg(S.ffNew, L && L.ffNew)},
+      {label: 'Repeat footfall', val: ffNum(S.ffRep), sub: chg(S.ffRep, L && L.ffRep)},
+      {label: 'Conversion', val: ffPct(S.conv), sub: pp(S.conv, L && L.conv)},
+      {label: 'New-customer conversion', val: ffPct(S.newConv), sub: pp(S.newConv, L && L.newConv)},
+      {label: 'Repeat-customer conversion', val: ffPct(S.repConv), sub: pp(S.repConv, L && L.repConv)});
+  }
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(165px,1fr)); gap:12px; margin-bottom:22px;';
+  cards.forEach(c => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--panel); border-radius:10px; padding:14px 16px;';
+    card.innerHTML = `<div style="font-size:12px; color:var(--text-mute); margin-bottom:6px;">${c.label}</div>
+      <div style="font-size:22px; font-weight:600;" class="bsc-mono">${c.val}</div>
+      ${c.sub?`<div style="font-size:11.5px; color:var(--text-mute); margin-top:4px; line-height:1.5;">${c.sub}</div>`:''}`;
+    grid.appendChild(card);
+  });
+  body.appendChild(grid);
+
+  // ---- per-store / per-region stats ----
+  const storeRows = offline.map(s => ({name: s, region: offlineRegion(s), d: ldStats(dk, [s]), l: hasLW ? ldStats(lw, [s]) : null}))
+    .filter(r => r.d.rev || r.d.bills || r.d.target || r.d.ff);
+  const regRows = ['North','South','West'].map(reg => {
+    const st = offline.filter(s => offlineRegion(s) === reg);
+    return {name: reg, d: ldStats(dk, st), l: hasLW ? ldStats(lw, st) : null};
+  });
+
+  // ---- what happened: auto-generated read-out ----
+  const pts = [];
+  const move = (now, then) => { const p = (now - then) / then * 100; return (p >= 0 ? 'up ' : 'down ') + Math.abs(p).toFixed(0) + '%'; };
+  const ppTxt = (now, then) => { const v = (now - then) * 100; return (v >= 0 ? '+' : '') + v.toFixed(1) + ' pp'; };
+  pts.push(`Stores did <b>${fmtINR(S.rev)}</b> from ${ffNum(S.bills)} bills` + (S.target ? ` (<b style="color:${achColor(achS)}">${fmtPct(achS)}</b> of the ${fmtINR(S.target)} target)` : '') +
+    (L && L.rev ? `, ${move(S.rev, L.rev)} on ${dayLabel(lw)}` : '') + `. Online added ${fmtINR(O.rev)} from ${ffNum(O.bills)} bills` +
+    (O.target ? ` (${fmtPct(achO)} of expectation)` : '') + '.');
+  const regAch = regRows.filter(r => r.d.target).map(r => ({...r, ach: achOf(r.d.rev, r.d.target)})).sort((a,b) => b.ach - a.ach);
+  if(regAch.length > 1) pts.push(`Best region: <b>${regAch[0].name}</b> at ${fmtPct(regAch[0].ach)} of target; weakest: <b>${regAch[regAch.length-1].name}</b> at ${fmtPct(regAch[regAch.length-1].ach)}.`);
+  if(S.newAov !== null && S.repAov !== null) pts.push(`New customers made ${ffPct(S.newShare)} of store bills at an AOV of ${fmtINR(S.newAov)}; repeat customers spent ${fmtINR(S.repAov)} per bill` +
+    (L && L.newAov && L.repAov ? ` (new AOV ${move(S.newAov, L.newAov)}, repeat AOV ${move(S.repAov, L.repAov)} vs last week)` : '') + '.');
+  if(ffOn) pts.push(`${ffNum(S.ff)} walk-ins (${ffNum(S.ffNew)} new, ${ffNum(S.ffRep)} repeat) across ${S.ffStores} stores converted at <b>${ffPct(S.conv)}</b>; new-customer conversion was <b>${ffPct(S.newConv)}</b>` +
+    (L && L.conv !== null && L.newConv !== null && S.newConv !== null ? ` (${ppTxt(S.conv, L.conv)} overall and ${ppTxt(S.newConv, L.newConv)} new vs last week)` : '') + '.');
+  const withAch = storeRows.filter(r => r.d.target).map(r => ({...r, ach: achOf(r.d.rev, r.d.target)})).sort((a,b) => b.ach - a.ach);
+  if(withAch.length >= 6){
+    pts.push('Top stores vs target: ' + withAch.slice(0,3).map(r => `<b>${r.name}</b> ${fmtPct(r.ach)}`).join(', ') + '.');
+    pts.push('Furthest behind: ' + withAch.slice(-3).reverse().map(r => `<b>${r.name}</b> ${fmtPct(r.ach)} (${fmtINR(r.d.rev)} of ${fmtINR(r.d.target)})`).join(', ') + '.');
+  }
+  if(ffOn){
+    const zero = storeRows.filter(r => r.d.ff >= 3 && !r.d.ffBills).map(r => `${r.name} (${ffNum(r.d.ff)})`);
+    if(zero.length) pts.push('Walk-ins but no bills: ' + zero.join(', ') + '.');
+    const lowNew = storeRows.filter(r => r.d.ffNew >= 5 && r.d.newConv !== null && r.d.newConv < 0.2).sort((a,b) => b.d.ffNew - a.d.ffNew)
+      .map(r => `${r.name} (${ffNum(r.d.ffNewBills)} of ${ffNum(r.d.ffNew)})`);
+    if(lowNew.length) pts.push('New-customer conversion under 20% on 5+ new walk-ins: ' + lowNew.join(', ') + '.');
+    const missing = storeRows.filter(r => !r.d.ffStores && (r.d.bills || r.d.target)).map(r => r.name);
+    if(missing.length) pts.push('No footfall logged for ' + missing.join(', ') + ', so they are left out of conversion.');
+  }
+  const readout = document.createElement('div');
+  readout.style.cssText = 'background:var(--panel); border-radius:10px; padding:14px 18px; margin-bottom:8px;';
+  readout.innerHTML = `<div style="font-size:13px; font-weight:600; color:var(--brass); margin-bottom:8px;">What happened</div>
+    <ul style="margin:0; padding-left:18px; font-size:13px; line-height:1.7; color:var(--text-dim);">${pts.map(p => '<li>' + p + '</li>').join('')}</ul>`;
+  body.appendChild(readout);
+
+  // ---- region and store tables ----
+  const td = (v, extra) => `<td style="padding:8px 10px; text-align:right; white-space:nowrap;${extra||''}" class="bsc-mono">${v}</td>`;
+  const dash = td('—', ' color:var(--text-mute);');
+  const money = v => v === null ? '—' : fmtINR(v);
+  const head = first => '<tr style="color:var(--text-mute); font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;">' +
+    first.map(t => `<td style="padding:6px 10px;">${t}</td>`).join('') +
+    ['Revenue','Target','Ach%','vs LW','Bills','New bills','Rep. bills','AOV','New AOV','Rep. AOV'].concat(ffOn ? ['New FF','Rep. FF','Conv.','Conv. vs LW','New conv.','Rep. conv.'] : [])
+      .map(t => `<td style="padding:6px 10px; text-align:right;">${t}</td>`).join('') + '</tr>';
+  const line = (cells, d, l, bold) => {
+    const ach = achOf(d.rev, d.target);
+    const ffCells = !ffOn ? '' : d.ffStores
+      ? td(ffNum(d.ffNew)) + td(ffNum(d.ffRep)) + ffConvCell(d.conv, true) + ffPpCell(d.conv, l && l.ffStores ? l.conv : null) + ffConvCell(d.newConv) + ffConvCell(d.repConv)
+      : dash.repeat(6);
+    return `<tr style="border-top:${bold?'2px':'1px'} solid var(--line);${bold?' font-weight:700;':''}">` +
+      cells.map((c, i) => `<td style="padding:8px 10px;${i ? ' color:var(--text-mute);' : ' font-weight:' + (bold?700:500) + ';'}">${c}</td>`).join('') +
+      td(fmtINR(d.rev)) + td(d.target ? fmtINR(d.target) : '—') + td(fmtPct(ach), ` color:${achColor(ach)}; font-weight:600;`) +
+      (l ? ffChgCell(d.rev, l.rev) : dash) +
+      td(ffNum(d.bills)) + td(ffNum(d.newBills)) + td(ffNum(d.repBills)) +
+      td(money(d.aov)) + td(money(d.newAov)) + td(money(d.repAov)) + ffCells + '</tr>';
+  };
+  const table = rowsHtml => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'overflow-x:auto;';
+    const t = document.createElement('table');
+    t.style.cssText = 'font-size:13px;';
+    t.innerHTML = rowsHtml;
+    wrap.appendChild(t);
+    body.appendChild(wrap);
+  };
+
+  body.appendChild(ffHead('Region-wise · ' + dayLabel(dk)));
+  let rr = head(['Region']);
+  regRows.forEach(r => { rr += line([r.name], r.d, r.l); });
+  rr += line(['All stores'], S, L, true);
+  if(online.length) rr += line(['Online'], O, OL);
+  const all = offline.concat(online);
+  rr += line(['Total incl. online'], ldStats(dk, all), hasLW ? ldStats(lw, all) : null, true);
+  table(rr);
+
+  body.appendChild(ffHead('Store-wise · ' + dayLabel(dk)));
+  let sr = head(['Store', 'Region']);
+  storeRows.sort((a,b) => (achOf(b.d.rev, b.d.target) || 0) - (achOf(a.d.rev, a.d.target) || 0) || b.d.rev - a.d.rev)
+    .forEach(r => { sr += line([r.name, r.region], r.d, r.l); });
+  online.map(s => ({name: s, d: ldStats(dk, [s]), l: hasLW ? ldStats(lw, [s]) : null})).filter(r => r.d.rev || r.d.bills)
+    .forEach(r => { r.d.target = 0; sr += line([r.name, 'Online'], r.d, r.l); });
+  table(sr);
+
+  const note = document.createElement('div');
+  note.style.cssText = 'font-size:11.5px; color:var(--text-mute); margin-top:10px; margin-bottom:8px; line-height:1.6;';
+  note.textContent = 'Revenue = gross sales + taxes + shipping, as on the other tabs; AOV = revenue ÷ bills, split by whether the customer was new or repeat. ' +
+    'LW = the same weekday a week earlier (' + dayLabel(lw) + '). ' +
+    (ffOn ? 'FF = HO’s store walk-in count (FF sheet). Conversion = bills ÷ walk-ins; new conversion = new-customer bills ÷ new walk-ins; repeat conversion = repeat bills ÷ repeat walk-ins. Only stores that logged footfall that day count towards conversion. * = more bills than logged walk-ins. '
+          : 'Footfall is only loaded for the live month, so it is not shown for this day. ') +
+    'Online = Online, Virtual Stylist and Corporate Orders; its target is the online team’s daily expectation, shown on the Online total only.';
+  body.appendChild(note);
 }
 
 function renderOverview(body, days){
