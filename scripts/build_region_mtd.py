@@ -255,6 +255,12 @@ def main():
     with open(out, 'w', encoding='utf-8', newline='\n') as f:
         f.write(render(a.region, rows, meta))
     print('OK: %s written (%d stores, through %s)' % (a.out, len(rows), meta['last']))
+    t = total_row(rows)
+    # One-line digest for the Slack post that goes with the screenshot.
+    print('SUMMARY: through=%s day=%d/%d mtd=%s mtd_target=%s mtd_achv=%d%% proj=%s target=%s proj_achv=%d%%' % (
+        meta['last'], meta['elapsed'], meta['days'], fmt_int(t['mtd']), fmt_int(t['mtdTarget']),
+        round(t['mtd'] / t['mtdTarget'] * 100), fmt_int(t['proj']), fmt_int(t['target']),
+        round(t['proj'] / t['target'] * 100)))
     if a.png:
         screenshot(out, a.png, len(rows))
         print('OK: screenshot %s' % a.png)
