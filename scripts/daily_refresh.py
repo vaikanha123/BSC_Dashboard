@@ -20,6 +20,8 @@ leaving the files as they were -- it never touches git):
      call-outs; needs the month's targets in data/briefing_targets.json). Non-fatal.
      Just before it, with --nps-sheet, runs update_nps.py (store-wise NPS by month from the WhatsApp
      survey sheet -> data/store_audit_nps.json, data/store_audit_data.js, index.html SEED_NPS). Non-fatal.
+  9. Runs build_region_mtd.py (west-mtd.html: the West RM's store-wise MTD sheet, screenshotted to Slack
+     at 11 AM by a separate scheduled task). Non-fatal.
 On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
 """
 import argparse
@@ -192,7 +194,12 @@ def main():
         restore(['store-briefing.html'])
         print('WARNING: update_store_briefing.py failed -- store-briefing.html NOT updated (still shows the previous day).')
 
-    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/, %s and store-briefing.html).'
+    # West RM's MTD sheet (west-mtd.html), built from index.html after every step above has written it.
+    if run([py, 'scripts/build_region_mtd.py', '--region', 'West', '--out', 'west-mtd.html']) != 0:
+        restore(['west-mtd.html'])
+        print('WARNING: build_region_mtd.py failed -- west-mtd.html NOT updated (still shows the previous day).')
+
+    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/, %s, store-briefing.html and west-mtd.html).'
           % (last, ('' if forecast_ok else ' (forecast step failed, see WARNING)') + nps_note, FORECAST_PAGE))
 
 
