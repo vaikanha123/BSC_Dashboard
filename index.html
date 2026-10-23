@@ -1701,7 +1701,7 @@ function renderLastDay(body, days){
       ? td(ffNum(d.ffNew)) + td(ffNum(d.ffRep)) + ffConvCell(d.conv, true) + ffPpCell(d.conv, l && l.ffStores ? l.conv : null) + ffConvCell(d.newConv) + ffConvCell(d.repConv)
       : dash.repeat(6);
     return `<tr style="border-top:${bold?'2px':'1px'} solid var(--line);${bold?' font-weight:700;':''}">` +
-      cells.map((c, i) => `<td style="padding:8px 10px;${i ? ' color:var(--text-mute);' : ' font-weight:' + (bold?700:500) + ';'}">${c}</td>`).join('') +
+      cells.map((c, i) => `<td style="padding:8px 10px;${i ? ' color:var(--text-dim);' : ' font-weight:' + (bold?700:500) + ';'}">${c}</td>`).join('') +
       td(fmtINR(d.rev)) + td(d.target ? fmtINR(d.target) : '—') + td(fmtPct(ach), ` color:${achColor(ach)}; font-weight:600;`) +
       (l ? ffChgCell(d.rev, l.rev) : dash) +
       td(ffNum(d.bills)) + td(ffNum(d.newBills)) + td(ffNum(d.repBills)) +
