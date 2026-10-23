@@ -22,6 +22,12 @@ Writes:
                               data/store_audit_data.js, whose "nps" key is rewritten here too)
                               and by update_store_briefing.py
   index.html SEED_NPS         the latest month's NPS per POS location, "Online", and overall
+  --raw-out <json>            (optional) one row per NPS reply in the dashboard's live month, with
+                              the matched order's store, stylist and products, for the "BSC NPS Raw
+                              Data" Google Sheet. It holds customer emails and phones: write it outside
+                              the repo or under the git-ignored data/shopify_orders/, never commit it.
+                              Products and stylists come from a second git-ignored cache,
+                              ORDER_DETAILS, fed by --sales / --seed like the order history.
 
 September 2026 is kept as it is in store_audit_nps.json: it was built from the September survey
 files, which carry the true order of most responses, so it is better than an email match.
@@ -64,6 +70,11 @@ def main_checkout():
 
 
 CUSTOMER_ORDERS = os.path.join(main_checkout(), 'data', 'shopify_orders', 'customer_orders.csv.gz')
+ORDER_DETAILS = os.path.join(main_checkout(), 'data', 'shopify_orders', 'order_details.csv.gz')
+NPS_GROUP = ['Promoter', 'Passive', 'Detractor']
+RAW_HEAD = ['Response date', 'Response time (IST)', 'Customer name', 'Email', 'Phone', 'Answer', 'NPS group',
+            'Counted in NPS', 'Matched order', 'Order date', 'Days order to reply', 'Store', 'Region',
+            'Sales channel', 'Stylist', 'Products', 'Product types', 'Units', 'Order value (total sales)']
 
 
 def read_orders(path):
@@ -97,6 +108,47 @@ def load_order_history(sales, seeds):
     print('order history: %d orders, %d customers, %s -> %s' % (len(hist), len(by_email), hist['day'].min(),
                                                               hist['day'].max()))
     return by_email
+
+
+def read_details(path):
+    """Per order: channel, stylist(s), product lines, units and total sales, from a "with Stylist Name" report."""
+    head = pd.read_csv(path, nrows=0).columns
+    if 'Assisting staff member name' not in head:
+        return None
+    df = pd.read_csv(path, dtype=str, usecols=['Order name', 'Order or return', 'Line type', 'Sales channel',
+                                               'Product title at time of sale', 'Product variant title at time of sale',
+                                               'Product type', 'Assisting staff member name', 'Quantity ordered',
+                                               'Total sales'])
+    df = df[df['Order or return'] == 'order']
+    df = df.assign(qty=pd.to_numeric(df['Quantity ordered'], errors='coerce').fillna(0),
+                   total=pd.to_numeric(df['Total sales'], errors='coerce').fillna(0))
+    out = []
+    for order, g in df.groupby('Order name', sort=False):
+        lines = g[(g['Line type'] == 'product') & g['Product title at time of sale'].notna()]
+        prods = {}
+        for t, v, q in lines[['Product title at time of sale', 'Product variant title at time of sale', 'qty']].itertuples(index=False):
+            label = t + (' (%s)' % v if isinstance(v, str) and v else '')
+            prods[label] = prods.get(label, 0) + int(q)
+        uniq = lambda col: ', '.join(dict.fromkeys(x for x in g[col].dropna() if x))
+        out.append({'order': order, 'channel': uniq('Sales channel'), 'stylist': uniq('Assisting staff member name'),
+                    'products': '; '.join('%s x%d' % (k, q) if q > 1 else k for k, q in prods.items()),
+                    'types': uniq('Product type'), 'units': int(lines['qty'].sum()), 'value': round(g['total'].sum(), 2)})
+    return pd.DataFrame(out)
+
+
+def load_order_details(sales, seeds):
+    frames = []
+    if os.path.exists(ORDER_DETAILS):
+        frames.append(pd.read_csv(ORDER_DETAILS, dtype=str, keep_default_na=False))
+    for p in list(seeds) + ([sales] if sales else []):
+        d = read_details(p)
+        if d is not None:
+            frames.append(d.astype(str))
+    if not frames:
+        return {}
+    det = pd.concat(frames, ignore_index=True).drop_duplicates('order', keep='last')
+    det.to_csv(ORDER_DETAILS, index=False, compression='gzip')
+    return {r['order']: r for r in det.to_dict('records')}
 
 
 def match(orders, resp_day):
@@ -154,6 +206,53 @@ def build(rows, by_email):
         dates[mk].append(day)
         report['responses ' + ('at a store' if pos in REGION_MAP else 'not at a store: ' + where)] += 1
     return counts, dates, report
+
+
+def raw_rows(rows, by_email, details, mk):
+    """Every NPS reply of month mk with its matched order, store, stylist and products. "Counted in NPS"
+    is No for an older answer to the same order (build() keeps only the latest)."""
+    picked, latest = [], {}
+    for i, r in enumerate(rows):
+        if r[1] != NPS_CAMPAIGN or r[4] not in SLOT or r[2][:7] != mk:
+            continue
+        day, email = r[2][:10], r[7].strip().lower()
+        m = match(by_email.get(email, []), day)
+        key = (email, m[1] if m else None)
+        if key not in latest or latest[key][0] < r[6]:     # as build(): a same-second repeat keeps the first
+            latest[key] = (r[6], i)
+        picked.append((i, r, day, email, m, key))
+    table = []
+    for i, r, day, email, m, key in sorted(picked, key=lambda x: x[1][6]):
+        try:
+            ist = (dt.datetime.strptime(r[6][:19], '%Y-%m-%d %H:%M:%S')
+                   + dt.timedelta(hours=5, minutes=30)).strftime('%Y-%m-%d %H:%M')
+        except ValueError:
+            ist = r[6]
+        d = details.get(m[1], {}) if m else {}
+        store = 'Not matched' if m is None else (m[2] or 'Online')
+        table.append([day, ist, ('%s %s' % (r[8], r[9])).strip(), email, r[10], r[4], NPS_GROUP[SLOT[r[4]]],
+                      'Yes' if latest[key][1] == i else 'No (older answer, same order)',
+                      m[1] if m else '', m[0] if m else '',
+                      (dt.date.fromisoformat(day) - dt.date.fromisoformat(m[0])).days if m else '',
+                      store, REGION_MAP.get(m[2], '') if m else '', d.get('channel', ''), d.get('stylist', ''),
+                      d.get('products', ''), d.get('types', ''), int(d['units']) if d.get('units') else '',
+                      float(d['value']) if d.get('value') else ''])
+    return table
+
+
+def write_raw(path, rows, by_email, details, html, stamp):
+    """The dashboard's live month (as SEED_NPS), so on the 1st the closing month's tab gets its last day."""
+    with open(html, encoding='utf-8') as f:
+        mk = max(extract_const(f.read(), 'SEED_DAYS'))[:7]
+    table = raw_rows(rows, by_email, details, mk)
+    data = {'month': mk, 'tab': '%s %s' % (MONTH_NAMES[int(mk[5:]) - 1][:3], mk[:4]), 'stamp': stamp,
+            'header': RAW_HEAD, 'rows': table}
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False)
+    print('raw NPS rows for %s: %d (%d counted in NPS, %d not matched to an order, %d matched without product '
+          'detail) -> %s' % (data['tab'], len(table), sum(1 for t in table if t[7] == 'Yes'),
+                             sum(1 for t in table if not t[8]), sum(1 for t in table if t[8] and not t[15]), path))
 
 
 def month_meta(mk, days):
@@ -244,6 +343,7 @@ def main():
     ap.add_argument('--sales', help='month-to-date sales CSV, added to the order history')
     ap.add_argument('--seed', nargs='*', default=[], help='older sales report CSVs to add to the order history')
     ap.add_argument('--html', default=os.path.join(ROOT, 'index.html'))
+    ap.add_argument('--raw-out', help="write the live month's per-reply raw rows (has PII) to this JSON file")
     a = ap.parse_args()
 
     rows, stamp = load_sheet(a.sheet_json)
@@ -254,6 +354,8 @@ def main():
         sys.exit('STOP: no NPS responses from %s on in the sheet' % FIRST_MONTH)
     data = write_audit_nps(counts, dates, 'WhatsApp survey sheet (%s)' % (stamp or 'refresh time not shown'))
     seed = write_seed_nps(a.html, counts, dates)
+    if a.raw_out:
+        write_raw(a.raw_out, rows, by_email, load_order_details(a.sales, a.seed), a.html, stamp)
     for k, v in sorted(report.items()):
         print('  %5d  %s' % (v, k))
     print('store_audit_nps.json months: %s' % ', '.join('%s (%s)' % (m['key'], m['range']) for m in data['months']))
