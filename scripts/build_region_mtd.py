@@ -194,30 +194,92 @@ def render(region, rows, meta):
 :root[data-theme="dark"]{--bg:#141816;--card:#1c211f;--ink:#e8ece9;--muted:#9aa6a0;--line:#2f3633;--head:#24302a;
 --head2:#202824;--good:#1f3d29;--good-ink:#8fdba5;--warn:#3d3416;--warn-ink:#f0d080;--bad:#45202a;--bad-ink:#f2a3ad;--total:#3a3517}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
-font:13px/1.35 "Segoe UI",system-ui,-apple-system,sans-serif;padding:16px}
-.wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;width:max-content;max-width:100%%}
-h1{font-size:18px;margin:0 0 2px}.sub{color:var(--muted);margin:0 0 10px}
-.scroll{overflow-x:auto}table{border-collapse:collapse;font-variant-numeric:tabular-nums;white-space:nowrap}
+font:13px/1.35 "Segoe UI",system-ui,-apple-system,sans-serif;padding:12px}
+.wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;width:max-content;
+transform-origin:0 0}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin:0 0 10px}
+h1{font-size:18px;margin:0 0 2px}.sub{color:var(--muted);margin:0}
+#shotBtn{font:600 13px "Segoe UI",system-ui,sans-serif;padding:8px 14px;border-radius:8px;border:1px solid var(--good-ink);
+background:var(--good);color:var(--good-ink);cursor:pointer;white-space:nowrap}#shotBtn:disabled{opacity:.6;cursor:wait}
+body.static #shotBtn{display:none}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;white-space:nowrap}
 th,td{border:1px solid var(--line);padding:4px 7px}th{background:var(--head);font-weight:600;font-size:12px;text-align:center}
 tr.h2 th{background:var(--head2)}th.grp{border-bottom-color:var(--line)}
-td.num{text-align:right}td.store,th.store{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
+td.num{text-align:right}td.store,th.store{text-align:left}
 th.store{background:var(--head)}td.proj{font-weight:600}
 td.pct{font-weight:600}td.good{background:var(--good);color:var(--good-ink)}td.warn{background:var(--warn);color:var(--warn-ink)}
 td.bad{background:var(--bad);color:var(--bad-ink)}
 tr.total td{background:var(--total);font-weight:700}tr.total td.pct.good,tr.total td.pct.warn,tr.total td.pct.bad{border-top:2px solid var(--ink)}
 tr.total td{border-top:2px solid var(--ink)}
 .note{color:var(--muted);font-size:11.5px;margin:10px 0 0;max-width:1100px}
-</style></head><body><div class="wrap">
-<h1>%(region)s &middot; MTD %(month)s Dashboard</h1>
-<p class="sub">Sales through %(through)s &middot; day %(elapsed)d of %(days)d &middot; revenue = gross sales + taxes + shipping</p>
-<div class="scroll"><table><thead>%(head)s</thead><tbody>%(body)s</tbody></table></div>
+</style></head><body><div class="wrap" id="sheet">
+<div class="top"><div><h1>%(region)s &middot; MTD %(month)s Dashboard</h1>
+<p class="sub">Sales through %(through)s &middot; day %(elapsed)d of %(days)d &middot; revenue = gross sales + taxes + shipping</p></div>
+<button id="shotBtn" type="button">Save screenshot</button></div>
+<table><thead>%(head)s</thead><tbody>%(body)s</tbody></table>
 <p class="note">Final Proj = MTD actual &times; %(days)d / %(elapsed)d (straight-line). Achv %% = Final Proj vs month target.
 AOV columns compare actual AOV with the store&rsquo;s HO AOV target; revenue targets are the MTD target split by the
 store&rsquo;s planned new-customer share. Green = at or above 100%%, amber = 90&ndash;99%%, red = below 90%%.
 LY and LM are full-month totals. Same data as the main BSC dashboard, refreshed daily around 10 AM.</p>
-</div></body></html>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>var SHOT_NAME = %(shot)s;</script>
 ''' % dict(region=html.escape(region), month=meta['month'], through=through, elapsed=meta['elapsed'],
-           days=meta['days'], head=head, body=body)
+           days=meta['days'], head=head, body=body,
+           shot=json.dumps('%s-MTD-%s.png' % (region, last.isoformat()))) + PAGE_JS + '</body></html>\n'
+
+
+# Fits the whole sheet on one screen (scales it down, never up) and wires the "Save screenshot" button.
+# ?static (used by the headless --png render) skips both, so the Slack image is full size with no button.
+PAGE_JS = """<script>
+(function () {
+  var sheet = document.getElementById('sheet');
+  var isStatic = /[?&]static(&|=|$)/.test(location.search);
+  if (isStatic) document.body.classList.add('static');
+  var scale = 1;
+  function fit() {
+    if (isStatic) return;
+    sheet.style.transform = 'none';
+    document.body.style.height = '';
+    var w = sheet.offsetWidth, h = sheet.offsetHeight;
+    scale = Math.min(1, (window.innerWidth - 24) / w, (window.innerHeight - 24) / h);
+    sheet.style.transform = scale < 1 ? 'scale(' + scale + ')' : 'none';
+    document.body.style.height = (h * scale + 24) + 'px';
+    document.body.style.overflow = 'hidden';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  var btn = document.getElementById('shotBtn');
+  btn.addEventListener('click', function () {
+    if (!window.html2canvas) { alert('Screenshot tool did not load - check the connection and reload.'); return; }
+    btn.disabled = true; btn.textContent = 'Capturing...';
+    sheet.style.transform = 'none';
+    html2canvas(sheet, {
+      scale: 2, backgroundColor: getComputedStyle(sheet).backgroundColor,
+      ignoreElements: function (el) { return el.id === 'shotBtn'; }
+    }).then(function (canvas) {
+      fit();
+      canvas.toBlob(function (blob) {
+        var file = new File([blob], SHOT_NAME, { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/.test(navigator.userAgent)) {
+          navigator.share({ files: [file], title: SHOT_NAME }).catch(function () {});
+        } else {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = SHOT_NAME;
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+        }
+        btn.disabled = false; btn.textContent = 'Save screenshot';
+      }, 'image/png');
+    }).catch(function () {
+      fit(); btn.disabled = false; btn.textContent = 'Save screenshot';
+      alert('Could not capture the screenshot.');
+    });
+  });
+})();
+</script>
+"""
 
 
 def screenshot(page, png, rows_count):
@@ -225,7 +287,7 @@ def screenshot(page, png, rows_count):
     if not browser:
         raise SystemExit('STOP: no Edge/Chrome found for --png')
     height = 190 + 27 * (rows_count + 1)
-    url = 'file:///' + os.path.abspath(page).replace(os.sep, '/')
+    url = 'file:///' + os.path.abspath(page).replace(os.sep, '/') + '?static'
     png = os.path.abspath(png)
     if os.path.exists(png):
         os.remove(png)
