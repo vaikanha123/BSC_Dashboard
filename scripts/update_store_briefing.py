@@ -31,9 +31,9 @@ AOV) -- only the ones behind target, ranked by the revenue they have cost month 
 stylist line naming who is behind / ahead of their own day-wise target. Nothing is shown that the
 store cannot act on today (see BSC_Dashboard_Runbook.md, briefing conventions).
 
-Refunds and CNs: a store whose refunds + credit notes, as a % of its revenue, run at HIGH_RETURNS_X
-times the all-store rate or more (and at least MIN_RETURNS_AMT) gets a call-out at the top of its
-briefing and is listed on the store-select page, worst first.
+Refunds and CNs: a store whose refunds are above REFUND_LIMIT of its revenue, or whose credit notes
+are above the all-store credit-note rate, gets a call-out at the top of its briefing and is listed on
+the store-select page, worst first.
 """
 import argparse
 import calendar
@@ -62,11 +62,10 @@ MIN_MISSED_BILLS = 3         # conversion is a call-out only once the gap is wor
 MIN_BILLS_FOR_AOV = 5        # fewer bills than this and an AOV gap is noise, not a call-out
 STYLIST_BEHIND = 0.8         # below 80% of own target-to-date = named as behind
 UNTAGGED_SHARE = 0.08        # share of store revenue with no stylist on the bill worth calling out
-# Refunds + credit notes: a store is called out at the top of its briefing when, as a % of its own
-# revenue over the same dates, they run at this multiple of the all-store rate or more, and come
-# to at least MIN_RETURNS_AMT (so one large return at a small store is not a call-out on its own).
-HIGH_RETURNS_X = 1.25
-MIN_RETURNS_AMT = 50000
+# Refunds + credit notes, as a % of the store's own revenue over the same dates (user rule, 2026-10-23):
+# a store is called out when its refunds are above REFUND_LIMIT, or its credit notes are above the
+# all-store credit-note rate. Every store is held to this, whatever the amount.
+REFUND_LIMIT = 0.006
 REFUND_STORE_ALIAS = {'Viman Nagar': 'PMC Viman Nagar Pune', 'KEMPS CORNER': 'Kemps Corner'}  # as in index.html
 REASON_NAMES = {'FITS': 'fit', 'FABS': 'fabric', 'CANC': 'cancelled orders', 'CUSTOMER CHANGED MIND': 'customer changed mind',
                 'DELAYED DISPATCH': 'delayed dispatch', 'WRONG SIZE': 'wrong size', 'WRONG GARMENT': 'wrong garment'}
@@ -396,18 +395,18 @@ def returns_watch(stores, subs, returns, last_day):
             continue
         rate = {k: r[k] / r['rev'] for k in ('refund', 'cn')}
         both = r['refund'] + r['cn']
-        high = both / r['rev'] >= net_all * HIGH_RETURNS_X and both >= MIN_RETURNS_AMT
+        over = {'refund': rate['refund'] > REFUND_LIMIT, 'cn': rate['cn'] > net['cn']}
+        high = over['refund'] or over['cn']
         block = {'through': through, 'rev': round(r['rev']), 'refund': round(r['refund']), 'cn': round(r['cn']),
                  'refundCount': r['refundCount'], 'cnCount': r['cnCount'], 'refundRate': round(rate['refund'], 4),
                  'cnRate': round(rate['cn'], 4), 'rate': round(both / r['rev'], 4), 'netRefundRate': round(net['refund'], 4),
                  'netCnRate': round(net['cn'], 4), 'netRate': round(net_all, 4), 'high': high}
         if high:
-            # name whichever of the two is above the all-store rate (usually both)
-            parts = [k for k in ('refund', 'cn') if rate[k] > net[k]] or ['refund', 'cn']
-            figs = '; '.join(f"{label[k]} {inr(r[k])} over {r[k + 'Count']} item{'s' if r[k + 'Count'] != 1 else ''}, {rate[k] * 100:.1f}% of revenue against "
-                             f"{net[k] * 100:.1f}% across stores" for k in ('refund', 'cn') if r[k])
-            detail = (f"{inr(both)} went back as refunds and credit notes in {period}, {both / r['rev'] * 100:.1f}% of the store's "
-                      f"revenue and {both / r['rev'] / net_all:.1f}x the all-store rate of {net_all * 100:.1f}%. "
+            parts = [k for k in ('refund', 'cn') if over[k]]
+            limit = {'refund': f"the {REFUND_LIMIT * 100:.1f}% limit", 'cn': f"the all-store average of {net['cn'] * 100:.1f}%"}
+            figs = '; '.join(f"{label[k]} {inr(r[k])} over {r[k + 'Count']} item{'s' if r[k + 'Count'] != 1 else ''}, {rate[k] * 100:.1f}% of revenue "
+                             f"({'above' if over[k] else 'not above'} {limit[k]})" for k in ('refund', 'cn') if r[k])
+            detail = (f"{inr(both)} went back as refunds and credit notes in {period}, {both / r['rev'] * 100:.1f}% of the store's revenue. "
                       f"{figs[0].upper() + figs[1:]}.")
             actions = []
             if 'refund' in parts:
@@ -543,7 +542,9 @@ def main():
     if returns:
         through, net_rate, flagged = returns_watch(stores, subs, returns, last_day)
         if net_rate is not None:
-            watch = {'through': through, 'netRate': round(net_rate, 4), 'stores': flagged}
+            net_cn = next((v['returns']['netCnRate'] for v in stores.values() if 'returns' in v), 0)
+            watch = {'through': through, 'netRate': round(net_rate, 4), 'netCnRate': net_cn,
+                     'refundLimit': REFUND_LIMIT, 'stores': flagged}
 
     payload = {
         'generatedAt': datetime.datetime.now().isoformat(timespec='seconds'),
@@ -562,8 +563,10 @@ def main():
     print(f"  NPS {nps_label or 'from index.html'}: {sum(1 for v in stores.values() if v.get('nps') is not None)} stores; "
           f"audit score from the report card: {sum(1 for s in stores if s in month_audit and s not in compliance)} stores.")
     if watch:
-        print(f"  refunds + CN through {watch['through']}: all-store rate {watch['netRate'] * 100:.1f}%; called out at the top: "
-              + (', '.join(f"{s} {stores[s]['returns']['rate'] * 100:.1f}%" for s in watch['stores']) or 'none'))
+        print(f"  refunds + CN through {watch['through']}: flagged when refunds > {REFUND_LIMIT * 100:.1f}% or CN > all-store "
+              f"{watch['netCnRate'] * 100:.1f}%; {len(watch['stores'])} stores called out: "
+              + (', '.join(f"{s} (refund {stores[s]['returns']['refundRate'] * 100:.1f}%, CN {stores[s]['returns']['cnRate'] * 100:.1f}%)"
+                           for s in watch['stores']) or 'none'))
     else:
         print(f"  no refund/CN data for {month} in index.html -- no refund/CN call-outs")
 
