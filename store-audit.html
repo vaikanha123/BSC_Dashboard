@@ -72,6 +72,7 @@
   .reg td small{color:var(--text-mute); margin-left:4px;}
   .reg td:first-child{white-space:nowrap;}
   .reg tr.sel td{box-shadow:inset 2px 0 0 var(--brass);}
+  .reg tr[data-region]{cursor:pointer;}
   .reg .note{border-top:1px solid var(--line); padding:10px 14px; font-size:12px; color:var(--text-mute);}
   @media (max-width:1100px){ .grid{grid-template-columns:1fr;} }
   @media (max-width:860px){
@@ -96,6 +97,7 @@
     </div>
     <div class="picks">
       <div><label class="pick" for="month">Month</label><select id="month"></select></div>
+      <div><label class="pick" for="region">Region</label><select id="region"></select></div>
       <div><label class="pick" for="store">Store</label><select id="store"></select></div>
     </div>
   </div>
@@ -111,7 +113,7 @@
     <span>Weeks follow the audit tracker's periods; a week that straddles two months sits where the tracker puts it.</span>
   </div>
   <div class="card rank">
-    <h2>All stores <span>click a store to open its card, click a heading to sort</span></h2>
+    <h2 id="rankTitle">All stores <span>click a store to open its card, click a heading to sort</span></h2>
     <div class="scroll"><table id="rank"></table></div>
   </div>
 </div></div>
@@ -132,7 +134,8 @@ const cls = p => p == null ? 'x' : p >= 80 ? 'g' : p >= 60 ? 'w' : 'b';
 const fmt = p => p == null ? '–' : Math.round(p) + '%';
 const cell = (p, extra) => `<td class="${cls(p)}${extra ? ' ' + extra : ''}">${fmt(p)}</td>`;
 const mean = a => { const v = a.filter(x => x != null); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
-const storesFor = sel => sel === 'ALL' ? D.stores : [sel];
+// 'ALL' means every store in the region picked (or the whole network when no region is picked).
+const storesFor = sel => sel !== 'ALL' ? [sel] : pickRegion.value === 'ALL' ? D.stores : regionStores(pickRegion.value);
 const at = (key, mk, st, w) => { const m = D[key][mk]; return m && m[st] && m[st][w]; };
 
 // Compliance: total score / total max for the stores and weeks asked for.
@@ -271,21 +274,21 @@ function regionCard(mk, sel){
     const d = Math.round(a - b);
     return `<td class="d ${d > 0 ? 'g' : d < 0 ? 'b' : 'x'}">${d > 0 ? '▲ +' + d : d < 0 ? '▼ ' + d : '0'}${ms.nps ? '' : ' pts'}</td>`;
   };
-  const row = (label, st, c) => `<tr class="${c || ''}"><td>${esc(label)}<small>${st.length} stores</small></td>` +
+  const row = (label, st, c) => `<tr class="${c || ''}"${REGIONS.includes(label) ? ` data-region="${label}"` : ''}><td>${esc(label)}<small>${st.length} stores</small></td>` +
     measures.map(ms => val(ms, mk, st).replace('<td class="', '<td class="gs ') + val(ms, pk, st) + delta(ms, st)).join('') + '</tr>';
-  const selReg = sel !== 'ALL' ? REGION[sel] : null;
+  const selReg = sel !== 'ALL' ? REGION[sel] : pickRegion.value !== 'ALL' ? pickRegion.value : null;
   const body = REGIONS.map(r => row(r, regionStores(r), r === selReg ? 'sel' : '')).join('') + row('All stores', D.stores, 'total');
   const head = '<thead><tr><th rowspan="2">Region</th>' + measures.map(ms => `<th class="grp" colspan="3">${ms.h}</th>`).join('') + '</tr><tr>' +
     measures.map(() => `<th class="gs">${esc(curL)}</th><th>${esc(prevL)}</th><th>Change</th>`).join('') + '</tr></thead>';
   const partial = Object.keys(cur.weeks).length < 4 ? ` ${cur.label} so far covers ${Object.keys(cur.weeks).join(', ')} only (${Object.values(cur.weeks).join(', ')}), against the full ${prev ? prev.label : 'previous month'}.` : '';
-  return `<h2>Region-wise scores, ${esc(cur.label)} vs ${prev ? esc(prev.label) : 'previous month'} <span>change in percentage points; NPS change in points</span></h2>` +
+  return `<h2>Region-wise scores, ${esc(cur.label)} vs ${prev ? esc(prev.label) : 'previous month'} <span>change in percentage points; NPS change in points; click a region to filter</span></h2>` +
     `<div class="scroll"><table>${head}<tbody>${body}</tbody></table></div>` +
     `<div class="note">Region scores use the same method as the store figures: compliance is total score ÷ max across the region's stores, audits are the average of audit scores, NPS is pooled responses. Figures in brackets are audits, calls or responses.${partial}</div>`;
 }
 
 let sortCol = 0, sortDir = 1;
 function renderRank(mk, sel){
-  const rows = D.stores.map(st => ({st, v:[compAvg(mk, [st], WEEKS), auditPct('ba', mk, [st], WEEKS, -1), auditPct('inb', mk, [st], WEEKS, -1), auditPct('sal', mk, [st], WEEKS, -1), npsScore(npsCounts([st], [mk]))],
+  const rows = storesFor('ALL').map(st => ({st, v:[compAvg(mk, [st], WEEKS), auditPct('ba', mk, [st], WEEKS, -1), auditPct('inb', mk, [st], WEEKS, -1), auditPct('sal', mk, [st], WEEKS, -1), npsScore(npsCounts([st], [mk]))],
     n:[null, auditCount('ba', mk, [st], WEEKS), auditCount('inb', mk, [st], WEEKS), auditCount('sal', mk, [st], WEEKS), npsN(npsCounts([st], [mk]))]}));
   rows.sort((a, b) => {
     if (sortCol === 0) return sortDir * a.st.localeCompare(b.st);
@@ -302,17 +305,31 @@ function renderRank(mk, sel){
       r.v.map((p, i) => `<td class="${i === 4 ? npsCls(p) : cls(p)}">${i === 4 ? npsFmt(p) : fmt(p)}${r.n[i] ? `<small>(${r.n[i]})</small>` : ''}</td>`).join('') + '</tr>').join('') + '</tbody>';
 }
 
-const pickStore = document.getElementById('store'), pickMonth = document.getElementById('month');
+const pickStore = document.getElementById('store'), pickMonth = document.getElementById('month'), pickRegion = document.getElementById('region');
 function render(){
   const sel = pickStore.value, mk = pickMonth.value, month = D.months.find(m => m.key === mk), stores = storesFor(sel);
   document.getElementById('tiles').innerHTML = tiles(mk, stores);
   document.getElementById('reg').innerHTML = regionCard(mk, sel);
   document.getElementById('grid').innerHTML = compCard(mk, month, sel) + auditCard('ba', mk, month, sel) + auditCard('inb', mk, month, sel) + auditCard('sal', mk, month, sel) + npsCard(mk, sel);
   renderRank(mk, sel);
+  document.getElementById('rankTitle').firstChild.textContent = pickRegion.value === 'ALL' ? 'All stores ' : `${pickRegion.value} stores `;
+}
+// Store list follows the region picked; a store outside the new region falls back to the region as a whole.
+function fillStores(){
+  const r = pickRegion.value, keep = pickStore.value, list = storesFor('ALL');
+  pickStore.innerHTML = `<option value="ALL">${r === 'ALL' ? 'All stores' : 'All ' + esc(r) + ' stores'}</option>` + list.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+  pickStore.value = list.includes(keep) ? keep : 'ALL';
 }
 
 pickMonth.innerHTML = D.months.slice().reverse().map(m => `<option value="${m.key}">${esc(m.label)}</option>`).join('');
-pickStore.innerHTML = '<option value="ALL">All stores</option>' + D.stores.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+pickRegion.innerHTML = '<option value="ALL">All regions</option>' + REGIONS.map(r => `<option value="${r}">${r}</option>`).join('');
+fillStores();
+pickRegion.addEventListener('change', () => { fillStores(); render(); });
+document.getElementById('reg').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-region]'); if (!tr) return;
+  pickRegion.value = pickRegion.value === tr.dataset.region && pickStore.value === 'ALL' ? 'ALL' : tr.dataset.region;
+  pickStore.value = 'ALL'; fillStores(); render();
+});
 pickMonth.addEventListener('change', render);
 pickStore.addEventListener('change', render);
 document.getElementById('rank').addEventListener('click', e => {
