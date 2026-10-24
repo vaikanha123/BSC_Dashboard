@@ -12347,6 +12347,7 @@ date,store,new,repeat,total
 2026-10-19,Shakespearesarani,9.0,2.0,11.0
 2026-10-19,Sindhu Bhavan Marg,8.0,5.0,13.0
 2026-10-19,South Ex.,2.0,3.0,5.0
+2026-10-19,Vegas Dwarka,5.0,,5.0
 2026-10-19,Viviana Mall,16.0,4.0,20.0
 2026-10-20,Ambience Vasant Kunj,10.0,2.0,12.0
 2026-10-20,Andheri,4.0,10.0,14.0
@@ -12380,6 +12381,7 @@ date,store,new,repeat,total
 2026-10-20,Shakespearesarani,5.0,4.0,9.0
 2026-10-20,Sindhu Bhavan Marg,14.0,12.0,26.0
 2026-10-20,South Ex.,3.0,10.0,13.0
+2026-10-20,Vegas Dwarka,7.0,4.0,11.0
 2026-10-20,Viviana Mall,30.0,15.0,45.0
 2026-10-21,Ambience Vasant Kunj,9.0,4.0,13.0
 2026-10-21,Andheri,0.0,4.0,4.0
@@ -12418,12 +12420,13 @@ date,store,new,repeat,total
 2026-10-22,Ambience Vasant Kunj,14.0,7.0,21.0
 2026-10-22,Andheri,0.0,3.0,3.0
 2026-10-22,DLF Midtown - Moti Nagar,1.0,1.0,2.0
+2026-10-22,Express Avenue,10.0,2.0,12.0
 2026-10-22,Gurugram,0.0,0.0,0.0
 2026-10-22,Indiranagar,5.0,2.0,7.0
 2026-10-22,Inorbit Mall Malad West,5.0,0.0,5.0
 2026-10-22,Inorbit mall Hyderabad,13.0,1.0,14.0
 2026-10-22,Jaipur Store,2.0,3.0,5.0
-2026-10-22,Jubilee Hills,3.0,8.0,11.0
+2026-10-22,Jubilee Hills,5.0,11.0,16.0
 2026-10-22,Juhu Store,8.0,1.0,9.0
 2026-10-22,KNK Chennai,3.0,5.0,8.0
 2026-10-22,"Kalaghoda, Fort",10.0,13.0,23.0
@@ -12436,7 +12439,7 @@ date,store,new,repeat,total
 2026-10-22,"Mall of India, Noida",14.0,5.0,19.0
 2026-10-22,Oberoi Mall Store,7.0,0.0,7.0
 2026-10-22,Oberoi Sky City,11.0,2.0,13.0
-2026-10-22,PMC Viman Nagar Pune,0.0,2.0,2.0
+2026-10-22,PMC Viman Nagar Pune,10.0,2.0,12.0
 2026-10-22,"Pali Hill, Bandra",3.0,8.0,11.0
 2026-10-22,Phoenix Marketcity Kurla,8.0,1.0,9.0
 2026-10-22,"Phoenix Marketcity, Whitefield",9.0,1.0,10.0
@@ -12447,12 +12450,36 @@ date,store,new,repeat,total
 2026-10-22,Sindhu Bhavan Marg,5.0,3.0,8.0
 2026-10-22,South Ex.,4.0,5.0,9.0
 2026-10-22,Viviana Mall,12.0,0.0,12.0
-2026-10-23,Andheri,0.0,0.0,0.0
-2026-10-23,Indiranagar,0.0,0.0,0.0
-2026-10-23,Inorbit Mall Malad West,0.0,0.0,0.0
-2026-10-23,Jaipur Store,0.0,0.0,0.0
-2026-10-23,Jubilee Hills,5.0,11.0,16.0
-2026-10-23,Koregaon Park,0.0,,0.0
-2026-10-23,Lavelle Road,0.0,0.0,0.0
-2026-10-23,PMC Viman Nagar Pune,0.0,,0.0
-2026-10-23,Viviana Mall,0.0,0.0,0.0
+2026-10-23,Ambience Vasant Kunj,21.0,1.0,22.0
+2026-10-23,Andheri,1.0,3.0,4.0
+2026-10-23,DLF Midtown - Moti Nagar,2.0,0.0,2.0
+2026-10-23,Express Avenue,12.0,2.0,14.0
+2026-10-23,Gurugram,3.0,1.0,4.0
+2026-10-23,Indiranagar,9.0,3.0,12.0
+2026-10-23,Inorbit Mall Malad West,5.0,1.0,6.0
+2026-10-23,Inorbit mall Hyderabad,25.0,6.0,31.0
+2026-10-23,Jaipur Store,8.0,4.0,12.0
+2026-10-23,Jubilee Hills,1.0,8.0,9.0
+2026-10-23,Juhu Store,5.0,4.0,9.0
+2026-10-23,KNK Chennai,5.0,1.0,6.0
+2026-10-23,"Kalaghoda, Fort",10.0,9.0,19.0
+2026-10-23,Kemps Corner,4.0,7.0,11.0
+2026-10-23,Khan Market,7.0,4.0,11.0
+2026-10-23,Kochi Store,1.0,1.0,2.0
+2026-10-23,Koregaon Park,7.0,6.0,13.0
+2026-10-23,LakeShore Mall,3.0,0.0,3.0
+2026-10-23,Lavelle Road,1.0,3.0,4.0
+2026-10-23,"Mall of India, Noida",4.0,5.0,9.0
+2026-10-23,Oberoi Mall Store,6.0,2.0,8.0
+2026-10-23,Oberoi Sky City,11.0,0.0,11.0
+2026-10-23,PMC Viman Nagar Pune,0.0,2.0,2.0
+2026-10-23,"Pali Hill, Bandra",7.0,3.0,10.0
+2026-10-23,Phoenix Marketcity Kurla,8.0,5.0,13.0
+2026-10-23,"Phoenix Marketcity, Whitefield",5.0,3.0,8.0
+2026-10-23,Phoenix Palassio,4.0,1.0,5.0
+2026-10-23,Sarath City-Hyderabad,,0.0,0.0
+2026-10-23,Select City,7.0,1.0,8.0
+2026-10-23,Shakespearesarani,4.0,4.0,8.0
+2026-10-23,Sindhu Bhavan Marg,8.0,11.0,19.0
+2026-10-23,South Ex.,3.0,2.0,5.0
+2026-10-23,Viviana Mall,15.0,0.0,15.0
