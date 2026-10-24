@@ -20,7 +20,6 @@ leaving the files as they were -- it never touches git):
      call-outs; needs the month's targets in data/briefing_targets.json). Non-fatal.
      Just before it, with --nps-sheet, runs update_nps.py (store-wise NPS by month from the WhatsApp
      survey sheet -> data/store_audit_nps.json, data/store_audit_data.js, index.html SEED_NPS). Non-fatal.
-  8b. Runs update_sm_audit.py (index.html SM Cohort tab's audit scores from data/store_audit_data.js). Non-fatal.
   9. Runs build_region_mtd.py (west-mtd.html: the West RM's store-wise MTD sheet, screenshotted to Slack
      at 11 AM by a separate scheduled task). Non-fatal.
 On any failure in steps 3-5 the two HTML files are restored from git (git checkout).
@@ -194,10 +193,6 @@ def main():
     if run([py, 'scripts/update_store_briefing.py', '--html', 'store-briefing.html', '--sales', a.sales]) != 0:
         restore(['store-briefing.html'])
         print('WARNING: update_store_briefing.py failed -- store-briefing.html NOT updated (still shows the previous day).')
-
-    # SM Cohort audit scores (index.html), from the store audit report card's data. Non-fatal.
-    if run([py, 'scripts/update_sm_audit.py', '--html', 'index.html']) != 0:
-        print('WARNING: update_sm_audit.py failed -- SM Cohort audit scores NOT updated.')
 
     # West RM's MTD sheet (west-mtd.html), built from index.html after every step above has written it.
     if run([py, 'scripts/build_region_mtd.py', '--region', 'West', '--out', 'west-mtd.html']) != 0:
