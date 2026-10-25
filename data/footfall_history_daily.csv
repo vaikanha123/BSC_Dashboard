@@ -11712,7 +11712,7 @@ date,store,new,repeat,total
 2026-10-01,Express Avenue,7.0,3.0,10.0
 2026-10-01,Gurugram,4.0,0.0,4.0
 2026-10-01,Indiranagar,4.0,4.0,8.0
-2026-10-01,Inorbit Mall Malad West,9.0,4.0,13.0
+2026-10-01,Inorbit Mall Malad West,,9.0,9.0
 2026-10-01,Inorbit mall Hyderabad,10.0,4.0,14.0
 2026-10-01,Jaipur Store,3.0,2.0,5.0
 2026-10-01,Jubilee Hills,6.0,4.0,10.0
@@ -11746,7 +11746,7 @@ date,store,new,repeat,total
 2026-10-02,Express Avenue,18.0,6.0,24.0
 2026-10-02,Gurugram,3.0,6.0,9.0
 2026-10-02,Indiranagar,5.0,9.0,14.0
-2026-10-02,Inorbit Mall Malad West,16.0,5.0,21.0
+2026-10-02,Inorbit Mall Malad West,0.0,16.0,16.0
 2026-10-02,Inorbit mall Hyderabad,37.0,7.0,44.0
 2026-10-02,Jaipur Store,4.0,4.0,8.0
 2026-10-02,Jubilee Hills,8.0,10.0,18.0
@@ -11780,7 +11780,7 @@ date,store,new,repeat,total
 2026-10-03,Express Avenue,16.0,6.0,22.0
 2026-10-03,Gurugram,2.0,12.0,14.0
 2026-10-03,Indiranagar,0.0,0.0,0.0
-2026-10-03,Inorbit Mall Malad West,10.0,5.0,15.0
+2026-10-03,Inorbit Mall Malad West,0.0,10.0,10.0
 2026-10-03,Inorbit mall Hyderabad,38.0,7.0,45.0
 2026-10-03,Jaipur Store,4.0,9.0,13.0
 2026-10-03,Jubilee Hills,8.0,10.0,18.0
@@ -11814,7 +11814,7 @@ date,store,new,repeat,total
 2026-10-04,Express Avenue,20.0,8.0,28.0
 2026-10-04,Gurugram,7.0,6.0,13.0
 2026-10-04,Indiranagar,0.0,0.0,0.0
-2026-10-04,Inorbit Mall Malad West,29.0,3.0,32.0
+2026-10-04,Inorbit Mall Malad West,0.0,29.0,29.0
 2026-10-04,Inorbit mall Hyderabad,37.0,7.0,44.0
 2026-10-04,Jaipur Store,12.0,8.0,20.0
 2026-10-04,Jubilee Hills,9.0,20.0,29.0
@@ -11848,7 +11848,7 @@ date,store,new,repeat,total
 2026-10-05,Express Avenue,7.0,0.0,7.0
 2026-10-05,Gurugram,3.0,1.0,4.0
 2026-10-05,Indiranagar,3.0,2.0,5.0
-2026-10-05,Inorbit Mall Malad West,5.0,1.0,6.0
+2026-10-05,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-05,Inorbit mall Hyderabad,11.0,1.0,12.0
 2026-10-05,Jaipur Store,2.0,3.0,5.0
 2026-10-05,Juhu Store,4.0,2.0,6.0
@@ -11880,7 +11880,7 @@ date,store,new,repeat,total
 2026-10-06,Express Avenue,6.0,1.0,7.0
 2026-10-06,Gurugram,3.0,3.0,6.0
 2026-10-06,Indiranagar,2.0,0.0,2.0
-2026-10-06,Inorbit Mall Malad West,10.0,0.0,10.0
+2026-10-06,Inorbit Mall Malad West,0.0,10.0,10.0
 2026-10-06,Inorbit mall Hyderabad,17.0,3.0,20.0
 2026-10-06,Jaipur Store,2.0,3.0,5.0
 2026-10-06,Jubilee Hills,9.0,5.0,14.0
@@ -11914,7 +11914,7 @@ date,store,new,repeat,total
 2026-10-07,Express Avenue,9.0,3.0,12.0
 2026-10-07,Gurugram,1.0,4.0,5.0
 2026-10-07,Indiranagar,4.0,1.0,5.0
-2026-10-07,Inorbit Mall Malad West,5.0,1.0,6.0
+2026-10-07,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-07,Inorbit mall Hyderabad,14.0,2.0,16.0
 2026-10-07,Jaipur Store,0.0,5.0,5.0
 2026-10-07,Jubilee Hills,9.0,11.0,20.0
@@ -11947,7 +11947,7 @@ date,store,new,repeat,total
 2026-10-08,Express Avenue,9.0,2.0,11.0
 2026-10-08,Gurugram,4.0,6.0,10.0
 2026-10-08,Indiranagar,5.0,4.0,9.0
-2026-10-08,Inorbit Mall Malad West,8.0,1.0,9.0
+2026-10-08,Inorbit Mall Malad West,0.0,8.0,8.0
 2026-10-08,Inorbit mall Hyderabad,17.0,1.0,18.0
 2026-10-08,Jaipur Store,4.0,3.0,7.0
 2026-10-08,Jubilee Hills,5.0,15.0,20.0
@@ -11981,7 +11981,7 @@ date,store,new,repeat,total
 2026-10-09,Express Avenue,11.0,2.0,13.0
 2026-10-09,Gurugram,4.0,0.0,4.0
 2026-10-09,Indiranagar,4.0,4.0,8.0
-2026-10-09,Inorbit Mall Malad West,3.0,1.0,4.0
+2026-10-09,Inorbit Mall Malad West,0.0,3.0,3.0
 2026-10-09,Inorbit mall Hyderabad,13.0,5.0,18.0
 2026-10-09,Jaipur Store,3.0,4.0,7.0
 2026-10-09,Jubilee Hills,10.0,0.0,10.0
@@ -12015,7 +12015,7 @@ date,store,new,repeat,total
 2026-10-10,Express Avenue,18.0,2.0,20.0
 2026-10-10,Gurugram,5.0,9.0,14.0
 2026-10-10,Indiranagar,11.0,7.0,18.0
-2026-10-10,Inorbit Mall Malad West,9.0,4.0,13.0
+2026-10-10,Inorbit Mall Malad West,0.0,9.0,9.0
 2026-10-10,Inorbit mall Hyderabad,35.0,13.0,48.0
 2026-10-10,Jaipur Store,6.0,7.0,13.0
 2026-10-10,Jubilee Hills,5.0,8.0,13.0
@@ -12049,7 +12049,7 @@ date,store,new,repeat,total
 2026-10-11,Express Avenue,13.0,7.0,20.0
 2026-10-11,Gurugram,5.0,14.0,19.0
 2026-10-11,Indiranagar,13.0,18.0,31.0
-2026-10-11,Inorbit Mall Malad West,11.0,4.0,15.0
+2026-10-11,Inorbit Mall Malad West,0.0,11.0,11.0
 2026-10-11,Inorbit mall Hyderabad,49.0,9.0,58.0
 2026-10-11,Jaipur Store,14.0,8.0,22.0
 2026-10-11,Jubilee Hills,21.0,17.0,38.0
@@ -12083,7 +12083,7 @@ date,store,new,repeat,total
 2026-10-12,Express Avenue,10.0,4.0,14.0
 2026-10-12,Gurugram,6.0,2.0,8.0
 2026-10-12,Indiranagar,7.0,4.0,11.0
-2026-10-12,Inorbit Mall Malad West,3.0,1.0,4.0
+2026-10-12,Inorbit Mall Malad West,0.0,3.0,3.0
 2026-10-12,Inorbit mall Hyderabad,12.0,5.0,17.0
 2026-10-12,Jaipur Store,4.0,7.0,11.0
 2026-10-12,Jubilee Hills,6.0,20.0,26.0
@@ -12117,7 +12117,7 @@ date,store,new,repeat,total
 2026-10-13,Express Avenue,7.0,4.0,11.0
 2026-10-13,Gurugram,2.0,4.0,6.0
 2026-10-13,Indiranagar,5.0,6.0,11.0
-2026-10-13,Inorbit Mall Malad West,5.0,0.0,5.0
+2026-10-13,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-13,Inorbit mall Hyderabad,17.0,4.0,21.0
 2026-10-13,Jaipur Store,2.0,2.0,4.0
 2026-10-13,Jubilee Hills,5.0,4.0,9.0
@@ -12151,7 +12151,7 @@ date,store,new,repeat,total
 2026-10-14,Express Avenue,4.0,4.0,8.0
 2026-10-14,Gurugram,3.0,4.0,7.0
 2026-10-14,Indiranagar,9.0,1.0,10.0
-2026-10-14,Inorbit Mall Malad West,7.0,1.0,8.0
+2026-10-14,Inorbit Mall Malad West,0.0,7.0,7.0
 2026-10-14,Inorbit mall Hyderabad,19.0,1.0,20.0
 2026-10-14,Jaipur Store,1.0,4.0,5.0
 2026-10-14,Jubilee Hills,6.0,8.0,14.0
@@ -12185,7 +12185,7 @@ date,store,new,repeat,total
 2026-10-15,Express Avenue,10.0,3.0,13.0
 2026-10-15,Gurugram,1.0,2.0,3.0
 2026-10-15,Indiranagar,3.0,4.0,7.0
-2026-10-15,Inorbit Mall Malad West,5.0,0.0,5.0
+2026-10-15,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-15,Inorbit mall Hyderabad,16.0,4.0,20.0
 2026-10-15,Jaipur Store,2.0,4.0,6.0
 2026-10-15,Jubilee Hills,3.0,6.0,9.0
@@ -12219,7 +12219,7 @@ date,store,new,repeat,total
 2026-10-16,Express Avenue,4.0,5.0,9.0
 2026-10-16,Gurugram,3.0,3.0,6.0
 2026-10-16,Indiranagar,4.0,3.0,7.0
-2026-10-16,Inorbit Mall Malad West,5.0,0.0,5.0
+2026-10-16,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-16,Inorbit mall Hyderabad,32.0,6.0,38.0
 2026-10-16,Jaipur Store,4.0,2.0,6.0
 2026-10-16,Jubilee Hills,2.0,13.0,15.0
@@ -12253,7 +12253,7 @@ date,store,new,repeat,total
 2026-10-17,Express Avenue,14.0,8.0,22.0
 2026-10-17,Gurugram,4.0,8.0,12.0
 2026-10-17,Indiranagar,10.0,5.0,15.0
-2026-10-17,Inorbit Mall Malad West,13.0,4.0,17.0
+2026-10-17,Inorbit Mall Malad West,0.0,13.0,13.0
 2026-10-17,Inorbit mall Hyderabad,36.0,3.0,39.0
 2026-10-17,Jaipur Store,4.0,10.0,14.0
 2026-10-17,Jubilee Hills,9.0,19.0,28.0
@@ -12287,7 +12287,7 @@ date,store,new,repeat,total
 2026-10-18,Express Avenue,31.0,4.0,35.0
 2026-10-18,Gurugram,7.0,10.0,17.0
 2026-10-18,Indiranagar,13.0,16.0,29.0
-2026-10-18,Inorbit Mall Malad West,11.0,7.0,18.0
+2026-10-18,Inorbit Mall Malad West,0.0,11.0,11.0
 2026-10-18,Inorbit mall Hyderabad,60.0,12.0,72.0
 2026-10-18,Jaipur Store,5.0,8.0,13.0
 2026-10-18,Jubilee Hills,18.0,13.0,31.0
@@ -12321,7 +12321,7 @@ date,store,new,repeat,total
 2026-10-19,Express Avenue,18.0,10.0,28.0
 2026-10-19,Gurugram,4.0,3.0,7.0
 2026-10-19,Indiranagar,7.0,8.0,15.0
-2026-10-19,Inorbit Mall Malad West,6.0,2.0,8.0
+2026-10-19,Inorbit Mall Malad West,0.0,6.0,6.0
 2026-10-19,Inorbit mall Hyderabad,36.0,5.0,41.0
 2026-10-19,Jaipur Store,2.0,4.0,6.0
 2026-10-19,Jubilee Hills,12.0,8.0,20.0
@@ -12355,7 +12355,7 @@ date,store,new,repeat,total
 2026-10-20,Express Avenue,10.0,4.0,14.0
 2026-10-20,Gurugram,6.0,9.0,15.0
 2026-10-20,Indiranagar,10.0,13.0,23.0
-2026-10-20,Inorbit Mall Malad West,31.0,2.0,33.0
+2026-10-20,Inorbit Mall Malad West,0.0,31.0,31.0
 2026-10-20,Inorbit mall Hyderabad,34.0,4.0,38.0
 2026-10-20,Jaipur Store,8.0,8.0,16.0
 2026-10-20,Jubilee Hills,5.0,9.0,14.0
@@ -12389,7 +12389,7 @@ date,store,new,repeat,total
 2026-10-21,Express Avenue,10.0,2.0,12.0
 2026-10-21,Gurugram,1.0,2.0,3.0
 2026-10-21,Indiranagar,7.0,6.0,13.0
-2026-10-21,Inorbit Mall Malad West,5.0,2.0,7.0
+2026-10-21,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-21,Inorbit mall Hyderabad,17.0,4.0,21.0
 2026-10-21,Jaipur Store,6.0,3.0,9.0
 2026-10-21,Jubilee Hills,4.0,14.0,18.0
@@ -12422,7 +12422,7 @@ date,store,new,repeat,total
 2026-10-22,Express Avenue,10.0,2.0,12.0
 2026-10-22,Gurugram,0.0,0.0,0.0
 2026-10-22,Indiranagar,5.0,2.0,7.0
-2026-10-22,Inorbit Mall Malad West,5.0,0.0,5.0
+2026-10-22,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-22,Inorbit mall Hyderabad,13.0,1.0,14.0
 2026-10-22,Jaipur Store,2.0,3.0,5.0
 2026-10-22,Jubilee Hills,5.0,11.0,16.0
@@ -12455,7 +12455,7 @@ date,store,new,repeat,total
 2026-10-23,Express Avenue,12.0,2.0,14.0
 2026-10-23,Gurugram,3.0,1.0,4.0
 2026-10-23,Indiranagar,9.0,3.0,12.0
-2026-10-23,Inorbit Mall Malad West,5.0,1.0,6.0
+2026-10-23,Inorbit Mall Malad West,0.0,5.0,5.0
 2026-10-23,Inorbit mall Hyderabad,25.0,6.0,31.0
 2026-10-23,Jaipur Store,8.0,4.0,12.0
 2026-10-23,Jubilee Hills,1.0,8.0,9.0
@@ -12489,7 +12489,7 @@ date,store,new,repeat,total
 2026-10-24,Express Avenue,31.0,11.0,42.0
 2026-10-24,Gurugram,4.0,5.0,9.0
 2026-10-24,Indiranagar,20.0,9.0,29.0
-2026-10-24,Inorbit Mall Malad West,13.0,2.0,15.0
+2026-10-24,Inorbit Mall Malad West,0.0,13.0,13.0
 2026-10-24,Inorbit mall Hyderabad,35.0,7.0,42.0
 2026-10-24,Jaipur Store,7.0,5.0,12.0
 2026-10-24,Jubilee Hills,3.0,9.0,12.0
@@ -12505,7 +12505,7 @@ date,store,new,repeat,total
 2026-10-24,"Mall of India, Noida",9.0,7.0,16.0
 2026-10-24,Oberoi Mall Store,10.0,8.0,18.0
 2026-10-24,Oberoi Sky City,22.0,12.0,34.0
-2026-10-24,PMC Viman Nagar Pune,0.0,5.0,5.0
+2026-10-24,PMC Viman Nagar Pune,28.0,5.0,33.0
 2026-10-24,"Pali Hill, Bandra",12.0,7.0,19.0
 2026-10-24,Phoenix Marketcity Kurla,13.0,11.0,24.0
 2026-10-24,"Phoenix Marketcity, Whitefield",11.0,4.0,15.0
@@ -12517,3 +12517,36 @@ date,store,new,repeat,total
 2026-10-24,South Ex.,3.0,3.0,6.0
 2026-10-24,Vegas Dwarka,3.0,1.0,4.0
 2026-10-24,Viviana Mall,32.0,8.0,40.0
+2026-10-25,Ambience Vasant Kunj,25.0,3.0,28.0
+2026-10-25,Andheri,2.0,9.0,11.0
+2026-10-25,DLF Midtown - Moti Nagar,7.0,2.0,9.0
+2026-10-25,Express Avenue,37.0,7.0,44.0
+2026-10-25,Gurugram,6.0,6.0,12.0
+2026-10-25,Indiranagar,16.0,10.0,26.0
+2026-10-25,Inorbit Mall Malad West,0.0,28.0,28.0
+2026-10-25,Inorbit mall Hyderabad,40.0,8.0,48.0
+2026-10-25,Jaipur Store,12.0,10.0,22.0
+2026-10-25,Jubilee Hills,11.0,14.0,25.0
+2026-10-25,Juhu Store,12.0,8.0,20.0
+2026-10-25,KNK Chennai,4.0,3.0,7.0
+2026-10-25,"Kalaghoda, Fort",26.0,7.0,33.0
+2026-10-25,Kemps Corner,8.0,15.0,23.0
+2026-10-25,Khan Market,15.0,6.0,21.0
+2026-10-25,Kochi Store,2.0,3.0,5.0
+2026-10-25,Koregaon Park,,18.0,18.0
+2026-10-25,LakeShore Mall,20.0,3.0,23.0
+2026-10-25,Lavelle Road,3.0,4.0,7.0
+2026-10-25,"Mall of India, Noida",11.0,6.0,17.0
+2026-10-25,Oberoi Mall Store,13.0,12.0,25.0
+2026-10-25,Oberoi Sky City,27.0,8.0,35.0
+2026-10-25,PMC Viman Nagar Pune,0.0,7.0,7.0
+2026-10-25,"Pali Hill, Bandra",17.0,18.0,35.0
+2026-10-25,Phoenix Marketcity Kurla,27.0,10.0,37.0
+2026-10-25,"Phoenix Marketcity, Whitefield",20.0,5.0,25.0
+2026-10-25,Phoenix Palassio,22.0,5.0,27.0
+2026-10-25,Sarath City-Hyderabad,35.0,5.0,40.0
+2026-10-25,Select City,10.0,9.0,19.0
+2026-10-25,Sindhu Bhavan Marg,19.0,16.0,35.0
+2026-10-25,South Ex.,4.0,9.0,13.0
+2026-10-25,Vegas Dwarka,11.0,5.0,16.0
+2026-10-25,Viviana Mall,25.0,20.0,45.0
