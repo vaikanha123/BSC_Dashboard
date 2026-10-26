@@ -240,6 +240,16 @@ def raw_rows(rows, by_email, details, mk):
     return table
 
 
+def nps_detail(table):
+    """The counted store replies of one month's raw_rows() table, per dashboard store: [slot, date, order,
+    phone, products]. store-audit.html lists them when a promoter / passive / detractor count is clicked."""
+    out = collections.defaultdict(list)
+    for t in table:
+        if t[7] == 'Yes' and t[11] in REGION_MAP:
+            out[NPS_STORES.get(t[11], t[11])].append([SLOT[t[5]], t[0], t[8], t[4], t[15]])
+    return out
+
+
 def write_raw(path, rows, by_email, details, html, stamp):
     """The dashboard's live month (as SEED_NPS), so on the 1st the closing month's tab gets its last day."""
     with open(html, encoding='utf-8') as f:
@@ -266,13 +276,19 @@ def score(c):
     return round((c[0] - c[2]) / n * 100, 1) if n else None
 
 
-def write_audit_nps(counts, dates, source):
+def write_audit_nps(counts, dates, source, detail=None):
     old = {'months': [], 'stores': {}}
     if os.path.exists(NPS_JSON):
         with open(NPS_JSON, encoding='utf-8') as f:
             old = json.load(f)
     months = [m for m in old['months'] if m['key'] in FROZEN_MONTHS]
     stores = {s: {mk: c for mk, c in v.items() if mk in FROZEN_MONTHS} for s, v in old['stores'].items()}
+    # Per-reply detail (order, phone, products): frozen months keep theirs, the rest come from this run.
+    keep = {s: {mk: r for mk, r in v.items() if mk in FROZEN_MONTHS} for s, v in old.get('detail', {}).items()}
+    for mk, by_store in (detail or {}).items():
+        if mk not in FROZEN_MONTHS:
+            for s, r in by_store.items():
+                keep.setdefault(s, {})[mk] = r
     for mk in sorted(counts):
         if mk in FROZEN_MONTHS:
             continue
@@ -282,7 +298,7 @@ def write_audit_nps(counts, dates, source):
                 stores.setdefault(NPS_STORES.get(pos, pos), {})[mk] = c
     months.sort(key=lambda m: m['key'])
     stores = {s: v for s, v in stores.items() if v}
-    data = {'source': source, 'months': months, 'stores': stores}
+    data = {'source': source, 'months': months, 'stores': stores, 'detail': {s: v for s, v in keep.items() if v}}
     with open(NPS_JSON, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
     # store-audit.html reads the copy embedded in store_audit_data.js; swap just that key.
@@ -352,10 +368,12 @@ def main():
     counts, dates, report = build(rows, by_email)
     if not counts:
         sys.exit('STOP: no NPS responses from %s on in the sheet' % FIRST_MONTH)
-    data = write_audit_nps(counts, dates, 'WhatsApp survey sheet (%s)' % (stamp or 'refresh time not shown'))
+    details = load_order_details(a.sales, a.seed)
+    detail = {mk: nps_detail(raw_rows(rows, by_email, details, mk)) for mk in counts if mk not in FROZEN_MONTHS}
+    data = write_audit_nps(counts, dates, 'WhatsApp survey sheet (%s)' % (stamp or 'refresh time not shown'), detail)
     seed = write_seed_nps(a.html, counts, dates)
     if a.raw_out:
-        write_raw(a.raw_out, rows, by_email, load_order_details(a.sales, a.seed), a.html, stamp)
+        write_raw(a.raw_out, rows, by_email, details, a.html, stamp)
     for k, v in sorted(report.items()):
         print('  %5d  %s' % (v, k))
     print('store_audit_nps.json months: %s' % ', '.join('%s (%s)' % (m['key'], m['range']) for m in data['months']))

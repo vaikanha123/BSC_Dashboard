@@ -73,6 +73,17 @@
   .reg td:first-child{white-space:nowrap;}
   .reg tr.sel td{box-shadow:inset 2px 0 0 var(--brass);}
   .reg tr[data-region]{cursor:pointer;}
+  td.pick{cursor:pointer; text-decoration:underline dotted var(--text-mute); text-underline-offset:3px;}
+  td.pick:hover{color:var(--brass);}
+  td.pick.open{color:var(--brass); text-decoration-color:var(--brass);}
+  .tile .split{font-size:12px; margin-top:6px; display:flex; flex-wrap:wrap; gap:4px 10px;}
+  .tile .split a{color:var(--text-dim); cursor:pointer; text-decoration:underline dotted var(--text-mute); text-underline-offset:3px;}
+  .tile .split a:hover{color:var(--brass);}
+  .npsl h3{display:flex; justify-content:space-between; gap:8px;}
+  .npsl h3 button{background:none; border:none; color:var(--text-mute); cursor:pointer; font:inherit; letter-spacing:0; text-transform:none;}
+  .npsl table{font-size:12px;}
+  .npsl th, .npsl td{white-space:nowrap; text-align:left;}
+  .npsl td.prod{white-space:normal; min-width:240px; color:var(--text-dim);}
   .reg .note{border-top:1px solid var(--line); padding:10px 14px; font-size:12px; color:var(--text-mute);}
   @media (max-width:1100px){ .grid{grid-template-columns:1fr;} }
   @media (max-width:860px){
@@ -212,18 +223,38 @@ const npsFmt = v => v == null ? '–' : String(Math.round(v));
 function npsCard(mk, sel){
   if (!NPS.months.length) return '';
   const stores = storesFor(sel), all = NPS.months.map(m => m.key);
-  const cols = NPS.months.map(m => ({on: m.key === mk, head: `${esc(m.label)}<small>${esc(m.range)}</small>`, c: npsCounts(stores, [m.key])}));
+  const cols = NPS.months.map(m => ({key: m.key, on: m.key === mk, head: `${esc(m.label)}<small>${esc(m.range)}</small>`, c: npsCounts(stores, [m.key])}));
   cols.push({avg: true, head: `All<small>${esc(NPS.months[0].label)}–${esc(NPS.months[NPS.months.length - 1].label)}</small>`, c: npsCounts(stores, all)});
   const k = col => ((col.on ? 'on ' : '') + (col.avg ? 'avg' : '')).trim();
   const row = (label, f, c) => `<tr class="${c || ''}"><td>${label}</td>${cols.map(col => f(col)).join('')}</tr>`;
-  const count = i => col => `<td class="${k(col)}">${npsN(col.c) ? col.c[i] : '–'}</td>`;
+  const mks = col => col.avg ? all.join(',') : col.key;
+  const count = i => col => col.c[i] ? `<td class="pick ${k(col)}${npsOpen && npsOpen.slot === i && npsOpen.mks === mks(col) ? ' open' : ''}" data-slot="${i}" data-mks="${mks(col)}" title="Show these responses">${col.c[i]}</td>`
+                                   : `<td class="${k(col)}">${npsN(col.c) ? 0 : '–'}</td>`;
   const body = row('NPS', col => `<td class="${npsCls(npsScore(col.c))} ${k(col)}">${npsFmt(npsScore(col.c))}</td>`, 'total') +
     row('Responses', col => `<td class="${k(col)}">${npsN(col.c) || '–'}</td>`) +
-    row('Promoters (very likely)', count(0), 'aside') + row('Neutral', count(1), 'aside') + row('Detractors (not likely)', count(2), 'aside');
+    row('Promoters (very likely)', count(0), 'aside') + row('Passives (neutral)', count(1), 'aside') + row('Detractors (not likely)', count(2), 'aside');
   const base = sel !== 'ALL' && cols.some(col => npsN(col.c) && npsN(col.c) < 15) ? ' Fewer than 15 responses in a month: one answer moves the score a lot.' : '';
   return `<div class="card wide"><h2>NPS, customer survey <span>promoters − detractors, by calendar month of the response</span></h2><div class="scroll"><table>` +
     `<thead><tr><th>Measure</th>${cols.map(col => `<th class="${k(col)}">${col.head}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>` +
-    `<div class="fb"><p style="margin:0;color:var(--text-mute)">Store is the customer's order location, matched from the WhatsApp survey to Shopify orders.${base}</p></div></div>`;
+    npsList(stores) +
+    `<div class="fb"><p style="margin:0;color:var(--text-mute)">Store is the customer's order location, matched from the WhatsApp survey to Shopify orders. Click a promoter, passive or detractor count to see those customers' orders.${base}</p></div></div>`;
+}
+
+// The responses behind one promoter / passive / detractor count: order number, phone and products.
+const NPS_GROUPS = ['Promoters', 'Passives', 'Detractors'];
+let npsOpen = null;     // {slot, mks: 'YYYY-MM[,YYYY-MM...]'}
+function npsList(stores){
+  if (!npsOpen) return '';
+  const mks = npsOpen.mks.split(','), many = stores.length > 1, det = NPS.detail || {};
+  const rows = [];
+  stores.forEach(st => mks.forEach(mk => ((det[st] || {})[mk] || []).forEach(r => { if (r[0] === npsOpen.slot) rows.push([st, ...r]); })));
+  rows.sort((a, b) => b[2].localeCompare(a[2]) || a[0].localeCompare(b[0]));
+  const when = mks.length > 1 ? 'all months' : NPS.months.find(m => m.key === mks[0]).label;
+  const head = `<h3><span>${NPS_GROUPS[npsOpen.slot]}, ${esc(when)} (${rows.length})</span><button type="button" data-close="1">Close ✕</button></h3>`;
+  if (!rows.length) return `<div class="fb npsl">${head}<p>No response detail for this selection.</p></div>`;
+  return `<div class="fb npsl">${head}<div class="scroll"><table><thead><tr><th>Date</th>${many ? '<th>Store</th>' : ''}<th>Order</th><th>Phone</th><th>Product</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td>${esc(r[2])}</td>${many ? `<td>${esc(r[0])}</td>` : ''}<td>${esc(r[3] || '–')}</td><td>${esc(r[4] || '–')}</td><td class="prod">${esc(r[5] || '–')}</td></tr>`).join('') +
+    '</tbody></table></div></div>';
 }
 
 function tiles(mk, stores){
@@ -231,7 +262,8 @@ function tiles(mk, stores){
   let h = t('Compliance', compAvg(mk, stores, WEEKS), 'average of seven parameters');
   ['ba', 'inb', 'sal'].forEach(k => { const n = auditCount(k, mk, stores, WEEKS); h += t(AUDITS[k].title, auditPct(k, mk, stores, WEEKS, -1), n ? `${n} ${n === 1 ? AUDITS[k].unit.slice(0, -1) : AUDITS[k].unit}` : 'none this month'); });
   const c = npsCounts(stores, [mk]), nm = NPS.months.find(m => m.key === mk);
-  h += `<div class="tile"><div class="k">NPS</div><div class="v ${npsCls(npsScore(c))}">${npsFmt(npsScore(c))}</div><div class="n">${npsN(c) ? `${npsN(c)} responses, ${esc(nm.range)}` : 'no survey data this month'}</div></div>`;
+  const split = npsN(c) ? `<div class="split">${NPS_GROUPS.map((g, i) => c[i] ? `<a data-slot="${i}" data-mks="${mk}" title="Show these responses">${c[i]} ${g.toLowerCase()}</a>` : `<span class="x">0 ${g.toLowerCase()}</span>`).join('')}</div>` : '';
+  h += `<div class="tile"><div class="k">NPS</div><div class="v ${npsCls(npsScore(c))}">${npsFmt(npsScore(c))}</div><div class="n">${npsN(c) ? `${npsN(c)} responses, ${esc(nm.range)}` : 'no survey data this month'}</div>${split}</div>`;
   return h;
 }
 
@@ -332,6 +364,17 @@ document.getElementById('reg').addEventListener('click', e => {
 });
 pickMonth.addEventListener('change', render);
 pickStore.addEventListener('change', render);
+// A promoter / passive / detractor count, in the NPS card or the NPS tile, opens its response list; clicking it again closes it.
+function npsClick(e){
+  if (e.target.closest('[data-close]')){ npsOpen = null; render(); return; }
+  const t = e.target.closest('[data-slot]'); if (!t) return;
+  const pick = {slot: +t.dataset.slot, mks: t.dataset.mks};
+  npsOpen = npsOpen && npsOpen.slot === pick.slot && npsOpen.mks === pick.mks && !t.closest('#tiles') ? null : pick;
+  render();
+  if (npsOpen) document.querySelector('.npsl').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+document.getElementById('grid').addEventListener('click', npsClick);
+document.getElementById('tiles').addEventListener('click', npsClick);
 document.getElementById('rank').addEventListener('click', e => {
   const th = e.target.closest('th'), tr = e.target.closest('tbody tr');
   if (th){ const c = +th.dataset.col; if (c === sortCol) sortDir = -sortDir; else { sortCol = c; sortDir = c === 0 ? 1 : -1; } renderRank(pickMonth.value, pickStore.value); }

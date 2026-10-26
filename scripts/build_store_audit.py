@@ -18,7 +18,9 @@ the feedback summaries.
 
 Store-wise NPS comes from the WhatsApp survey workbook (its "Data" tab, one row per response):
   python scripts/build_store_audit.py --raw-dir <folder> --nps "NPS_Fit_Assessment_....xlsx"
-That writes data/store_audit_nps.json (counts only, no customer details), which later builds reuse.
+That writes data/store_audit_nps.json, which later builds reuse: counts, plus each counted reply's
+order, phone and products ("detail"), which the page lists when a count is clicked. The user chose
+on 2026-10-26 to show those on the public page.
 
 Weeks follow the tracker's own Period column ("Oct W1"); call and behaviour audits are
 placed in the tracker period that their interaction date falls in.
@@ -125,7 +127,7 @@ def build_nps(xlsx):
     head = [str(h or '').strip() for h in next(rows)]
     col = {h: i for i, h in enumerate(head)}
     slot = {'Promoter': 0, 'Neutral': 1, 'Detractor': 2}
-    stores, dates = {}, collections.defaultdict(list)
+    stores, dates, detail = {}, collections.defaultdict(list), {}
     for r in rows:
         if r[col['Campaign']] != 'NPS' or r[col['Counted in scores']] != 'Yes' or r[col['Channel']] != 'Offline (stores)':
             continue
@@ -137,11 +139,14 @@ def build_nps(xlsx):
         counts = stores.setdefault(NPS_STORES.get(name, name), {}).setdefault(mk, [0, 0, 0])
         counts[slot[r[col['Class']]]] += 1
         dates[mk].append(d)
+        detail.setdefault(NPS_STORES.get(name, name), {}).setdefault(mk, []).append(
+            [slot[r[col['Class']]], d.strftime('%Y-%m-%d'), str(r[col['Order ID']] or ''), str(r[col['Phone']] or ''),
+             str(r[col['Product(s)']] or '')])
     months = []
     for mk in sorted(dates):
         lo, hi = min(dates[mk]), max(dates[mk])
         months.append({'key': mk, 'label': MONTH_NAMES[lo.month - 1][:3], 'range': '%d–%s' % (lo.day, short(hi))})
-    return {'source': os.path.basename(xlsx), 'months': months, 'stores': stores}
+    return {'source': os.path.basename(xlsx), 'months': months, 'stores': stores, 'detail': detail}
 
 
 def build(raw_dir, pulled):
