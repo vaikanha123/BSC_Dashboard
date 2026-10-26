@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-10-25 10:14:16 (data for 2026-10-24))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-10-26 10:14:15 (data for 2026-10-25))",
  "months": [
   {
    "key": "2026-09",
@@ -9,7 +9,7 @@
   {
    "key": "2026-10",
    "label": "Oct",
-   "range": "1–24 Oct"
+   "range": "1–25 Oct"
   }
  ],
  "stores": {
@@ -92,7 +92,7 @@
     0
    ],
    "2026-10": [
-    16,
+    17,
     1,
     1
    ]
@@ -116,7 +116,7 @@
     0
    ],
    "2026-10": [
-    9,
+    11,
     2,
     0
    ]
@@ -128,7 +128,7 @@
     4
    ],
    "2026-10": [
-    18,
+    19,
     4,
     2
    ]
