@@ -26,7 +26,7 @@
   select{background:var(--panel2); color:var(--text); border:1px solid var(--line2); border-radius:8px;
     padding:8px 12px; font-size:13.5px; font-family:inherit; cursor:pointer;}
   #store{min-width:220px;}
-  .tiles{display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px;}
+  .tiles{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:16px;}
   .tile{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px;}
   .tile .k{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-mute);}
   .tile .v{font-size:26px; font-weight:600; margin-top:6px;}
@@ -120,7 +120,7 @@
     <span><b class="w">■</b> 60–79%</span>
     <span><b class="b">■</b> below 60%</span>
     <span><b class="x">–</b> no audit</span>
-    <span>NPS: green 70 and above, amber 50–69, red below 50. Figures in brackets are the number of responses.</span>
+    <span>NPS and fit score: green 70 and above, amber 50–69, red below 50. Figures in brackets are the number of responses.</span>
     <span>Weeks follow the audit tracker's periods; a week that straddles two months sits where the tracker puts it.</span>
   </div>
   <div class="card rank">
@@ -208,49 +208,64 @@ function auditCard(key, mk, month, sel){
   return `<div class="card"><h2>${A.title} <span>average of audit scores, by interaction date</span></h2><div class="scroll"><table>${headRow(month)}<tbody>${body}</tbody></table></div>${feedback(key, mk, sel, low)}</div>`;
 }
 
-// NPS (WhatsApp survey): promoters minus detractors over all responses, by calendar month of the response.
-const NPS = D.nps || {months: [], stores: {}};
-function npsCounts(stores, mks){
-  const c = [0, 0, 0];
-  stores.forEach(st => mks.forEach(mk => { const v = (NPS.stores[st] || {})[mk]; if (v) v.forEach((x, i) => c[i] += x); }));
+// NPS and fit assessment (WhatsApp surveys), by calendar month of the response. Both are [top, neutral, bottom] counts.
+// NPS = promoters minus detractors over all responses; fit score = % very satisfied of all fit responses.
+const svN = c => c[0] + c[1] + c[2];
+const SURVEYS = {
+  nps: {S: D.nps || {months: [], stores: {}}, title: 'NPS, customer survey', how: 'promoters − detractors, by calendar month of the response',
+        name: 'NPS', groups: ['Promoters', 'Passives', 'Detractors'], rows: ['Promoters (very likely)', 'Passives (neutral)', 'Detractors (not likely)'],
+        score: c => svN(c) ? (c[0] - c[2]) / svN(c) * 100 : null, fmt: v => v == null ? '–' : String(Math.round(v))},
+  fit: {S: D.fit || {months: [], stores: {}}, title: 'Fit assessment, customer survey', how: '% very satisfied with the fit, by calendar month of the response',
+        name: 'Fit score', groups: ['Very satisfied', 'Neutral', 'Not satisfied'], rows: ['Very satisfied', 'Neutral', 'Not satisfied'],
+        score: c => svN(c) ? c[0] / svN(c) * 100 : null, fmt: v => v == null ? '–' : Math.round(v) + '%'}
+};
+function svCounts(kind, stores, mks){
+  const c = [0, 0, 0], S = SURVEYS[kind].S;
+  stores.forEach(st => mks.forEach(mk => { const v = (S.stores[st] || {})[mk]; if (v) v.forEach((x, i) => c[i] += x); }));
   return c;
 }
-const npsN = c => c[0] + c[1] + c[2];
-const npsScore = c => npsN(c) ? (c[0] - c[2]) / npsN(c) * 100 : null;
+const npsCounts = (stores, mks) => svCounts('nps', stores, mks);
+const npsN = svN;
+const npsScore = SURVEYS.nps.score, npsFmt = SURVEYS.nps.fmt;
+const fitScore = SURVEYS.fit.score, fitFmt = SURVEYS.fit.fmt;
+// Same bands for both: green 70 and above, amber 50–69, red below 50.
 const npsCls = v => v == null ? 'x' : v >= 70 ? 'g' : v >= 50 ? 'w' : 'b';
-const npsFmt = v => v == null ? '–' : String(Math.round(v));
 
-function npsCard(mk, sel){
-  if (!NPS.months.length) return '';
-  const stores = storesFor(sel), all = NPS.months.map(m => m.key);
-  const cols = NPS.months.map(m => ({key: m.key, on: m.key === mk, head: `${esc(m.label)}<small>${esc(m.range)}</small>`, c: npsCounts(stores, [m.key])}));
-  cols.push({avg: true, head: `All<small>${esc(NPS.months[0].label)}–${esc(NPS.months[NPS.months.length - 1].label)}</small>`, c: npsCounts(stores, all)});
+function surveyCard(kind, mk, sel){
+  const V = SURVEYS[kind], S = V.S;
+  if (!S.months.length) return '';
+  const stores = storesFor(sel), all = S.months.map(m => m.key);
+  const cols = S.months.map(m => ({key: m.key, on: m.key === mk, head: `${esc(m.label)}<small>${esc(m.range)}</small>`, c: svCounts(kind, stores, [m.key])}));
+  cols.push({avg: true, head: `All<small>${esc(S.months[0].label)}–${esc(S.months[S.months.length - 1].label)}</small>`, c: svCounts(kind, stores, all)});
   const k = col => ((col.on ? 'on ' : '') + (col.avg ? 'avg' : '')).trim();
   const row = (label, f, c) => `<tr class="${c || ''}"><td>${label}</td>${cols.map(col => f(col)).join('')}</tr>`;
   const mks = col => col.avg ? all.join(',') : col.key;
-  const count = i => col => col.c[i] ? `<td class="pick ${k(col)}${npsOpen && npsOpen.slot === i && npsOpen.mks === mks(col) ? ' open' : ''}" data-slot="${i}" data-mks="${mks(col)}" title="Show these responses">${col.c[i]}</td>`
-                                   : `<td class="${k(col)}">${npsN(col.c) ? 0 : '–'}</td>`;
-  const body = row('NPS', col => `<td class="${npsCls(npsScore(col.c))} ${k(col)}">${npsFmt(npsScore(col.c))}</td>`, 'total') +
-    row('Responses', col => `<td class="${k(col)}">${npsN(col.c) || '–'}</td>`) +
-    row('Promoters (very likely)', count(0), 'aside') + row('Passives (neutral)', count(1), 'aside') + row('Detractors (not likely)', count(2), 'aside');
-  const base = sel !== 'ALL' && cols.some(col => npsN(col.c) && npsN(col.c) < 15) ? ' Fewer than 15 responses in a month: one answer moves the score a lot.' : '';
-  return `<div class="card wide"><h2>NPS, customer survey <span>promoters − detractors, by calendar month of the response</span></h2><div class="scroll"><table>` +
+  const isOpen = (i, col) => svOpen && svOpen.kind === kind && svOpen.slot === i && svOpen.mks === mks(col);
+  const count = i => col => col.c[i] ? `<td class="pick ${k(col)}${isOpen(i, col) ? ' open' : ''}" data-kind="${kind}" data-slot="${i}" data-mks="${mks(col)}" title="Show these responses">${col.c[i]}</td>`
+                                   : `<td class="${k(col)}">${svN(col.c) ? 0 : '–'}</td>`;
+  const body = row(V.name, col => `<td class="${npsCls(V.score(col.c))} ${k(col)}">${V.fmt(V.score(col.c))}</td>`, 'total') +
+    row('Responses', col => `<td class="${k(col)}">${svN(col.c) || '–'}</td>`) +
+    V.rows.map((r, i) => row(r, count(i), 'aside')).join('');
+  const small = kind === 'nps' ? 15 : 10;
+  const base = sel !== 'ALL' && cols.some(col => svN(col.c) && svN(col.c) < small) ? ` Fewer than ${small} responses in a month: one answer moves the score a lot.` : '';
+  const what = kind === 'nps' ? 'a promoter, passive or detractor count' : 'a very satisfied, neutral or not satisfied count';
+  const prod = kind === 'fit' ? ' The survey does not say which item the fit answer is about, so every product on the order is listed.' : '';
+  return `<div class="card wide"><h2>${V.title} <span>${V.how}</span></h2><div class="scroll"><table>` +
     `<thead><tr><th>Measure</th>${cols.map(col => `<th class="${k(col)}">${col.head}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>` +
-    npsList(stores) +
-    `<div class="fb"><p style="margin:0;color:var(--text-mute)">Store is the customer's order location, matched from the WhatsApp survey to Shopify orders. Click a promoter, passive or detractor count to see those customers' orders.${base}</p></div></div>`;
+    svList(kind, stores) +
+    `<div class="fb"><p style="margin:0;color:var(--text-mute)">Store is the customer's order location, matched from the WhatsApp survey to Shopify orders. Click ${what} to see those customers' orders.${prod}${base}</p></div></div>`;
 }
 
-// The responses behind one promoter / passive / detractor count: order number, phone and products.
-const NPS_GROUPS = ['Promoters', 'Passives', 'Detractors'];
-let npsOpen = null;     // {slot, mks: 'YYYY-MM[,YYYY-MM...]'}
-function npsList(stores){
-  if (!npsOpen) return '';
-  const mks = npsOpen.mks.split(','), many = stores.length > 1, det = NPS.detail || {};
+// The responses behind one count: order number, phone and products.
+let svOpen = null;     // {kind, slot, mks: 'YYYY-MM[,YYYY-MM...]'}
+function svList(kind, stores){
+  if (!svOpen || svOpen.kind !== kind) return '';
+  const V = SURVEYS[kind], mks = svOpen.mks.split(','), many = stores.length > 1, det = V.S.detail || {};
   const rows = [];
-  stores.forEach(st => mks.forEach(mk => ((det[st] || {})[mk] || []).forEach(r => { if (r[0] === npsOpen.slot) rows.push([st, ...r]); })));
+  stores.forEach(st => mks.forEach(mk => ((det[st] || {})[mk] || []).forEach(r => { if (r[0] === svOpen.slot) rows.push([st, ...r]); })));
   rows.sort((a, b) => b[2].localeCompare(a[2]) || a[0].localeCompare(b[0]));
-  const when = mks.length > 1 ? 'all months' : NPS.months.find(m => m.key === mks[0]).label;
-  const head = `<h3><span>${NPS_GROUPS[npsOpen.slot]}, ${esc(when)} (${rows.length})</span><button type="button" data-close="1">Close ✕</button></h3>`;
+  const when = mks.length > 1 ? 'all months' : V.S.months.find(m => m.key === mks[0]).label;
+  const head = `<h3><span>${kind === 'fit' ? 'Fit: ' : ''}${V.groups[svOpen.slot]}, ${esc(when)} (${rows.length})</span><button type="button" data-close="1">Close ✕</button></h3>`;
   if (!rows.length) return `<div class="fb npsl">${head}<p>No response detail for this selection.</p></div>`;
   return `<div class="fb npsl">${head}<div class="scroll"><table><thead><tr><th>Date</th>${many ? '<th>Store</th>' : ''}<th>Order</th><th>Phone</th><th>Product</th></tr></thead><tbody>` +
     rows.map(r => `<tr><td>${esc(r[2])}</td>${many ? `<td>${esc(r[0])}</td>` : ''}<td>${esc(r[3] || '–')}</td><td>${esc(r[4] || '–')}</td><td class="prod">${esc(r[5] || '–')}</td></tr>`).join('') +
@@ -261,9 +276,11 @@ function tiles(mk, stores){
   const t = (k, p, n) => `<div class="tile"><div class="k">${k}</div><div class="v ${cls(p)}">${fmt(p)}</div><div class="n">${n}</div></div>`;
   let h = t('Compliance', compAvg(mk, stores, WEEKS), 'average of seven parameters');
   ['ba', 'inb', 'sal'].forEach(k => { const n = auditCount(k, mk, stores, WEEKS); h += t(AUDITS[k].title, auditPct(k, mk, stores, WEEKS, -1), n ? `${n} ${n === 1 ? AUDITS[k].unit.slice(0, -1) : AUDITS[k].unit}` : 'none this month'); });
-  const c = npsCounts(stores, [mk]), nm = NPS.months.find(m => m.key === mk);
-  const split = npsN(c) ? `<div class="split">${NPS_GROUPS.map((g, i) => c[i] ? `<a data-slot="${i}" data-mks="${mk}" title="Show these responses">${c[i]} ${g.toLowerCase()}</a>` : `<span class="x">0 ${g.toLowerCase()}</span>`).join('')}</div>` : '';
-  h += `<div class="tile"><div class="k">NPS</div><div class="v ${npsCls(npsScore(c))}">${npsFmt(npsScore(c))}</div><div class="n">${npsN(c) ? `${npsN(c)} responses, ${esc(nm.range)}` : 'no survey data this month'}</div>${split}</div>`;
+  ['nps', 'fit'].forEach(kind => {
+    const V = SURVEYS[kind], c = svCounts(kind, stores, [mk]), nm = V.S.months.find(m => m.key === mk);
+    const split = svN(c) ? `<div class="split">${V.groups.map((g, i) => c[i] ? `<a data-kind="${kind}" data-slot="${i}" data-mks="${mk}" title="Show these responses">${c[i]} ${g.toLowerCase()}</a>` : `<span class="x">0 ${g.toLowerCase()}</span>`).join('')}</div>` : '';
+    h += `<div class="tile"><div class="k">${V.name}</div><div class="v ${npsCls(V.score(c))}">${V.fmt(V.score(c))}</div><div class="n">${svN(c) ? `${svN(c)} responses, ${esc(nm.range)}` : 'no survey data this month'}</div>${split}</div>`;
+  });
   return h;
 }
 
@@ -291,13 +308,14 @@ function regionCard(mk, sel){
     {h:'Behaviour', v:(m, st) => auditPct('ba', m, st, WEEKS, -1), n:(m, st) => auditCount('ba', m, st, WEEKS)},
     {h:'Inbound', v:(m, st) => auditPct('inb', m, st, WEEKS, -1), n:(m, st) => auditCount('inb', m, st, WEEKS)},
     {h:'Sales', v:(m, st) => auditPct('sal', m, st, WEEKS, -1), n:(m, st) => auditCount('sal', m, st, WEEKS)},
-    {h:'NPS', nps:true, v:(m, st) => npsScore(npsCounts(st, [m])), n:(m, st) => npsN(npsCounts(st, [m]))}
+    {h:'NPS', nps:true, v:(m, st) => npsScore(npsCounts(st, [m])), n:(m, st) => npsN(npsCounts(st, [m]))},
+    {h:'Fit', fit:true, v:(m, st) => fitScore(svCounts('fit', st, [m])), n:(m, st) => svN(svCounts('fit', st, [m]))}
   ];
   const curL = cur.label.slice(0, 3), prevL = prev ? prev.label.slice(0, 3) : 'Prev';
   const val = (ms, m, st) => {
     if (!m) return '<td class="x">–</td>';
     const v = ms.v(m, st), n = ms.n ? ms.n(m, st) : 0;
-    return ms.nps ? `<td class="${npsCls(v)}">${npsFmt(v)}${n ? `<small>(${n})</small>` : ''}</td>`
+    return ms.nps || ms.fit ? `<td class="${npsCls(v)}">${(ms.nps ? npsFmt : fitFmt)(v)}${n ? `<small>(${n})</small>` : ''}</td>`
                   : `<td class="${cls(v)}">${fmt(v)}${n ? `<small>(${n})</small>` : ''}</td>`;
   };
   const delta = (ms, st) => {
@@ -315,13 +333,13 @@ function regionCard(mk, sel){
   const partial = Object.keys(cur.weeks).length < 4 ? ` ${cur.label} so far covers ${Object.keys(cur.weeks).join(', ')} only (${Object.values(cur.weeks).join(', ')}), against the full ${prev ? prev.label : 'previous month'}.` : '';
   return `<h2>Region-wise scores, ${esc(cur.label)} vs ${prev ? esc(prev.label) : 'previous month'} <span>change in percentage points; NPS change in points; click a region to filter</span></h2>` +
     `<div class="scroll"><table>${head}<tbody>${body}</tbody></table></div>` +
-    `<div class="note">Region scores use the same method as the store figures: compliance is total score ÷ max across the region's stores, audits are the average of audit scores, NPS is pooled responses. Figures in brackets are audits, calls or responses.${partial}</div>`;
+    `<div class="note">Region scores use the same method as the store figures: compliance is total score ÷ max across the region's stores, audits are the average of audit scores, NPS and fit are pooled responses. Figures in brackets are audits, calls or responses.${partial}</div>`;
 }
 
 let sortCol = 0, sortDir = 1;
 function renderRank(mk, sel){
-  const rows = storesFor('ALL').map(st => ({st, v:[compAvg(mk, [st], WEEKS), auditPct('ba', mk, [st], WEEKS, -1), auditPct('inb', mk, [st], WEEKS, -1), auditPct('sal', mk, [st], WEEKS, -1), npsScore(npsCounts([st], [mk]))],
-    n:[null, auditCount('ba', mk, [st], WEEKS), auditCount('inb', mk, [st], WEEKS), auditCount('sal', mk, [st], WEEKS), npsN(npsCounts([st], [mk]))]}));
+  const rows = storesFor('ALL').map(st => ({st, v:[compAvg(mk, [st], WEEKS), auditPct('ba', mk, [st], WEEKS, -1), auditPct('inb', mk, [st], WEEKS, -1), auditPct('sal', mk, [st], WEEKS, -1), npsScore(npsCounts([st], [mk])), fitScore(svCounts('fit', [st], [mk]))],
+    n:[null, auditCount('ba', mk, [st], WEEKS), auditCount('inb', mk, [st], WEEKS), auditCount('sal', mk, [st], WEEKS), npsN(npsCounts([st], [mk])), svN(svCounts('fit', [st], [mk]))]}));
   rows.sort((a, b) => {
     if (sortCol === 0) return sortDir * a.st.localeCompare(b.st);
     const x = a.v[sortCol - 1], y = b.v[sortCol - 1];
@@ -329,12 +347,12 @@ function renderRank(mk, sel){
     if (x == null) return 1; if (y == null) return -1;
     return sortDir * (x - y);
   });
-  const heads = ['Store', 'Compliance', 'Behaviour', 'Inbound', 'Sales', 'NPS'];
+  const heads = ['Store', 'Compliance', 'Behaviour', 'Inbound', 'Sales', 'NPS', 'Fit'];
   const arrow = i => i === sortCol ? (sortDir > 0 ? ' ↑' : ' ↓') : '';
   document.getElementById('rank').innerHTML =
     '<thead><tr>' + heads.map((h, i) => `<th data-col="${i}">${h}${arrow(i)}</th>`).join('') + '</tr></thead><tbody>' +
     rows.map(r => `<tr data-store="${esc(r.st)}" class="${r.st === sel ? 'sel' : ''}"><td>${esc(r.st)}</td>` +
-      r.v.map((p, i) => `<td class="${i === 4 ? npsCls(p) : cls(p)}">${i === 4 ? npsFmt(p) : fmt(p)}${r.n[i] ? `<small>(${r.n[i]})</small>` : ''}</td>`).join('') + '</tr>').join('') + '</tbody>';
+      r.v.map((p, i) => `<td class="${i >= 4 ? npsCls(p) : cls(p)}">${i === 4 ? npsFmt(p) : i === 5 ? fitFmt(p) : fmt(p)}${r.n[i] ? `<small>(${r.n[i]})</small>` : ''}</td>`).join('') + '</tr>').join('') + '</tbody>';
 }
 
 const pickStore = document.getElementById('store'), pickMonth = document.getElementById('month'), pickRegion = document.getElementById('region');
@@ -342,7 +360,7 @@ function render(){
   const sel = pickStore.value, mk = pickMonth.value, month = D.months.find(m => m.key === mk), stores = storesFor(sel);
   document.getElementById('tiles').innerHTML = tiles(mk, stores);
   document.getElementById('reg').innerHTML = regionCard(mk, sel);
-  document.getElementById('grid').innerHTML = compCard(mk, month, sel) + auditCard('ba', mk, month, sel) + auditCard('inb', mk, month, sel) + auditCard('sal', mk, month, sel) + npsCard(mk, sel);
+  document.getElementById('grid').innerHTML = compCard(mk, month, sel) + auditCard('ba', mk, month, sel) + auditCard('inb', mk, month, sel) + auditCard('sal', mk, month, sel) + surveyCard('nps', mk, sel) + surveyCard('fit', mk, sel);
   renderRank(mk, sel);
   document.getElementById('rankTitle').firstChild.textContent = pickRegion.value === 'ALL' ? 'All stores ' : `${pickRegion.value} stores `;
 }
@@ -364,14 +382,14 @@ document.getElementById('reg').addEventListener('click', e => {
 });
 pickMonth.addEventListener('change', render);
 pickStore.addEventListener('change', render);
-// A promoter / passive / detractor count, in the NPS card or the NPS tile, opens its response list; clicking it again closes it.
+// A count, in the NPS / fit card or tile, opens its response list; clicking it again closes it.
 function npsClick(e){
-  if (e.target.closest('[data-close]')){ npsOpen = null; render(); return; }
+  if (e.target.closest('[data-close]')){ svOpen = null; render(); return; }
   const t = e.target.closest('[data-slot]'); if (!t) return;
-  const pick = {slot: +t.dataset.slot, mks: t.dataset.mks};
-  npsOpen = npsOpen && npsOpen.slot === pick.slot && npsOpen.mks === pick.mks && !t.closest('#tiles') ? null : pick;
+  const pick = {kind: t.dataset.kind, slot: +t.dataset.slot, mks: t.dataset.mks};
+  svOpen = svOpen && svOpen.kind === pick.kind && svOpen.slot === pick.slot && svOpen.mks === pick.mks && !t.closest('#tiles') ? null : pick;
   render();
-  if (npsOpen) document.querySelector('.npsl').scrollIntoView({behavior:'smooth', block:'nearest'});
+  if (svOpen) document.querySelector('.npsl').scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 document.getElementById('grid').addEventListener('click', npsClick);
 document.getElementById('tiles').addEventListener('click', npsClick);

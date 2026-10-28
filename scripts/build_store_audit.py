@@ -18,7 +18,7 @@ the feedback summaries.
 
 Store-wise NPS comes from the WhatsApp survey workbook (its "Data" tab, one row per response):
   python scripts/build_store_audit.py --raw-dir <folder> --nps "NPS_Fit_Assessment_....xlsx"
-That writes data/store_audit_nps.json, which later builds reuse: counts, plus each counted reply's
+That writes data/store_audit_nps.json (and data/store_audit_fit.json from the fit rows), which later builds reuse: counts, plus each counted reply's
 order, phone and products ("detail"), which the page lists when a count is clicked. The user chose
 on 2026-10-26 to show those on the public page.
 
@@ -38,6 +38,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(REPO, 'data', 'store_audit_data.js')
 FEEDBACK = os.path.join(REPO, 'data', 'store_audit_feedback.json')
 NPS = os.path.join(REPO, 'data', 'store_audit_nps.json')
+FIT = os.path.join(REPO, 'data', 'store_audit_fit.json')
 PAGE = os.path.join(REPO, 'store-audit.html')
 
 # The survey file starts on 26 Aug 2026, so August is only six days; it is left off the page.
@@ -120,8 +121,9 @@ def short(d):
     return '%d %s' % (d.day, MONTH_NAMES[d.month - 1][:3])
 
 
-def build_nps(xlsx):
-    """Promoter / neutral / detractor counts per store and calendar month, store responses only."""
+def build_nps(xlsx, campaign='NPS'):
+    """Promoter / neutral / detractor counts per store and calendar month, store responses only.
+    campaign='Fit assessment' gives the fit survey (Very satisfied / Neutral / Not satisfied) the same way."""
     import openpyxl
     rows = openpyxl.load_workbook(xlsx, data_only=True, read_only=True)['Data'].iter_rows(values_only=True)
     head = [str(h or '').strip() for h in next(rows)]
@@ -129,7 +131,7 @@ def build_nps(xlsx):
     slot = {'Promoter': 0, 'Neutral': 1, 'Detractor': 2}
     stores, dates, detail = {}, collections.defaultdict(list), {}
     for r in rows:
-        if r[col['Campaign']] != 'NPS' or r[col['Counted in scores']] != 'Yes' or r[col['Channel']] != 'Offline (stores)':
+        if r[col['Campaign']] != campaign or r[col['Counted in scores']] != 'Yes' or r[col['Channel']] != 'Offline (stores)':
             continue
         d = r[col['Response date']]
         mk = '%d-%02d' % (d.year, d.month)
@@ -281,10 +283,14 @@ def build(raw_dir, pulled):
             nps = json.load(f)
         for name in sorted(set(nps['stores']) - stores):
             report['NPS store not in tracker: ' + name] += 1
+    fit = {'months': [], 'stores': {}}
+    if os.path.exists(FIT):
+        with open(FIT, encoding='utf-8') as f:
+            fit = json.load(f)
 
     data = {'pulledAt': pulled.isoformat(), 'months': months, 'stores': sorted(stores, key=str.lower),
             'compParams': COMP_PARAMS, 'comp': comp, 'ba': audits['ba'], 'inb': audits['inb'], 'sal': audits['sal'],
-            'notes': notes, 'feedback': feedback, 'nps': nps}
+            'notes': notes, 'feedback': feedback, 'nps': nps, 'fit': fit}
     return data, report
 
 
@@ -312,6 +318,8 @@ def main():
     if a.nps:
         with open(NPS, 'w', encoding='utf-8') as f:
             json.dump(build_nps(a.nps), f, ensure_ascii=False, indent=1)
+        with open(FIT, 'w', encoding='utf-8') as f:
+            json.dump(build_nps(a.nps, 'Fit assessment'), f, ensure_ascii=False, indent=1)
     data, report = build(a.raw_dir, dt.date.fromisoformat(a.pulled))
     if a.dump_notes:
         dump_notes(data, a.dump_notes)

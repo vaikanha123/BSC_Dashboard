@@ -21,6 +21,8 @@ Writes:
                               (audit-tracker store names); read by store-audit.html (through
                               data/store_audit_data.js, whose "nps" key is rewritten here too)
                               and by update_store_briefing.py
+  data/store_audit_fit.json   the same for the fit assessment campaign (~7sf91: Very satisfied /
+                              Neutral / Not satisfied), the "fit" key of store_audit_data.js
   index.html SEED_NPS         the latest month's NPS per POS location, "Online", and overall
   --raw-out <json>            (optional) one row per NPS reply in the dashboard's live month, with
                               the matched order's store, stylist and products, for the "BSC NPS Raw
@@ -49,9 +51,12 @@ from build_store_audit import NPS_STORES, MONTH_NAMES, PAGE  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NPS_JSON = os.path.join(ROOT, 'data', 'store_audit_nps.json')
+FIT_JSON = os.path.join(ROOT, 'data', 'store_audit_fit.json')
 AUDIT_JS = os.path.join(ROOT, 'data', 'store_audit_data.js')
 NPS_CAMPAIGN = '~3fp3nn'
 SLOT = {'Very likely': 0, 'Neutral': 1, 'Not likely': 2}
+FIT_CAMPAIGN = '~7sf91'           # fit assessment, same sheet; same store match and repeat rule as NPS
+FIT_SLOT = {'Very satisfied': 0, 'Neutral': 1, 'Not satisfied': 2}
 FIRST_MONTH = '2026-09'          # August starts on the 26th; it is left off, as before
 FROZEN_MONTHS = {'2026-09'}      # see the docstring
 MIN_GAP_DAYS = 7
@@ -172,12 +177,12 @@ def load_sheet(path):
     return rows, stamp
 
 
-def build(rows, by_email):
+def build(rows, by_email, campaign=NPS_CAMPAIGN, slots=SLOT):
     """Counts [promoters, neutral, detractors] per (month, POS location or channel), latest answer per order."""
     latest = {}
     report = collections.Counter()
     for r in rows:
-        if r[1] != NPS_CAMPAIGN or r[4] not in SLOT:
+        if r[1] != campaign or r[4] not in slots:
             continue
         day, email = r[2][:10], r[7].strip().lower()
         if day[:7] < FIRST_MONTH:
@@ -189,7 +194,7 @@ def build(rows, by_email):
             report['repeat answers for the same order (older ones dropped)'] += 1
             if latest[key][0] >= r[6]:
                 continue
-        latest[key] = (r[6], day, pos, SLOT[r[4]])
+        latest[key] = (r[6], day, pos, slots[r[4]])
     counts = collections.defaultdict(lambda: collections.defaultdict(lambda: [0, 0, 0]))
     dates = collections.defaultdict(list)
     for _, day, pos, slot in latest.values():
@@ -208,12 +213,12 @@ def build(rows, by_email):
     return counts, dates, report
 
 
-def raw_rows(rows, by_email, details, mk):
+def raw_rows(rows, by_email, details, mk, campaign=NPS_CAMPAIGN, slots=SLOT):
     """Every NPS reply of month mk with its matched order, store, stylist and products. "Counted in NPS"
     is No for an older answer to the same order (build() keeps only the latest)."""
     picked, latest = [], {}
     for i, r in enumerate(rows):
-        if r[1] != NPS_CAMPAIGN or r[4] not in SLOT or r[2][:7] != mk:
+        if r[1] != campaign or r[4] not in slots or r[2][:7] != mk:
             continue
         day, email = r[2][:10], r[7].strip().lower()
         m = match(by_email.get(email, []), day)
@@ -230,7 +235,7 @@ def raw_rows(rows, by_email, details, mk):
             ist = r[6]
         d = details.get(m[1], {}) if m else {}
         store = 'Not matched' if m is None else (m[2] or 'Online')
-        table.append([day, ist, ('%s %s' % (r[8], r[9])).strip(), email, r[10], r[4], NPS_GROUP[SLOT[r[4]]],
+        table.append([day, ist, ('%s %s' % (r[8], r[9])).strip(), email, r[10], r[4], NPS_GROUP[slots[r[4]]],
                       'Yes' if latest[key][1] == i else 'No (older answer, same order)',
                       m[1] if m else '', m[0] if m else '',
                       (dt.date.fromisoformat(day) - dt.date.fromisoformat(m[0])).days if m else '',
@@ -240,13 +245,13 @@ def raw_rows(rows, by_email, details, mk):
     return table
 
 
-def nps_detail(table):
+def nps_detail(table, slots=SLOT):
     """The counted store replies of one month's raw_rows() table, per dashboard store: [slot, date, order,
     phone, products]. store-audit.html lists them when a promoter / passive / detractor count is clicked."""
     out = collections.defaultdict(list)
     for t in table:
         if t[7] == 'Yes' and t[11] in REGION_MAP:
-            out[NPS_STORES.get(t[11], t[11])].append([SLOT[t[5]], t[0], t[8], t[4], t[15]])
+            out[NPS_STORES.get(t[11], t[11])].append([slots[t[5]], t[0], t[8], t[4], t[15]])
     return out
 
 
@@ -276,10 +281,11 @@ def score(c):
     return round((c[0] - c[2]) / n * 100, 1) if n else None
 
 
-def write_audit_nps(counts, dates, source, detail=None):
+def write_audit_nps(counts, dates, source, detail=None, path=NPS_JSON, key='nps'):
+    """Also writes the fit assessment (path=FIT_JSON, key='fit'), in the same shape."""
     old = {'months': [], 'stores': {}}
-    if os.path.exists(NPS_JSON):
-        with open(NPS_JSON, encoding='utf-8') as f:
+    if os.path.exists(path):
+        with open(path, encoding='utf-8') as f:
             old = json.load(f)
     months = [m for m in old['months'] if m['key'] in FROZEN_MONTHS]
     stores = {s: {mk: c for mk, c in v.items() if mk in FROZEN_MONTHS} for s, v in old['stores'].items()}
@@ -299,7 +305,7 @@ def write_audit_nps(counts, dates, source, detail=None):
     months.sort(key=lambda m: m['key'])
     stores = {s: v for s, v in stores.items() if v}
     data = {'source': source, 'months': months, 'stores': stores, 'detail': {s: v for s, v in keep.items() if v}}
-    with open(NPS_JSON, 'w', encoding='utf-8') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
     # store-audit.html reads the copy embedded in store_audit_data.js; swap just that key.
     with open(AUDIT_JS, encoding='utf-8') as f:
@@ -308,7 +314,7 @@ def write_audit_nps(counts, dates, source, detail=None):
     if not m:
         sys.exit('STOP: window.AUDIT_DATA not found in %s' % AUDIT_JS)
     audit = json.loads(m.group(1))
-    audit['nps'] = data
+    audit[key] = data
     with open(AUDIT_JS, 'w', encoding='utf-8', newline='') as f:
         f.write(js[:m.start(1)] + json.dumps(audit, ensure_ascii=False, separators=(',', ':')) + ';\n')
     # Version the data file's URL (as build_store_audit.py does) so browsers drop yesterday's cached copy.
@@ -370,13 +376,20 @@ def main():
         sys.exit('STOP: no NPS responses from %s on in the sheet' % FIRST_MONTH)
     details = load_order_details(a.sales, a.seed)
     detail = {mk: nps_detail(raw_rows(rows, by_email, details, mk)) for mk in counts if mk not in FROZEN_MONTHS}
-    data = write_audit_nps(counts, dates, 'WhatsApp survey sheet (%s)' % (stamp or 'refresh time not shown'), detail)
+    source = 'WhatsApp survey sheet (%s)' % (stamp or 'refresh time not shown')
+    data = write_audit_nps(counts, dates, source, detail)
+    fcounts, fdates, freport = build(rows, by_email, FIT_CAMPAIGN, FIT_SLOT)
+    fdetail = {mk: nps_detail(raw_rows(rows, by_email, details, mk, FIT_CAMPAIGN, FIT_SLOT), FIT_SLOT)
+               for mk in fcounts if mk not in FROZEN_MONTHS}
+    fit = write_audit_nps(fcounts, fdates, source, fdetail, FIT_JSON, 'fit')
     seed = write_seed_nps(a.html, counts, dates)
     if a.raw_out:
         write_raw(a.raw_out, rows, by_email, details, a.html, stamp)
     for k, v in sorted(report.items()):
         print('  %5d  %s' % (v, k))
     print('store_audit_nps.json months: %s' % ', '.join('%s (%s)' % (m['key'], m['range']) for m in data['months']))
+    print('store_audit_fit.json months: %s; %s' % (', '.join('%s (%s)' % (m['key'], m['range']) for m in fit['months']),
+          ', '.join('%s %d' % (mk, sum(sum(c) for p, c in v.items() if p in REGION_MAP)) for mk, v in sorted(fcounts.items()))))
     if seed:
         print('OK. SEED_NPS %s (%s): %d responses, overall NPS %s, %d stores'
               % (seed['month'], seed['range'], seed['responses'], seed['overall'],
