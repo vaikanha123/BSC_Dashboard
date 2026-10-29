@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-10-28 10:14:15 (data for 2026-10-27))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-10-29 10:14:15 (data for 2026-10-28))",
  "months": [
   {
    "key": "2026-09",
@@ -9,7 +9,7 @@
   {
    "key": "2026-10",
    "label": "Oct",
-   "range": "1–27 Oct"
+   "range": "1–28 Oct"
   }
  ],
  "stores": {
@@ -82,7 +82,7 @@
    "2026-10": [
     5,
     0,
-    1
+    2
    ]
   },
   "Pali Hill, Khar": {
@@ -207,7 +207,7 @@
     1
    ],
    "2026-10": [
-    3,
+    4,
     0,
     3
    ]
@@ -394,7 +394,7 @@
     1
    ],
    "2026-10": [
-    1,
+    2,
     0,
     0
    ]
@@ -419,7 +419,7 @@
    ],
    "2026-10": [
     1,
-    0,
+    1,
     0
    ]
   },
@@ -913,6 +913,13 @@
      "IND-444704",
      "+919821152885",
      "Soft Washed Linen Shirt - Light Blue"
+    ],
+    [
+     2,
+     "2026-10-28",
+     "IND-447171",
+     "+918600044448",
+     "Giza Cotton Houndstooth Shirt - Navy"
     ]
    ]
   },
@@ -1628,6 +1635,13 @@
      "IND-446654",
      "+919717197799",
      "Driftscape Relaxed Linen Pants - Navy (Navy / 32); Driftscape Relaxed Linen Pants - Black (Black / 32)"
+    ],
+    [
+     0,
+     "2026-10-28",
+     "IND-445681",
+     "+919999079192",
+     "Flux 4-way Stretch Dress Pants - Beige (Beige / 36); Wrinkle-Free Stretch Satin Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Luthai Cotton Lyocell Twill Shirt - Olive"
     ]
    ]
   },
@@ -2429,6 +2443,13 @@
      "IND-447907",
      "+917042004787",
      "Exquisite Blended Wool Dress Pants - Grey (Grey / 34); Brio Neapolitan Dress Pants - Black (Black / 34)"
+    ],
+    [
+     0,
+     "2026-10-28",
+     "IND-449012",
+     "+919415047021",
+     "Easy-Care Cotton Striped Shirt - Blue; Washed Oxford Shirt - White; 2-Ply Cotton Twill Shirt - Light Blue; Cotton Twill Checked Shirt - Purple; 2-Ply Cotton Poplin Checked Shirt - Light Blue"
     ]
    ]
   },
@@ -2469,6 +2490,13 @@
      "IND-450061",
      "+919989775952",
      "Luxe Drift T-Shirt - Dark Purple (Dark Purple / M)"
+    ],
+    [
+     1,
+     "2026-10-28",
+     "IND-448417",
+     "+919443707227",
+     "Paramount Dress Pants - Black (Black / 36) x2"
     ]
    ]
   },
