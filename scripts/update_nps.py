@@ -23,7 +23,8 @@ Writes:
                               and by update_store_briefing.py
   data/store_audit_fit.json   the same for the fit assessment campaign (~7sf91: Very satisfied /
                               Neutral / Not satisfied), the "fit" key of store_audit_data.js
-  index.html SEED_NPS         the latest month's NPS per POS location, "Online", and overall
+  index.html SEED_NPS         the latest month's NPS per POS location, "Online", per-store counts, overall
+                              (store responses pooled, matching store-audit.html) and online apart
   --raw-out <json>            (optional) one row per NPS reply in the dashboard's live month, with
                               the matched order's store, stylist and products, for the "BSC NPS Raw
                               Data" Google Sheet. It holds customer emails and phones: write it outside
@@ -340,13 +341,17 @@ def write_seed_nps(html, counts, dates):
         print('NOTE: no survey responses yet for the live month %s -- SEED_NPS left as it is' % mk)
         return None
     c = counts[mk]
-    by_store = {pos: score(v) for pos, v in sorted(c.items()) if pos in REGION_MAP}
+    stores = {pos: list(v) for pos, v in sorted(c.items()) if pos in REGION_MAP}
+    by_store = {pos: score(v) for pos, v in stores.items()}
     if c.get('Online'):
         by_store['Online'] = score(c['Online'])
-    total = [sum(v[i] for v in c.values()) for i in range(3)]
+    # overall = store responses pooled, as on store-audit.html (online, corporate and virtual stylist kept apart)
+    total = [sum(v[i] for v in stores.values()) for i in range(3)]
+    other = [sum(v[i] for pos, v in c.items() if pos not in stores) for i in range(3)]
     y, mo = int(mk[:4]), int(mk[5:])
     seed = {'month': '%s-%d' % (MONTH_NAMES[mo - 1][:3], y), 'range': month_meta(mk, dates[mk])['range'],
-            'responses': sum(total), 'byStore': by_store, 'overall': score(total)}
+            'responses': sum(total), 'byStore': by_store, 'counts': stores, 'overall': score(total),
+            'online': {'nps': score(other), 'responses': sum(other)}}
     new = replace_const(content, 'SEED_NPS', json.dumps(seed, ensure_ascii=False))
     with open(html, 'w', encoding='utf-8', newline='') as f:
         f.write(new)
