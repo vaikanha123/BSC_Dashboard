@@ -82,6 +82,8 @@ def main():
     ap.add_argument('--refund')
     ap.add_argument('--nps-sheet', help="saved Sheets-connector get_values result of the WhatsApp NPS survey sheet "
                                         "('Sheet1!A1:M5000'); refreshes store-wise NPS (update_nps.py)")
+    ap.add_argument('--nps-raw-out', help="passed to update_nps.py --raw-out (per-reply rows for the raw NPS "
+                                          "Google Sheet; keep it in the git-ignored data/shopify_orders/)")
     ap.add_argument('--today', help='override today (YYYY-MM-DD), for testing')
     a = ap.parse_args()
 
@@ -180,13 +182,19 @@ def main():
     # leaves index.html untouched on failure, so only its two data files need restoring.
     nps_note = ''
     if a.nps_sheet:
-        if run([py, 'scripts/update_nps.py', '--sheet-json', a.nps_sheet, '--sales', a.sales]) != 0:
-            restore(['data/store_audit_nps.json', 'data/store_audit_data.js'])
+        nps_cmd = [py, 'scripts/update_nps.py', '--sheet-json', a.nps_sheet, '--sales', a.sales]
+        if a.nps_raw_out:
+            nps_cmd += ['--raw-out', a.nps_raw_out]
+        if run(nps_cmd) != 0:
+            restore(['data/store_audit_nps.json', 'data/store_audit_data.js', 'store-audit.html'])
             print('WARNING: update_nps.py failed -- NPS NOT updated (still shows the previous run).')
             nps_note = ' (NPS step failed, see WARNING)'
     else:
-        print('NOTE: no --nps-sheet given -- NPS not refreshed this run.')
-        nps_note = ' (NPS not refreshed: no --nps-sheet)'
+        # A manual upload must include NPS too (user instruction 2026-10-29): pull the survey sheet with the
+        # Sheets connector first and pass --nps-sheet.
+        print('WARNING: no --nps-sheet given -- NPS / compliance dashboard NOT refreshed. Pull the WhatsApp '
+              'survey sheet (Sheet1!A1:M5000) and re-run with --nps-sheet.')
+        nps_note = ' (NPS NOT refreshed: no --nps-sheet)'
 
     # Store briefing page: after the footfall fetch, since conversion uses it. Non-fatal -- on failure the
     # page keeps yesterday's briefing (its own "Sales data through" date shows that).
@@ -199,7 +207,7 @@ def main():
         restore(['west-mtd.html'])
         print('WARNING: build_region_mtd.py failed -- west-mtd.html NOT updated (still shows the previous day).')
 
-    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/, %s, store-briefing.html and west-mtd.html).'
+    print('OK: dashboards refreshed through %s%s. Ready to commit + push (include data/, %s, store-briefing.html, store-audit.html and west-mtd.html).'
           % (last, ('' if forecast_ok else ' (forecast step failed, see WARNING)') + nps_note, FORECAST_PAGE))
 
 
