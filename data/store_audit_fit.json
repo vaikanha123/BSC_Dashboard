@@ -33,7 +33,7 @@
    ],
    "2026-10": [
     6,
-    1,
+    2,
     0
    ]
   },
@@ -190,7 +190,7 @@
    "2026-10": [
     3,
     0,
-    2
+    1
    ]
   },
   "R.K. Salai": {
@@ -244,7 +244,7 @@
    ],
    "2026-10": [
     0,
-    1,
+    0,
     1
    ]
   },
@@ -327,7 +327,7 @@
     1
    ],
    "2026-10": [
-    1,
+    2,
     0,
     0
    ]
@@ -382,7 +382,7 @@
     3
    ],
    "2026-10": [
-    3,
+    2,
     0,
     3
    ]
@@ -401,11 +401,6 @@
   },
   "Jayanagar": {
    "2026-09": [
-    1,
-    0,
-    0
-   ],
-   "2026-10": [
     1,
     0,
     0
@@ -534,11 +529,18 @@
      "Markwell - Manhattan Farbriano Bespoke; Japanese Mid-Rise Stretch Jeans - Dark Blue (Dark Blue / 36)"
     ],
     [
+     1,
+     "2026-10-03",
+     "IND-440991",
+     "+919930236927",
+     "Signature Classic Button Polo - Green (Green / XL); Signature Classic Button Polo - Chocolate Brown (Chocolate Brown / XL)"
+    ],
+    [
      0,
      "2026-10-12",
-     "IND-438952",
+     "IND-444151",
      "+918425897684",
-     "GYMKHANA- PROTEIN BELGIAN CHOCOLATE"
+     "GYMKHANA- PROTEIN BELGIAN CHOCOLATE x2; GETWAY GOLD LOTUS BISCOFF x2"
     ],
     [
      1,
@@ -744,9 +746,9 @@
     [
      0,
      "2026-10-24",
-     "IND-414514",
+     "IND-448997",
      "+919962218022",
-     "Giza Cotton Glen Plaid Checked Shirt - Pink; BALTIC - 39327 SOKTAS BESPOKE"
+     "NORFOLK - 50652 SOKTAS BESPOKE; Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - Grey"
     ],
     [
      0,
@@ -806,9 +808,9 @@
     [
      0,
      "2026-10-22",
-     "IND-445569",
+     "IND-447524",
      "+919666955515",
-     "Elevate Everyday Stretch  Chinos - Grey (Grey / 32); Luthai Wrinkle-Free Bold Twill Shirt - Blue"
+     "Elevate Everyday Stretch Chinos - Pearl Grey (Pearl Grey / 38); Elevate Everyday Stretch Chinos - Dark Beige (Dark Beige / 38)"
     ],
     [
      0,
@@ -1000,9 +1002,9 @@
     [
      1,
      "2026-10-12",
-     "IND-346701",
+     "IND-444735",
      "+919820130633",
-     "LOMBARDO LS4029 - LS4047 - Cotonificio Lombardo; Soft Washed Linen Shirt - Bluish Grey"
+     "Crysta - LL1209 Leggiuno Bespoke; 100% Linen Shirt - Navy"
     ],
     [
      1,
@@ -1483,9 +1485,9 @@
     [
      0,
      "2026-10-24",
-     "IND-407756",
+     "IND-448771",
      "+919824957837",
-     "Tailored 5-Pocket Stretch Jeans - Beige (Beige / 32)"
+     "MALABAR HILL MANGO; TIMELESS TAJ TIRAMISU"
     ]
    ]
   },
@@ -1538,16 +1540,9 @@
     [
      0,
      "2026-10-21",
-     "IND-442238",
+     "IND-447545",
      "+917382349837",
-     "Brown Jacquard Flat Knit Shirt (Brown / 38)"
-    ],
-    [
-     2,
-     "2026-10-27",
-     "IND-304407",
-     "+919830751613",
-     "Massie - Manhattan Farbriano Bespoke"
+     "Navy Wrinkle-Free Stretch Twill Shirt (Navy / 40)"
     ]
    ]
   },
@@ -1822,13 +1817,6 @@
     ]
    ],
    "2026-10": [
-    [
-     1,
-     "2026-10-03",
-     "IND-413693",
-     "+919930236927",
-     "White Blended Linen Soft Washed Shirt (White / 40); Blue Washed Oxford Shirt (Blue / 40)"
-    ],
     [
      2,
      "2026-10-05",
@@ -2241,6 +2229,13 @@
      "IND-435243",
      "+919910888965",
      "Japanese Brushed Twill Checked Shirt - Brown & Blue; Urban Stretch Washed Shorts - Rust (Orange / 36); Signature Classic Button Polo - Dark Wine (Dark Wine / XL); Signature Classic Button Polo - Green (Green / XL); Somelos Cotton Satin Striped Shirt - Navy & Red; Elevate Everyday Stretch  Chinos - Grey (Grey / 36); Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - White"
+    ],
+    [
+     0,
+     "2026-10-24",
+     "IND-448891",
+     "+916362676058",
+     "Flux 4-way Stretch Dress Pants - Beige (Beige / 34); Maldon - Manhattan Farbriano Bespoke; The Best Dressed Guest (Jax 52866); Vertex 4-Way Stretch Dress Pants - Navy (Navy / 34)"
     ]
    ]
   },
@@ -2432,13 +2427,6 @@
      "GRANVILLE - SOKTAS BESPOKE"
     ],
     [
-     0,
-     "2026-10-12",
-     "IND-442190",
-     "+916204777234",
-     "The Astoria Stretch Nehru Jacket - Navy (Navy / 36); Paramount Dress Pants - Black (Black / 30)"
-    ],
-    [
      2,
      "2026-10-14",
      "IND-437578",
@@ -2510,15 +2498,6 @@
      "IND-407425",
      "918197381919",
      "Trevano 4-Way Stretch Relaxed Neapolitan Dress Pants – Grey"
-    ]
-   ],
-   "2026-10": [
-    [
-     0,
-     "2026-10-24",
-     "IND-414000",
-     "+916362676058",
-     "Wrinkle-free Bamboo-Blend Twill Shirt - Black"
     ]
    ]
   },

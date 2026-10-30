@@ -6,10 +6,9 @@ connector (get_values 'Sheet1!A1:M5000'), whose oversized result is saved as a J
   python scripts/update_nps.py --sheet-json <saved get_values result> --sales <MTD sales csv>
 
 The sheet has no store or order. A response is put against the POS location of the customer's
-order, matched by email, using the same rule as the NPS_Fit_Assessment workbook (Notes tab): the
-customer's latest order placed at least 7 days before the response, else their latest order on or
-before the response date. On the September responses whose true order is known, that rule picks
-the right store about 93% of the time. When a customer answers more than once for the same order,
+order, matched by email: the customer's latest order placed at least 3 days before the response
+(D-3, the user's call on 2026-10-30), else their latest order on or before the response date. The
+NPS_Fit_Assessment workbook (Notes tab) used 7 days; Sep 2026 stays frozen on that rule. When a customer answers more than once for the same order,
 only the latest answer counts.
 
 Order history is a git-ignored email -> orders file (CUSTOMER_ORDERS below, it holds customer
@@ -60,7 +59,7 @@ FIT_CAMPAIGN = '~7sf91'           # fit assessment, same sheet; same store match
 FIT_SLOT = {'Very satisfied': 0, 'Neutral': 1, 'Not satisfied': 2}
 FIRST_MONTH = '2026-09'          # August starts on the 26th; it is left off, as before
 FROZEN_MONTHS = {'2026-09'}      # see the docstring
-MIN_GAP_DAYS = 7
+MIN_GAP_DAYS = 3
 SHEET_HEAD = ['user_id', 'campaign_id', 'event_date', 'event_name', 'button_label', 'button_type',
               'response_time', 'email', 'first_name', 'last_name', 'phone']
 
@@ -158,7 +157,7 @@ def load_order_details(sales, seeds):
 
 
 def match(orders, resp_day):
-    """The customer's latest order placed >= 7 days before the response, else latest on/before it."""
+    """The customer's latest order placed >= MIN_GAP_DAYS days before the response, else latest on/before it."""
     cutoff = (dt.date.fromisoformat(resp_day) - dt.timedelta(days=MIN_GAP_DAYS)).isoformat()
     early = [x for x in orders if x[0] <= cutoff]
     if early:
