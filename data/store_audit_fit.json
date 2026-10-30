@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-10-29 10:14:15 (data for 2026-10-28))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-10-30 10:14:18 (data for 2026-10-29))",
  "months": [
   {
    "key": "2026-09",
@@ -9,7 +9,7 @@
   {
    "key": "2026-10",
    "label": "Oct",
-   "range": "1–28 Oct"
+   "range": "1–29 Oct"
   }
  ],
  "stores": {
@@ -68,7 +68,7 @@
     1
    ],
    "2026-10": [
-    3,
+    4,
     1,
     1
    ]
@@ -92,7 +92,7 @@
     3
    ],
    "2026-10": [
-    1,
+    2,
     2,
     0
    ]
@@ -106,7 +106,7 @@
    "2026-10": [
     1,
     3,
-    0
+    1
    ]
   },
   "Inorbit Mall Malad West": {
@@ -154,7 +154,7 @@
    "2026-10": [
     2,
     1,
-    0
+    1
    ]
   },
   "Inorbit mall": {
@@ -304,7 +304,7 @@
    ],
    "2026-10": [
     4,
-    0,
+    1,
     1
    ]
   },
@@ -351,7 +351,7 @@
     0
    ],
    "2026-10": [
-    2,
+    3,
     0,
     2
    ]
@@ -382,7 +382,7 @@
     3
    ],
    "2026-10": [
-    2,
+    3,
     0,
     3
    ]
@@ -816,6 +816,13 @@
      "IND-445618",
      "+917993360239",
      "Flux 4-way Stretch Dress Pants - Navy (Navy / 32); Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Bluish Grey; Virello Melange Stretch Dress Pants - Grey (Dark Blue / 32); Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - Grey"
+    ],
+    [
+     0,
+     "2026-10-29",
+     "IND-449396",
+     "+919866663669",
+     "Signature Classic Button Polo - Navy (Navy / M)"
     ]
    ]
   },
@@ -1003,6 +1010,13 @@
      "IND-445678",
      "+919820239606",
      "Cotton Dobby Shirt - Navy; Easy-Care Cotton Checked Shirt - Green & White; Elevate Everyday Stretch Chinos - Navy (Navy / 38)"
+    ],
+    [
+     0,
+     "2026-10-29",
+     "IND-445714",
+     "+918007517377",
+     "ESQUIRE - SOKTAS BESPOKE; Wrinkle-free Bamboo-Blend Twill Shirt - Navy; VISCOUNT - SOKTAS BESPOKE; Luthai Wrinkle-Free Herringbone Shirt - White"
     ]
    ]
   },
@@ -1079,6 +1093,13 @@
      "IND-445682",
      "+919791085369",
      "Wrinkle-Free Stretch Satin Shirt - White; SANREMO PLUS - REID & TAYLOR BESPOKE"
+    ],
+    [
+     2,
+     "2026-10-29",
+     "IND-446142",
+     "+917810999007",
+     "Cotton Striped Shirt - Mid Blue; Japanese Brushed Twill Checked Shirt - Brown & Blue; Cotton Dobby Shirt - Navy"
     ]
    ]
   },
@@ -1292,6 +1313,13 @@
      "IND-445873",
      "+919830258304",
      "Luxe Journey Zipper Hoodie - Ecru (Ecru / M)"
+    ],
+    [
+     2,
+     "2026-10-29",
+     "IND-446826",
+     "+919077752225",
+     "Stretch Cotton Checked Shirt - Red & Blue; Giza Cotton Bengal Striped Shirt - Pink; Giza Cotton Graph Checked Shirt - Dark Blue; Giza Cotton Glen Plaid Checked Shirt - Grey"
     ]
    ]
   },
@@ -2138,6 +2166,13 @@
      "IND-449311",
      "+918860652024",
      "Light Blue Dobby Checked Shirt (Light Blue / 42); Luthai Dark Grey Cotton Striped Shirt (Dark Grey / 42)"
+    ],
+    [
+     1,
+     "2026-10-29",
+     "IND-447369",
+     "+919890147800",
+     "The Regent Structured Dress Pants - Blue (Blue / 34); Soft Washed Linen Shirt - Light Ecru"
     ]
    ]
   },
@@ -2288,6 +2323,13 @@
      "IND-448195",
      "+919963344588",
      "Tailored 4-Way Stretch Nylon Smart Pants - Dark Grey (Dark Grey / 32); Tailored 4-Way Stretch Nylon Smart Pants - Olive (Olive / 32)"
+    ],
+    [
+     0,
+     "2026-10-29",
+     "IND-447911",
+     "+919951343465",
+     "Giza Cotton Herringbone Shirt - Black; Giza Cotton Grey & White Dobby Striped Shirt (Grey / 38)"
     ]
    ]
   },
@@ -2416,6 +2458,13 @@
      "IND-443345",
      "+918884006339",
      "The Astor Structured Suit Blazer - Navy (Navy / 40); The Astor Structured Dress Pants - Navy (Navy / 34)"
+    ],
+    [
+     0,
+     "2026-10-29",
+     "IND-436355",
+     "+919410450254",
+     "The Flux 4-Way Stretch Blazer - Grey (Grey / 40); Blue Wrinkle-Free Bamboo Blend Satin Shirt (Blue / 40); White Satin Solid Shirt (White / 40) x2; Pavilion Striped Tie - Maroon; Snow White Cotton Twill Shirt (White / 40); White Wrinkle-Free Stretch Twill Shirt (White / 40)"
     ]
    ]
   },
