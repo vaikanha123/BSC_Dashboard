@@ -27,7 +27,7 @@ from collections import Counter, defaultdict
 import openpyxl
 import pandas as pd
 
-from bsc_common import (extract_const, find_refund_and_cn_sheets, iso_from_date, month_key_from_date, process_refund_sheet, store_top_orders,
+from bsc_common import (extract_const, read_sales_csv, find_refund_and_cn_sheets, iso_from_date, month_key_from_date, process_refund_sheet, store_top_orders,
                         replace_const, syntax_check_html_js)
 
 # Ledger location code -> store name used by the CX refund/CN files (and SEED_REFUNDS.byStore).
@@ -148,7 +148,7 @@ def cx_categories(path):
 
 def sales_categories(path, orders):
     """order -> ({category: weight}, POS location) from the sales history, for the given orders."""
-    df = pd.read_csv(path, usecols=['Order name', 'Order or return', 'POS location name', 'Product type',
+    df = read_sales_csv(path, usecols=['Order name', 'Order or return', 'POS location name', 'Product type',
                                     'Gross sales', 'Taxes'])
     df = df[df['Order name'].isin(orders) & (df['Order or return'] == 'order')]
     out = {}

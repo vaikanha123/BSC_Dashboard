@@ -35,6 +35,9 @@ import sys
 
 import pandas as pd
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from bsc_common import read_sales_csv  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # The forecast lives on its own unlinked page (kept off index.html on purpose -- the main dashboard's
 # link is widely shared). forecast.py reads the month targets from index.html.
@@ -90,7 +93,7 @@ def main():
     today = dt.date.fromisoformat(a.today) if a.today else dt.date.today()
     yesterday = today - dt.timedelta(days=1)
 
-    df = pd.read_csv(a.sales)
+    df = read_sales_csv(a.sales)
     if 'Day' not in df.columns:
         stop('CSV has no "Day" column -- is this the right report?')
     days = pd.to_datetime(df['Day'])

@@ -114,6 +114,27 @@ def build_cat_tree_by_region(df, value_cols=('Revenue', 'Qty')):
     return {reg: build_cat_tree(g, value_cols) for reg, g in df.groupby(region)}
 
 
+# Shopify renamed the 'Order or return' column to 'Order or sales reversal' (return rows now say
+# 'reversal', order rows still 'order') from the Oct 30 2026 export on. Scripts keep the old name;
+# read_sales_csv / prepare_sales_df map the new one onto it.
+ORDER_COL = 'Order or return'
+ORDER_COL_ALIASES = ('Order or sales reversal',)
+
+
+def normalize_order_col(df):
+    return df.rename(columns={a: ORDER_COL for a in ORDER_COL_ALIASES})
+
+
+def read_sales_csv(path, usecols=None, **kw):
+    """pd.read_csv for a Shopify sales export that accepts either name of the order/return column."""
+    if usecols is not None:
+        want = set(usecols)
+        if ORDER_COL in want:
+            want |= set(ORDER_COL_ALIASES)
+        kw['usecols'] = lambda c: c in want
+    return normalize_order_col(pd.read_csv(path, **kw))
+
+
 def load_sales_csv(path):
     """Load a Shopify sales export, filtered to order rows, with the standard derived columns."""
     return prepare_sales_df(pd.read_csv(path, low_memory=False))
@@ -122,6 +143,7 @@ def load_sales_csv(path):
 def prepare_sales_df(df):
     """load_sales_csv's transforms, for a raw export already in memory (e.g. a month sliced out of
     a multi-year file)."""
+    df = normalize_order_col(df)
     df = df[df['Order or return'] == 'order'].copy()
     df['Day_str'] = df['Day'].str[:10]
     # Revenue basis (since 2026-10-05, per Vaibhav): Gross sales + Taxes + Shipping charges. Keep

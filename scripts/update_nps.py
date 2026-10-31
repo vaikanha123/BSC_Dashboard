@@ -46,7 +46,7 @@ import sys
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from bsc_common import REGION_MAP, extract_const, replace_const, syntax_check_html_js  # noqa: E402
+from bsc_common import REGION_MAP, extract_const, read_sales_csv, replace_const, syntax_check_html_js  # noqa: E402
 from build_store_audit import NPS_STORES, MONTH_NAMES, PAGE  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -86,7 +86,7 @@ def read_orders(path):
     """Distinct orders (email, order, day, pos) from a Shopify "Sales Data Report" CSV."""
     head = pd.read_csv(path, nrows=0).columns
     date_col = 'Day' if 'Day' in head else 'Month'
-    df = pd.read_csv(path, usecols=[date_col, 'Order name', 'Order or return', 'Customer email', 'POS location name'],
+    df = read_sales_csv(path, usecols=[date_col, 'Order name', 'Order or return', 'Customer email', 'POS location name'],
                      dtype=str)
     df = df[(df['Order or return'] == 'order') & df['Customer email'].notna()]
     out = pd.DataFrame({'email': df['Customer email'].str.strip().str.lower(), 'order': df['Order name'],
@@ -120,7 +120,7 @@ def read_details(path):
     head = pd.read_csv(path, nrows=0).columns
     if 'Assisting staff member name' not in head:
         return None
-    df = pd.read_csv(path, dtype=str, usecols=['Order name', 'Order or return', 'Line type', 'Sales channel',
+    df = read_sales_csv(path, dtype=str, usecols=['Order name', 'Order or return', 'Line type', 'Sales channel',
                                                'Product title at time of sale', 'Product variant title at time of sale',
                                                'Product type', 'Assisting staff member name', 'Quantity ordered',
                                                'Total sales'])

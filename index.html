@@ -1195,7 +1195,8 @@ async function handleFiles(fileList){
       const byDateStoreUnits = {};         // dk -> store -> units (quantity)
       const byDateStylistStoreRev = {};    // dk -> stylist -> store -> revenue (to find each stylist's home store)
       rows.forEach(row => {
-        if(row['Order or return'] !== 'order') return;
+        // Shopify renamed the column to 'Order or sales reversal' from the Oct 30 2026 export on
+        if((row['Order or return'] ?? row['Order or sales reversal']) !== 'order') return;
         const dk = dateKeyFromRow(row);
         if(!dk) return;
         const store = (row['POS location name'] || 'Online').trim();
