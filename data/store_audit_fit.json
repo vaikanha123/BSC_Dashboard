@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-10-30 10:14:18 (data for 2026-10-29))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-10-31 10:14:14 (data for 2026-10-30))",
  "months": [
   {
    "key": "2026-09",
@@ -9,7 +9,7 @@
   {
    "key": "2026-10",
    "label": "Oct",
-   "range": "1–29 Oct"
+   "range": "1–30 Oct"
   }
  ],
  "stores": {
@@ -68,7 +68,7 @@
     1
    ],
    "2026-10": [
-    4,
+    5,
     1,
     1
    ]
@@ -219,7 +219,7 @@
     3
    ],
    "2026-10": [
-    2,
+    3,
     0,
     0
    ]
@@ -267,9 +267,9 @@
     1
    ],
    "2026-10": [
-    3,
+    4,
     1,
-    0
+    1
    ]
   },
   "Indiranagar": {
@@ -339,7 +339,7 @@
     0
    ],
    "2026-10": [
-    1,
+    2,
     0,
     0
    ]
@@ -384,7 +384,7 @@
    "2026-10": [
     2,
     0,
-    3
+    4
    ]
   },
   "Phoenix Lucknow": {
@@ -825,6 +825,13 @@
      "IND-449396",
      "+919866663669",
      "Signature Classic Button Polo - Navy (Navy / M)"
+    ],
+    [
+     0,
+     "2026-10-30",
+     "IND-448971",
+     "+919963123487",
+     "Sunscape Relaxed Linen Pants - Navy (Navy / 34); Sunscape Relaxed Linen Pants - White (White / 34)"
     ]
    ]
   },
@@ -1727,6 +1734,13 @@
      "IND-445833",
      "+919611126169",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Light blue"
+    ],
+    [
+     0,
+     "2026-10-30",
+     "IND-433684",
+     "+919966966666",
+     "Camicie-722 (058-067) - Loro Piana Bespoke; Luxe Lounger T-Shirt - Black (Black / L); The Belluno 100% Linen Suit Blazer - Ecru (Ecru / 42)"
     ]
    ]
   },
@@ -1919,6 +1933,20 @@
      "IND-445583",
      "+919415045622",
      "Giza Cotton Glen Plaid Checked Shirt - Grey"
+    ],
+    [
+     2,
+     "2026-10-30",
+     "IND-434132",
+     "+919910997706",
+     "Marleston - Manhattan Farbriano Bespoke; Malaga - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-10-30",
+     "IND-447767",
+     "+919818933875",
+     "Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - White; 2-Ply Cotton Blend Herringbone Shirt - Mid Blue"
     ]
    ]
   },
@@ -2270,6 +2298,13 @@
      "IND-448659",
      "+917021887445",
      "Ecru Modal Linen Popover Kurta (Ecru / 40)"
+    ],
+    [
+     0,
+     "2026-10-30",
+     "IND-451341",
+     "+917208321103",
+     "BSC X Rid Burman Washed T-Shirt - Khaki (Khaki / XS)"
     ]
    ]
   },
@@ -2453,6 +2488,13 @@
      "IND-436355",
      "+919410450254",
      "The Flux 4-Way Stretch Blazer - Grey (Grey / 40); Blue Wrinkle-Free Bamboo Blend Satin Shirt (Blue / 40); White Satin Solid Shirt (White / 40) x2; Pavilion Striped Tie - Maroon; Snow White Cotton Twill Shirt (White / 40); White Wrinkle-Free Stretch Twill Shirt (White / 40)"
+    ],
+    [
+     2,
+     "2026-10-30",
+     "IND-445548",
+     "+919739862264",
+     "Cotton Washed Oxford Shirt - Light Blue; Washed Oxford Shirt - White"
     ]
    ]
   },
