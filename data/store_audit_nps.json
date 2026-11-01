@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-10-31 10:14:14 (data for 2026-10-30))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-01 10:14:15 (data for 2026-10-31))",
  "months": [
   {
    "key": "2026-09",
@@ -9,7 +9,7 @@
   {
    "key": "2026-10",
    "label": "Oct",
-   "range": "1–30 Oct"
+   "range": "1–31 Oct"
   }
  ],
  "stores": {
@@ -44,7 +44,7 @@
     2
    ],
    "2026-10": [
-    10,
+    11,
     0,
     3
    ]
@@ -93,7 +93,7 @@
    ],
    "2026-10": [
     19,
-    2,
+    3,
     2
    ]
   },
@@ -104,7 +104,7 @@
     3
    ],
    "2026-10": [
-    15,
+    16,
     1,
     0
    ]
@@ -128,7 +128,7 @@
     4
    ],
    "2026-10": [
-    21,
+    23,
     7,
     1
    ]
@@ -140,7 +140,7 @@
     3
    ],
    "2026-10": [
-    9,
+    10,
     2,
     1
    ]
@@ -185,7 +185,7 @@
    "2026-10": [
     13,
     1,
-    1
+    2
    ]
   },
   "Gurugram": {
@@ -197,7 +197,7 @@
    "2026-10": [
     8,
     1,
-    4
+    5
    ]
   },
   "Phoenix Viman Nagar": {
@@ -209,7 +209,7 @@
    "2026-10": [
     10,
     2,
-    5
+    6
    ]
   },
   "Koregaon Park": {
@@ -291,7 +291,7 @@
     2
    ],
    "2026-10": [
-    28,
+    29,
     7,
     2
    ]
@@ -327,9 +327,9 @@
     4
    ],
    "2026-10": [
-    15,
+    16,
     1,
-    0
+    1
    ]
   },
   "Sindhu Bhavan Marg": {
@@ -340,7 +340,7 @@
    ],
    "2026-10": [
     21,
-    4,
+    5,
     3
    ]
   },
@@ -352,7 +352,7 @@
    ],
    "2026-10": [
     13,
-    0,
+    1,
     3
    ]
   },
@@ -376,8 +376,8 @@
    ],
    "2026-10": [
     7,
-    0,
-    0
+    1,
+    1
    ]
   },
   "Kochi": {
@@ -401,7 +401,7 @@
    "2026-10": [
     5,
     0,
-    2
+    3
    ]
   },
   "Phoenix Lucknow": {
@@ -411,7 +411,7 @@
     0
    ],
    "2026-10": [
-    2,
+    4,
     2,
     1
    ]
@@ -998,6 +998,13 @@
      "IND-450142",
      "+919811173067",
      "Sunscape Relaxed Linen Pants - White (White / 36)"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-442615",
+     "+919769584112",
+     "Glacier Blue Mid-Rise Stretch Jeans (Light Blue / 32); Midnight Indigo Mid-Rise Stretch Jeans (Mid Indigo / 36)"
     ]
    ]
   },
@@ -2401,6 +2408,13 @@
      "IND-448291",
      "+919344975604",
      "Dark Blue & White Cotton-Lyocell Striped Shirt (Dark Blue / 38)"
+    ],
+    [
+     1,
+     "2026-10-31",
+     "IND-451043",
+     "+918223816171",
+     "Giza Cotton Light Blue Pin Striped Shirt (Light Blue / 40)"
     ]
    ]
   },
@@ -2743,6 +2757,13 @@
      "IND-448540",
      "+918756811442",
      "Flux 4-way Stretch Dress Pants - Black (Black / 36)"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-448498",
+     "+917296937887",
+     "Soft Washed Linen Shirt - Sage Green; Cotton Linen Shirt - Beige"
     ]
    ]
   },
@@ -3371,6 +3392,20 @@
      "IND-448462",
      "+919821523600",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Olive; Wrinkle-free Bamboo-Blend Twill Shirt - Green; Wrinkle-free Bamboo-Blend Twill Shirt - Lavender"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-444369",
+     "+919712939327",
+     "Elevate Everyday Stretch Chinos - White (White / 34); Paramount Dress Pants - Navy (Navy / 34); Giza Cotton Gingham Checked Shirt - Grey; Giza Cotton Gingham Checked Shirt - Pink; Cotton Oxford Striped Shirt - Grey & White; Soft Easy-Care Cotton Twill Shirt - White; Stretch Cotton Shirt - Light Blue"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-452021",
+     "+919323272644",
+     ""
     ]
    ]
   },
@@ -3643,6 +3678,13 @@
      "IND-449498",
      "+918850918689",
      "Sunscape Relaxed Linen Pants - Brown (Brown / 30)"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-452007",
+     "+917777019007",
+     "Aspen Mid-Rise Corduroy Lounge Pants - Dark Brown (Dark Brown / 44)"
     ]
    ]
   },
@@ -4575,6 +4617,13 @@
      "IND-448378",
      "+919446093894",
      "Flux 4-way Stretch Dress Pants - Beige (Beige / 34)"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-447937",
+     "+918178577547",
+     "Soktas Striped Shirt - Blue; Paramount Dress Pants - Black (Black / 36); The Paramount Formal Blazer - Black (Black / 42)"
     ]
    ]
   },
@@ -4819,6 +4868,13 @@
      "IND-448381",
      "+919999555090",
      "Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Navy; Brushed Twill Shirt - Blue; Brushed Twill Shirt - Brown"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-436742",
+     "+919718170004",
+     "KING - SOKTAS BESPOKE"
     ]
    ]
   },
@@ -5126,6 +5182,13 @@
      "IND-447943",
      "+919958994355",
      "Cotton Twill Shirt - Blue & White"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-448558",
+     "+919881133523",
+     "Luthai Wrinkle-Free Herringbone Shirt - Blue"
     ]
    ]
   },
@@ -7163,6 +7226,13 @@
      "IND-451331",
      "+918530924071",
      "Jr. Haircut"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-440105",
+     "+919898191218",
+     "Luthai Wrinkle-Free Bold Twill Shirt - Blue; Wrinkle-Free Bamboo-Blend Dobby Shirt - Lavender; Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - Navy; Wrinkle-Free Bamboo-Blend Stretch Dobby Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Wrinkle-Free Bamboo-Blend Dobby Shirt - Dark Blue; Luthai Wrinkle-Free Bold Twill Shirt - White"
     ]
    ]
   },
@@ -7923,6 +7993,20 @@
      "IND-451141",
      "+917386612284",
      "MTM Shirt - off the rack (White / 40)"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-449905",
+     "+917331160076",
+     "Signature Flat Knit Jacquard Button Polo - Ecru (Ecru / S)"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-447388",
+     "+919985103333",
+     "Wrinkle-Free Stretch Satin Shirt - Blue; Wrinkle-Free Stretch Satin Shirt - Black; Wrinkle-Free Stretch Satin Shirt - White; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32); Vertex 4-Way Stretch Dress Pants - Navy (Navy / 32); Flux 4-way Stretch Dress Pants - Grey (Grey / 32); Wrinkle-Free Stretch Satin Shirt - Light Blue"
     ]
    ]
   },
@@ -8342,6 +8426,13 @@
      "IND-451011",
      "+919978970912",
      "Royal Haircut; Giza Cotton Herringbone Shirt - Dark Blue; Paramount Dress Pants - Dark Grey (Dark Grey / 40)"
+    ],
+    [
+     1,
+     "2026-10-31",
+     "IND-444901",
+     "+919099963390",
+     "Soktas Checked Shirt - Blue"
     ]
    ]
   },
@@ -8565,6 +8656,13 @@
      "IND-444994",
      "+919810044100",
      "Culver Twill Shirt - White"
+    ],
+    [
+     1,
+     "2026-10-31",
+     "IND-450156",
+     "+918447255160",
+     "Munich - Manhattan Farbriano Bespoke"
     ]
    ]
   },
@@ -8815,6 +8913,20 @@
      "IND-445118",
      "+918105728668",
      "Soktas Micro Dobby Shirt - Peach; Luthai Wrinkle-Free Herringbone Shirt - White; Markwell - Manhattan Farbriano Bespoke"
+    ],
+    [
+     1,
+     "2026-10-31",
+     "IND-448051",
+     "+918310147601",
+     "Cotton Linen Shirt - Green; Cotton Twill Shirt - Light Grey"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-449217",
+     "+919611099400",
+     "Exquisite Blended Wool Dress Pants - Black (Black / 36); Elevate Everyday Stretch Chinos - Olive (Olive / 36); Exquisite Blended Wool Dress Pants - Navy (Navy / 36)"
     ]
    ]
   },
@@ -9023,6 +9135,13 @@
      "IND-445457",
      "+919990206162",
      "100% Linen Shirt - White"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-446777",
+     "+919811147676",
+     "Wrinkle-Free Stretch Satin Shirt - Light Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Olive; MFW9435 - Benton  - Manhattan Farbriano Bespoke"
     ]
    ]
   },
@@ -9127,6 +9246,20 @@
      "IND-446157",
      "+917355161430",
      "Cotton Poplin Striped Shirt - Navy & Red; Elevate Everyday Stretch Chinos - Beige (Beige / 30); Wrinkle-Free Stretch Satin Shirt - Navy; Luthai Cotton Lyocell Twill Shirt - Olive"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-437964",
+     "+919125000777",
+     "MTM Shirt - off the rack (White / 40) x2; Flux 4-way Stretch Dress Pants - Grey (Grey / 34); Paramount Dress Pants - Black (Black / 34)"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-449338",
+     "+918004905658",
+     "Soktas Dobby Shirt - White"
     ]
    ]
   },
