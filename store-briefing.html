@@ -377,7 +377,7 @@ const BRIEFING_CONTENT = {"date": "2026-10-23", "talkingPoints": [{"title": "The
 
 (function(){
 
-const state = { store: null, log: [] };
+const state = { store: null, log: [], trackRegion: 'All', trackSeen: 'all' };
 
 function fmtINR(n){
   if(n === null || n === undefined) return 'n/a';
@@ -416,13 +416,19 @@ async function loadLog(){
   }catch(e){ return []; }
 }
 
+// "Seen" means opened today (local date); the log keeps every day, so older views only show as Last viewed.
+function isToday(iso){
+  const d = new Date(iso), n = new Date();
+  return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+}
+
 function statusFor(store){
   const rows = state.log.filter(r => r.store === store);
   const views = rows.filter(r => r.event === 'view');
   const prints = rows.filter(r => r.event === 'print');
   const last = arr => arr.length ? arr[arr.length-1].timestamp : null;
   return {
-    viewed: views.length > 0, viewCount: views.length, lastViewed: last(views),
+    viewed: views.some(r => isToday(r.timestamp)), viewCount: views.length, lastViewed: last(views),
     printed: prints.length > 0, printCount: prints.length, lastPrinted: last(prints),
   };
 }
@@ -941,34 +947,60 @@ function renderHOContent(store){
 function renderTrackingPanel(){
   const panel = document.getElementById('tracking-panel');
   if(!panel) return;
-  const stores = Object.keys(BRIEFING_DATA.stores || {}).sort();
-  const viewedCount = stores.filter(s => statusFor(s).viewed).length;
-  const rows = stores.map(s => {
+  const all = Object.keys(BRIEFING_DATA.stores || {}).sort();
+  const regionOf = s => BRIEFING_DATA.stores[s].region || 'Other';
+  const regions = [...new Set(all.map(regionOf))].sort();
+  const inRegion = all.filter(s => state.trackRegion === 'All' || regionOf(s) === state.trackRegion);
+  const seen = inRegion.filter(s => statusFor(s).viewed);
+  const shown = inRegion.filter(s => state.trackSeen === 'all' || (state.trackSeen === 'seen') === statusFor(s).viewed);
+  // not-seen stores first, so the ones to chase sit at the top
+  shown.sort((a, b) => statusFor(a).viewed - statusFor(b).viewed || a.localeCompare(b));
+  const chip = (group, value, label, on) => `<button class="bsc-select" data-${group}="${value}" style="padding:5px 11px; font-size:13.5px;
+    ${on ? 'background:var(--brass-dim); border-color:var(--brass-dim); color:#fff; font-weight:600;' : ''}">${label}</button>`;
+  const regionCount = r => {
+    const list = all.filter(s => r === 'All' || regionOf(s) === r);
+    return `${list.filter(s => statusFor(s).viewed).length}/${list.length}`;
+  };
+  const rows = shown.map(s => {
     const st = statusFor(s);
     const dot = st.viewed ? 'var(--good)' : 'var(--bad)';
     return `<tr>
       <td style="padding:5px 10px; font-size:14px;">
         <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:${dot}; margin-right:7px;"></span>${s}
       </td>
-      <td style="padding:5px 10px; font-size:13.5px; color:var(--text-mute);">${fmtWhen(st.lastViewed) || 'Not viewed'}</td>
+      <td style="padding:5px 10px; font-size:13.5px; color:var(--text-mute);">${regionOf(s)}</td>
+      <td style="padding:5px 10px; font-size:13.5px; color:${st.viewed ? 'var(--good)' : 'var(--bad)'};">${st.viewed ? 'Seen' : 'Not seen'}</td>
+      <td style="padding:5px 10px; font-size:13.5px; color:var(--text-mute);">${fmtWhen(st.lastViewed) || 'Never'}</td>
       <td style="padding:5px 10px; font-size:13.5px; color:var(--text-mute);">${fmtWhen(st.lastPrinted) || '—'}</td>
     </tr>`;
-  }).join('');
+  }).join('') || `<tr><td colspan="5" style="padding:10px; font-size:14px; color:var(--text-mute);">No stores here.</td></tr>`;
   panel.innerHTML = `
     <div style="font-size:14.5px; font-weight:600; color:var(--text-dim); margin-bottom:10px;">
-      Viewed by ${viewedCount} of ${stores.length} stores
+      Seen today by ${seen.length} of ${inRegion.length} stores${state.trackRegion === 'All' ? '' : ` in ${state.trackRegion}`}
       ${!APPS_SCRIPT_URL ? '<span style="color:var(--warn); font-weight:400;"> (tracking backend not configured yet)</span>' : ''}
     </div>
-    <div style="max-height:220px; overflow-y:auto; border:1px solid var(--line); border-radius:8px;">
+    <div class="no-print" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+      ${['All', ...regions].map(r => chip('region', r, `${r} <small style="opacity:.75;">${regionCount(r)}</small>`, state.trackRegion === r)).join('')}
+    </div>
+    <div class="no-print" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+      ${chip('seen', 'all', 'All', state.trackSeen === 'all')}
+      ${chip('seen', 'not', `Not seen (${inRegion.length - seen.length})`, state.trackSeen === 'not')}
+      ${chip('seen', 'seen', `Seen (${seen.length})`, state.trackSeen === 'seen')}
+    </div>
+    <div style="max-height:320px; overflow:auto; border:1px solid var(--line); border-radius:8px;">
       <table style="width:100%; border-collapse:collapse;">
         <thead><tr style="background:var(--panel2);">
           <th style="text-align:left; padding:6px 10px; font-size:12.5px; color:var(--text-mute);">Store</th>
+          <th style="text-align:left; padding:6px 10px; font-size:12.5px; color:var(--text-mute);">Region</th>
+          <th style="text-align:left; padding:6px 10px; font-size:12.5px; color:var(--text-mute);">Today</th>
           <th style="text-align:left; padding:6px 10px; font-size:12.5px; color:var(--text-mute);">Last viewed</th>
           <th style="text-align:left; padding:6px 10px; font-size:12.5px; color:var(--text-mute);">Last printed</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
+  panel.querySelectorAll('[data-region]').forEach(b => b.onclick = () => { state.trackRegion = b.dataset.region; renderTrackingPanel(); });
+  panel.querySelectorAll('[data-seen]').forEach(b => b.onclick = () => { state.trackSeen = b.dataset.seen; renderTrackingPanel(); });
 }
 
 // Stores with high refunds + credit notes this month, worst first (BRIEFING_DATA.returnsWatch).
@@ -1016,7 +1048,6 @@ function renderSelectPage(){
         <div class="bsc-bubble" id="picker-bubble" style="font-size:15px; max-width:360px;"></div>
       </div>
       ${dateBanner}
-      ${returnsWatchList()}
       <div style="font-size:14.5px; color:var(--text-dim); margin-bottom:12px;">Select a store to view its daily briefing</div>
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
         <select id="store-select" class="bsc-select" style="min-width:220px;"></select>
@@ -1025,6 +1056,7 @@ function renderSelectPage(){
       </div>
     </div>
     <div style="padding:20px 24px;">
+      ${returnsWatchList()}
       <div id="tracking-panel"></div>
     </div>
   `;
