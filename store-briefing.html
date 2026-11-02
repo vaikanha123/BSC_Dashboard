@@ -987,7 +987,7 @@ function renderTrackingPanel(){
       ${chip('seen', 'not', `Not seen (${inRegion.length - seen.length})`, state.trackSeen === 'not')}
       ${chip('seen', 'seen', `Seen (${seen.length})`, state.trackSeen === 'seen')}
     </div>
-    <div style="max-height:320px; overflow:auto; border:1px solid var(--line); border-radius:8px;">
+    <div style="height:320px; overflow:auto; border:1px solid var(--line); border-radius:8px;">
       <table style="width:100%; border-collapse:collapse;">
         <thead><tr style="background:var(--panel2);">
           <th style="text-align:left; padding:6px 10px; font-size:12.5px; color:var(--text-mute);">Store</th>
@@ -999,8 +999,10 @@ function renderTrackingPanel(){
         <tbody>${rows}</tbody>
       </table>
     </div>`;
-  panel.querySelectorAll('[data-region]').forEach(b => b.onclick = () => { state.trackRegion = b.dataset.region; renderTrackingPanel(); });
-  panel.querySelectorAll('[data-seen]').forEach(b => b.onclick = () => { state.trackSeen = b.dataset.seen; renderTrackingPanel(); });
+  // fixed-height list above + restoring the scroll keeps the page still when a filter leaves few rows
+  const refilter = (key, value) => { const y = window.scrollY; state[key] = value; renderTrackingPanel(); window.scrollTo(0, y); };
+  panel.querySelectorAll('[data-region]').forEach(b => b.onclick = () => refilter('trackRegion', b.dataset.region));
+  panel.querySelectorAll('[data-seen]').forEach(b => b.onclick = () => refilter('trackSeen', b.dataset.seen));
 }
 
 // Stores with high refunds + credit notes this month, worst first (BRIEFING_DATA.returnsWatch).
