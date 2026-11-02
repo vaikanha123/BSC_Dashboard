@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-01 10:14:15 (data for 2026-10-31))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-02 10:14:15 (data for 2026-11-01))",
  "months": [
   {
    "key": "2026-09",
@@ -10,6 +10,11 @@
    "key": "2026-10",
    "label": "Oct",
    "range": "1–31 Oct"
+  },
+  {
+   "key": "2026-11",
+   "label": "Nov",
+   "range": "1–1 Nov"
   }
  ],
  "stores": {
@@ -22,6 +27,11 @@
    "2026-10": [
     8,
     3,
+    0
+   ],
+   "2026-11": [
+    1,
+    0,
     0
    ]
   },
@@ -59,6 +69,11 @@
     18,
     3,
     4
+   ],
+   "2026-11": [
+    0,
+    0,
+    1
    ]
   },
   "Sky City Borivali": {
@@ -81,6 +96,11 @@
    ],
    "2026-10": [
     20,
+    0,
+    0
+   ],
+   "2026-11": [
+    2,
     0,
     0
    ]
@@ -143,6 +163,11 @@
     10,
     2,
     1
+   ],
+   "2026-11": [
+    0,
+    0,
+    2
    ]
   },
   "R.K. Salai": {
@@ -172,6 +197,11 @@
    ],
    "2026-10": [
     9,
+    0,
+    1
+   ],
+   "2026-11": [
+    0,
     0,
     1
    ]
@@ -234,6 +264,11 @@
     11,
     0,
     5
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Oberoi Mall": {
@@ -246,6 +281,11 @@
     15,
     0,
     4
+   ],
+   "2026-11": [
+    1,
+    0,
+    1
    ]
   },
   "Jaipur": {
@@ -270,6 +310,11 @@
     17,
     1,
     2
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Andheri": {
@@ -306,6 +351,11 @@
     7,
     1,
     4
+   ],
+   "2026-11": [
+    1,
+    1,
+    0
    ]
   },
   "Shakespear Sarani": {
@@ -330,6 +380,11 @@
     16,
     1,
     1
+   ],
+   "2026-11": [
+    2,
+    1,
+    0
    ]
   },
   "Sindhu Bhavan Marg": {
@@ -342,6 +397,11 @@
     21,
     5,
     3
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Ambience Vasnt Kunj": {
@@ -413,6 +473,11 @@
    "2026-10": [
     4,
     2,
+    1
+   ],
+   "2026-11": [
+    0,
+    0,
     1
    ]
   },
@@ -664,6 +729,15 @@
      "IND-447963",
      "+919810433611",
      "Exquisite Blended Wool Dress Pants - Dark Grey (Dark Grey / 38); Elevate Everyday Stretch Chinos - Dark Grey (Dark Grey / 38); Elevate Everyday Stretch Chinos - Beige (Beige / 38); Brushed Twill Shirt - Brown; Exquisite Blended Wool Dress Pants - Grey (Grey / 38); Denim Shirt - Light Blue; Brushed Twill Shirt - Green"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-448606",
+     "+919717848776",
+     "Exquisite Blended Wool Dress Pants - Beige (Beige / 32)"
     ]
    ]
   },
@@ -1375,6 +1449,15 @@
      "IND-448310",
      "+919833460524",
      "Navy Cotton Linen Side Pleated Kurta (Navy / 42); Beige Modal Linen Bandhgala Kurta (beige / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-01",
+     "IND-445742",
+     "+919773533333",
+     "FLORA FOUNTAIN FERRERO x2; PALIHILL PISTACHIO x2"
     ]
    ]
   },
@@ -2150,6 +2233,22 @@
      "IND-447898",
      "+919619712149",
      "100% Linen Shirt - Dark Purple"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-450851",
+     "+919082489173",
+     "100% Merino Wool Polo - Dark Blue (Navy / 2XL); Rust Cotton Denim Kurta Shirt (Rust / 44)"
+    ],
+    [
+     0,
+     "2026-11-01",
+     "IND-449219",
+     "+919811244998",
+     "Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - Navy; Wrinkle-free Bamboo-Blend Twill Shirt - Pink"
     ]
    ]
   },
@@ -3686,6 +3785,22 @@
      "+917777019007",
      "Aspen Mid-Rise Corduroy Lounge Pants - Dark Brown (Dark Brown / 44)"
     ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-01",
+     "IND-451761",
+     "+919820135173",
+     "Light Blue & White Checked Banker Shirt (Blue / 42); Blue Cotton Herringbone Shirt (Blue / 42); Luthai Dark Grey Cotton Striped Shirt (Dark Grey / 42); Grey Cotton Knit Shirt (Grey / 42)"
+    ],
+    [
+     2,
+     "2026-11-01",
+     "IND-449398",
+     "+919768847773",
+     "2-Ply Soft Herringbone Shirt - White"
+    ]
    ]
   },
   "R.K. Salai": {
@@ -4380,6 +4495,15 @@
      "IND-447104",
      "+919717010022",
      "Luthai Cotton Lyocell Twill Shirt - Olive; Luthai Cotton Lyocell Twill Shirt - Navy; Luthai Cotton Lyocell Twill Shirt - Black"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-01",
+     "IND-449234",
+     "+917895209020",
+     "Luthai Wrinkle Free Dobby Shirt - White"
     ]
    ]
   },
@@ -5839,6 +5963,15 @@
      "+919999653010",
      "Giza Cotton Houndstooth Shirt - Pink; Flux 4-way Stretch Dress Pants - Black (Black / 38)"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-444933",
+     "+919540131310",
+     "Cotton Herringbone Shirt - Olive; SCARLET - REID & TAYLOR\tBESPOKE; SANREMO PLUS - REID & TAYLOR BESPOKE"
+    ]
    ]
   },
   "Oberoi Mall": {
@@ -6082,6 +6215,22 @@
      "IND-446952",
      "+919619858143",
      "Giza Cotton Glen Plaid Checked Shirt - Navy; Luthai Cotton Lyocell Twill Shirt - Black; Giza Cotton Glen Plaid Checked Shirt - Green"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-447591",
+     "+919833123952",
+     "Easy-Care Cotton Oxford Shirt - Grey - Uniform"
+    ],
+    [
+     2,
+     "2026-11-01",
+     "IND-450473",
+     "+919867633101",
+     "Soft Cotton Blend Twill Shirt - Pink"
     ]
    ]
   },
@@ -6458,6 +6607,15 @@
      "IND-445918",
      "+918977502761",
      "Easy-Care Cotton Striped Shirt - Blue"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-449024",
+     "+919948079791",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Light blue"
     ]
    ]
   },
@@ -7429,6 +7587,22 @@
      "+919920588336",
      "Flux 4-way Stretch Dress Pants - Grey (Grey / 34); Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Soktas Dobby Shirt - White; Soktas Micro Dobby Shirt - White; The Flux 4-Way Stretch Blazer - Grey (Grey / 40); Soktas Dobby Shirt - Light Blue; Soktas Striped Shirt - Blue"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-449385",
+     "+919967248501",
+     "Soft Washed Linen Shirt - Green"
+    ],
+    [
+     1,
+     "2026-11-01",
+     "IND-448273",
+     "+919819969902",
+     "Cotton Striped Shirt - Dark Blue"
+    ]
    ]
   },
   "Shakespear Sarani": {
@@ -8008,6 +8182,29 @@
      "+919985103333",
      "Wrinkle-Free Stretch Satin Shirt - Blue; Wrinkle-Free Stretch Satin Shirt - Black; Wrinkle-Free Stretch Satin Shirt - White; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32); Vertex 4-Way Stretch Dress Pants - Navy (Navy / 32); Flux 4-way Stretch Dress Pants - Grey (Grey / 32); Wrinkle-Free Stretch Satin Shirt - Light Blue"
     ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-01",
+     "IND-450197",
+     "+916300650689",
+     "Blue Wrinkle-Free Stretch Twill Shirt (Blue / 42); 2-Ply Egyptian Cotton Pink Micro Dobby Shirt (Pink / 42)"
+    ],
+    [
+     0,
+     "2026-11-01",
+     "IND-451132",
+     "+919867005169",
+     "Dark Blue & White Cotton-Lyocell Striped Shirt (Dark Blue / 40); Luthai Navy Cotton Solid Shirt (Navy / 40)"
+    ],
+    [
+     0,
+     "2026-11-01",
+     "IND-447566",
+     "+919849257541",
+     "Soft Washed Linen Shirt - Dark Green; ESQUIRE - SOKTAS BESPOKE; Baruche Giza Cotton Twill Striped Shirt - Grey; SRT19423 - Reid & Taylor Bespoke"
+    ]
    ]
   },
   "Sindhu Bhavan Marg": {
@@ -8433,6 +8630,15 @@
      "IND-444901",
      "+919099963390",
      "Soktas Checked Shirt - Blue"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-452484",
+     "+919727771307",
+     "GYMKHANA- PROTEIN BELGIAN CHOCOLATE; MALABAR HILL MANGO; Giza Cotton Houndstooth Shirt - Blue; PALIHILL PISTACHIO; GETWAY GOLD LOTUS BISCOFF; Whitening"
     ]
    ]
   },
@@ -9260,6 +9466,15 @@
      "IND-449338",
      "+918004905658",
      "Soktas Dobby Shirt - White"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-01",
+     "IND-449475",
+     "+918935091133",
+     "Signature Flat Knit Long Sleeve  Polo - Navy Melange (Navy / S); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / S); Signature Flat Knit Long Sleeve  Polo - Ecru (Ecru / S); Signature Flat Knit Long Sleeve  Polo - Black (Black / S)"
     ]
    ]
   },
