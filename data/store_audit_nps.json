@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-02 10:14:15 (data for 2026-11-01))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-03 10:14:15 (data for 2026-11-02))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–1 Nov"
+   "range": "1–2 Nov"
   }
  ],
  "stores": {
@@ -30,7 +30,7 @@
     0
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -45,6 +45,11 @@
     10,
     1,
     1
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Juhu": {
@@ -71,7 +76,7 @@
     4
    ],
    "2026-11": [
-    0,
+    2,
     0,
     1
    ]
@@ -86,6 +91,11 @@
     18,
     0,
     1
+   ],
+   "2026-11": [
+    2,
+    0,
+    0
    ]
   },
   "Viviana Mall": {
@@ -115,6 +125,11 @@
     19,
     3,
     2
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Indiranagar": {
@@ -151,6 +166,11 @@
     23,
     7,
     1
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Inorbit Mall Malad West": {
@@ -216,6 +236,11 @@
     13,
     1,
     2
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Gurugram": {
@@ -312,7 +337,7 @@
     2
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -353,7 +378,7 @@
     4
    ],
    "2026-11": [
-    1,
+    2,
     1,
     0
    ]
@@ -367,6 +392,11 @@
    "2026-10": [
     19,
     1,
+    0
+   ],
+   "2026-11": [
+    1,
+    0,
     0
    ]
   },
@@ -399,7 +429,7 @@
     3
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -414,6 +444,11 @@
     13,
     1,
     3
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Lakeshore mall, Kukatpally": {
@@ -426,6 +461,11 @@
     7,
     1,
     1
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Lavelle Road": {
@@ -738,6 +778,13 @@
      "IND-448606",
      "+919717848776",
      "Exquisite Blended Wool Dress Pants - Beige (Beige / 32)"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-449615",
+     "+919444415109",
+     "Marcello Stretch Ready-to-Wear Dress Pants - Navy (Navy / 34); Aurevano Stretch Ready-to-Wear Dress Pants - Navy (Navy / 34)"
     ]
    ]
   },
@@ -877,6 +924,15 @@
      "IND-447723",
      "+919871898900",
      "Elevate Everyday Stretch Chinos - White (White / 28); Pale Pink Poplin Banker Shirt (Pink / 36); Navy Wrinkle-Free Stretch Twill Shirt (Navy / 36)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-452700",
+     "+919205225001",
+     "Elevate Everyday Stretch Chinos - Black (Black / 32); Signature Flat Knit Long Sleeve  Polo - Black (Black / S); Elevate Everyday Stretch Chinos - Dark Beige (Dark Beige / 32); Elevate Everyday Stretch Chinos - Navy (Navy / 32); Signature Flat Knit Long Sleeve  Polo - Ecru (Ecru / S)"
     ]
    ]
   },
@@ -1458,6 +1514,20 @@
      "IND-445742",
      "+919773533333",
      "FLORA FOUNTAIN FERRERO x2; PALIHILL PISTACHIO x2"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-447511",
+     "+919930014780",
+     "Giza Cotton Glen Plaid Checked Shirt - Green; Giza Cotton Gingham Checked Shirt - Navy; Kingston - 51709 SOKTAS BESPOKE; The Flux 4-Way Stretch Blazer - Black (Black / 40); Maldon - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-447393",
+     "+919769205252",
+     "EUN051 - Lanificio Cucinello Bespoke; Kovel - 40278 SOKTAS BESPOKE; Memnon - 40349 SOKTAS BESPOKE"
     ]
    ]
   },
@@ -1870,6 +1940,22 @@
      "IND-450793",
      "+917416417666",
      "Light Blue Stretch Oxford Checked Shirt (BLUE / 38)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-450401",
+     "+919987003380",
+     "Giza Cotton Houndstooth Shirt - Light Grey"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-446671",
+     "+919820088368",
+     "Maldon - Manhattan Farbriano Bespoke; Sylva Cotton Silk Printed Shirt - Black & White; Elevate Everyday Stretch Chinos - Olive (Olive / 44); Japanese Canvas Ecru Stretch Jeans - Ecru (Ecru / 44); Sunscape Relaxed Linen Pants - Dark Grey (Dark Grey / 42)"
     ]
    ]
   },
@@ -2514,6 +2600,15 @@
      "IND-451043",
      "+918223816171",
      "Giza Cotton Light Blue Pin Striped Shirt (Light Blue / 40)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-451969",
+     "+919821458376",
+     "Tailored 4-Way Stretch Twill Smart Pants - Navy (Navy / 38); Tailored 4-Way Stretch Twill Smart Pants - Olive (Olive / 38)"
     ]
    ]
   },
@@ -3505,6 +3600,15 @@
      "IND-452021",
      "+919323272644",
      ""
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-449555",
+     "+919819951873",
+     "Cotton Checked Shirt - Blue & White; Rochefort Pinstripe Mid-Rise Dress Pants - Navy (Navy / 28); Brushed Twill Shirt - Blue"
     ]
    ]
   },
@@ -4748,6 +4852,15 @@
      "IND-447937",
      "+918178577547",
      "Soktas Striped Shirt - Blue; Paramount Dress Pants - Black (Black / 36); The Paramount Formal Blazer - Black (Black / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-449764",
+     "+919739222602",
+     "The Flux 4-Way Stretch Blazer - Navy (Navy / 38); Light Blue Bold Twill Cotton-Lyocell Shirt (Light Blue / 38); Flux 4-way Stretch Dress Pants - Navy (Navy / 30)"
     ]
    ]
   },
@@ -6616,6 +6729,13 @@
      "IND-449024",
      "+919948079791",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Light blue"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-450781",
+     "+919502766699",
+     "Elevate Everyday Stretch Chinos - Dark Khakhi (Dark Khakhi / 36)"
     ]
    ]
   },
@@ -7602,6 +7722,13 @@
      "IND-448273",
      "+919819969902",
      "Cotton Striped Shirt - Dark Blue"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-450597",
+     "+919722200222",
+     "Sunscape Relaxed Linen Pants - White (White / 32)"
     ]
    ]
   },
@@ -7874,6 +8001,15 @@
      "IND-449339",
      "+919831530353",
      "Navy Cotton Poplin Shirt (Navy / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-448559",
+     "+918917414201",
+     "Denim Shirt - Mid Blue"
     ]
    ]
   },
@@ -8639,6 +8775,13 @@
      "IND-452484",
      "+919727771307",
      "GYMKHANA- PROTEIN BELGIAN CHOCOLATE; MALABAR HILL MANGO; Giza Cotton Houndstooth Shirt - Blue; PALIHILL PISTACHIO; GETWAY GOLD LOTUS BISCOFF; Whitening"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-449269",
+     "+918925034045",
+     "Japanese Dobby Mid-Rise Stretch Jeans - Deep Indigo (Deep Indigo / 28); Elevate Everyday Stretch Chinos - Beige (Beige / 30)"
     ]
    ]
   },
@@ -8870,6 +9013,15 @@
      "+918447255160",
      "Munich - Manhattan Farbriano Bespoke"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-449484",
+     "+919811033270",
+     "Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Dark Grey"
+    ]
    ]
   },
   "Lakeshore mall, Kukatpally": {
@@ -8994,6 +9146,15 @@
      "IND-445825",
      "+919889235222",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Olive; Tailored 4-Way Stretch Nylon Smart Pants - Beige (Beige / 38)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-447772",
+     "+916281606971",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Olive; Soft Cotton Twill Shirt - Grey; Flux 4-way Stretch Dress Pants - Beige (Beige / 36)"
     ]
    ]
   },
