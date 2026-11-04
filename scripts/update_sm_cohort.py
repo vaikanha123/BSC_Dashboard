@@ -28,7 +28,7 @@ import os
 import openpyxl
 import pandas as pd
 
-from bsc_common import REGION_MAP, MONTHS, prepare_sales_df, replace_const, syntax_check_html_js
+from bsc_common import REGION_MAP, MONTHS, normalize_order_col, prepare_sales_df, replace_const, syntax_check_html_js
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE_PATH = os.path.join(ROOT, 'data', 'sm_cohort.json')
@@ -45,7 +45,7 @@ NO_STYLIST = '(no stylist tagged)'
 
 def load_sales(path):
     """A Shopify export, or one re-saved through Excel (DD-MM-YYYY days) -- both end up with ISO days."""
-    df = pd.read_csv(path, low_memory=False)
+    df = normalize_order_col(pd.read_csv(path, low_memory=False))
     day = df['Day'].astype(str).str[:10]
     if not day.str.match(r'\d{4}-\d{2}-\d{2}').all():
         day = pd.to_datetime(day, dayfirst=True).dt.strftime('%Y-%m-%d')

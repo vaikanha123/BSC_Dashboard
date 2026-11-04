@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-10-31 10:14:14 (data for 2026-10-30))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-04 10:14:15 (data for 2026-11-03))",
  "months": [
   {
    "key": "2026-09",
@@ -9,7 +9,12 @@
   {
    "key": "2026-10",
    "label": "Oct",
-   "range": "1–30 Oct"
+   "range": "1–31 Oct"
+  },
+  {
+   "key": "2026-11",
+   "label": "Nov",
+   "range": "1–3 Nov"
   }
  ],
  "stores": {
@@ -34,7 +39,7 @@
    "2026-10": [
     6,
     2,
-    0
+    1
    ]
   },
   "PMC Kurla": {
@@ -47,6 +52,11 @@
     3,
     0,
     1
+   ],
+   "2026-11": [
+    0,
+    1,
+    0
    ]
   },
   "Express Avenue": {
@@ -71,6 +81,11 @@
     5,
     1,
     1
+   ],
+   "2026-11": [
+    0,
+    1,
+    0
    ]
   },
   "Kalaghoda, Fort": {
@@ -82,7 +97,12 @@
    "2026-10": [
     5,
     0,
-    2
+    3
+   ],
+   "2026-11": [
+    1,
+    0,
+    1
    ]
   },
   "Pali Hill, Khar": {
@@ -92,8 +112,13 @@
     3
    ],
    "2026-10": [
+    3,
     2,
+    0
+   ],
+   "2026-11": [
     2,
+    0,
     0
    ]
   },
@@ -119,6 +144,11 @@
     2,
     0,
     2
+   ],
+   "2026-11": [
+    0,
+    1,
+    0
    ]
   },
   "Juhu": {
@@ -128,6 +158,11 @@
     1
    ],
    "2026-10": [
+    2,
+    0,
+    0
+   ],
+   "2026-11": [
     1,
     0,
     0
@@ -143,6 +178,11 @@
     6,
     2,
     1
+   ],
+   "2026-11": [
+    3,
+    0,
+    0
    ]
   },
   "Shakespear Sarani": {
@@ -164,8 +204,13 @@
     0
    ],
    "2026-10": [
-    2,
+    3,
     0,
+    0
+   ],
+   "2026-11": [
+    2,
+    1,
     0
    ]
   },
@@ -210,6 +255,11 @@
     4,
     0,
     3
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Jubilee Hills": {
@@ -220,6 +270,11 @@
    ],
    "2026-10": [
     3,
+    0,
+    0
+   ],
+   "2026-11": [
+    1,
     0,
     0
    ]
@@ -243,6 +298,11 @@
     0
    ],
    "2026-10": [
+    0,
+    0,
+    1
+   ],
+   "2026-11": [
     0,
     0,
     1
@@ -282,6 +342,11 @@
     4,
     1,
     1
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "PMC Whitefield": {
@@ -397,6 +462,11 @@
     2,
     0,
     0
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Jayanagar": {
@@ -413,7 +483,7 @@
     0
    ],
    "2026-10": [
-    1,
+    2,
     1,
     0
    ]
@@ -576,6 +646,13 @@
      "IND-445550",
      "+919930425768",
      "SANREMO PLUS - REID & TAYLOR BESPOKE; Wrinkle-free Bamboo-Blend Twill Shirt - Light blue x2; Markwell - Manhattan Farbriano Bespoke; GRANVILLE - SOKTAS BESPOKE; Wrinkle-free Bamboo-Blend Twill Shirt - White x2"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-449513",
+     "+919820078335",
+     "Burgundy Modal Linen Bandhgala Kurta (Burgundy / 40); Giza Cotton Houndstooth Shirt - Pink"
     ]
    ]
   },
@@ -659,6 +736,15 @@
      "IND-442816",
      "+919358535271",
      "Rochefort Pinstripe Mid-Rise Dress Pants - Charcoal (Charcoal / 28); Wrinkle-free Bamboo-Blend Twill Shirt - Navy"
+    ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-01",
+     "IND-449544",
+     "+919819812207",
+     "Siena Cotton Linen Relaxed Neapolitan Pants – Olive (Olive / 30)"
     ]
    ]
   },
@@ -833,6 +919,15 @@
      "+919963123487",
      "Sunscape Relaxed Linen Pants - Navy (Navy / 34); Sunscape Relaxed Linen Pants - White (White / 34)"
     ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-01",
+     "IND-449911",
+     "+919014515160",
+     "The Mayfield Dobby Casual Blazer - Dark Sand (Khakhi / 40)"
+    ]
    ]
   },
   "Kalaghoda, Fort": {
@@ -936,6 +1031,29 @@
      "IND-447171",
      "+918600044448",
      "Giza Cotton Houndstooth Shirt - Navy"
+    ],
+    [
+     2,
+     "2026-10-31",
+     "IND-448293",
+     "+919789956500",
+     "The Sterling 4 Way Structure Formal Blazer - Navy (Navy / 40); Wrinkle-free Bamboo-Blend Twill Shirt - Light blue; The Sterling 4 way structure Relaxed Neapolitan Dress Pants – Navy (Navy / 34); Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - White"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-01",
+     "IND-448368",
+     "+919820139294",
+     "Fluid Printed Shirt - Light Green"
+    ],
+    [
+     0,
+     "2026-11-01",
+     "IND-451602",
+     "+919137378062",
+     "Rust & Green Striped Shirt (Rust / 42); Brown Textured Twill Shirt (Brown / 42); Giza Cotton Grey & Black Striped Shirt (Grey / 42); White Dobby Self-Checked Shirt (White / 42); Sunscape Relaxed Linen Pants - White (White / 34); Giza Cotton White Herringbone Shirt (white / 42); Blue & Black Striped Shirt (Blue / 42)"
     ]
    ]
   },
@@ -1026,6 +1144,29 @@
      "IND-445714",
      "+918007517377",
      "ESQUIRE - SOKTAS BESPOKE; Wrinkle-free Bamboo-Blend Twill Shirt - Navy; VISCOUNT - SOKTAS BESPOKE; Luthai Wrinkle-Free Herringbone Shirt - White"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-448663",
+     "+918799640670",
+     "Soft Washed Linen Shirt - Dusty Lavender; Easy-Care Cotton Dobby Knit Shirt - Grey"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-02",
+     "IND-447753",
+     "+918369082605",
+     "Washed Oxford Shirt - Light Blue; Denim Shirt - Dark Blue; Brushed Twill Shirt - Brown; Cotton Twill Shirt - Blue & White; Sunscape Relaxed Linen Pants - White (White / 32); Sunscape Relaxed Linen Pants - Beige (Beige / 32); Soft Washed Linen Shirt - Dusty Lavender"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-449768",
+     "+919819199935",
+     "Denim Shirt - Dark Blue; Denim Shirt - Light Blue; Brushed Twill Shirt - Light Grey"
     ]
    ]
   },
@@ -1165,6 +1306,15 @@
      "+917319055210",
      "Tailored 4-Way Stretch Nylon Smart Pants - Dark Grey (Dark Grey / 34); Golden Brown Dobby Corduroy Shirt (MUSTARD / 38)"
     ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-01",
+     "IND-450523",
+     "+919167275192",
+     "Giza Cotton Grey Checked Shirt (Grey / 40); Navy Peached Poplin Washed Shirt (Navy / 40); Giza Cotton White & Navy Striped Shirt (Navy / 40); Bluish Grey White Broad Stripes (Blue / 40)"
+    ]
    ]
   },
   "Juhu": {
@@ -1191,6 +1341,22 @@
      "IND-439715",
      "+919096091245",
      "Brushed Twill Shirt - Brown"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-451220",
+     "+919322734585",
+     "Easy-Care Light Blue Lyocell Striped Shirt (Light Blue / 40); Light Yellow Blended Linen Soft Washed Shirt (Light Yellow / 40); White Micro Jacquard Bandhgala Shirt (White / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-453079",
+     "+919820017666",
+     "The Marquis Structured Twill Dress Pants - Brown (Brown / 32)"
     ]
    ]
   },
@@ -1274,6 +1440,29 @@
      "IND-447555",
      "+919167487177",
      "White Wrinkle-Free Stretch Twill Shirt (White / 42); Luthai Navy Cotton Solid Shirt (Navy / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-449289",
+     "+918898120054",
+     "Luthai Wrinkle-Free Broad Herringbone Shirt - Blue"
+    ],
+    [
+     0,
+     "2026-11-02",
+     "IND-451822",
+     "+919029998535",
+     "Beige & White Lyocell Checked Shirt (Beige / 40); Giza Cotton Grey & White Dobby Striped Shirt (Grey / 40)"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-448170",
+     "+919819447759",
+     "Markwell - Manhattan Farbriano Bespoke; Kingston - 51724 SOKTAS BESPOKE; Munich - Manhattan Farbriano Bespoke; Soktas Micro Dobby Shirt - White"
     ]
    ]
   },
@@ -1370,6 +1559,36 @@
      "IND-444974",
      "+919632148002",
      "Paramount Dress Pants - Light Grey (Light Grey / 36); Wrinkle-free Bamboo-Blend Twill Shirt - Light blue"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-444131",
+     "+919160203333",
+     "CELTIC - SOKTAS BESPOKE; Soktas Twill Shirt - White"
+    ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-01",
+     "IND-451668",
+     "+919885047288",
+     "Beige & White Lyocell Checked Shirt (Beige / 40); Navy Abstract Pixel Print Shirt (Navy / 40)"
+    ],
+    [
+     0,
+     "2026-11-01",
+     "IND-451214",
+     "+918921253704",
+     "Pink Bold Twill Cotton-Lyocell Shirt (Pink / 40); Mauve Linen Lyocell Shirt (LAVENDER / 40)"
+    ],
+    [
+     0,
+     "2026-11-01",
+     "IND-449461",
+     "+918008123788",
+     "Wrinkle-Free Stretch Satin Shirt - Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Green"
     ]
    ]
   },
@@ -1673,6 +1892,15 @@
      "+919999079192",
      "Flux 4-way Stretch Dress Pants - Beige (Beige / 36); Wrinkle-Free Stretch Satin Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Luthai Cotton Lyocell Twill Shirt - Olive"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-449782",
+     "+919314459217",
+     "Giza Cotton Glen Plaid Checked Shirt - Light Blue"
+    ]
    ]
   },
   "Jubilee Hills": {
@@ -1741,6 +1969,15 @@
      "IND-433684",
      "+919966966666",
      "Camicie-722 (058-067) - Loro Piana Bespoke; Luxe Lounger T-Shirt - Black (Black / L); The Belluno 100% Linen Suit Blazer - Ecru (Ecru / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-01",
+     "IND-448946",
+     "+917337396333",
+     "Brushed Twill Shirt - Brown"
     ]
    ]
   },
@@ -1837,6 +2074,15 @@
      "IND-437810",
      "+919830069501",
      "Soktas Dobby Shirt - Mint Green"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-03",
+     "IND-450232",
+     "+919819453048",
+     "Cotton Twill Shirt - Blue & White"
     ]
    ]
   },
@@ -2072,6 +2318,15 @@
      "IND-449213",
      "+919844114489",
      "Signature Classic Button Polo - Black (Black / S); 100% Merino Wool Polo - Black (Black / S)"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-448183",
+     "+919972941054",
+     "Exquisite Blended Wool Dress Pants - Black (Black / 32); MedriK Tencel - 40484 SOKTAS BESPOKE; Vellfire - LL1938 Leggiuno Bespoke; Redgrave Striped Dress Pants - Dark Grey (Dark Grey / 32); Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Navy; Wrinkle-Free Bamboo-Blend Stretch Dobby Shirt - brown; Flux 4-way Stretch Dress Pants - Navy (Navy / 32)"
     ]
    ]
   },
@@ -2530,6 +2785,15 @@
      "+919415047021",
      "Easy-Care Cotton Striped Shirt - Blue; Washed Oxford Shirt - White; 2-Ply Cotton Twill Shirt - Light Blue; Cotton Twill Checked Shirt - Purple; 2-Ply Cotton Poplin Checked Shirt - Light Blue"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-450175",
+     "+919044470777",
+     "Oxford Striped Shirt - Lime Green; Brushed Twill Shirt - Green"
+    ]
    ]
   },
   "Jayanagar": {
@@ -2567,6 +2831,13 @@
      "IND-448417",
      "+919443707227",
      "Paramount Dress Pants - Black (Black / 36) x2"
+    ],
+    [
+     0,
+     "2026-10-31",
+     "IND-447826",
+     "+919999699789",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-Free Oxford Shirt - Blue"
     ]
    ]
   },

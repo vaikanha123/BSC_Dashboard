@@ -122,7 +122,12 @@ ORDER_COL_ALIASES = ('Order or sales reversal',)
 
 
 def normalize_order_col(df):
-    return df.rename(columns={a: ORDER_COL for a in ORDER_COL_ALIASES})
+    df = df.rename(columns={a: ORDER_COL for a in ORDER_COL_ALIASES})
+    # From the Nov 2026 export on, Shopify groups the report by 'Hour' ("2026-11-01 17:00:00") instead of
+    # 'Day'. Scripts keep using 'Day'; its first 10 characters are the date either way.
+    if 'Day' not in df.columns and 'Hour' in df.columns:
+        df = df.assign(Day=df['Hour'].astype(str).str[:10])
+    return df
 
 
 def read_sales_csv(path, usecols=None, **kw):
@@ -131,6 +136,8 @@ def read_sales_csv(path, usecols=None, **kw):
         want = set(usecols)
         if ORDER_COL in want:
             want |= set(ORDER_COL_ALIASES)
+        if 'Day' in want:
+            want.add('Hour')
         kw['usecols'] = lambda c: c in want
     return normalize_order_col(pd.read_csv(path, **kw))
 

@@ -57,7 +57,10 @@ def main(orders):
     wanted = {re.sub(r"[^0-9]", "", o) for o in orders}
     frames = []
     for f in report_files():
-        df = pd.read_csv(f, dtype=str, usecols=COLS)
+        # Exports from Nov 2026 on have 'Hour' ("2026-11-01 17:00:00") where older ones had 'Day'.
+        df = pd.read_csv(f, dtype=str, usecols=lambda c: c in COLS or c == "Hour")
+        if "Day" not in df.columns:
+            df["Day"] = df.pop("Hour").str[:10]
         df["num"] = df["Order name"].str.replace(r"[^0-9]", "", regex=True)
         frames.append(df[df["num"].isin(wanted)])
     df = pd.concat(frames).drop_duplicates() if frames else pd.DataFrame(columns=COLS + ["num"])

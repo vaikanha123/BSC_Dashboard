@@ -38,7 +38,7 @@ import pandas as pd
 
 from bsc_common import (
     MONTHS, build_seed_days, extract_const, find_refund_and_cn_sheets, last_year_baseline,
-    prepare_sales_df, process_refund_sheet, replace_const, syntax_check_html_js,
+    normalize_order_col, prepare_sales_df, process_refund_sheet, replace_const, syntax_check_html_js,
 )
 from update_main_dashboard import build_prev_month_baselines
 
@@ -67,7 +67,8 @@ def eval_js_const(content, name):
     start = content.index('const %s = ' % name)
     end = content.index('\n};', start) + 3
     js = content[start:end] + '\nprocess.stdout.write(JSON.stringify(%s));' % name
-    out = subprocess.run([NODE, '-e', js], capture_output=True, text=True, encoding='utf-8')
+    # Through stdin, not `node -e`: BASELINE outgrew Windows' 32k command-line limit in Oct-26.
+    out = subprocess.run([NODE], input=js, capture_output=True, text=True, encoding='utf-8')
     if out.returncode != 0:
         raise RuntimeError(out.stderr)
     return json.loads(out.stdout)
@@ -87,6 +88,7 @@ def read_month_slices(path, months):
     chunks so a 250MB file doesn't need to fit in memory whole."""
     keep = []
     for chunk in pd.read_csv(path, chunksize=200_000, low_memory=False):
+        chunk = normalize_order_col(chunk)
         chunk = chunk[chunk['Day'].astype(str).str[:7].isin(months)]
         if len(chunk):
             keep.append(chunk)

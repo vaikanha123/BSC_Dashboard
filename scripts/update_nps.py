@@ -88,7 +88,7 @@ RAW_HEAD = ['Response date', 'Response time (IST)', 'Customer name', 'Email', 'P
 def read_orders(path):
     """Distinct orders (email, order, day, pos) from a Shopify "Sales Data Report" CSV."""
     head = pd.read_csv(path, nrows=0).columns
-    date_col = 'Day' if 'Day' in head else 'Month'
+    date_col = 'Day' if 'Day' in head or 'Hour' in head else 'Month'
     df = read_sales_csv(path, usecols=[date_col, 'Order name', 'Order or return', 'Customer email', 'POS location name'],
                      dtype=str)
     df = df[(df['Order or return'] == 'order') & df['Customer email'].notna()]
