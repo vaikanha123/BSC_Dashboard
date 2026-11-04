@@ -30,6 +30,9 @@ Writes:
                               the repo or under the git-ignored data/shopify_orders/, never commit it.
                               Products and stylists come from a second git-ignored cache,
                               ORDER_DETAILS, fed by --sales / --seed like the order history.
+  --counts-out <json>         (optional) {month: {POS location / Online / Virtual Stylist: [promoters,
+                              neutral, detractors]}} for every month, no PII; nps_master_sheet.py turns
+                              it into the "NPS & Quality Master sheet" Google Sheet's month column.
 
 September 2026 is kept as it is in store_audit_nps.json: it was built from the September survey
 files, which carry the true order of most responses, so it is better than an email match.
@@ -370,6 +373,7 @@ def main():
     ap.add_argument('--seed', nargs='*', default=[], help='older sales report CSVs to add to the order history')
     ap.add_argument('--html', default=os.path.join(ROOT, 'index.html'))
     ap.add_argument('--raw-out', help="write the live month's per-reply raw rows (has PII) to this JSON file")
+    ap.add_argument('--counts-out', help='write per-month counts per POS location (incl. Online) to this JSON file')
     a = ap.parse_args()
 
     rows, stamp = load_sheet(a.sheet_json)
@@ -389,6 +393,10 @@ def main():
     seed = write_seed_nps(a.html, counts, dates)
     if a.raw_out:
         write_raw(a.raw_out, rows, by_email, details, a.html, stamp)
+    if a.counts_out:
+        with open(a.counts_out, 'w', encoding='utf-8') as f:
+            json.dump({'source': source, 'months': {mk: {pos: list(v) for pos, v in sorted(c.items())}
+                                                    for mk, c in sorted(counts.items())}}, f, ensure_ascii=False, indent=1)
     for k, v in sorted(report.items()):
         print('  %5d  %s' % (v, k))
     print('store_audit_nps.json months: %s' % ', '.join('%s (%s)' % (m['key'], m['range']) for m in data['months']))
