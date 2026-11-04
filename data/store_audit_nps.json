@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-03 10:14:15 (data for 2026-11-02))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-04 10:14:15 (data for 2026-11-03))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–2 Nov"
+   "range": "1–3 Nov"
   }
  ],
  "stores": {
@@ -48,7 +48,7 @@
    ],
    "2026-11": [
     1,
-    0,
+    1,
     0
    ]
   },
@@ -76,7 +76,7 @@
     4
    ],
    "2026-11": [
-    2,
+    3,
     0,
     1
    ]
@@ -154,6 +154,11 @@
     13,
     2,
     0
+   ],
+   "2026-11": [
+    3,
+    0,
+    0
    ]
   },
   "Kemps Corner": {
@@ -185,7 +190,7 @@
     1
    ],
    "2026-11": [
-    0,
+    1,
     0,
     2
    ]
@@ -207,6 +212,11 @@
     25,
     5,
     6
+   ],
+   "2026-11": [
+    2,
+    2,
+    0
    ]
   },
   "Khan Market": {
@@ -240,7 +250,7 @@
    "2026-11": [
     1,
     0,
-    0
+    1
    ]
   },
   "Gurugram": {
@@ -265,6 +275,11 @@
     10,
     2,
     6
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Koregaon Park": {
@@ -291,7 +306,7 @@
     5
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -337,7 +352,7 @@
     2
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -364,6 +379,11 @@
     29,
     7,
     2
+   ],
+   "2026-11": [
+    0,
+    0,
+    1
    ]
   },
   "PMC Kurla": {
@@ -395,7 +415,7 @@
     0
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -429,7 +449,7 @@
     3
    ],
    "2026-11": [
-    2,
+    4,
     0,
     0
    ]
@@ -502,6 +522,11 @@
     5,
     0,
     3
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Phoenix Lucknow": {
@@ -531,6 +556,11 @@
     10,
     1,
     3
+   ],
+   "2026-11": [
+    1,
+    1,
+    0
    ]
   }
  },
@@ -933,6 +963,13 @@
      "IND-452700",
      "+919205225001",
      "Elevate Everyday Stretch Chinos - Black (Black / 32); Signature Flat Knit Long Sleeve  Polo - Black (Black / S); Elevate Everyday Stretch Chinos - Dark Beige (Dark Beige / 32); Elevate Everyday Stretch Chinos - Navy (Navy / 32); Signature Flat Knit Long Sleeve  Polo - Ecru (Ecru / S)"
+    ],
+    [
+     1,
+     "2026-11-03",
+     "IND-446854",
+     "+919810510220",
+     "Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / 2XL)"
     ]
    ]
   },
@@ -1528,6 +1565,13 @@
      "IND-447393",
      "+919769205252",
      "EUN051 - Lanificio Cucinello Bespoke; Kovel - 40278 SOKTAS BESPOKE; Memnon - 40349 SOKTAS BESPOKE"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-452244",
+     "+918433983567",
+     "Ecru Blended Linen Soft Washed Shirt (Ecru / 38)"
     ]
    ]
   },
@@ -3147,6 +3191,29 @@
      "+919884241000",
      "Vicenza Cotton Linen Relaxed Neapolitan Pants - Dark Grey (Brown / 30)"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-445791",
+     "+919600168406",
+     "Flannel Checked Shirt - Mid Blue; Japanese Flannel Striped Shirt - Brown"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-450181",
+     "+919962505914",
+     "Wrinkle-Free Oxford Shirt - Blue; Wrinkle-Free Stretch Satin Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-448721",
+     "+919841039297",
+     "Soktas Dobby Shirt - Yellow; Cotton Twill Shirt - Light Grey; Paramount Dress Pants - Dark Grey (Dark Grey / 34); Paramount Dress Pants - Navy (Navy / 34)"
+    ]
    ]
   },
   "Kemps Corner": {
@@ -3904,6 +3971,13 @@
      "IND-449398",
      "+919768847773",
      "2-Ply Soft Herringbone Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-451300",
+     "+919819525558",
+     "Elevate Everyday Stretch Chinos - Dark Grey (Dark Grey / 38); Elevate Everyday Stretch Chinos - Navy (Navy / 38)"
     ]
    ]
   },
@@ -4440,6 +4514,36 @@
      "+918985704916",
      "Washed Oxford Shirt - Bluish Grey"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-450072",
+     "+919704904454",
+     "Denim Shirt - Black"
+    ],
+    [
+     1,
+     "2026-11-03",
+     "IND-448954",
+     "+919949992929",
+     "Cotton Linen Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-449785",
+     "+919949612351",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Navy; Elevate Everyday Stretch Chinos - Beige (Beige / 38)"
+    ],
+    [
+     1,
+     "2026-11-03",
+     "IND-449442",
+     "+919989190718",
+     "Baruche Giza Cotton Jacquard Shirt - Black & Navy; Liverpool plus - SRT21624 Reid & Taylor Bespoke"
+    ]
    ]
   },
   "Khan Market": {
@@ -4861,6 +4965,13 @@
      "IND-449764",
      "+919739222602",
      "The Flux 4-Way Stretch Blazer - Navy (Navy / 38); Light Blue Bold Twill Cotton-Lyocell Shirt (Light Blue / 38); Flux 4-way Stretch Dress Pants - Navy (Navy / 30)"
+    ],
+    [
+     2,
+     "2026-11-03",
+     "IND-448530",
+     "+918554907837",
+     "Cotton Linen Shirt - Light Grey; Brushed Twill Shirt - Green; Performance Stretch Cotton Striped Shirt - Grey & White; Washed Oxford Shirt - Light Blue (Knipex Tool India Pvt Ltd); Brushed Twill Shirt - Light Grey; Cotton Linen Shirt - Navy; Driftscape Relaxed Linen Pants - White (White / 34)"
     ]
    ]
   },
@@ -5426,6 +5537,15 @@
      "IND-448558",
      "+919881133523",
      "Luthai Wrinkle-Free Herringbone Shirt - Blue"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-447390",
+     "+919923794212",
+     "Cotton Twill Shirt - Blue & White"
     ]
    ]
   },
@@ -6084,6 +6204,13 @@
      "IND-444933",
      "+919540131310",
      "Cotton Herringbone Shirt - Olive; SCARLET - REID & TAYLOR\tBESPOKE; SANREMO PLUS - REID & TAYLOR BESPOKE"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-449211",
+     "+919540331010",
+     "Washed Oxford Shirt - White"
     ]
    ]
   },
@@ -6736,6 +6863,13 @@
      "IND-450781",
      "+919502766699",
      "Elevate Everyday Stretch Chinos - Dark Khakhi (Dark Khakhi / 36)"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-450271",
+     "+919948920693",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Grey; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 36)"
     ]
    ]
   },
@@ -7512,6 +7646,15 @@
      "+919898191218",
      "Luthai Wrinkle-Free Bold Twill Shirt - Blue; Wrinkle-Free Bamboo-Blend Dobby Shirt - Lavender; Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - Navy; Wrinkle-Free Bamboo-Blend Stretch Dobby Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Wrinkle-Free Bamboo-Blend Dobby Shirt - Dark Blue; Luthai Wrinkle-Free Bold Twill Shirt - White"
     ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-03",
+     "IND-450940",
+     "+919920300064",
+     "Exquisite Blended Wool Dress Pants - Dark Grey (Dark Grey / 36)"
+    ]
    ]
   },
   "PMC Kurla": {
@@ -8010,6 +8153,13 @@
      "IND-448559",
      "+918917414201",
      "Denim Shirt - Mid Blue"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-448871",
+     "+919831088901",
+     "2-Ply Soft Herringbone Shirt - White"
     ]
    ]
   },
@@ -8782,6 +8932,20 @@
      "IND-449269",
      "+918925034045",
      "Japanese Dobby Mid-Rise Stretch Jeans - Deep Indigo (Deep Indigo / 28); Elevate Everyday Stretch Chinos - Beige (Beige / 30)"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-452866",
+     "+919825317732",
+     "Washed Oxford Shirt - Light Olive; Washed Oxford Shirt - Bluish Grey; Washed Oxford Shirt - Light Blue; Royal Haircut"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-452977",
+     "+917285080808",
+     "Sunscape Relaxed Linen Pants - White (White / 36); Beard Touch Up; Royal Haircut; Vellfire - LL1165 Leggiuno Bespoke"
     ]
    ]
   },
@@ -9510,6 +9674,15 @@
      "+919811147676",
      "Wrinkle-Free Stretch Satin Shirt - Light Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Olive; MFW9435 - Benton  - Manhattan Farbriano Bespoke"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-03",
+     "IND-453044",
+     "+919711197333",
+     "Paramount Dress Pants - Navy (Navy / 34); Paramount Dress Pants - Dark Grey (Dark Grey / 34); Luthai Wrinkle-Free Twill Shirt - Light Blue; Rochefort Pinstripe Mid-Rise Dress Pants - Navy (Navy / 34); The Paramount Formal Blazer - Black (Black / 38); Paramount Dress Pants - Black (Black / 34); Paramount Dress Pants - Grey (Grey / 34)"
+    ]
    ]
   },
   "Phoenix Lucknow": {
@@ -9796,6 +9969,22 @@
      "IND-451713",
      "+919999114500",
      "Dark Blue Cotton Denim Shirt (Blue / 42)"
+    ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-03",
+     "IND-449098",
+     "+919868713600",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - Grey"
+    ],
+    [
+     0,
+     "2026-11-03",
+     "IND-450480",
+     "+919871666955",
+     "Luthai Wrinkle-Free Dobby Shirt - Pink"
     ]
    ]
   }
