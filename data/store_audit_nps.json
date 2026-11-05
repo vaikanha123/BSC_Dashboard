@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-04 10:14:15 (data for 2026-11-03))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-05 10:14:15 (data for 2026-11-04))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–3 Nov"
+   "range": "1–4 Nov"
   }
  ],
  "stores": {
@@ -76,7 +76,7 @@
     4
    ],
    "2026-11": [
-    3,
+    4,
     0,
     1
    ]
@@ -110,7 +110,7 @@
     0
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -156,7 +156,7 @@
     0
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -173,7 +173,7 @@
     1
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -190,7 +190,7 @@
     1
    ],
    "2026-11": [
-    1,
+    2,
     0,
     2
    ]
@@ -216,7 +216,7 @@
    "2026-11": [
     2,
     2,
-    0
+    1
    ]
   },
   "Khan Market": {
@@ -307,7 +307,7 @@
    ],
    "2026-11": [
     2,
-    0,
+    1,
     0
    ]
   },
@@ -338,6 +338,11 @@
     2,
     0,
     0
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Sharath City": {
@@ -352,7 +357,7 @@
     2
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -381,9 +386,9 @@
     2
    ],
    "2026-11": [
+    1,
     0,
-    0,
-    1
+    2
    ]
   },
   "PMC Kurla": {
@@ -415,7 +420,7 @@
     0
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -484,7 +489,7 @@
    ],
    "2026-11": [
     1,
-    0,
+    1,
     0
    ]
   },
@@ -510,6 +515,11 @@
     4,
     2,
     2
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "DLF Midtown": {
@@ -541,7 +551,7 @@
     1
    ],
    "2026-11": [
-    0,
+    2,
     0,
     1
    ]
@@ -1572,6 +1582,13 @@
      "IND-452244",
      "+918433983567",
      "Ecru Blended Linen Soft Washed Shirt (Ecru / 38)"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-444453",
+     "+919923462020",
+     "Cotton Satin Shirt - Purple; Wilton Structured Mid-Rise Dress Pants - Grey (Grey / 34); Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Wrinkle-free Bamboo-Blend Twill Shirt - Light blue; Beckett Mid-Rise Dress Pants - Navy (Navy / 34)"
     ]
    ]
   },
@@ -2379,6 +2396,13 @@
      "IND-449219",
      "+919811244998",
      "Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - Navy; Wrinkle-free Bamboo-Blend Twill Shirt - Pink"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-451458",
+     "+917087026236",
+     "Sorento Structured Ready-to-Wear Dress Pants - Light Grey (Light Grey / 36); Giza Cotton Gingham Checked Shirt - Navy"
     ]
    ]
   },
@@ -3213,6 +3237,13 @@
      "IND-448721",
      "+919841039297",
      "Soktas Dobby Shirt - Yellow; Cotton Twill Shirt - Light Grey; Paramount Dress Pants - Dark Grey (Dark Grey / 34); Paramount Dress Pants - Navy (Navy / 34)"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-454568",
+     "+919899385887",
+     "Nicopolis - SRT21282 Reid & Taylor Bespoke"
     ]
    ]
   },
@@ -3676,6 +3707,13 @@
      "IND-449555",
      "+919819951873",
      "Cotton Checked Shirt - Blue & White; Rochefort Pinstripe Mid-Rise Dress Pants - Navy (Navy / 28); Brushed Twill Shirt - Blue"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-450675",
+     "+919920177077",
+     "2-Ply Egyptian Cotton White Soft Twill Shirt (White / 42); White Luxe Cotton Linen Bandhgala Shirt (white / 42); Luxe Journey Zipper Hoodie - Black (Black / L)"
     ]
    ]
   },
@@ -3978,6 +4016,13 @@
      "IND-451300",
      "+919819525558",
      "Elevate Everyday Stretch Chinos - Dark Grey (Dark Grey / 38); Elevate Everyday Stretch Chinos - Navy (Navy / 38)"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-448678",
+     "+919892271564",
+     "The Best Dressed Guest (Liverpool Plus SRT21199)"
     ]
    ]
   },
@@ -4543,6 +4588,13 @@
      "IND-449442",
      "+919989190718",
      "Baruche Giza Cotton Jacquard Shirt - Black & Navy; Liverpool plus - SRT21624 Reid & Taylor Bespoke"
+    ],
+    [
+     2,
+     "2026-11-04",
+     "IND-449038",
+     "+919985549999",
+     "The Best Dressed Guest (Aida 50213); The Best Dressed Guest (Jolene 52942)"
     ]
    ]
   },
@@ -6211,6 +6263,13 @@
      "IND-449211",
      "+919540331010",
      "Washed Oxford Shirt - White"
+    ],
+    [
+     1,
+     "2026-11-04",
+     "IND-446620",
+     "+919816028445",
+     "Giza Cotton Gingham Checked Shirt - Light Blue; Giza Cotton Bengal Striped Shirt - Pink"
     ]
    ]
   },
@@ -6555,6 +6614,15 @@
      "+919414008262",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Olive; Easy-Care Cotton Checked Shirt - Light Blue & White; Luthai Cotton Lyocell Twill Shirt - Black; Performance Stretch Cotton Striped Shirt - Grey & White"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-04",
+     "IND-450520",
+     "+919001909090",
+     "Montreux Houndstooth Relaxed Neapolitan Pants - Brown (Brown / 34)"
+    ]
    ]
   },
   "Sharath City": {
@@ -6870,6 +6938,13 @@
      "IND-450271",
      "+919948920693",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Grey; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 36)"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-451266",
+     "+917702255331",
+     "Flux 4-way Stretch Dress Pants - Grey (Grey / 36); Pink Bold Twill Cotton-Lyocell Shirt (Pink / 42)"
     ]
    ]
   },
@@ -7654,6 +7729,20 @@
      "IND-450940",
      "+919920300064",
      "Exquisite Blended Wool Dress Pants - Dark Grey (Dark Grey / 36)"
+    ],
+    [
+     2,
+     "2026-11-04",
+     "IND-446427",
+     "+919930204250",
+     "Mantua - Manhattan Farbriano Bespoke; SRT20175 - Reid & Taylor Bespoke; Malaga - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-451791",
+     "+917506629371",
+     "Siena Cotton Linen Relaxed Neapolitan Pants – Khakhi (Khakhi / 30); BSC X Rid Burman Denim Shacket - Light Blue (Light Blue / 38); Sunscape Relaxed Linen Pants - Navy (Navy / 32)"
     ]
    ]
   },
@@ -8160,6 +8249,13 @@
      "IND-448871",
      "+919831088901",
      "2-Ply Soft Herringbone Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-436490",
+     "+919955972456",
+     "Giza Cotton Glen Plaid Checked Shirt - Light Grey; Cotton Poplin Shirt - Blush Pink; Giza Cotton Houndstooth Shirt - Navy; Cotton Herringbone Shirt - White; Giza Cotton Gingham Checked Shirt - Green; Giza Cotton Houndstooth Shirt - Light Grey; Cotton Checked Shirt - Blue & White"
     ]
    ]
   },
@@ -9319,6 +9415,13 @@
      "IND-447772",
      "+916281606971",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Olive; Soft Cotton Twill Shirt - Grey; Flux 4-way Stretch Dress Pants - Beige (Beige / 36)"
+    ],
+    [
+     1,
+     "2026-11-04",
+     "IND-450960",
+     "+918939474541",
+     "Elevate Everyday Stretch Chinos - Black (Black / 32)"
     ]
    ]
   },
@@ -9591,6 +9694,15 @@
      "+919618255666",
      "Navy Cotton Dobby Flat Knit Shirt (Navy / 40); Weekender Cotton Linen Shorts - Brown (Brown / 34); Urban Stretch Washed Shorts - Light Green (Green / 34); Luxe Journey Zipper Hoodie - Beige (Beige / L); Black Half-Sleeve Vintage Washed Denim Shirt (Black / 40)"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-04",
+     "IND-449624",
+     "+919526963261",
+     "Soft Washed Linen Shirt - Light Ecru"
+    ]
    ]
   },
   "DLF Midtown": {
@@ -9809,6 +9921,20 @@
      "IND-449475",
      "+918935091133",
      "Signature Flat Knit Long Sleeve  Polo - Navy Melange (Navy / S); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / S); Signature Flat Knit Long Sleeve  Polo - Ecru (Ecru / S); Signature Flat Knit Long Sleeve  Polo - Black (Black / S)"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-450593",
+     "+916392841852",
+     "Signature Flat Knit Long Sleeve  Polo - Black (Black / M); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / S)"
+    ],
+    [
+     0,
+     "2026-11-04",
+     "IND-449012",
+     "+919415047021",
+     "Easy-Care Cotton Striped Shirt - Blue; Washed Oxford Shirt - White; 2-Ply Cotton Twill Shirt - Light Blue; Cotton Twill Checked Shirt - Purple; 2-Ply Cotton Poplin Checked Shirt - Light Blue"
     ]
    ]
   },
