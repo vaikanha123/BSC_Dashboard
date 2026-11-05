@@ -182,7 +182,8 @@ def main():
         'stores': [{'name': s, 'region': REGION_MAP[s]} for s in SM_COHORT_STORES],
         'baseline': BASELINE_MONTH, 'live': live, 'order': months,
         'months': {m: state['months'][m] for m in months},
-        'targets': state['targets'].get(live),  # None until that month's target files are loaded
+        # every month whose target files were loaded, so a closed month keeps its Tar vs Ach
+        'targets': {m: state['targets'][m] for m in months if state['targets'].get(m)},
     }
     with open(a.html, encoding='utf-8', newline='') as f:
         content = f.read()
@@ -191,7 +192,8 @@ def main():
         f.write(content)
     syntax_check_html_js(a.html)
     print(f"OK. {CONST_NAME} updated: months {months}, live {live} through {payload['months'][live]['lastDay']}, "
-          f"targets: {'yes' if payload['targets'] else 'NOT LOADED for ' + live}.")
+          f"targets: {'yes' if live in payload['targets'] else 'NOT LOADED for ' + live} "
+          f"(months with targets: {sorted(payload['targets'])}).")
 
 
 if __name__ == '__main__':
