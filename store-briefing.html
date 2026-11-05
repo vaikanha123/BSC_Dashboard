@@ -373,7 +373,7 @@ const BRIEFING_DATA = {"generatedAt": "2026-11-05T13:32:57", "returnsWatch": {"t
 // policy note instead of a product spotlight), so this isn't parsed automatically. Update this
 // block whenever a new day's PDF comes in; everything else in this file (BRIEFING_DATA) is
 // regenerated separately by scripts/generate_briefing_data.py.
-const BRIEFING_CONTENT = {"date": "2026-11-04", "talkingPoints": [{"title": "Jackets &amp; suits for the festive season: the Flux blazer", "body": ["The Flux 4-way stretch fabric is designed for a busy lifestyle: it moves with you, and it goes in the washing machine, so the customer skips the dry cleaning, saves time and always has a garment ready to go.", "<b>Machine washable. Seriously.</b> Wash it in a mesh bag, with no dry-cleaner runs. The range is <b>₹11,990–14,500</b> across <b>8 styles</b>."], "tables": [{"title": "Looks to show", "columns": ["Style", "Colour", "Price"], "rows": [["Flux", "Jet Black", "₹11,990"], ["Flux", "Navy", "₹11,990"], ["Sterling", "Navy", "₹14,500"]]}]}, {"title": "Jacket &amp; suit 101: four shapes to know cold", "tables": [{"title": "", "columns": ["Shape", "What it is"], "rows": [["The shacket", "Shirt collar, patch pockets. Wears like a shirt, layers like a jacket."], ["The blazer", "Lapels, soft or structured. Boardroom to sundowner."], ["The suit", "Blazer plus matching pants. Sell together, or split into two looks."], ["The bandhgala", "Band collar, one clean row of buttons. India’s formal classic."]]}]}]};
+const BRIEFING_CONTENT = {"date": "2026-11-04", "talkingPoints": [{"title": "Jackets &amp; suits for the festive season: the Flux blazer", "body": ["The Flux 4-way stretch fabric is designed for a busy lifestyle: it moves with you, and it goes in the washing machine, so the customer skips the dry cleaning, saves time and always has a garment ready to go.", "<b>Machine washable. Seriously.</b> Wash it in a mesh bag, with no dry-cleaner runs. The range is <b>₹11,990–14,500</b> across <b>8 styles</b>."], "tables": [{"title": "Looks to show", "columns": ["Style", "Colour", "Price"], "rows": [["Flux", "Jet Black", "₹11,990"], ["Flux", "Navy", "₹11,990"], ["Sterling", "Navy", "₹14,500"]]}], "images": [{"src": "assets/briefing/2026-11-04-flux-machine-washable.png", "alt": "Flux blazers in Jet Black and Navy, and the Sterling in Navy: machine washable, Rs11,990-14,500, 8 styles", "caption": "Flux · Jet Black ₹11,990 · Flux · Navy ₹11,990 · Sterling · Navy ₹14,500", "maxWidth": 524}]}, {"title": "Jacket &amp; suit 101: four shapes to know cold", "tables": [{"title": "", "columns": ["Shape", "What it is"], "rows": [["The shacket", "Shirt collar, patch pockets. Wears like a shirt, layers like a jacket."], ["The blazer", "Lapels, soft or structured. Boardroom to sundowner."], ["The suit", "Blazer plus matching pants. Sell together, or split into two looks."], ["The bandhgala", "Band collar, one clean row of buttons. India’s formal classic."]]}], "images": [{"src": "assets/briefing/2026-11-04-four-jacket-shapes.png", "alt": "Illustrations of the shacket, the blazer, the suit and the bandhgala", "maxWidth": 494}]}]};
 
 (function(){
 
@@ -840,6 +840,13 @@ function renderHOContent(store){
         </div>
       </div>`;
 
+  // A picture from the HO doc (product shots, visual guides), saved under assets/briefing/.
+  const hoImage = im => `
+      <figure class="brief-keep" style="margin:10px 0 4px;">
+        <img src="${im.src}" alt="${im.alt || ''}" style="display:block; width:100%; max-width:${im.maxWidth || 560}px; height:auto; border-radius:8px; border:1px solid var(--line);">
+        ${im.caption ? `<figcaption style="font-size:13px; color:var(--text-mute); margin-top:5px;">${im.caption}</figcaption>` : ''}
+      </figure>`;
+
   // A store flagged for high refunds + CNs (see returnsAlert) also gets it as the first talking point
   // here, so it is read out with the HO points and not only seen on page 1.
   const r = (BRIEFING_DATA.stores[store] || {}).returns;
@@ -860,6 +867,7 @@ function renderHOContent(store){
       ${(p.body || []).length ? `<ul style="margin:4px 0 0 18px; padding:0; font-size:14.5px; color:var(--text-dim); line-height:1.6;">
         ${p.body.map(b => `<li>${b}</li>`).join('')}
       </ul>` : ''}
+      ${(p.images || []).map(hoImage).join('')}
       ${(p.tables || []).map(hoTable).join('')}
     </div>`).join('');
 
