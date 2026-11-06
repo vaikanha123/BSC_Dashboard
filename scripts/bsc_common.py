@@ -69,10 +69,11 @@ CITY_MAP = {
 # Training Cohort 4 (training from November 2026, September + October pooled as the baseline). A UPT
 # cohort: picked in the "Cohort 4" Google Sheet (Selected = Yes, 2026-11-06) as stylists whose Sep-Oct
 # UPT trailed their city's. Each stylist is scoped to the store the sheet lists (several also bill at
-# a second store), and the cohort is compared with every other stylist at stores in its five cities.
+# a second store), and the cohort is compared with every other stylist at stores in its cities.
+# Deborshi Dey (Shakespearesarani) was dropped 2026-11-06 as attrition, which took Kolkata out.
 COHORT4 = {
     'rajesh nair': 'Inorbit Mall Malad West', 'deepak singh': 'Mall of India, Noida',
-    'rohan singh': 'DLF Midtown - Moti Nagar', 'deborshi dey': 'Shakespearesarani',
+    'rohan singh': 'DLF Midtown - Moti Nagar',
     'kaviya palanisamy': 'Express Avenue', 'anand dubey': 'Khan Market',
     'sushmita balakrishnan': 'KNK Chennai', 'samir ansari': 'Andheri',
     'tanvi kumari': 'Jaipur Store', 'lalit shrivastav': 'Khan Market',
