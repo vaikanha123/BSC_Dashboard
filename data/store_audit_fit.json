@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-05 10:14:15 (data for 2026-11-04))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-06 10:14:16 (data for 2026-11-05))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–4 Nov"
+   "range": "1–5 Nov"
   }
  ],
  "stores": {
@@ -59,7 +59,7 @@
     1
    ],
    "2026-11": [
-    0,
+    1,
     1,
     0
    ]
@@ -289,7 +289,7 @@
     0
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -410,6 +410,11 @@
     2,
     0,
     0
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Andheri": {
@@ -470,6 +475,11 @@
     2,
     0,
     4
+   ],
+   "2026-11": [
+    0,
+    0,
+    1
    ]
   },
   "Phoenix Lucknow": {
@@ -793,6 +803,13 @@
      "IND-449544",
      "+919819812207",
      "Siena Cotton Linen Relaxed Neapolitan Pants – Olive (Olive / 30)"
+    ],
+    [
+     0,
+     "2026-11-05",
+     "IND-451274",
+     "+919599948832",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - White; Flux 4-way Stretch Dress Pants - Beige (Beige / 32); Giza Cotton Bengal Striped Shirt - Green; Cotton Twill Checked Shirt - Purple"
     ]
    ]
   },
@@ -2058,6 +2075,13 @@
      "IND-448946",
      "+917337396333",
      "Brushed Twill Shirt - Brown"
+    ],
+    [
+     0,
+     "2026-11-05",
+     "IND-452101",
+     "+919866136562",
+     "Luthai Black Cotton Dobby Shirt (Black / 40); Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 34) x2"
     ]
    ]
   },
@@ -2600,6 +2624,15 @@
      "+916362676058",
      "Flux 4-way Stretch Dress Pants - Beige (Beige / 34); Maldon - Manhattan Farbriano Bespoke; The Best Dressed Guest (Jax 52866); Vertex 4-Way Stretch Dress Pants - Navy (Navy / 34)"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-05",
+     "IND-448896",
+     "+919972017861",
+     "Concord Dress Pants - Deep Black (Black / 32); The Blackwood Velveteen Bandhgala Formal Blazer - Black (Black / 40); Pearl White Textured Dobby Bandhgala Shirt (Pearl White / 38)"
+    ]
    ]
   },
   "Andheri": {
@@ -2839,6 +2872,15 @@
      "IND-445548",
      "+919739862264",
      "Cotton Washed Oxford Shirt - Light Blue; Washed Oxford Shirt - White"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-05",
+     "IND-449566",
+     "+919560454640",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Munich - Manhattan Farbriano Bespoke"
     ]
    ]
   },
