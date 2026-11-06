@@ -48,6 +48,38 @@ COHORT3_MALL = ['konda swamy nitturi', 'abdul kadher', 'vijay baskar', 'firoz fi
                 'ritika rana', 'aziz sayeed', 'shilpa singh', 'kuldeep kanaujia',
                 'saquib shaikh']
 
+# City of each store. Used by Training Cohort 4, which is picked and compared on UPT against the
+# stylist's own city (Viviana Mall is counted as Mumbai). Keep in step with C4_CITY in index.html.
+CITY_MAP = {
+    'Andheri': 'Mumbai', 'Inorbit Mall Malad West': 'Mumbai', 'Juhu Store': 'Mumbai', 'Kalaghoda, Fort': 'Mumbai',
+    'Kemps Corner': 'Mumbai', 'Oberoi Mall Store': 'Mumbai', 'Oberoi Sky City': 'Mumbai',
+    'Pali Hill, Bandra': 'Mumbai', 'Phoenix Marketcity Kurla': 'Mumbai', 'Viviana Mall': 'Mumbai',
+    'Koregaon Park': 'Pune', 'PMC Viman Nagar Pune': 'Pune', 'Sindhu Bhavan Marg': 'Ahmedabad',
+    'Ambience Vasant Kunj': 'Delhi NCR', 'DLF Midtown - Moti Nagar': 'Delhi NCR', 'Gurugram': 'Delhi NCR',
+    'Khan Market': 'Delhi NCR', 'Mall of India, Noida': 'Delhi NCR', 'Select City': 'Delhi NCR',
+    'South Ex.': 'Delhi NCR', 'Vegas Dwarka': 'Delhi NCR',
+    'Jaipur Store': 'Jaipur', 'Phoenix Palassio': 'Lucknow', 'Shakespearesarani': 'Kolkata',
+    'Indiranagar': 'Bengaluru', 'Jayanagar': 'Bengaluru', 'Lavelle Road': 'Bengaluru',
+    'Phoenix Marketcity, Whitefield': 'Bengaluru',
+    'Express Avenue': 'Chennai', 'KNK Chennai': 'Chennai', 'R.K. Salai': 'Chennai',
+    'Inorbit mall Hyderabad': 'Hyderabad', 'Jubilee Hills': 'Hyderabad', 'Sarath City-Hyderabad': 'Hyderabad',
+    'Kochi Store': 'Kochi', 'LakeShore Mall': 'Kochi',
+}
+
+# Training Cohort 4 (training from November 2026, September + October pooled as the baseline). A UPT
+# cohort: picked in the "Cohort 4" Google Sheet (Selected = Yes, 2026-11-06) as stylists whose Sep-Oct
+# UPT trailed their city's. Each stylist is scoped to the store the sheet lists (several also bill at
+# a second store), and the cohort is compared with every other stylist at stores in its five cities.
+COHORT4 = {
+    'rajesh nair': 'Inorbit Mall Malad West', 'deepak singh': 'Mall of India, Noida',
+    'rohan singh': 'DLF Midtown - Moti Nagar', 'deborshi dey': 'Shakespearesarani',
+    'kaviya palanisamy': 'Express Avenue', 'anand dubey': 'Khan Market',
+    'sushmita balakrishnan': 'KNK Chennai', 'samir ansari': 'Andheri',
+    'tanvi kumari': 'Jaipur Store', 'lalit shrivastav': 'Khan Market',
+}
+COHORT4_CITIES = sorted(set(CITY_MAP[s] for s in COHORT4.values()))
+COHORT4_STORES = [s for s in REGION_MAP if CITY_MAP[s] in COHORT4_CITIES]
+
 # Do NOT add "Online", "Corporate Orders", etc. to this dict for ad-hoc scripts -- a store not
 # present here is correctly treated as non-offline. Adding a catch-all entry was a real bug before
 # (a truthy-check on REGION_MAP.get(store) wrongly counted Online revenue as offline).

@@ -574,12 +574,28 @@ const SEP_COHORT_BASELINE_3HS = {"rest": {"aov": 14978.0, "asp": 4826.0, "upt": 
 const SEP_STYLIST_DETAIL_3HS = {"navjot vegas": {"aov": 12677.0, "asp": 4851.0, "upt": 2.61}, "vijay kumar": {"aov": 11410.0, "asp": 3803.0, "upt": 3.0}, "mudasser maverick": {"aov": 10171.0, "asp": 3955.0, "upt": 2.57}, "vikash tiwari": {"aov": 13386.0, "asp": 4404.0, "upt": 3.04}, "adi qureshi": {"aov": 14660.0, "asp": 4662.0, "upt": 3.14}, "naushad ahmed": {"aov": 21857.0, "asp": 5399.0, "upt": 4.05}, "mohammed abdul farhan": {"aov": 20022.0, "asp": 5828.0, "upt": 3.44}, "alisha a": {"aov": 12950.0, "asp": 4622.0, "upt": 2.8}, "rupini rupini": {"aov": 14189.0, "asp": 4898.0, "upt": 2.9}, "nimmy christapher": {"aov": 7390.0, "asp": 3804.0, "upt": 1.94}};
 const SEP_COHORT_BASELINE_3MALL = {"rest": {"aov": 13119.0, "asp": 4827.0, "upt": 2.72, "bills": 1276, "revenue": 16740125.0, "units": 3468.0}, "training": {"aov": 11308.28, "asp": 4859.17, "upt": 2.327, "revenue": 3075853.0, "bills": 272, "units": 633.0}};
 const SEP_STYLIST_DETAIL_3MALL = {"konda swamy nitturi": {"aov": 7819.0, "asp": 3795.0, "upt": 2.06}, "abdul kadher": {"aov": 11758.0, "asp": 3713.0, "upt": 3.17}, "vijay baskar": {"aov": 9335.0, "asp": 4959.0, "upt": 1.88}, "firoz firoz": {"aov": 9891.0, "asp": 4496.0, "upt": 2.2}, "sahadat ali ahmed": {"aov": 12316.0, "asp": 5672.0, "upt": 2.17}, "ritika rana": {"aov": 13222.0, "asp": 4936.0, "upt": 2.68}, "aziz sayeed": {"aov": 12013.0, "asp": 5006.0, "upt": 2.4}, "shilpa singh": {"aov": 8623.0, "asp": 5030.0, "upt": 1.71}, "kuldeep kanaujia": {"aov": 14257.0, "asp": 6225.0, "upt": 2.29}, "saquib shaikh": {"aov": 11255.0, "asp": 4690.0, "upt": 2.4}};
+// Training Cohort 4 (training from November 2026; baseline = September + October pooled). A UPT cohort,
+// picked in the "Cohort 4" Google Sheet (Selected = Yes, 2026-11-06) as stylists whose Sep-Oct UPT
+// trailed their city's. Each stylist counts only at the store the sheet lists (C4_STORE; several also
+// bill at a second store). The cohort is compared with every other stylist at stores in its five cities,
+// and each stylist with the other stylists in their own city. Mirrors COHORT4 / CITY_MAP in
+// scripts/bsc_common.py; the baselines mirror the tracker's BATCH4_* 'sepoct' figures.
+const TRAINING_COHORT_4 = ["rajesh nair", "deepak singh", "rohan singh", "deborshi dey", "kaviya palanisamy", "anand dubey", "sushmita balakrishnan", "samir ansari", "tanvi kumari", "lalit shrivastav"];
+const C4_STORE = {"rajesh nair": "Inorbit Mall Malad West", "deepak singh": "Mall of India, Noida", "rohan singh": "DLF Midtown - Moti Nagar", "deborshi dey": "Shakespearesarani", "kaviya palanisamy": "Express Avenue", "anand dubey": "Khan Market", "sushmita balakrishnan": "KNK Chennai", "samir ansari": "Andheri", "tanvi kumari": "Jaipur Store", "lalit shrivastav": "Khan Market"};
+const C4_CITY_STORES = {"Chennai": ["Express Avenue", "KNK Chennai", "R.K. Salai"], "Delhi NCR": ["Ambience Vasant Kunj", "DLF Midtown - Moti Nagar", "Gurugram", "Khan Market", "Mall of India, Noida", "Select City", "South Ex.", "Vegas Dwarka"], "Jaipur": ["Jaipur Store"], "Kolkata": ["Shakespearesarani"], "Mumbai": ["Andheri", "Inorbit Mall Malad West", "Juhu Store", "Kalaghoda, Fort", "Kemps Corner", "Oberoi Mall Store", "Oberoi Sky City", "Pali Hill, Bandra", "Phoenix Marketcity Kurla", "Viviana Mall"]};
+const C4_STORES = Object.values(C4_CITY_STORES).flat();
+const SEPOCT_COHORT_BASELINE_4 = {"rest": {"aov": 13584.0, "asp": 4851.0, "upt": 2.8, "bills": 9405, "revenue": 127753322.0, "units": 26335.0}, "training": {"aov": 11794.87, "asp": 4910.48, "upt": 2.402, "revenue": 10709746.0, "bills": 908, "units": 2181.0}};
+const SEPOCT_STYLIST_DETAIL_4 = {"rajesh nair": {"aov": 9417.0, "asp": 4452.0, "upt": 2.11}, "deepak singh": {"aov": 10516.0, "asp": 4815.0, "upt": 2.18}, "rohan singh": {"aov": 9290.0, "asp": 4227.0, "upt": 2.2}, "deborshi dey": {"aov": 12780.0, "asp": 4751.0, "upt": 2.69}, "kaviya palanisamy": {"aov": 11257.0, "asp": 4607.0, "upt": 2.44}, "anand dubey": {"aov": 12522.0, "asp": 5458.0, "upt": 2.29}, "sushmita balakrishnan": {"aov": 13004.0, "asp": 5186.0, "upt": 2.51}, "samir ansari": {"aov": 11320.0, "asp": 4327.0, "upt": 2.62}, "tanvi kumari": {"aov": 18520.0, "asp": 6278.0, "upt": 2.95}, "lalit shrivastav": {"aov": 15796.0, "asp": 6435.0, "upt": 2.45}};
+const SEPOCT_CITY_BASELINE_4 = {"Chennai": {"aov": 12656.0, "asp": 4415.0, "upt": 2.87, "bills": 720, "revenue": 9112155.0, "units": 2064.0}, "Delhi NCR": {"aov": 13113.0, "asp": 5053.0, "upt": 2.6, "bills": 2307, "revenue": 30251649.0, "units": 5987.0}, "Jaipur": {"aov": 16545.0, "asp": 5256.0, "upt": 3.15, "bills": 183, "revenue": 3027685.0, "units": 576.0}, "Kolkata": {"aov": 14726.0, "asp": 4781.0, "upt": 3.08, "bills": 449, "revenue": 6611864.0, "units": 1383.0}, "Mumbai": {"aov": 13705.0, "asp": 4824.0, "upt": 2.84, "bills": 5746, "revenue": 78749969.0, "units": 16325.0}};
 // Config table driving the Training Cohort tabs. Cohort 3's tab renders two of these entries
 // (cohort3hs, cohort3mall) one under the other. Optional keys, used by Cohort 3 only:
 //   segment: 'repeat'   count repeat-customer bills only
 //   restStores: [...]   limit the comparison group to bills at these stores
 //   restExclude: [...]  stylists kept out of the comparison group (the other Cohort 3 track)
 //   cohortShort / restLabel / metricPrefix / chartId / note   display text
+// Used by Cohort 4 only:
+//   primaryMetric: 'upt'   lead with UPT: card order, the impact estimate (extra units) and the daily trend
+//   cityStores / cityBaseline / storeOf   per-stylist table against the other stylists in their own city
 // `priorClosedMonths` lists already-closed months (after the baseline, before the live current
 // month) whose pooled totals get added to the live period for the pooled cards/impact estimate.
 // At each month transition, add the month that just closed to cohort 1's list here (pull its
@@ -622,6 +638,17 @@ const COHORT_CONFIGS = {
     segment: 'repeat', restStores: C3_MALL_STORES, restExclude: TRAINING_COHORT_3_HS,
     cohortShort: 'Cohort 3 mall', restLabel: 'Rest of mall stores', metricPrefix: 'Repeat ', chartId: 'bsc-cohort3mall-trend-chart',
     note: 'Mall track: repeat-customer bills only. Every figure in this section (bills, revenue, AOV, ASP, UPT) leaves out new customers, for the 10 mall stylists in Cohort 3 and for the comparison group, which is every other stylist\u2019s repeat bills at mall stores. September is the baseline; training started in October.',
+  },
+  cohort4: {
+    cohortLabel: 'Training Cohort 4 \u00b7 UPT', cohortList: TRAINING_COHORT_4,
+    storeOverrides: C4_STORE,
+    baseline: SEPOCT_COHORT_BASELINE_4, stylistDetail: SEPOCT_STYLIST_DETAIL_4,
+    baselineLabel: 'Sep\u2013Oct', baselineFullLabel: 'September\u2013October',
+    priorClosedMonths: [],
+    restStores: C4_STORES, primaryMetric: 'upt',
+    cityStores: C4_CITY_STORES, cityBaseline: SEPOCT_CITY_BASELINE_4, storeOf: C4_STORE,
+    cohortShort: 'Cohort 4', restLabel: 'Rest of the cohort\u2019s cities', chartId: 'bsc-cohort4-trend-chart',
+    note: 'Cohort 4 is a UPT cohort: ' + TRAINING_COHORT_4.length + ' stylists picked because their September\u2013October UPT trailed their city\u2019s. Training starts in November, so September and October pooled are the baseline. Each stylist counts only at their own store. The cohort is compared with every other stylist at stores in Mumbai, Delhi NCR, Kolkata, Chennai and Jaipur, and each stylist with the other stylists in their own city.',
   },
 };
 
@@ -1945,7 +1972,7 @@ function render(){
     stylists: ['Meet the star stylists ⭐', 'Who\'s on fire this month? 🔥'],
     cohorts: ['Class is in session 🎓', 'Training pays off 💪'],
   };
-  const buddyKey = ['cohort1','cohort2','cohort3','smcohort'].includes(state.activeTab) ? 'cohorts' : state.activeTab;
+  const buddyKey = ['cohort1','cohort2','cohort3','cohort4','smcohort'].includes(state.activeTab) ? 'cohorts' : state.activeTab;
   const buddyBubble = buddy.querySelector('.bsc-bubble');
   const lines = BUDDY_LINES[buddyKey] || ['Hello! 👋'];
   if(state.buddyFor !== buddyKey){
@@ -2049,6 +2076,7 @@ function render(){
     {id:'cohort1', label:'Training Cohort 1'},
     {id:'cohort2', label:'Training Cohort 2'},
     {id:'cohort3', label:'Training Cohort 3'},
+    {id:'cohort4', label:'Training Cohort 4'},
     {id:'smcohort', label:'SM Cohort'},
   ];
   const cohortIds = COHORT_TABS.map(t => t.id);
@@ -2134,6 +2162,7 @@ function render(){
   if(state.activeTab === 'cohort1') renderTrainingCohort(body, days, COHORT_CONFIGS.cohort1);
   if(state.activeTab === 'cohort2') renderTrainingCohort(body, days, COHORT_CONFIGS.cohort2);
   if(state.activeTab === 'cohort3') renderTrainingCohort3(body, days);
+  if(state.activeTab === 'cohort4') renderTrainingCohort(body, days, COHORT_CONFIGS.cohort4);
   if(state.activeTab === 'smcohort') renderSMCohort(body, days);
 
   // Content rises in and the headline numbers tick up when the view changes (tab, month, date
@@ -3348,6 +3377,8 @@ function renderTrainingCohort(body, days, cfg){
   const chartId = cfg.chartId || 'bsc-cohort-trend-chart';
   const REST_STORES = cfg.restStores || null;
   const REST_EXCLUDE = cfg.restExclude || [];
+  const PRIMARY = cfg.primaryMetric || 'aov';
+  const METRIC_ORDER = PRIMARY === 'upt' ? ['upt','aov','asp'] : ['aov','asp','upt'];
 
   // One day's stylist figures. With cfg.segment === 'repeat' they come from the repeat-customer
   // slice, which is only stored per stylist per store, so totals are summed across stores.
@@ -3449,7 +3480,7 @@ function renderTrainingCohort(body, days, cfg){
   ].forEach(g => {
     const card = document.createElement('div');
     card.style.cssText = `background:var(--panel); border-radius:10px; padding:16px; border-left:3px solid ${g.color};`;
-    const rows = ['aov','asp','upt'].map(metric => {
+    const rows = METRIC_ORDER.map(metric => {
       const label = metricPrefix + metric.toUpperCase();
       const val = metric === 'upt' ? g.m[metric].toFixed(2) : fmtINR(g.m[metric]);
       const delta = deltaVsBaseline(g.m[metric], g.base ? g.base[metric] : null);
@@ -3470,7 +3501,26 @@ function renderTrainingCohort(body, days, cfg){
   // ---- Revenue impact of training (Method 2: training's AOV vs a counterfactual where it
   // moved with the same growth as rest-of-network -- isolates the training-specific effect
   // from whatever the whole business experienced this period). ----
-  if(mRest.aov && COHORT_BASELINE.rest && COHORT_BASELINE.rest.aov){
+  if(PRIMARY === 'upt'){
+    // UPT cohort: the same counterfactual on UPT, read as extra units sold (valued at the cohort's own ASP).
+    if(mRest.upt && COHORT_BASELINE.rest && COHORT_BASELINE.rest.upt){
+      const restGrowthPct = (mRest.upt - COHORT_BASELINE.rest.upt) / COHORT_BASELINE.rest.upt * 100;
+      const counterfactualUpt = COHORT_BASELINE.training.upt * (1 + restGrowthPct/100);
+      const extraUnits = (mTraining.upt - counterfactualUpt) * combinedTotals.training.bills;
+      const extraRev = extraUnits * mTraining.asp;
+      const impactColor = extraUnits >= 0 ? 'var(--good)' : 'var(--bad)';
+      const impactCard = document.createElement('div');
+      impactCard.style.cssText = `background:var(--panel); border-radius:10px; padding:18px 20px; margin-bottom:24px; border-left:3px solid ${impactColor};`;
+      impactCard.innerHTML = `<div style="font-size:13.5px; color:var(--text-mute); margin-bottom:6px;">Estimated extra units from training vs the ${restLower} trend</div>
+        <div style="font-size:28px; font-weight:700; color:${impactColor};" class="bsc-mono">${extraUnits>=0?'+':''}${Math.round(extraUnits).toLocaleString('en-IN')} units <span style="font-size:16px; font-weight:600;">(${extraRev>=0?'+':''}${fmtINR(extraRev)})</span></div>
+        <div style="font-size:13px; color:var(--text-mute); margin-top:8px; line-height:1.6;">
+          ${restLabel} moved ${restGrowthPct>=0?'+':''}${restGrowthPct.toFixed(1)}% on UPT vs ${baseFullLbl}. If the cohort had followed that same trend, its UPT would have been ${counterfactualUpt.toFixed(2)} instead of its actual ${mTraining.upt.toFixed(2)}.
+          Over ${combinedTotals.training.bills.toLocaleString('en-IN')} cohort bills ${periodLabel}, that gap is the unit figure above, valued at the cohort\u2019s ASP of ${fmtINR(mTraining.asp)} \u2014
+          a correlation, not proof of causation.
+        </div>`;
+      body.appendChild(impactCard);
+    }
+  } else if(mRest.aov && COHORT_BASELINE.rest && COHORT_BASELINE.rest.aov){
     const restGrowthPct = (mRest.aov - COHORT_BASELINE.rest.aov) / COHORT_BASELINE.rest.aov * 100;
     const counterfactualAov = COHORT_BASELINE.training.aov * (1 + restGrowthPct/100);
     const impactRev = (mTraining.aov - counterfactualAov) * combinedTotals.training.bills;
@@ -3506,7 +3556,7 @@ function renderTrainingCohort(body, days, cfg){
 
   const indivGrid = document.createElement('div');
   indivGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:24px;';
-  ['aov','asp','upt'].forEach(metric => {
+  METRIC_ORDER.forEach(metric => {
     let up = 0, down = 0;
     Object.keys(STYLIST_DETAIL).forEach(name => {
       const base = STYLIST_DETAIL[name][metric];
@@ -3530,24 +3580,77 @@ function renderTrainingCohort(body, days, cfg){
   });
   body.appendChild(indivGrid);
 
+  // ---- Cohort 4: each stylist vs the other stylists in their own city, baseline and now ----
+  if(cfg.cityBaseline){
+    const cityNow = {}; // city -> {rev,bills,units}, every non-cohort stylist at that city's stores
+    days.forEach(dk => {
+      dayRows(dk).forEach(r => {
+        if(TRAINING_COHORT.includes(r.norm)) return;
+        Object.keys(cfg.cityStores).forEach(c => {
+          const v = r.at(cfg.cityStores[c]);
+          const t = cityNow[c] = cityNow[c] || {rev:0, bills:0, units:0};
+          t.rev += v.rev; t.bills += v.bills; t.units += v.units;
+        });
+      });
+    });
+    const cityOf = st => Object.keys(cfg.cityStores).find(c => cfg.cityStores[c].includes(st));
+    const f2 = v => v == null ? '\u2014' : v.toFixed(2);
+    const dCell = (now, base) => {
+      if(now == null || !base) return '<span style="color:var(--text-mute);">\u2014</span>';
+      const d = (now - base) / base * 100;
+      return `<span style="color:${d>=0?'var(--good)':'var(--bad)'}; font-weight:600;">${d>=0?'+':''}${d.toFixed(1)}%</span>`;
+    };
+    const gapCell = g => g == null ? '\u2014' : `<span style="color:${g>=0?'var(--good)':'var(--bad)'};">${g>=0?'+':''}${g.toFixed(2)}</span>`;
+    const rowsHtml = TRAINING_COHORT.map(n => {
+      const st = cfg.storeOf[n], c = cityOf(st);
+      const base = STYLIST_DETAIL[n] ? STYLIST_DETAIL[n].upt : null;
+      const m = stylistMtd[n];
+      const now = m && m.bills ? m.units / m.bills : null;
+      const cb = cfg.cityBaseline[c] ? cfg.cityBaseline[c].upt : null;
+      const cn = cityNow[c] && cityNow[c].bills ? cityNow[c].units / cityNow[c].bills : null;
+      const name = n.replace(/\b\w/g, ch => ch.toUpperCase());
+      return `<tr style="border-top:1px solid var(--line);">
+        <td style="padding:6px 8px; white-space:nowrap;">${name}</td>
+        <td style="padding:6px 8px; color:var(--text-dim);">${st} \u00b7 ${c}</td>
+        <td class="bsc-mono" style="padding:6px 8px; text-align:right;">${f2(base)}</td>
+        <td class="bsc-mono" style="padding:6px 8px; text-align:right;">${f2(now)} ${dCell(now, base)}<div style="font-size:11.5px; color:var(--text-mute);">${m ? m.bills : 0} bills</div></td>
+        <td class="bsc-mono" style="padding:6px 8px; text-align:right; color:var(--text-dim);">${f2(cb)} \u2192 ${f2(cn)}</td>
+        <td class="bsc-mono" style="padding:6px 8px; text-align:right;">${gapCell(base != null && cb != null ? base - cb : null)}</td>
+        <td class="bsc-mono" style="padding:6px 8px; text-align:right;">${gapCell(now != null && cn != null ? now - cn : null)}</td>
+      </tr>`;
+    }).join('');
+    const cityHead = document.createElement('div');
+    cityHead.style.cssText = 'font-size:14.5px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
+    cityHead.textContent = 'UPT by stylist vs the rest of their city \u2014 ' + baseFullLbl + ' vs ' + cmk;
+    body.appendChild(cityHead);
+    const cityWrap = document.createElement('div');
+    cityWrap.style.cssText = 'overflow-x:auto; background:var(--panel); border-radius:10px; padding:8px 10px; margin-bottom:24px;';
+    cityWrap.innerHTML = `<table style="font-size:13.5px; width:100%; border-collapse:collapse;">
+      <tr style="color:var(--text-mute); font-size:12px; text-transform:uppercase; letter-spacing:.04em;">
+        <td style="padding:6px 8px;">Stylist</td><td style="padding:6px 8px;">Store \u00b7 city</td>
+        <td style="padding:6px 8px; text-align:right;">UPT ${baseLbl}</td><td style="padding:6px 8px; text-align:right;">UPT ${cmk.split('-')[0]} MTD</td>
+        <td style="padding:6px 8px; text-align:right;">Rest of city ${baseLbl} \u2192 now</td>
+        <td style="padding:6px 8px; text-align:right;">Gap to city ${baseLbl}</td><td style="padding:6px 8px; text-align:right;">Gap to city now</td>
+      </tr>${rowsHtml}</table>
+      <div style="font-size:12.5px; color:var(--text-mute); padding:8px 8px 4px; line-height:1.5;">Gap = stylist UPT minus the UPT of every other stylist at that city\u2019s stores. The cohort was picked on a negative gap; closing it is the goal.</div>`;
+    body.appendChild(cityWrap);
+  }
+
   // ---- Daily AOV trend, both cohorts ----
   const trendHead = document.createElement('div');
   trendHead.style.cssText = 'font-size:14.5px; font-weight:600; color:var(--text-dim); margin-bottom:10px;';
-  trendHead.textContent = 'Daily ' + metricPrefix.toLowerCase() + 'AOV trend \u2014 ' + cfg.cohortLabel.toLowerCase() + ' vs ' + restLower;
+  trendHead.textContent = 'Daily ' + metricPrefix.toLowerCase() + PRIMARY.toUpperCase() + ' trend \u2014 ' + (cfg.primaryMetric ? cohortShort : cfg.cohortLabel.toLowerCase()) + ' vs ' + restLower;
   body.appendChild(trendHead);
 
-  const dailyAovTraining = days.map(dk => {
-    const t = cohortDaily[dk].training;
-    return t.bills ? t.rev/t.bills : null;
-  });
-  const dailyAovRest = days.map(dk => {
-    const t = cohortDaily[dk].rest;
-    return t.bills ? t.rev/t.bills : null;
-  });
+  // AOV, or UPT for a UPT cohort; plotted rounded to the rupee / to 2 decimals.
+  const dailyVal = t => !t.bills ? null : PRIMARY === 'upt' ? t.units/t.bills : t.rev/t.bills;
+  const roundVal = v => v === null ? null : PRIMARY === 'upt' ? Math.round(v*100)/100 : Math.round(v);
+  const dailyAovTraining = days.map(dk => dailyVal(cohortDaily[dk].training));
+  const dailyAovRest = days.map(dk => dailyVal(cohortDaily[dk].rest));
 
   const canvasWrap = document.createElement('div');
   canvasWrap.style.cssText = 'position:relative; height:260px; margin-bottom:8px;';
-  canvasWrap.innerHTML = `<canvas id="${chartId}" role="img" aria-label="Daily AOV trend, ${cohortShort} vs ${restLower}"></canvas>`;
+  canvasWrap.innerHTML = `<canvas id="${chartId}" role="img" aria-label="Daily ${PRIMARY.toUpperCase()} trend, ${cohortShort} vs ${restLower}"></canvas>`;
   body.appendChild(canvasWrap);
 
   requestAnimationFrame(() => {
@@ -3558,15 +3661,15 @@ function renderTrainingCohort(body, days, cfg){
       data: {
         labels: days.map(dayLabel),
         datasets: [
-          {label:cohortShort, data: dailyAovTraining.map(v=>v===null?null:Math.round(v)), borderColor:'#c9a15b', backgroundColor:'rgba(201,161,91,0.1)', pointRadius:3, tension:0.15, spanGaps:true},
-          {label:restLabel, data: dailyAovRest.map(v=>v===null?null:Math.round(v)), borderColor:'#b3b6bd', backgroundColor:'rgba(154,157,165,0.08)', pointRadius:3, tension:0.15, spanGaps:true},
+          {label:cohortShort, data: dailyAovTraining.map(roundVal), borderColor:'#c9a15b', backgroundColor:'rgba(201,161,91,0.1)', pointRadius:3, tension:0.15, spanGaps:true},
+          {label:restLabel, data: dailyAovRest.map(roundVal), borderColor:'#b3b6bd', backgroundColor:'rgba(154,157,165,0.08)', pointRadius:3, tension:0.15, spanGaps:true},
         ]
       },
       options: {
         responsive:true, maintainAspectRatio:false,
         scales: {
           x: {ticks:{color:'#b3b6bd', maxRotation:45, autoSkip:false}, grid:{display:false}},
-          y: {ticks:{color:'#b3b6bd', callback:(v)=>fmtINR(v)}, grid:{color:'#2c313a'}}
+          y: {ticks:{color:'#b3b6bd', callback:(v)=>PRIMARY === 'upt' ? v.toFixed(2) : fmtINR(v)}, grid:{color:'#2c313a'}}
         },
         plugins: { legend: { display:true, labels:{color:'#e9e6df', font:{size:11}} } }
       }
@@ -5175,7 +5278,7 @@ async function selectMonth(mk){
   state.viewMonth = mk;
   applyMonthBundle(clone(archiveCache[mk]));
   // Training/SM cohort tabs track live programmes against fixed baselines -- live month only.
-  if(['cohort1','cohort2','cohort3','smcohort'].includes(state.activeTab)) state.activeTab = 'overview';
+  if(['cohort1','cohort2','cohort3','cohort4','smcohort'].includes(state.activeTab)) state.activeTab = 'overview';
   render();
 }
 

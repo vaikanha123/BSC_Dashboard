@@ -66,3 +66,34 @@ if (b === b2 && u === u2 && Math.abs(r - r2) <= tol && Math.abs(r / b - r2 / b2)
   console.log('MISMATCH');
   process.exit(1);
 }
+
+// Cohort 4 (UPT): each stylist at their own store (C4_STORE), and the rest = every other stylist at
+// C4_STORES. Bills and units must be exact on both sides, since UPT is the cohort's metric.
+if (/const BATCH4_RAW\s*=/.test(tr)) {
+  const C4 = grab(idx, 'C4_STORE'), CS = grab(idx, 'C4_CITY_STORES');
+  const stores = new Set(Object.values(CS).flat());
+  const B4 = grab(tr, 'BATCH4_RAW'), R4 = grab(tr, 'BATCH4_REST_POOLED');
+  const c = {b: 0, u: 0}, o = {b: 0, u: 0};
+  for (const d of Object.values(SD)) {
+    for (const n of Object.keys(d.stylistStoreBills || {})) {
+      const ln = n.toLowerCase().trim();
+      for (const st of Object.keys(d.stylistStoreBills[n])) {
+        const tgt = C4[ln] ? (C4[ln] === st ? c : null) : (stores.has(st) ? o : null);
+        if (!tgt) continue;
+        tgt.b += d.stylistStoreBills[n][st] || 0;
+        tgt.u += (d.stylistStoreUnits[n] || {})[st] || 0;
+      }
+    }
+  }
+  const tb = B4.reduce((s, x) => s + (x[period] ? x[period].bills : 0), 0);
+  const tu = B4.reduce((s, x) => s + (x[period] ? x[period].units : 0), 0);
+  const rp = R4[period] || {bills: 0, units: 0};
+  console.log('cohort 4  index.html bills=' + c.b + ' units=' + c.u + ' | rest bills=' + o.b + ' units=' + o.u);
+  console.log('cohort 4  tracker    bills=' + tb + ' units=' + tu + ' | rest bills=' + rp.bills + ' units=' + rp.units);
+  if (c.b === tb && c.u === tu && o.b === rp.bills && o.u === rp.units) {
+    console.log('COHORT 4 MATCH');
+  } else {
+    console.log('COHORT 4 MISMATCH');
+    process.exit(1);
+  }
+}

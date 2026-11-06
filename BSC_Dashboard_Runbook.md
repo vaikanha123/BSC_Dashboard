@@ -137,6 +137,16 @@ def categorize(product_type, sku):
 - Tracker: two extra options in the batch dropdown (`BATCHES` table), data in `BATCH3HS_RAW` / `BATCH3MALL_RAW` and their `_REST_POOLED`. `update_tracker.py` refreshes them on every run (`update_cohort3`).
 - At the October to November transition, add October to `priorClosedMonths` for both cohort 3 configs, the same way as cohorts 1 and 2.
 
+### Training Cohort 4 (added 2026-11-06): UPT, against the stylist's city
+
+- 10 stylists marked Selected = Yes in the Google Sheet "Cohort 4" (`1QD9bCgUbPPoUZJvqRI63fSZvF86Q4i9M9uv3s8Q3u-c`), picked because their Sep–Oct UPT trailed their city's. Training from November 2026; the **baseline is September + October pooled** (period key `sepoct`), which reproduces the sheet's `upt` column exactly.
+- Each stylist counts **only at the store the sheet lists** (`COHORT4` in `scripts/bsc_common.py`, mirrored as `C4_STORE` in `index.html`). Several bill at a second store too (Lalit Shrivastav has more Sep–Oct bills at Select City than at Khan Market), and those bills are left out.
+- Comparison group: every other stylist at stores in the cohort's five cities (Mumbai, Delhi NCR, Kolkata, Chennai, Jaipur), from `CITY_MAP` in `bsc_common.py` (Viviana Mall = Mumbai). Per stylist, also the other stylists in their own city. The sheet's city UPT included the cohort itself; ours leaves it out, so it runs a little higher.
+- Main dashboard: "Training Cohort 4" sub-tab, `COHORT_CONFIGS.cohort4` through the shared `renderTrainingCohort` with `primaryMetric: 'upt'` (UPT first, the impact card as extra units valued at the cohort's ASP, daily UPT trend) and a per-stylist city table (`cityStores` / `cityBaseline`). Baselines: `SEPOCT_COHORT_BASELINE_4`, `SEPOCT_STYLIST_DETAIL_4`, `SEPOCT_CITY_BASELINE_4`.
+- Tracker: batch `batch4`, data in `BATCH4_RAW`, `BATCH4_REST_POOLED` and `BATCH4_CITY_REST` (per city, rest of city). `update_tracker.py` refreshes the live month on every run (`update_cohort4`); a month with no bills at the stylist's store is stored as `null`. It only offers the `sepoct-nov` period and `c4nov` growth filter (`ONLY_OPTIONS`), hidden for every other batch.
+- `verify_cohort_match.js` also checks Cohort 4: bills and units must match exactly between the two pages for the cohort and the rest.
+- At the November to December transition: add a `NOV_CLOSED_COHORT4` to `cohort4.priorClosedMonths` (from `BATCH4_RAW[].nov` / `BATCH4_REST_POOLED.nov`), and give the tracker a `sepoct-dec` period (plus Nov / Dec columns in the `sepoctBaseline` branches of `renderHeader`, `sortValue`, `renderTable` and `openPanel`).
+
 ### Store-specific overrides (`STORE_SPECIFIC_STYLISTS` on main dashboard, same logic replicated per-stylist in the tracker's RAW data)
 
 **Rahul Yadav** is the one standing override, because he's genuinely worked from different stores in different months and his blended (all-stores) total was misleading:
