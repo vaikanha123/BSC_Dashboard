@@ -27,7 +27,7 @@ import openpyxl
 import pandas as pd
 
 from bsc_common import (
-    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, build_cat_tree, build_cat_tree_by_region, find_refund_and_cn_sheets,
+    MONTHS, REGION_MAP, load_sales_csv, build_seed_days, build_cat_tree, build_cat_tree_by_region, find_refund_and_cn_sheets, refund_sheet_columns,
     process_refund_sheet, replace_const, replace_baseline_key, last_year_baseline, syntax_check_html_js,
 )
 
@@ -71,10 +71,10 @@ def build_refund_cn(refund_xlsx_path, current_month):
         raise ValueError(f"Could not detect refund/CN sheets in {refund_xlsx_path}. "
                           f"Sheets found: {wb.sheetnames}. Check header content matches "
                           f"'reason for refund' / 'reason for credit note' as described in the runbook.")
-    refund_by_month = process_refund_sheet(wb[refund_sheet], amount_idx=7, reason_idx=9, date_idx=10,
-                                            current_month=current_month)
-    cn_by_month = process_refund_sheet(wb[cn_sheet], amount_idx=7, reason_idx=8, date_idx=9,
-                                        current_month=current_month)
+    refund_by_month = process_refund_sheet(wb[refund_sheet], current_month=current_month,
+                                           **refund_sheet_columns(wb[refund_sheet]))
+    cn_by_month = process_refund_sheet(wb[cn_sheet], current_month=current_month,
+                                       **refund_sheet_columns(wb[cn_sheet]))
     return {'byMonth': refund_by_month}, {'byMonth': cn_by_month}
 
 

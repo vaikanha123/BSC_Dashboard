@@ -279,10 +279,37 @@ def store_top_orders(store_orders, n=3):
     return out
 
 
-def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, cat_idx=6, channel_idx=0, store_idx=4):
+def refund_sheet_columns(ws):
+    """Column indexes of a CX refund or credit-note sheet, found by header name, as keyword
+    arguments for process_refund_sheet. The CX file's columns move between exports (the Nov 2026
+    files dropped 'Customer Name', shifting everything left by one), so fixed positions break."""
+    hdr = [str(c or '').strip().lower() for c in next(ws.iter_rows(min_row=1, max_row=1, values_only=True))]
+
+    def find(*preds):
+        return next((i for i, h in enumerate(hdr) if any(p(h) for p in preds)), None)
+
+    cols = {
+        'channel_idx': find(lambda h: h == 'channel'),
+        'order_idx': find(lambda h: h == 'order id'),
+        'store_idx': find(lambda h: h.startswith('pos location'), lambda h: h == 'store'),
+        'cat_idx': find(lambda h: h == 'category'),
+        'amount_idx': find(lambda h: h.startswith('item price'), lambda h: h.startswith('credit note amount'),
+                           lambda h: h.startswith('refund amount')),
+        'reason_idx': find(lambda h: h.startswith('reason for')),
+        # Optional: older exports have no 'Date Processed'; rows then go to the current month.
+        'date_idx': find(lambda h: h == 'date processed'),
+    }
+    missing = [k[:-4] for k, v in cols.items() if v is None and k != 'date_idx']
+    if missing:
+        raise ValueError(f"Sheet '{ws.title}' has no column for {missing}; header is {hdr}")
+    return cols
+
+
+def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, cat_idx=6, channel_idx=0, store_idx=4,
+                         order_idx=2):
     """Aggregate one refund or CN sheet (openpyxl worksheet) into the by-month structure baked
-    into SEED_REFUNDS / SEED_CN. Column indices match the established Refund/CN export format --
-    see the runbook section 3 if a new export has a different column order."""
+    into SEED_REFUNDS / SEED_CN. Get the column indexes from refund_sheet_columns() for CX files;
+    the defaults are the Oct 2026 layout (with 'Customer Name' at index 1). date_idx may be None."""
     by_month = defaultdict(lambda: {
         'total': 0, 'onlineTotal': 0, 'storeTotal': 0, 'lineItems': 0, 'orders': set(),
         'byReason': defaultdict(float), 'byCategory': defaultdict(float), 'byStore': defaultdict(float),
@@ -304,7 +331,8 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
                 raise ValueError(f"Unparseable refund/CN amount {row[amount_idx]!r} in row {row}")
         if not amt:
             continue
-        mk = month_key_from_date(row[date_idx], current_month) or current_month
+        processed = row[date_idx] if date_idx is not None and date_idx < len(row) else None
+        mk = month_key_from_date(processed, current_month) or current_month
         channel = (row[channel_idx] or '').strip()
         is_online = channel.lower() == 'online'
         # Reason codes show up inconsistently cased in the source file (both "FITS" and "fits"
@@ -314,9 +342,9 @@ def process_refund_sheet(ws, amount_idx, reason_idx, date_idx, current_month, ca
         reason = (row[reason_idx] or 'Unspecified').strip().upper() if row[reason_idx] else 'Unspecified'
         category = (row[cat_idx] or 'Uncategorized').strip() if row[cat_idx] else 'Uncategorized'
         store = (row[store_idx] or '').strip() if row[store_idx] else ''
-        order_id = row[2] or ''
+        order_id = row[order_idx] or ''
         m = by_month[mk]
-        d = iso_from_date(row[date_idx])
+        d = iso_from_date(processed)
         if d and d[:7] == mk_iso(mk) and (m['through'] is None or d > m['through']):
             m['through'] = d   # latest processed date in the month: what the store briefing rates against
         m['total'] += amt

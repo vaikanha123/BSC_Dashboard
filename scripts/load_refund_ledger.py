@@ -27,7 +27,7 @@ from collections import Counter, defaultdict
 import openpyxl
 import pandas as pd
 
-from bsc_common import (extract_const, read_sales_csv, find_refund_and_cn_sheets, iso_from_date, month_key_from_date, process_refund_sheet, store_top_orders,
+from bsc_common import (extract_const, read_sales_csv, find_refund_and_cn_sheets, refund_sheet_columns, iso_from_date, month_key_from_date, process_refund_sheet, store_top_orders,
                         replace_const, syntax_check_html_js)
 
 # Ledger location code -> store name used by the CX refund/CN files (and SEED_REFUNDS.byStore).
@@ -264,11 +264,9 @@ def main():
         _, cn_sheet = find_refund_and_cn_sheets(cn_wb)
     cn = None
     if cn_sheet:
-        cn_hdr = [str(c or '').strip().lower() for c in next(cn_wb[cn_sheet].iter_rows(max_row=1, values_only=True))]
-        # The Oct 1-18 CX file put helper columns before "Date Processed", so find it by name.
-        date_idx = cn_hdr.index('date processed') if 'date processed' in cn_hdr else 9
-        cn_by_month = process_refund_sheet(cn_wb[cn_sheet], amount_idx=7, reason_idx=8, date_idx=date_idx,
-                                           current_month=a.month)
+        # Columns are found by header: CX files have added helper columns and dropped others.
+        cn_by_month = process_refund_sheet(cn_wb[cn_sheet], current_month=a.month,
+                                           **refund_sheet_columns(cn_wb[cn_sheet]))
         cn = cn_by_month.get(a.month)
         if cn:
             cn_seed = extract_const(content, 'SEED_CN')
