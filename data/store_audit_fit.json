@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-06 10:14:16 (data for 2026-11-05))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-07 10:14:15 (data for 2026-11-06))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–5 Nov"
+   "range": "1–6 Nov"
   }
  ],
  "stores": {
@@ -124,7 +124,7 @@
    "2026-11": [
     2,
     0,
-    0
+    1
    ]
   },
   "KNK Chennai": {
@@ -234,6 +234,11 @@
     3,
     1,
     2
+   ],
+   "2026-11": [
+    2,
+    0,
+    0
    ]
   },
   "South Ex.": {
@@ -1239,6 +1244,13 @@
      "IND-449768",
      "+919819199935",
      "Denim Shirt - Dark Blue; Denim Shirt - Light Blue; Brushed Twill Shirt - Light Grey"
+    ],
+    [
+     2,
+     "2026-11-06",
+     "IND-454263",
+     "+919930756376",
+     "Cotton Twill Shirt - Blue & White"
     ]
    ]
   },
@@ -1802,6 +1814,22 @@
      "IND-448771",
      "+919824957837",
      "MALABAR HILL MANGO; TIMELESS TAJ TIRAMISU"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-06",
+     "IND-454409",
+     "+919998338266",
+     "Cotton Dobby Shirt - Light Blue; Paramount Dress Pants - Black (Black / 34); FLORA FOUNTAIN FERRERO; Giza Cotton Gingham Checked Shirt - Navy; Flux 4-way Stretch Dress Pants - Beige (Beige / 34)"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-454456",
+     "+917080501802",
+     "Wrinkle-Free Oxford Shirt - Blue; Lorenzo Twill Dress Pants - Dark Olive (Dark Olive / 34)"
     ]
    ]
   },

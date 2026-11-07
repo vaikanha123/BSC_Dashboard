@@ -25,9 +25,12 @@ from bsc_common import (
 )
 
 
-def calc_metrics(sub):
+def calc_metrics(sub, per_stylist=False):
+    """per_stylist: an order shared by two stylists counts once for each, as index.html's
+    per-stylist SEED_DAYS sums do (Cohort 4's rest pools, checked bill-exact by verify_cohort_match.js)."""
     rev = float(sub['Revenue'].sum())
-    bills = int(sub['Order name'].nunique())
+    bills = int(len(sub[['Order name', 'StylistNorm']].drop_duplicates())) if per_stylist \
+        else int(sub['Order name'].nunique())
     units = float(sub['Qty'].sum())
     return {
         'aov': round(rev / bills, 0) if bills else 0,
@@ -51,7 +54,8 @@ def calc_mix(sub):
 
 
 def update_batch(content, raw_const_name, rest_const_name, df, period_key, is_array=True,
-                 segment=None, rest_stores=None, rest_exclude=None, store_scope=None):
+                 segment=None, rest_stores=None, rest_exclude=None, store_scope=None,
+                 rest_per_stylist=False):
     """segment: only count this customer segment's bills ('returning' for Cohort 3's mall track).
     rest_stores: limit "rest of network" to these stores (Cohort 3 compares within a store format).
     rest_exclude: extra stylist names to keep out of "rest" (the other half of Cohort 3).
@@ -84,7 +88,7 @@ def update_batch(content, raw_const_name, rest_const_name, df, period_key, is_ar
     rest = seg_df[~seg_df['StylistNorm'].isin(cohort_names | set(rest_exclude or [])) & (seg_df['Stylist'] != '')]
     if rest_stores is not None:
         rest = rest[rest['POS location name'].isin(rest_stores)]
-    rest_metrics = calc_metrics(rest)
+    rest_metrics = calc_metrics(rest, per_stylist=rest_per_stylist)
     rest_pooled = extract_const(content, rest_const_name, is_array=False)
     rest_pooled[period_key] = rest_metrics
     content = replace_const(content, rest_const_name, json.dumps(rest_pooled))
@@ -107,12 +111,12 @@ def update_cohort4(content, df, period_key):
     """Cohort 4 (UPT): each stylist at their own store, vs every other stylist at stores in the cohort's
     cities (BATCH4_REST_POOLED) and vs the other stylists in their own city (BATCH4_CITY_REST)."""
     content = update_batch(content, 'BATCH4_RAW', 'BATCH4_REST_POOLED', df, period_key,
-                           rest_stores=COHORT4_STORES, store_scope=COHORT4)
+                           rest_stores=COHORT4_STORES, store_scope=COHORT4, rest_per_stylist=True)
     rest = df[~df['StylistNorm'].isin(set(COHORT4)) & (df['Stylist'] != '')
               & df['POS location name'].isin(COHORT4_STORES)]
     city = rest['POS location name'].map(CITY_MAP)
     by_city = extract_const(content, 'BATCH4_CITY_REST', is_array=False)
-    by_city[period_key] = {c: calc_metrics(rest[city == c]) for c in COHORT4_CITIES}
+    by_city[period_key] = {c: calc_metrics(rest[city == c], per_stylist=True) for c in COHORT4_CITIES}
     content = replace_const(content, 'BATCH4_CITY_REST', json.dumps(by_city))
     print(f"  BATCH4_CITY_REST.{period_key}: " +
           ', '.join(f"{c} UPT {m['upt']}" for c, m in by_city[period_key].items()))

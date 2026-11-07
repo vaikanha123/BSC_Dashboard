@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-06 10:14:16 (data for 2026-11-05))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-07 10:14:15 (data for 2026-11-06))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–5 Nov"
+   "range": "1–6 Nov"
   }
  ],
  "stores": {
@@ -144,7 +144,7 @@
     0
    ],
    "2026-11": [
-    2,
+    3,
     0,
     1
    ]
@@ -161,7 +161,7 @@
     0
    ],
    "2026-11": [
-    4,
+    5,
     0,
     0
    ]
@@ -178,7 +178,7 @@
     1
    ],
    "2026-11": [
-    2,
+    4,
     0,
     0
    ]
@@ -297,6 +297,11 @@
     24,
     2,
     5
+   ],
+   "2026-11": [
+    2,
+    0,
+    0
    ]
   },
   "Mall of India": {
@@ -313,7 +318,7 @@
    "2026-11": [
     2,
     1,
-    0
+    1
    ]
   },
   "Oberoi Mall": {
@@ -330,7 +335,7 @@
    "2026-11": [
     1,
     0,
-    1
+    2
    ]
   },
   "Jaipur": {
@@ -381,7 +386,7 @@
    "2026-11": [
     1,
     0,
-    0
+    1
    ]
   },
   "Pali Hill, Khar": {
@@ -413,7 +418,7 @@
     4
    ],
    "2026-11": [
-    3,
+    4,
     1,
     0
    ]
@@ -466,7 +471,7 @@
    "2026-11": [
     8,
     1,
-    0
+    1
    ]
   },
   "Ambience Vasnt Kunj": {
@@ -566,7 +571,7 @@
     1
    ],
    "2026-11": [
-    2,
+    3,
     0,
     1
    ]
@@ -583,7 +588,7 @@
     3
    ],
    "2026-11": [
-    1,
+    2,
     1,
     0
    ]
@@ -3106,6 +3111,13 @@
      "IND-451024",
      "+918867312848",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Black"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-450914",
+     "+919438722493",
+     "Washed Oxford Shirt - Bluish Grey; Brushed Twill Shirt - Black"
     ]
    ]
   },
@@ -3324,6 +3336,13 @@
      "IND-454568",
      "+919899385887",
      "Nicopolis - SRT21282 Reid & Taylor Bespoke"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-454228",
+     "+919940033296",
+     "Beige Modal Linen Bandhgala Kurta (beige / 42); White Popover Linen-Lyocell Shirt (White / 42)"
     ]
    ]
   },
@@ -3794,6 +3813,20 @@
      "IND-450675",
      "+919920177077",
      "2-Ply Egyptian Cotton White Soft Twill Shirt (White / 42); White Luxe Cotton Linen Bandhgala Shirt (white / 42); Luxe Journey Zipper Hoodie - Black (Black / L)"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-450526",
+     "+919712963337",
+     "Wrinkle-Free Stretch Satin Shirt - Light Blue x2; Wrinkle-free Bamboo-Blend Twill Shirt - White x5"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-450508",
+     "+919819730150",
+     "Dark Grey Cotton Corduroy Shirt (Dark Grey / 40)"
     ]
    ]
   },
@@ -6070,6 +6103,22 @@
      "+917893355440",
      "Apex 4-Way Stretch Dress Pants - Grey (Grey / 32)"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-06",
+     "IND-450813",
+     "+919833094444",
+     "Pale Pink Poplin Banker Shirt (Pink / 38); The Sterling 4 way structure Relaxed Neapolitan Dress Pants – Navy (Navy / 32)"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-449665",
+     "+919158007185",
+     "The Best Dressed Guest (Waffel 40824); The Montclair 100% Linen Nehru Jacket - Beige (Beige / 42); The Best Dressed Guest (Jax 53266); 100% Linen Shirt - Rust; The Best Dressed Guest (Jax 52866); The Best Dressed Guest (Jolene 52941); The Montclair 100% Linen Nehru Jacket - Brown (Brown / 42)"
+    ]
    ]
   },
   "Mall of India": {
@@ -6371,6 +6420,13 @@
      "IND-446620",
      "+919816028445",
      "Giza Cotton Gingham Checked Shirt - Light Blue; Giza Cotton Bengal Striped Shirt - Pink"
+    ],
+    [
+     2,
+     "2026-11-06",
+     "IND-451669",
+     "+919319090239",
+     "Trevano 4-Way Stretch Relaxed Neapolitan Dress Pants – Beige (Beige / 32)"
     ]
    ]
   },
@@ -6631,6 +6687,13 @@
      "IND-450473",
      "+919867633101",
      "Soft Cotton Blend Twill Shirt - Pink"
+    ],
+    [
+     2,
+     "2026-11-06",
+     "IND-450919",
+     "+919920789343",
+     "Giza Cotton Herringbone Shirt - Dark Blue; Soft Cotton Satin Shirt - Black; Giza Cotton Houndstooth Shirt - Blue; Brushed Twill Shirt - Brown; Soft Washed Linen Shirt - Brick; Giza Cotton Houndstooth Shirt - Brown; Oxford Striped Shirt - Dark Blue"
     ]
    ]
   },
@@ -7271,6 +7334,13 @@
      "IND-451203",
      "+919899336535",
      "Giza Cotton Light Blue Twill Shirt (Light Blue / 38); Trevano 4-Way Stretch Relaxed Neapolitan Dress Pants – Navy (Navy / 28); Torino Structured Relaxed Neapolitan Pants - Grey (Charcoal / 28); Pearl Pink Cotton Poplin Shirt (Pink / 38); Giza Cotton Bengal Striped Shirt - Light Blue; Pale Pink Poplin Banker Shirt (Pink / 38); Giza Cotton Houndstooth Shirt - Pink"
+    ],
+    [
+     2,
+     "2026-11-06",
+     "IND-454095",
+     "+918800422921",
+     "Giza Cotton Micro-Checked Shirt - Green; Giza Cotton Herringbone Shirt - Dark Blue"
     ]
    ]
   },
@@ -8092,6 +8162,13 @@
      "IND-450994",
      "+918291815313",
      "Flux 4-way Stretch Dress Pants - Black (Black / 38); Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - White x2"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-451282",
+     "+918570888225",
+     "Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - Black"
     ]
    ]
   },
@@ -9215,6 +9292,13 @@
      "IND-453994",
      "+919810806433",
      "Signature Flat Knit Long Sleeve  Polo - Beige (Beige / M)"
+    ],
+    [
+     2,
+     "2026-11-06",
+     "IND-441214",
+     "+919825068672",
+     "Baruche Giza Cotton Twill Checked Shirt- Light Grey; Somelos Cotton Satin Striped Shirt - Navy & Red; Easy-Care Asterisk Cotton Printed Shirt - Light Blue; Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - Navy; Somelos Cotton Satin Striped Shirt - Multicolored; SRT19025 - Reid & Taylor Bespoke; Cotton Twill Shirt - Dark olive"
     ]
    ]
   },
@@ -10138,6 +10222,13 @@
      "IND-449012",
      "+919415047021",
      "Easy-Care Cotton Striped Shirt - Blue; Washed Oxford Shirt - White; 2-Ply Cotton Twill Shirt - Light Blue; Cotton Twill Checked Shirt - Purple; 2-Ply Cotton Poplin Checked Shirt - Light Blue"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-449552",
+     "+919849645050",
+     "Washed Oxford Shirt - Light Grey; Denim Shirt - Dark Blue"
     ]
    ]
   },
@@ -10314,6 +10405,13 @@
      "IND-450480",
      "+919871666955",
      "Luthai Wrinkle-Free Dobby Shirt - Pink"
+    ],
+    [
+     0,
+     "2026-11-06",
+     "IND-449399",
+     "+916264836668",
+     "Easy-Care Stretch Cotton Striped Shirt - Grey & White"
     ]
    ]
   }

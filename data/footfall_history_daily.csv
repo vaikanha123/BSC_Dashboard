@@ -7550,6 +7550,7 @@ date,store,new,repeat,total
 2026-06-01,Oberoi Sky City,9.0,0.0,9.0
 2026-06-01,"Pali Hill, Bandra",12.0,7.0,19.0
 2026-06-01,Phoenix Marketcity Kurla,4.0,3.0,7.0
+2026-06-01,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-06-01,Phoenix Palassio,8.0,0.0,8.0
 2026-06-01,R.K. Salai,0.0,1.0,1.0
 2026-06-01,Sarath City-Hyderabad,20.0,2.0,22.0
@@ -7584,6 +7585,7 @@ date,store,new,repeat,total
 2026-06-02,Oberoi Sky City,11.0,5.0,16.0
 2026-06-02,"Pali Hill, Bandra",5.0,6.0,11.0
 2026-06-02,Phoenix Marketcity Kurla,10.0,3.0,13.0
+2026-06-02,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-06-02,Phoenix Palassio,5.0,3.0,8.0
 2026-06-02,R.K. Salai,0.0,2.0,2.0
 2026-06-02,Sarath City-Hyderabad,36.0,3.0,39.0
@@ -7618,6 +7620,7 @@ date,store,new,repeat,total
 2026-06-03,Oberoi Sky City,12.0,1.0,13.0
 2026-06-03,"Pali Hill, Bandra",6.0,10.0,16.0
 2026-06-03,Phoenix Marketcity Kurla,6.0,3.0,9.0
+2026-06-03,"Phoenix Marketcity, Whitefield",5.0,1.0,6.0
 2026-06-03,Phoenix Palassio,7.0,0.0,7.0
 2026-06-03,R.K. Salai,1.0,1.0,2.0
 2026-06-03,Sarath City-Hyderabad,16.0,2.0,18.0
@@ -7652,6 +7655,7 @@ date,store,new,repeat,total
 2026-06-04,Oberoi Sky City,15.0,1.0,16.0
 2026-06-04,"Pali Hill, Bandra",4.0,8.0,12.0
 2026-06-04,Phoenix Marketcity Kurla,8.0,4.0,12.0
+2026-06-04,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-06-04,Phoenix Palassio,7.0,2.0,9.0
 2026-06-04,R.K. Salai,1.0,1.0,2.0
 2026-06-04,Sarath City-Hyderabad,20.0,3.0,23.0
@@ -7686,6 +7690,7 @@ date,store,new,repeat,total
 2026-06-05,Oberoi Sky City,13.0,2.0,15.0
 2026-06-05,"Pali Hill, Bandra",10.0,10.0,20.0
 2026-06-05,Phoenix Marketcity Kurla,7.0,2.0,9.0
+2026-06-05,"Phoenix Marketcity, Whitefield",11.0,1.0,12.0
 2026-06-05,Phoenix Palassio,3.0,4.0,7.0
 2026-06-05,R.K. Salai,2.0,2.0,4.0
 2026-06-05,Sarath City-Hyderabad,19.0,2.0,21.0
@@ -7720,6 +7725,7 @@ date,store,new,repeat,total
 2026-06-06,Oberoi Sky City,33.0,5.0,38.0
 2026-06-06,"Pali Hill, Bandra",9.0,15.0,24.0
 2026-06-06,Phoenix Marketcity Kurla,23.0,4.0,27.0
+2026-06-06,"Phoenix Marketcity, Whitefield",20.0,2.0,22.0
 2026-06-06,Phoenix Palassio,8.0,4.0,12.0
 2026-06-06,R.K. Salai,3.0,4.0,7.0
 2026-06-06,Sarath City-Hyderabad,24.0,3.0,27.0
@@ -7754,6 +7760,7 @@ date,store,new,repeat,total
 2026-06-07,Oberoi Sky City,33.0,3.0,36.0
 2026-06-07,"Pali Hill, Bandra",15.0,8.0,23.0
 2026-06-07,Phoenix Marketcity Kurla,23.0,11.0,34.0
+2026-06-07,"Phoenix Marketcity, Whitefield",18.0,5.0,23.0
 2026-06-07,Phoenix Palassio,10.0,3.0,13.0
 2026-06-07,R.K. Salai,1.0,2.0,3.0
 2026-06-07,Sarath City-Hyderabad,41.0,4.0,45.0
@@ -7788,6 +7795,7 @@ date,store,new,repeat,total
 2026-06-08,Oberoi Sky City,13.0,1.0,14.0
 2026-06-08,"Pali Hill, Bandra",4.0,6.0,10.0
 2026-06-08,Phoenix Marketcity Kurla,8.0,0.0,8.0
+2026-06-08,"Phoenix Marketcity, Whitefield",5.0,2.0,7.0
 2026-06-08,Phoenix Palassio,4.0,2.0,6.0
 2026-06-08,R.K. Salai,1.0,0.0,1.0
 2026-06-08,Sarath City-Hyderabad,13.0,4.0,17.0
@@ -7822,6 +7830,7 @@ date,store,new,repeat,total
 2026-06-09,Oberoi Sky City,14.0,2.0,16.0
 2026-06-09,"Pali Hill, Bandra",3.0,6.0,9.0
 2026-06-09,Phoenix Marketcity Kurla,5.0,1.0,6.0
+2026-06-09,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-06-09,Phoenix Palassio,5.0,1.0,6.0
 2026-06-09,R.K. Salai,0.0,1.0,1.0
 2026-06-09,Sarath City-Hyderabad,16.0,2.0,18.0
@@ -7856,6 +7865,7 @@ date,store,new,repeat,total
 2026-06-10,Oberoi Sky City,12.0,0.0,12.0
 2026-06-10,"Pali Hill, Bandra",7.0,7.0,14.0
 2026-06-10,Phoenix Marketcity Kurla,8.0,1.0,9.0
+2026-06-10,"Phoenix Marketcity, Whitefield",6.0,1.0,7.0
 2026-06-10,Phoenix Palassio,6.0,2.0,8.0
 2026-06-10,R.K. Salai,1.0,2.0,3.0
 2026-06-10,Sarath City-Hyderabad,15.0,1.0,16.0
@@ -7890,6 +7900,7 @@ date,store,new,repeat,total
 2026-06-11,Oberoi Sky City,15.0,2.0,17.0
 2026-06-11,"Pali Hill, Bandra",3.0,9.0,12.0
 2026-06-11,Phoenix Marketcity Kurla,9.0,1.0,10.0
+2026-06-11,"Phoenix Marketcity, Whitefield",6.0,0.0,6.0
 2026-06-11,Phoenix Palassio,5.0,0.0,5.0
 2026-06-11,R.K. Salai,2.0,0.0,2.0
 2026-06-11,Sarath City-Hyderabad,21.0,4.0,25.0
@@ -7924,6 +7935,7 @@ date,store,new,repeat,total
 2026-06-12,Oberoi Sky City,9.0,0.0,9.0
 2026-06-12,"Pali Hill, Bandra",7.0,7.0,14.0
 2026-06-12,Phoenix Marketcity Kurla,9.0,3.0,12.0
+2026-06-12,"Phoenix Marketcity, Whitefield",3.0,3.0,6.0
 2026-06-12,Phoenix Palassio,6.0,2.0,8.0
 2026-06-12,R.K. Salai,2.0,0.0,2.0
 2026-06-12,Sarath City-Hyderabad,21.0,7.0,28.0
@@ -7958,6 +7970,7 @@ date,store,new,repeat,total
 2026-06-13,Oberoi Sky City,31.0,3.0,34.0
 2026-06-13,"Pali Hill, Bandra",8.0,13.0,21.0
 2026-06-13,Phoenix Marketcity Kurla,28.0,10.0,38.0
+2026-06-13,"Phoenix Marketcity, Whitefield",25.0,8.0,33.0
 2026-06-13,Phoenix Palassio,8.0,2.0,10.0
 2026-06-13,R.K. Salai,3.0,0.0,3.0
 2026-06-13,Sarath City-Hyderabad,35.0,6.0,41.0
@@ -7992,6 +8005,7 @@ date,store,new,repeat,total
 2026-06-14,Oberoi Sky City,45.0,4.0,49.0
 2026-06-14,"Pali Hill, Bandra",10.0,18.0,28.0
 2026-06-14,Phoenix Marketcity Kurla,19.0,5.0,24.0
+2026-06-14,"Phoenix Marketcity, Whitefield",26.0,7.0,33.0
 2026-06-14,Phoenix Palassio,15.0,2.0,17.0
 2026-06-14,R.K. Salai,1.0,4.0,5.0
 2026-06-14,Sarath City-Hyderabad,44.0,7.0,51.0
@@ -8026,6 +8040,7 @@ date,store,new,repeat,total
 2026-06-15,Oberoi Sky City,10.0,2.0,12.0
 2026-06-15,"Pali Hill, Bandra",6.0,10.0,16.0
 2026-06-15,Phoenix Marketcity Kurla,10.0,2.0,12.0
+2026-06-15,"Phoenix Marketcity, Whitefield",6.0,0.0,6.0
 2026-06-15,Phoenix Palassio,13.0,2.0,15.0
 2026-06-15,R.K. Salai,2.0,0.0,2.0
 2026-06-15,Sarath City-Hyderabad,20.0,6.0,26.0
@@ -8060,6 +8075,7 @@ date,store,new,repeat,total
 2026-06-16,Oberoi Sky City,8.0,1.0,9.0
 2026-06-16,"Pali Hill, Bandra",4.0,8.0,12.0
 2026-06-16,Phoenix Marketcity Kurla,13.0,3.0,16.0
+2026-06-16,"Phoenix Marketcity, Whitefield",4.0,0.0,4.0
 2026-06-16,Phoenix Palassio,12.0,0.0,12.0
 2026-06-16,R.K. Salai,0.0,2.0,2.0
 2026-06-16,Sarath City-Hyderabad,18.0,4.0,22.0
@@ -8094,6 +8110,7 @@ date,store,new,repeat,total
 2026-06-17,Oberoi Sky City,8.0,2.0,10.0
 2026-06-17,"Pali Hill, Bandra",3.0,8.0,11.0
 2026-06-17,Phoenix Marketcity Kurla,7.0,2.0,9.0
+2026-06-17,"Phoenix Marketcity, Whitefield",5.0,0.0,5.0
 2026-06-17,Phoenix Palassio,10.0,2.0,12.0
 2026-06-17,R.K. Salai,2.0,1.0,3.0
 2026-06-17,Sarath City-Hyderabad,19.0,4.0,23.0
@@ -8128,6 +8145,7 @@ date,store,new,repeat,total
 2026-06-18,Oberoi Sky City,13.0,2.0,15.0
 2026-06-18,"Pali Hill, Bandra",0.0,6.0,6.0
 2026-06-18,Phoenix Marketcity Kurla,10.0,1.0,11.0
+2026-06-18,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-06-18,Phoenix Palassio,6.0,3.0,9.0
 2026-06-18,R.K. Salai,1.0,2.0,3.0
 2026-06-18,Sarath City-Hyderabad,9.0,1.0,10.0
@@ -8162,6 +8180,7 @@ date,store,new,repeat,total
 2026-06-19,Oberoi Sky City,23.0,3.0,26.0
 2026-06-19,"Pali Hill, Bandra",4.0,3.0,7.0
 2026-06-19,Phoenix Marketcity Kurla,13.0,3.0,16.0
+2026-06-19,"Phoenix Marketcity, Whitefield",8.0,6.0,14.0
 2026-06-19,Phoenix Palassio,9.0,2.0,11.0
 2026-06-19,R.K. Salai,1.0,1.0,2.0
 2026-06-19,Sarath City-Hyderabad,23.0,4.0,27.0
@@ -8196,6 +8215,7 @@ date,store,new,repeat,total
 2026-06-20,Oberoi Sky City,37.0,1.0,38.0
 2026-06-20,"Pali Hill, Bandra",15.0,13.0,28.0
 2026-06-20,Phoenix Marketcity Kurla,25.0,8.0,33.0
+2026-06-20,"Phoenix Marketcity, Whitefield",17.0,6.0,23.0
 2026-06-20,Phoenix Palassio,17.0,3.0,20.0
 2026-06-20,R.K. Salai,3.0,2.0,5.0
 2026-06-20,Sarath City-Hyderabad,34.0,6.0,40.0
@@ -8230,6 +8250,7 @@ date,store,new,repeat,total
 2026-06-21,Oberoi Sky City,42.0,12.0,54.0
 2026-06-21,"Pali Hill, Bandra",13.0,25.0,38.0
 2026-06-21,Phoenix Marketcity Kurla,28.0,8.0,36.0
+2026-06-21,"Phoenix Marketcity, Whitefield",18.0,6.0,24.0
 2026-06-21,Phoenix Palassio,18.0,4.0,22.0
 2026-06-21,R.K. Salai,5.0,2.0,7.0
 2026-06-21,Sarath City-Hyderabad,47.0,7.0,54.0
@@ -8264,6 +8285,7 @@ date,store,new,repeat,total
 2026-06-22,Oberoi Sky City,23.0,2.0,25.0
 2026-06-22,"Pali Hill, Bandra",8.0,6.0,14.0
 2026-06-22,Phoenix Marketcity Kurla,12.0,1.0,13.0
+2026-06-22,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-06-22,Phoenix Palassio,6.0,6.0,12.0
 2026-06-22,R.K. Salai,2.0,1.0,3.0
 2026-06-22,Sarath City-Hyderabad,10.0,2.0,12.0
@@ -8298,6 +8320,7 @@ date,store,new,repeat,total
 2026-06-23,Oberoi Sky City,8.0,2.0,10.0
 2026-06-23,"Pali Hill, Bandra",4.0,4.0,8.0
 2026-06-23,Phoenix Marketcity Kurla,9.0,0.0,9.0
+2026-06-23,"Phoenix Marketcity, Whitefield",8.0,2.0,10.0
 2026-06-23,Phoenix Palassio,8.0,0.0,8.0
 2026-06-23,R.K. Salai,0.0,2.0,2.0
 2026-06-23,Sarath City-Hyderabad,14.0,1.0,15.0
@@ -8332,6 +8355,7 @@ date,store,new,repeat,total
 2026-06-24,Oberoi Sky City,18.0,1.0,19.0
 2026-06-24,"Pali Hill, Bandra",5.0,6.0,11.0
 2026-06-24,Phoenix Marketcity Kurla,8.0,0.0,8.0
+2026-06-24,"Phoenix Marketcity, Whitefield",7.0,0.0,7.0
 2026-06-24,Phoenix Palassio,12.0,2.0,14.0
 2026-06-24,R.K. Salai,1.0,0.0,1.0
 2026-06-24,Sarath City-Hyderabad,20.0,6.0,26.0
@@ -8366,6 +8390,7 @@ date,store,new,repeat,total
 2026-06-25,Oberoi Sky City,11.0,0.0,11.0
 2026-06-25,"Pali Hill, Bandra",3.0,12.0,15.0
 2026-06-25,Phoenix Marketcity Kurla,8.0,2.0,10.0
+2026-06-25,"Phoenix Marketcity, Whitefield",8.0,0.0,8.0
 2026-06-25,Phoenix Palassio,4.0,3.0,7.0
 2026-06-25,R.K. Salai,1.0,1.0,2.0
 2026-06-25,Sarath City-Hyderabad,11.0,0.0,11.0
@@ -8400,6 +8425,7 @@ date,store,new,repeat,total
 2026-06-26,Oberoi Sky City,22.0,2.0,24.0
 2026-06-26,"Pali Hill, Bandra",8.0,7.0,15.0
 2026-06-26,Phoenix Marketcity Kurla,14.0,3.0,17.0
+2026-06-26,"Phoenix Marketcity, Whitefield",6.0,3.0,9.0
 2026-06-26,Phoenix Palassio,7.0,1.0,8.0
 2026-06-26,R.K. Salai,1.0,3.0,4.0
 2026-06-26,Sarath City-Hyderabad,21.0,6.0,27.0
@@ -8434,6 +8460,7 @@ date,store,new,repeat,total
 2026-06-27,Oberoi Sky City,25.0,6.0,31.0
 2026-06-27,"Pali Hill, Bandra",7.0,14.0,21.0
 2026-06-27,Phoenix Marketcity Kurla,24.0,5.0,29.0
+2026-06-27,"Phoenix Marketcity, Whitefield",16.0,4.0,20.0
 2026-06-27,Phoenix Palassio,7.0,2.0,9.0
 2026-06-27,R.K. Salai,2.0,2.0,4.0
 2026-06-27,Sarath City-Hyderabad,41.0,4.0,45.0
@@ -8468,6 +8495,7 @@ date,store,new,repeat,total
 2026-06-28,Oberoi Sky City,37.0,4.0,41.0
 2026-06-28,"Pali Hill, Bandra",8.0,13.0,21.0
 2026-06-28,Phoenix Marketcity Kurla,18.0,7.0,25.0
+2026-06-28,"Phoenix Marketcity, Whitefield",15.0,6.0,21.0
 2026-06-28,Phoenix Palassio,9.0,3.0,12.0
 2026-06-28,R.K. Salai,2.0,1.0,3.0
 2026-06-28,Sarath City-Hyderabad,46.0,7.0,53.0
@@ -8502,6 +8530,7 @@ date,store,new,repeat,total
 2026-06-29,Oberoi Sky City,7.0,2.0,9.0
 2026-06-29,"Pali Hill, Bandra",5.0,10.0,15.0
 2026-06-29,Phoenix Marketcity Kurla,9.0,3.0,12.0
+2026-06-29,"Phoenix Marketcity, Whitefield",5.0,0.0,5.0
 2026-06-29,Phoenix Palassio,3.0,2.0,5.0
 2026-06-29,R.K. Salai,1.0,4.0,5.0
 2026-06-29,Sarath City-Hyderabad,11.0,1.0,12.0
@@ -8535,6 +8564,7 @@ date,store,new,repeat,total
 2026-06-30,Oberoi Sky City,8.0,1.0,9.0
 2026-06-30,"Pali Hill, Bandra",1.0,7.0,8.0
 2026-06-30,Phoenix Marketcity Kurla,9.0,2.0,11.0
+2026-06-30,"Phoenix Marketcity, Whitefield",6.0,1.0,7.0
 2026-06-30,Phoenix Palassio,0.0,0.0,0.0
 2026-06-30,R.K. Salai,2.0,1.0,3.0
 2026-06-30,Sarath City-Hyderabad,17.0,3.0,20.0
@@ -9683,6 +9713,7 @@ date,store,new,repeat,total
 2026-08-02,Oberoi Mall Store,20.0,10.0,30.0
 2026-08-02,Oberoi Sky City,37.0,11.0,48.0
 2026-08-02,PMC Viman Nagar Pune,14.0,3.0,17.0
+2026-08-02,"Pali Hill, Bandra",15.0,23.0,38.0
 2026-08-02,Phoenix Marketcity Kurla,21.0,4.0,25.0
 2026-08-02,"Phoenix Marketcity, Whitefield",20.0,0.0,20.0
 2026-08-02,Phoenix Palassio,4.0,1.0,5.0
@@ -9717,6 +9748,7 @@ date,store,new,repeat,total
 2026-08-03,Oberoi Mall Store,3.0,1.0,4.0
 2026-08-03,Oberoi Sky City,14.0,3.0,17.0
 2026-08-03,PMC Viman Nagar Pune,14.0,1.0,15.0
+2026-08-03,"Pali Hill, Bandra",7.0,9.0,16.0
 2026-08-03,Phoenix Marketcity Kurla,8.0,2.0,10.0
 2026-08-03,"Phoenix Marketcity, Whitefield",0.0,0.0,0.0
 2026-08-03,Phoenix Palassio,8.0,4.0,12.0
@@ -9751,6 +9783,7 @@ date,store,new,repeat,total
 2026-08-04,Oberoi Mall Store,4.0,3.0,7.0
 2026-08-04,Oberoi Sky City,13.0,0.0,13.0
 2026-08-04,PMC Viman Nagar Pune,25.0,2.0,27.0
+2026-08-04,"Pali Hill, Bandra",1.0,3.0,4.0
 2026-08-04,"Phoenix Marketcity, Whitefield",3.0,1.0,4.0
 2026-08-04,Phoenix Palassio,4.0,2.0,6.0
 2026-08-04,R.K. Salai,0.0,3.0,3.0
@@ -9784,6 +9817,7 @@ date,store,new,repeat,total
 2026-08-05,Oberoi Mall Store,4.0,1.0,5.0
 2026-08-05,Oberoi Sky City,8.0,3.0,11.0
 2026-08-05,PMC Viman Nagar Pune,11.0,0.0,11.0
+2026-08-05,"Pali Hill, Bandra",7.0,6.0,13.0
 2026-08-05,Phoenix Marketcity Kurla,7.0,1.0,8.0
 2026-08-05,"Phoenix Marketcity, Whitefield",0.0,0.0,0.0
 2026-08-05,Phoenix Palassio,5.0,1.0,6.0
@@ -9818,6 +9852,7 @@ date,store,new,repeat,total
 2026-08-06,Oberoi Mall Store,10.0,6.0,16.0
 2026-08-06,Oberoi Sky City,11.0,3.0,14.0
 2026-08-06,PMC Viman Nagar Pune,19.0,0.0,19.0
+2026-08-06,"Pali Hill, Bandra",3.0,6.0,9.0
 2026-08-06,Phoenix Marketcity Kurla,8.0,1.0,9.0
 2026-08-06,"Phoenix Marketcity, Whitefield",5.0,2.0,7.0
 2026-08-06,Phoenix Palassio,6.0,1.0,7.0
@@ -9852,6 +9887,7 @@ date,store,new,repeat,total
 2026-08-07,Oberoi Mall Store,7.0,4.0,11.0
 2026-08-07,Oberoi Sky City,22.0,1.0,23.0
 2026-08-07,PMC Viman Nagar Pune,13.0,0.0,13.0
+2026-08-07,"Pali Hill, Bandra",8.0,15.0,23.0
 2026-08-07,Phoenix Marketcity Kurla,5.0,6.0,11.0
 2026-08-07,"Phoenix Marketcity, Whitefield",5.0,5.0,10.0
 2026-08-07,Phoenix Palassio,7.0,2.0,9.0
@@ -9886,6 +9922,7 @@ date,store,new,repeat,total
 2026-08-08,Oberoi Mall Store,22.0,5.0,27.0
 2026-08-08,Oberoi Sky City,30.0,3.0,33.0
 2026-08-08,PMC Viman Nagar Pune,23.0,3.0,26.0
+2026-08-08,"Pali Hill, Bandra",13.0,16.0,29.0
 2026-08-08,Phoenix Marketcity Kurla,16.0,10.0,26.0
 2026-08-08,"Phoenix Marketcity, Whitefield",21.0,5.0,26.0
 2026-08-08,Phoenix Palassio,8.0,3.0,11.0
@@ -9920,6 +9957,7 @@ date,store,new,repeat,total
 2026-08-09,Oberoi Mall Store,25.0,14.0,39.0
 2026-08-09,Oberoi Sky City,27.0,10.0,37.0
 2026-08-09,PMC Viman Nagar Pune,27.0,2.0,29.0
+2026-08-09,"Pali Hill, Bandra",14.0,19.0,33.0
 2026-08-09,Phoenix Marketcity Kurla,31.0,12.0,43.0
 2026-08-09,"Phoenix Marketcity, Whitefield",14.0,5.0,19.0
 2026-08-09,Phoenix Palassio,12.0,7.0,19.0
@@ -9954,6 +9992,7 @@ date,store,new,repeat,total
 2026-08-10,Oberoi Mall Store,5.0,3.0,8.0
 2026-08-10,Oberoi Sky City,9.0,0.0,9.0
 2026-08-10,PMC Viman Nagar Pune,12.0,1.0,13.0
+2026-08-10,"Pali Hill, Bandra",4.0,9.0,13.0
 2026-08-10,Phoenix Marketcity Kurla,8.0,1.0,9.0
 2026-08-10,"Phoenix Marketcity, Whitefield",5.0,3.0,8.0
 2026-08-10,Phoenix Palassio,8.0,1.0,9.0
@@ -9988,6 +10027,7 @@ date,store,new,repeat,total
 2026-08-11,Oberoi Mall Store,6.0,1.0,7.0
 2026-08-11,Oberoi Sky City,12.0,1.0,13.0
 2026-08-11,PMC Viman Nagar Pune,11.0,0.0,11.0
+2026-08-11,"Pali Hill, Bandra",3.0,9.0,12.0
 2026-08-11,Phoenix Marketcity Kurla,7.0,0.0,7.0
 2026-08-11,"Phoenix Marketcity, Whitefield",4.0,1.0,5.0
 2026-08-11,Phoenix Palassio,6.0,1.0,7.0
@@ -10022,6 +10062,7 @@ date,store,new,repeat,total
 2026-08-12,Oberoi Mall Store,7.0,0.0,7.0
 2026-08-12,Oberoi Sky City,8.0,6.0,14.0
 2026-08-12,PMC Viman Nagar Pune,11.0,1.0,12.0
+2026-08-12,"Pali Hill, Bandra",7.0,9.0,16.0
 2026-08-12,Phoenix Marketcity Kurla,7.0,0.0,7.0
 2026-08-12,"Phoenix Marketcity, Whitefield",4.0,3.0,7.0
 2026-08-12,Phoenix Palassio,14.0,2.0,16.0
@@ -10056,6 +10097,7 @@ date,store,new,repeat,total
 2026-08-13,Oberoi Mall Store,5.0,5.0,10.0
 2026-08-13,Oberoi Sky City,10.0,3.0,13.0
 2026-08-13,PMC Viman Nagar Pune,10.0,1.0,11.0
+2026-08-13,"Pali Hill, Bandra",4.0,9.0,13.0
 2026-08-13,Phoenix Marketcity Kurla,4.0,3.0,7.0
 2026-08-13,"Phoenix Marketcity, Whitefield",2.0,2.0,4.0
 2026-08-13,Phoenix Palassio,7.0,2.0,9.0
@@ -10090,6 +10132,7 @@ date,store,new,repeat,total
 2026-08-14,Oberoi Mall Store,10.0,6.0,16.0
 2026-08-14,Oberoi Sky City,15.0,4.0,19.0
 2026-08-14,PMC Viman Nagar Pune,10.0,5.0,15.0
+2026-08-14,"Pali Hill, Bandra",5.0,5.0,10.0
 2026-08-14,Phoenix Marketcity Kurla,12.0,2.0,14.0
 2026-08-14,"Phoenix Marketcity, Whitefield",3.0,0.0,3.0
 2026-08-14,Phoenix Palassio,5.0,0.0,5.0
@@ -10124,6 +10167,7 @@ date,store,new,repeat,total
 2026-08-15,Oberoi Mall Store,19.0,7.0,26.0
 2026-08-15,Oberoi Sky City,29.0,5.0,34.0
 2026-08-15,PMC Viman Nagar Pune,34.0,7.0,41.0
+2026-08-15,"Pali Hill, Bandra",7.0,13.0,20.0
 2026-08-15,Phoenix Marketcity Kurla,24.0,3.0,27.0
 2026-08-15,"Phoenix Marketcity, Whitefield",19.0,1.0,20.0
 2026-08-15,Phoenix Palassio,9.0,8.0,17.0
@@ -10158,6 +10202,7 @@ date,store,new,repeat,total
 2026-08-16,Oberoi Mall Store,20.0,15.0,35.0
 2026-08-16,Oberoi Sky City,32.0,8.0,40.0
 2026-08-16,PMC Viman Nagar Pune,25.0,7.0,32.0
+2026-08-16,"Pali Hill, Bandra",19.0,15.0,34.0
 2026-08-16,Phoenix Marketcity Kurla,25.0,8.0,33.0
 2026-08-16,"Phoenix Marketcity, Whitefield",10.0,6.0,16.0
 2026-08-16,Phoenix Palassio,7.0,8.0,15.0
@@ -10192,6 +10237,7 @@ date,store,new,repeat,total
 2026-08-17,Oberoi Mall Store,6.0,8.0,14.0
 2026-08-17,Oberoi Sky City,7.0,3.0,10.0
 2026-08-17,PMC Viman Nagar Pune,14.0,1.0,15.0
+2026-08-17,"Pali Hill, Bandra",5.0,4.0,9.0
 2026-08-17,Phoenix Marketcity Kurla,10.0,3.0,13.0
 2026-08-17,"Phoenix Marketcity, Whitefield",3.0,2.0,5.0
 2026-08-17,Phoenix Palassio,6.0,3.0,9.0
@@ -10225,6 +10271,7 @@ date,store,new,repeat,total
 2026-08-18,"Mall of India, Noida",8.0,5.0,13.0
 2026-08-18,Oberoi Sky City,12.0,1.0,13.0
 2026-08-18,PMC Viman Nagar Pune,5.0,,5.0
+2026-08-18,"Pali Hill, Bandra",5.0,6.0,11.0
 2026-08-18,Phoenix Marketcity Kurla,8.0,1.0,9.0
 2026-08-18,"Phoenix Marketcity, Whitefield",10.0,3.0,13.0
 2026-08-18,Phoenix Palassio,5.0,0.0,5.0
@@ -10259,6 +10306,7 @@ date,store,new,repeat,total
 2026-08-19,Oberoi Mall Store,6.0,4.0,10.0
 2026-08-19,Oberoi Sky City,12.0,2.0,14.0
 2026-08-19,PMC Viman Nagar Pune,6.0,0.0,6.0
+2026-08-19,"Pali Hill, Bandra",7.0,4.0,11.0
 2026-08-19,Phoenix Marketcity Kurla,3.0,5.0,8.0
 2026-08-19,"Phoenix Marketcity, Whitefield",3.0,2.0,5.0
 2026-08-19,Phoenix Palassio,10.0,5.0,15.0
@@ -10293,6 +10341,7 @@ date,store,new,repeat,total
 2026-08-20,Oberoi Mall Store,7.0,2.0,9.0
 2026-08-20,Oberoi Sky City,14.0,1.0,15.0
 2026-08-20,PMC Viman Nagar Pune,8.0,0.0,8.0
+2026-08-20,"Pali Hill, Bandra",3.0,14.0,17.0
 2026-08-20,Phoenix Marketcity Kurla,5.0,3.0,8.0
 2026-08-20,"Phoenix Marketcity, Whitefield",3.0,3.0,6.0
 2026-08-20,Phoenix Palassio,2.0,8.0,10.0
@@ -10327,6 +10376,7 @@ date,store,new,repeat,total
 2026-08-21,Oberoi Mall Store,4.0,4.0,8.0
 2026-08-21,Oberoi Sky City,6.0,3.0,9.0
 2026-08-21,PMC Viman Nagar Pune,26.0,1.0,27.0
+2026-08-21,"Pali Hill, Bandra",18.0,47.0,65.0
 2026-08-21,Phoenix Marketcity Kurla,5.0,0.0,5.0
 2026-08-21,"Phoenix Marketcity, Whitefield",3.0,3.0,6.0
 2026-08-21,Phoenix Palassio,4.0,1.0,5.0
@@ -10361,6 +10411,7 @@ date,store,new,repeat,total
 2026-08-22,Oberoi Mall Store,5.0,10.0,15.0
 2026-08-22,Oberoi Sky City,33.0,7.0,40.0
 2026-08-22,PMC Viman Nagar Pune,16.0,3.0,19.0
+2026-08-22,"Pali Hill, Bandra",30.0,41.0,71.0
 2026-08-22,Phoenix Marketcity Kurla,16.0,5.0,21.0
 2026-08-22,"Phoenix Marketcity, Whitefield",0.0,0.0,0.0
 2026-08-22,Phoenix Palassio,9.0,6.0,15.0
@@ -10395,6 +10446,7 @@ date,store,new,repeat,total
 2026-08-23,Oberoi Mall Store,7.0,8.0,15.0
 2026-08-23,Oberoi Sky City,32.0,4.0,36.0
 2026-08-23,PMC Viman Nagar Pune,8.0,6.0,14.0
+2026-08-23,"Pali Hill, Bandra",35.0,80.0,115.0
 2026-08-23,Phoenix Marketcity Kurla,26.0,9.0,35.0
 2026-08-23,"Phoenix Marketcity, Whitefield",0.0,0.0,0.0
 2026-08-23,Phoenix Palassio,6.0,2.0,8.0
@@ -10429,6 +10481,7 @@ date,store,new,repeat,total
 2026-08-24,Oberoi Mall Store,5.0,3.0,8.0
 2026-08-24,Oberoi Sky City,5.0,3.0,8.0
 2026-08-24,PMC Viman Nagar Pune,9.0,3.0,12.0
+2026-08-24,"Pali Hill, Bandra",8.0,11.0,19.0
 2026-08-24,Phoenix Marketcity Kurla,11.0,3.0,14.0
 2026-08-24,"Phoenix Marketcity, Whitefield",4.0,0.0,4.0
 2026-08-24,Phoenix Palassio,4.0,2.0,6.0
@@ -10463,6 +10516,7 @@ date,store,new,repeat,total
 2026-08-25,Oberoi Mall Store,8.0,1.0,9.0
 2026-08-25,Oberoi Sky City,8.0,2.0,10.0
 2026-08-25,PMC Viman Nagar Pune,14.0,3.0,17.0
+2026-08-25,"Pali Hill, Bandra",4.0,12.0,16.0
 2026-08-25,Phoenix Marketcity Kurla,4.0,4.0,8.0
 2026-08-25,"Phoenix Marketcity, Whitefield",4.0,3.0,7.0
 2026-08-25,Phoenix Palassio,5.0,1.0,6.0
@@ -10497,6 +10551,7 @@ date,store,new,repeat,total
 2026-08-26,Oberoi Mall Store,7.0,5.0,12.0
 2026-08-26,Oberoi Sky City,13.0,2.0,15.0
 2026-08-26,PMC Viman Nagar Pune,10.0,2.0,12.0
+2026-08-26,"Pali Hill, Bandra",8.0,14.0,22.0
 2026-08-26,Phoenix Marketcity Kurla,9.0,0.0,9.0
 2026-08-26,"Phoenix Marketcity, Whitefield",3.0,2.0,5.0
 2026-08-26,Phoenix Palassio,6.0,4.0,10.0
@@ -10531,6 +10586,7 @@ date,store,new,repeat,total
 2026-08-27,Oberoi Mall Store,5.0,4.0,9.0
 2026-08-27,Oberoi Sky City,13.0,2.0,15.0
 2026-08-27,PMC Viman Nagar Pune,10.0,2.0,12.0
+2026-08-27,"Pali Hill, Bandra",7.0,7.0,14.0
 2026-08-27,Phoenix Marketcity Kurla,11.0,4.0,15.0
 2026-08-27,"Phoenix Marketcity, Whitefield",1.0,3.0,4.0
 2026-08-27,Phoenix Palassio,13.0,1.0,14.0
@@ -10565,6 +10621,7 @@ date,store,new,repeat,total
 2026-08-28,Oberoi Mall Store,5.0,3.0,8.0
 2026-08-28,Oberoi Sky City,19.0,4.0,23.0
 2026-08-28,PMC Viman Nagar Pune,10.0,0.0,10.0
+2026-08-28,"Pali Hill, Bandra",7.0,14.0,21.0
 2026-08-28,Phoenix Marketcity Kurla,8.0,4.0,12.0
 2026-08-28,"Phoenix Marketcity, Whitefield",4.0,3.0,7.0
 2026-08-28,Phoenix Palassio,6.0,0.0,6.0
@@ -10598,6 +10655,7 @@ date,store,new,repeat,total
 2026-08-29,Oberoi Mall Store,13.0,7.0,20.0
 2026-08-29,Oberoi Sky City,16.0,3.0,19.0
 2026-08-29,PMC Viman Nagar Pune,10.0,7.0,17.0
+2026-08-29,"Pali Hill, Bandra",16.0,20.0,36.0
 2026-08-29,Phoenix Marketcity Kurla,14.0,3.0,17.0
 2026-08-29,"Phoenix Marketcity, Whitefield",24.0,5.0,29.0
 2026-08-29,Phoenix Palassio,6.0,1.0,7.0
@@ -10631,6 +10689,7 @@ date,store,new,repeat,total
 2026-08-30,Oberoi Mall Store,11.0,9.0,20.0
 2026-08-30,Oberoi Sky City,26.0,8.0,34.0
 2026-08-30,PMC Viman Nagar Pune,28.0,6.0,34.0
+2026-08-30,"Pali Hill, Bandra",14.0,27.0,41.0
 2026-08-30,Phoenix Marketcity Kurla,27.0,9.0,36.0
 2026-08-30,"Phoenix Marketcity, Whitefield",15.0,7.0,22.0
 2026-08-30,Phoenix Palassio,7.0,1.0,8.0
@@ -10662,6 +10721,7 @@ date,store,new,repeat,total
 2026-08-31,"Mall of India, Noida",7.0,5.0,12.0
 2026-08-31,Oberoi Mall Store,2.0,1.0,3.0
 2026-08-31,Oberoi Sky City,10.0,4.0,14.0
+2026-08-31,"Pali Hill, Bandra",4.0,7.0,11.0
 2026-08-31,Phoenix Marketcity Kurla,6.0,2.0,8.0
 2026-08-31,"Phoenix Marketcity, Whitefield",3.0,0.0,3.0
 2026-08-31,Phoenix Palassio,7.0,1.0,8.0
@@ -10700,7 +10760,6 @@ date,store,new,repeat,total
 2026-09-01,Phoenix Marketcity Kurla,8.0,1.0,9.0
 2026-09-01,"Phoenix Marketcity, Whitefield",3.0,0.0,3.0
 2026-09-01,Phoenix Palassio,5.0,2.0,7.0
-2026-09-01,R.K. Salai,,1.0,1.0
 2026-09-01,Sarath City-Hyderabad,20.0,2.0,22.0
 2026-09-01,Select City,9.0,4.0,13.0
 2026-09-01,Shakespearesarani,4.0,3.0,7.0
@@ -10735,7 +10794,6 @@ date,store,new,repeat,total
 2026-09-02,Phoenix Marketcity Kurla,9.0,0.0,9.0
 2026-09-02,"Phoenix Marketcity, Whitefield",3.0,3.0,6.0
 2026-09-02,Phoenix Palassio,5.0,6.0,11.0
-2026-09-02,R.K. Salai,,1.0,1.0
 2026-09-02,Sarath City-Hyderabad,14.0,3.0,17.0
 2026-09-02,Select City,9.0,3.0,12.0
 2026-09-02,Shakespearesarani,2.0,3.0,5.0
@@ -10770,7 +10828,6 @@ date,store,new,repeat,total
 2026-09-03,Phoenix Marketcity Kurla,6.0,1.0,7.0
 2026-09-03,"Phoenix Marketcity, Whitefield",4.0,0.0,4.0
 2026-09-03,Phoenix Palassio,2.0,1.0,3.0
-2026-09-03,R.K. Salai,,1.0,1.0
 2026-09-03,Sarath City-Hyderabad,9.0,3.0,12.0
 2026-09-03,Select City,7.0,1.0,8.0
 2026-09-03,Shakespearesarani,2.0,4.0,6.0
@@ -10805,7 +10862,6 @@ date,store,new,repeat,total
 2026-09-04,Phoenix Marketcity Kurla,4.0,2.0,6.0
 2026-09-04,"Phoenix Marketcity, Whitefield",5.0,2.0,7.0
 2026-09-04,Phoenix Palassio,7.0,3.0,10.0
-2026-09-04,R.K. Salai,,1.0,1.0
 2026-09-04,Sarath City-Hyderabad,11.0,1.0,12.0
 2026-09-04,Select City,7.0,6.0,13.0
 2026-09-04,Shakespearesarani,4.0,3.0,7.0
@@ -10840,7 +10896,6 @@ date,store,new,repeat,total
 2026-09-05,Phoenix Marketcity Kurla,23.0,4.0,27.0
 2026-09-05,"Phoenix Marketcity, Whitefield",22.0,8.0,30.0
 2026-09-05,Phoenix Palassio,5.0,5.0,10.0
-2026-09-05,R.K. Salai,,1.0,1.0
 2026-09-05,Sarath City-Hyderabad,28.0,7.0,35.0
 2026-09-05,Select City,12.0,5.0,17.0
 2026-09-05,Shakespearesarani,8.0,7.0,15.0
@@ -10875,7 +10930,6 @@ date,store,new,repeat,total
 2026-09-06,Phoenix Marketcity Kurla,21.0,10.0,31.0
 2026-09-06,"Phoenix Marketcity, Whitefield",21.0,9.0,30.0
 2026-09-06,Phoenix Palassio,10.0,7.0,17.0
-2026-09-06,R.K. Salai,,1.0,1.0
 2026-09-06,Sarath City-Hyderabad,31.0,1.0,32.0
 2026-09-06,Select City,15.0,10.0,25.0
 2026-09-06,Shakespearesarani,8.0,5.0,13.0
@@ -10910,7 +10964,6 @@ date,store,new,repeat,total
 2026-09-07,Phoenix Marketcity Kurla,4.0,0.0,4.0
 2026-09-07,"Phoenix Marketcity, Whitefield",8.0,0.0,8.0
 2026-09-07,Phoenix Palassio,6.0,2.0,8.0
-2026-09-07,R.K. Salai,,1.0,1.0
 2026-09-07,Sarath City-Hyderabad,9.0,3.0,12.0
 2026-09-07,Select City,7.0,4.0,11.0
 2026-09-07,Shakespearesarani,5.0,3.0,8.0
@@ -10945,7 +10998,6 @@ date,store,new,repeat,total
 2026-09-08,Phoenix Marketcity Kurla,10.0,1.0,11.0
 2026-09-08,"Phoenix Marketcity, Whitefield",3.0,2.0,5.0
 2026-09-08,Phoenix Palassio,5.0,4.0,9.0
-2026-09-08,R.K. Salai,,1.0,1.0
 2026-09-08,Sarath City-Hyderabad,9.0,3.0,12.0
 2026-09-08,Select City,8.0,2.0,10.0
 2026-09-08,Shakespearesarani,3.0,1.0,4.0
@@ -10980,7 +11032,6 @@ date,store,new,repeat,total
 2026-09-09,Phoenix Marketcity Kurla,12.0,3.0,15.0
 2026-09-09,"Phoenix Marketcity, Whitefield",7.0,3.0,10.0
 2026-09-09,Phoenix Palassio,10.0,2.0,12.0
-2026-09-09,R.K. Salai,,1.0,1.0
 2026-09-09,Sarath City-Hyderabad,8.0,1.0,9.0
 2026-09-09,Select City,6.0,3.0,9.0
 2026-09-09,Shakespearesarani,2.0,4.0,6.0
@@ -11015,7 +11066,6 @@ date,store,new,repeat,total
 2026-09-10,Phoenix Marketcity Kurla,7.0,1.0,8.0
 2026-09-10,"Phoenix Marketcity, Whitefield",5.0,3.0,8.0
 2026-09-10,Phoenix Palassio,8.0,2.0,10.0
-2026-09-10,R.K. Salai,,1.0,1.0
 2026-09-10,Sarath City-Hyderabad,7.0,1.0,8.0
 2026-09-10,Select City,9.0,0.0,9.0
 2026-09-10,Shakespearesarani,3.0,5.0,8.0
@@ -11050,7 +11100,6 @@ date,store,new,repeat,total
 2026-09-11,Phoenix Marketcity Kurla,4.0,4.0,8.0
 2026-09-11,"Phoenix Marketcity, Whitefield",1.0,2.0,3.0
 2026-09-11,Phoenix Palassio,9.0,3.0,12.0
-2026-09-11,R.K. Salai,,1.0,1.0
 2026-09-11,Sarath City-Hyderabad,17.0,4.0,21.0
 2026-09-11,Select City,6.0,5.0,11.0
 2026-09-11,Shakespearesarani,5.0,9.0,14.0
@@ -11085,7 +11134,6 @@ date,store,new,repeat,total
 2026-09-12,Phoenix Marketcity Kurla,21.0,6.0,27.0
 2026-09-12,"Phoenix Marketcity, Whitefield",20.0,5.0,25.0
 2026-09-12,Phoenix Palassio,6.0,2.0,8.0
-2026-09-12,R.K. Salai,,1.0,1.0
 2026-09-12,Sarath City-Hyderabad,34.0,8.0,42.0
 2026-09-12,Select City,10.0,4.0,14.0
 2026-09-12,Shakespearesarani,3.0,3.0,6.0
@@ -11120,7 +11168,6 @@ date,store,new,repeat,total
 2026-09-13,Phoenix Marketcity Kurla,14.0,5.0,19.0
 2026-09-13,"Phoenix Marketcity, Whitefield",27.0,3.0,30.0
 2026-09-13,Phoenix Palassio,5.0,6.0,11.0
-2026-09-13,R.K. Salai,,1.0,1.0
 2026-09-13,Sarath City-Hyderabad,33.0,6.0,39.0
 2026-09-13,Select City,12.0,7.0,19.0
 2026-09-13,Shakespearesarani,7.0,10.0,17.0
@@ -11155,7 +11202,6 @@ date,store,new,repeat,total
 2026-09-14,Phoenix Marketcity Kurla,7.0,3.0,10.0
 2026-09-14,"Phoenix Marketcity, Whitefield",17.0,3.0,20.0
 2026-09-14,Phoenix Palassio,8.0,2.0,10.0
-2026-09-14,R.K. Salai,,1.0,1.0
 2026-09-14,Sarath City-Hyderabad,13.0,3.0,16.0
 2026-09-14,Select City,5.0,3.0,8.0
 2026-09-14,Shakespearesarani,4.0,7.0,11.0
@@ -12909,13 +12955,14 @@ date,store,new,repeat,total
 2026-11-05,Juhu Store,4.0,2.0,6.0
 2026-11-05,KNK Chennai,2.0,3.0,5.0
 2026-11-05,"Kalaghoda, Fort",10.0,7.0,17.0
-2026-11-05,Kemps Corner,3.0,8.0,11.0
+2026-11-05,Kemps Corner,3.0,9.0,12.0
 2026-11-05,Khan Market,8.0,3.0,11.0
 2026-11-05,Kochi Store,0.0,5.0,5.0
 2026-11-05,Koregaon Park,3.0,8.0,11.0
 2026-11-05,LakeShore Mall,4.0,0.0,4.0
 2026-11-05,Lavelle Road,4.0,7.0,11.0
 2026-11-05,"Mall of India, Noida",7.0,3.0,10.0
+2026-11-05,Oberoi Mall Store,7.0,5.0,12.0
 2026-11-05,Oberoi Sky City,12.0,2.0,14.0
 2026-11-05,PMC Viman Nagar Pune,8.0,3.0,11.0
 2026-11-05,"Pali Hill, Bandra",9.0,7.0,16.0
@@ -12930,14 +12977,40 @@ date,store,new,repeat,total
 2026-11-05,South Ex.,2.0,2.0,4.0
 2026-11-05,Vegas Dwarka,6.0,1.0,7.0
 2026-11-05,Viviana Mall,18.0,10.0,28.0
-2026-11-06,Andheri,0.0,0.0,0.0
-2026-11-06,Indiranagar,0.0,0.0,0.0
-2026-11-06,Inorbit Mall Malad West,0.0,0.0,0.0
-2026-11-06,Jaipur Store,0.0,0.0,0.0
-2026-11-06,Koregaon Park,0.0,,0.0
-2026-11-06,Lavelle Road,0.0,0.0,0.0
-2026-11-06,PMC Viman Nagar Pune,14.0,3.0,17.0
-2026-11-06,Viviana Mall,0.0,,0.0
+2026-11-06,Ambience Vasant Kunj,8.0,3.0,11.0
+2026-11-06,Andheri,9.0,2.0,11.0
+2026-11-06,DLF Midtown - Moti Nagar,4.0,0.0,4.0
+2026-11-06,Express Avenue,16.0,4.0,20.0
+2026-11-06,Gurugram,4.0,1.0,5.0
+2026-11-06,Indiranagar,5.0,5.0,10.0
+2026-11-06,Inorbit Mall Malad West,21.0,0.0,21.0
+2026-11-06,Inorbit mall Hyderabad,27.0,7.0,34.0
+2026-11-06,Jaipur Store,3.0,6.0,9.0
+2026-11-06,Jubilee Hills,5.0,4.0,9.0
+2026-11-06,Juhu Store,5.0,2.0,7.0
+2026-11-06,"Kalaghoda, Fort",10.0,10.0,20.0
+2026-11-06,Kemps Corner,3.0,7.0,10.0
+2026-11-06,Khan Market,5.0,5.0,10.0
+2026-11-06,Kochi Store,2.0,1.0,3.0
+2026-11-06,Koregaon Park,5.0,9.0,14.0
+2026-11-06,LakeShore Mall,8.0,0.0,8.0
+2026-11-06,Lavelle Road,1.0,2.0,3.0
+2026-11-06,"Mall of India, Noida",4.0,2.0,6.0
+2026-11-06,Oberoi Mall Store,2.0,10.0,12.0
+2026-11-06,Oberoi Sky City,25.0,3.0,28.0
+2026-11-06,PMC Viman Nagar Pune,6.0,3.0,9.0
+2026-11-06,"Pali Hill, Bandra",5.0,2.0,7.0
+2026-11-06,Phoenix Marketcity Kurla,8.0,3.0,11.0
+2026-11-06,"Phoenix Marketcity, Whitefield",3.0,2.0,5.0
+2026-11-06,Phoenix Palassio,20.0,5.0,25.0
+2026-11-06,R.K. Salai,0.0,2.0,2.0
+2026-11-06,Sarath City-Hyderabad,15.0,5.0,20.0
+2026-11-06,Select City,8.0,2.0,10.0
+2026-11-06,Shakespearesarani,1.0,5.0,6.0
+2026-11-06,Sindhu Bhavan Marg,8.0,9.0,17.0
+2026-11-06,South Ex.,1.0,2.0,3.0
+2026-11-06,Vegas Dwarka,6.0,1.0,7.0
+2026-11-06,Viviana Mall,10.0,10.0,20.0
 2026-11-07,Andheri,0.0,0.0,0.0
 2026-11-07,Indiranagar,0.0,0.0,0.0
 2026-11-07,Inorbit Mall Malad West,0.0,0.0,0.0
