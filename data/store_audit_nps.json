@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-07 10:14:15 (data for 2026-11-06))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-08 10:14:16 (data for 2026-11-07))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–6 Nov"
+   "range": "1–7 Nov"
   }
  ],
  "stores": {
@@ -32,7 +32,7 @@
    "2026-11": [
     3,
     1,
-    0
+    1
    ]
   },
   "South Ex.": {
@@ -110,7 +110,7 @@
     0
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -146,7 +146,7 @@
    "2026-11": [
     3,
     0,
-    1
+    2
    ]
   },
   "KNK Chennai": {
@@ -253,7 +253,7 @@
     2
    ],
    "2026-11": [
-    2,
+    3,
     0,
     1
    ]
@@ -333,7 +333,7 @@
     4
    ],
    "2026-11": [
-    1,
+    2,
     0,
     2
    ]
@@ -401,7 +401,7 @@
     2
    ],
    "2026-11": [
-    2,
+    4,
     0,
     2
    ]
@@ -469,7 +469,7 @@
     3
    ],
    "2026-11": [
-    8,
+    9,
     1,
     1
    ]
@@ -486,7 +486,7 @@
     3
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -859,6 +859,13 @@
      "IND-452091",
      "+919312248321",
      "Elevate Everyday Stretch Chinos - Black (Black / 32)"
+    ],
+    [
+     2,
+     "2026-11-07",
+     "IND-447396",
+     "+919873321512",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - White"
     ]
    ]
   },
@@ -2458,6 +2465,13 @@
      "IND-451458",
      "+917087026236",
      "Sorento Structured Ready-to-Wear Dress Pants - Light Grey (Light Grey / 36); Giza Cotton Gingham Checked Shirt - Navy"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-453920",
+     "+918450941940",
+     "Dark Blue & White Cotton-Lyocell Striped Shirt (Dark Blue / 44); Giza Cotton Light Green Checked Shirt (Light Green / 44)"
     ]
    ]
   },
@@ -3118,6 +3132,13 @@
      "IND-450914",
      "+919438722493",
      "Washed Oxford Shirt - Bluish Grey; Brushed Twill Shirt - Black"
+    ],
+    [
+     2,
+     "2026-11-07",
+     "IND-450751",
+     "+918218111965",
+     "Luxe Supima Cotton T-shirt - Dusty Pink (Pink / M); Tailored 4-Way Stretch Twill Smart Pants - Olive (Olive / 35)"
     ]
    ]
   },
@@ -5158,6 +5179,13 @@
      "IND-446552",
      "+918095451000",
      "Soft Washed Linen Shirt - White; Soft Washed Linen Shirt - Mid Blue; Mantua - Manhattan Farbriano Bespoke; The Flux 4-Way Stretch Blazer - Black (Black / 42); Markwell - Manhattan Farbriano Bespoke x2; Flux 4-way Stretch Dress Pants - Black (Black / 38); Malaga - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-451134",
+     "+918281489581",
+     "Cotton Dobby Shirt - Dark Blue; Giza Cotton Glen Plaid Checked Shirt - Navy; Cotton Poplin Striped Shirt - Navy & Red"
     ]
    ]
   },
@@ -6694,6 +6722,13 @@
      "IND-450919",
      "+919920789343",
      "Giza Cotton Herringbone Shirt - Dark Blue; Soft Cotton Satin Shirt - Black; Giza Cotton Houndstooth Shirt - Blue; Brushed Twill Shirt - Brown; Soft Washed Linen Shirt - Brick; Giza Cotton Houndstooth Shirt - Brown; Oxford Striped Shirt - Dark Blue"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-452639",
+     "+917304850468",
+     "Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / L)"
     ]
    ]
   },
@@ -7937,6 +7972,20 @@
      "IND-453122",
      "+919870001238",
      "Lyocell Wool Stretch Johnny Polo - Maroon (Maroon / 2XL)"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-450196",
+     "+919769352621",
+     "Washed Oxford Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-455000",
+     "+919820028996",
+     "Luthai Wrinkle-Free Twill Shirt - Light Blue; Luthai Wrinkle-Free Broad Herringbone Shirt - White"
     ]
    ]
   },
@@ -9299,6 +9348,13 @@
      "IND-441214",
      "+919825068672",
      "Baruche Giza Cotton Twill Checked Shirt- Light Grey; Somelos Cotton Satin Striped Shirt - Navy & Red; Easy-Care Asterisk Cotton Printed Shirt - Light Blue; Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - Navy; Somelos Cotton Satin Striped Shirt - Multicolored; SRT19025 - Reid & Taylor Bespoke; Cotton Twill Shirt - Dark olive"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-452878",
+     "+919909904052",
+     "Elevate Everyday Stretch Chinos - Green (Green / 32); Navy Grindle Flat Knit Shirt (Navy / 40); Japanese Dobby Mid-Rise Rigid Jeans - Dark Blue (Dark Blue / 30); Light Blue Jacquard Flat Knit Shirt (Light Blue / 40); Elevate Everyday Stretch Chinos - Navy (Navy / 32)"
     ]
    ]
   },
@@ -9545,6 +9601,13 @@
      "IND-449493",
      "+918516010000",
      "Soktas Striped Shirt - White; Exquisite Blended Wool Dress Pants - Black (Black / 32)"
+    ],
+    [
+     0,
+     "2026-11-07",
+     "IND-450682",
+     "+919910400659",
+     "Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / XL); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / XL)"
     ]
    ]
   },

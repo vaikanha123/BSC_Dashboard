@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-07 10:14:15 (data for 2026-11-06))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-08 10:14:16 (data for 2026-11-07))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–6 Nov"
+   "range": "1–7 Nov"
   }
  ],
  "stores": {
@@ -350,6 +350,11 @@
     4,
     1,
     1
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Indiranagar": {
@@ -1822,7 +1827,7 @@
      "2026-11-06",
      "IND-454409",
      "+919998338266",
-     "Cotton Dobby Shirt - Light Blue; Paramount Dress Pants - Black (Black / 34); FLORA FOUNTAIN FERRERO; Giza Cotton Gingham Checked Shirt - Navy; Flux 4-way Stretch Dress Pants - Beige (Beige / 34)"
+     "Paramount Dress Pants - Black (Black / 34); FLORA FOUNTAIN FERRERO; Giza Cotton Gingham Checked Shirt - Navy; Flux 4-way Stretch Dress Pants - Beige (Beige / 34); Cotton Dobby Shirt - Light Blue"
     ],
     [
      0,
@@ -2325,6 +2330,15 @@
      "IND-447767",
      "+919818933875",
      "Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - White; 2-Ply Cotton Blend Herringbone Shirt - Mid Blue"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-07",
+     "IND-448858",
+     "+919582404404",
+     "2-Ply Soft Herringbone Shirt - White"
     ]
    ]
   },
