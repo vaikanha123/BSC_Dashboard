@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-08 10:14:16 (data for 2026-11-07))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-09 10:14:16 (data for 2026-11-08))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–7 Nov"
+   "range": "1–8 Nov"
   }
  ],
  "stores": {
@@ -76,7 +76,7 @@
     4
    ],
    "2026-11": [
-    5,
+    6,
     0,
     1
    ]
@@ -110,7 +110,7 @@
     0
    ],
    "2026-11": [
-    4,
+    5,
     0,
     0
    ]
@@ -179,7 +179,7 @@
    ],
    "2026-11": [
     4,
-    0,
+    1,
     0
    ]
   },
@@ -236,7 +236,7 @@
     1
    ],
    "2026-11": [
-    1,
+    2,
     0,
     1
    ]
@@ -268,6 +268,11 @@
     8,
     1,
     5
+   ],
+   "2026-11": [
+    0,
+    0,
+    1
    ]
   },
   "Phoenix Viman Nagar": {
@@ -403,7 +408,7 @@
    "2026-11": [
     4,
     0,
-    2
+    3
    ]
   },
   "PMC Kurla": {
@@ -469,8 +474,8 @@
     3
    ],
    "2026-11": [
-    9,
-    1,
+    10,
+    2,
     1
    ]
   },
@@ -520,9 +525,9 @@
     1
    ],
    "2026-11": [
-    1,
+    2,
     0,
-    0
+    1
    ]
   },
   "Kochi": {
@@ -537,7 +542,7 @@
     2
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -1644,6 +1649,13 @@
      "IND-453191",
      "+919829619303",
      "BSC X Rid Burman Denim Shacket - Light Blue (Light Blue / 44)"
+    ],
+    [
+     0,
+     "2026-11-08",
+     "IND-451905",
+     "+919869012323",
+     "Japanese Brushed Twill Shirt - Green; Stretch Cotton Checked Shirt - Red & Blue"
     ]
    ]
   },
@@ -2472,6 +2484,13 @@
      "IND-453920",
      "+918450941940",
      "Dark Blue & White Cotton-Lyocell Striped Shirt (Dark Blue / 44); Giza Cotton Light Green Checked Shirt (Light Green / 44)"
+    ],
+    [
+     0,
+     "2026-11-08",
+     "IND-453612",
+     "+919819346543",
+     "Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / L); Signature Flat Knit Long Sleeve  Polo - Beige (Beige / L)"
     ]
    ]
   },
@@ -3848,6 +3867,13 @@
      "IND-450508",
      "+919819730150",
      "Dark Grey Cotton Corduroy Shirt (Dark Grey / 40)"
+    ],
+    [
+     1,
+     "2026-11-08",
+     "IND-448236",
+     "+919820021848",
+     "Matong - Manhattan Farbriano Bespoke; Maldon - Manhattan Farbriano Bespoke; Elevate Everyday Stretch Chinos - Olive (Olive / 38); The Best Dressed Guest (Jax 52866); Kovel - 40278 SOKTAS BESPOKE; Elevate Everyday Stretch Chinos - Navy (Navy / 38); Jareth - 50729 SOKTAS BESPOKE; Cotton white Satin Shirt - Trial"
     ]
    ]
   },
@@ -4912,6 +4938,13 @@
      "IND-451607",
      "+917091160350",
      "Cotton Linen Shirt - Green; Washed Oxford Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-08",
+     "IND-451650",
+     "+919625458037",
+     "Washed Oxford Shirt - Olive; Giza Cotton Bengal Striped Shirt - Pink"
     ]
    ]
   },
@@ -5437,6 +5470,15 @@
      "IND-436742",
      "+919718170004",
      "KING - SOKTAS BESPOKE"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-08",
+     "IND-451443",
+     "+919815251374",
+     "Performance Stretch Cotton Striped Shirt - Grey & White; Giza Cotton Glen Plaid Checked Shirt - Navy; Soktas Dobby Shirt - White"
     ]
    ]
   },
@@ -7986,6 +8028,13 @@
      "IND-455000",
      "+919820028996",
      "Luthai Wrinkle-Free Twill Shirt - Light Blue; Luthai Wrinkle-Free Broad Herringbone Shirt - White"
+    ],
+    [
+     2,
+     "2026-11-08",
+     "IND-445974",
+     "+919819844494",
+     "Paramount Dress Pants - Light Grey (Light Grey / 30); Cotton Stretch Herringbone Shirt - Black; Cotton Dobby Striped Shirt - Blue & White; Paramount Dress Pants - Grey (Grey / 30); Paramount Dress Pants - Black (Black / 30); Cotton Dobby Shirt - Black; Cotton Twill Shirt - Light Grey"
     ]
    ]
   },
@@ -9355,6 +9404,20 @@
      "IND-452878",
      "+919909904052",
      "Elevate Everyday Stretch Chinos - Green (Green / 32); Navy Grindle Flat Knit Shirt (Navy / 40); Japanese Dobby Mid-Rise Rigid Jeans - Dark Blue (Dark Blue / 30); Light Blue Jacquard Flat Knit Shirt (Light Blue / 40); Elevate Everyday Stretch Chinos - Navy (Navy / 32)"
+    ],
+    [
+     1,
+     "2026-11-08",
+     "IND-451817",
+     "+917046966955",
+     "MALABAR HILL MANGO x2; FLORA FOUNTAIN FERRERO"
+    ],
+    [
+     0,
+     "2026-11-08",
+     "IND-451825",
+     "+919586391686",
+     "TIMELESS TAJ TIRAMISU; BEACHY BLUEBERRY CHEESE CAKE; PALIHILL PISTACHIO; GYMKHANA- PROTEIN BELGIAN CHOCOLATE x3; VICTORIA VANILLA"
     ]
    ]
   },
@@ -9904,6 +9967,20 @@
      "IND-449404",
      "+919600582667",
      "EUN071 - Lanificio Cucinello Bespoke; Soft Washed Linen Shirt - Olive"
+    ],
+    [
+     2,
+     "2026-11-08",
+     "IND-451981",
+     "+919663761414",
+     "Soft Washed Linen Shirt - Light Ecru"
+    ],
+    [
+     0,
+     "2026-11-08",
+     "IND-452668",
+     "+918123529620",
+     "Brick Blended Linen Washed Shirt (Brick / 42); Sunscape Relaxed Linen Pants - Beige (Beige / 32); Ink Blue Flat Knit Shirt (Ink Blue / 42); Sunscape Relaxed Linen Pants - White (White / 34); Driftscape Relaxed Linen Pants - Beige (Beige / 32); The Harrington Shawl Collar Formal Blazer - Ecru (Ecru / 42); Light Blue Blended Linen Soft Washed Shirt (Light Blue / 42); Sage Green Flat Knit Shirt (Sage Green / 42)"
     ]
    ]
   },
@@ -10052,6 +10129,13 @@
      "IND-453952",
      "+919846479800",
      "Mauve Linen Lyocell Shirt (LAVENDER / 38); Cotton Linen Shirt - Light Grey"
+    ],
+    [
+     0,
+     "2026-11-08",
+     "IND-450087",
+     "+919495288533",
+     "White Luxe Satin Shirt (White / 42)"
     ]
    ]
   },
