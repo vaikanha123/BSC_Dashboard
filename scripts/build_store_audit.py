@@ -63,6 +63,12 @@ COMP_PARAMS = ['Footfall', 'NPS Calling', 'At Store Calling', 'Delay Calling', '
                'Alteration', 'Staff Grooming']
 COMP_KEYS = [p.lower() for p in COMP_PARAMS]
 WEEKS = ['W1', 'W2', 'W3', 'W4', 'W5']
+# Section headings above each 'Parameter Score' column of the sales tab (row 1, numbering stripped):
+# the five primary parameters of the November 2026 form, then the nine sections of the earlier form.
+SAL_GROUPS = ['opening & personalisation', 'customer understanding', 'product & offer communication',
+              'purchase invitation & conversion', 'follow-up & call closure',
+              'greeting & introduction', 'customer connection', 'need discovery', 'personalized recommendation',
+              'store visit conversion', 'objection handling', 'communication skills', 'closing', 'documentation']
 
 
 def load(raw_dir, name):
@@ -212,6 +218,14 @@ def build(raw_dir, pulled):
         rows = load(raw_dir, name)
         head = [str(x).strip() for x in rows[1]]
         score_cols = [i for i, h in enumerate(head) if h == 'Parameter Score']
+        if key == 'sal':
+            # From November 2026 the sales form has five primary parameters (cols H-AD) ahead of the old
+            # nine sections; each call is scored on one form or the other. store-audit.html lists the
+            # fourteen in this order (AUDITS.sal.params) and shows only those scored in the month.
+            groups = [next(str(rows[0][j]).strip() for j in range(c, -1, -1) if j < len(rows[0]) and str(rows[0][j]).strip())
+                      for c in score_cols]
+            if [re.sub(r'^\d+\.\s*', '', g).lower() for g in groups] != SAL_GROUPS:
+                sys.exit('STOP: sales sheet sections changed, update SAL_GROUPS and store-audit.html: %s' % groups)
         remark_col = max(i for i, h in enumerate(head) if h in ('Remarks', 'Additonal Comment', 'Additional Comment'))
         out = audits[key] = {}
         for r in rows[2:]:

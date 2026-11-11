@@ -136,7 +136,9 @@ const WEEKS = ['W1', 'W2', 'W3', 'W4', 'W5'];
 const AUDITS = {
   ba:  {title:'Behaviour Audit', unit:'audits', params:['Customer Approaching','Consultation','Technology (TAB)','Trial Room','Store Experience (Grooming and Ice Cream)','Exit']},
   inb: {title:'Inbound Audit', unit:'calls', params:['Greeting & Introduction','Need Understanding','Product & Process Knowledge','Objection / Concern Handling','Resolution & Assistance','Communication Skills','Call Closure','Compliance & Documentation']},
-  sal: {title:'Sales Audit', unit:'calls', params:['Greeting and Introduction','Customer connection','Need discovery','Personalized recommendation','Store visit conversion','Objection handling','Communication skills','Closing','Documentation']}
+  // Five primary parameters from the November 2026 form, then the nine sections of the earlier form; a month shows only the ones scored in it.
+  sal: {title:'Sales Audit', unit:'calls', scoredOnly:true, params:['Opening & Personalisation','Customer Understanding','Product & Offer Communication','Purchase Invitation & Conversion','Follow-up & Call Closure',
+    'Greeting and Introduction','Customer connection','Need discovery','Personalized recommendation','Store visit conversion','Objection handling','Communication skills','Closing','Documentation']}
 };
 const COMP_CORE = 7; // all seven compliance parameters, Staff Grooming included, make up the Avg
 
@@ -201,10 +203,12 @@ function compCard(mk, month, sel){
 function auditCard(key, mk, month, sel){
   const A = AUDITS[key], stores = storesFor(sel);
   const row = (label, pi, c) => `<tr class="${c || ''}"><td>${esc(label)}</td>${WEEKS.map(w => cell(auditPct(key, mk, stores, [w], pi))).join('')}${cell(auditPct(key, mk, stores, WEEKS, pi), 'avg')}</tr>`;
-  let body = A.params.map((p, pi) => row(p, pi)).join('');
+  // scoredOnly: list the parameters scored anywhere in the network that month (the sales form changed in November 2026).
+  const pis = A.params.map((p, pi) => pi).filter(pi => !A.scoredOnly || auditPct(key, mk, D.stores, WEEKS, pi) != null);
+  let body = pis.map(pi => row(A.params[pi], pi)).join('');
   body += row('Overall score', -1, 'total');
   body += `<tr class="aside"><td>${A.unit === 'calls' ? 'Calls audited' : 'Audits'}</td>${WEEKS.map(w => `<td>${auditCount(key, mk, stores, [w]) || '–'}</td>`).join('')}<td class="avg">${auditCount(key, mk, stores, WEEKS) || '–'}</td></tr>`;
-  const low = lowest(A.params.map((p, pi) => [p, auditPct(key, mk, stores, WEEKS, pi)]));
+  const low = lowest(pis.map(pi => [A.params[pi], auditPct(key, mk, stores, WEEKS, pi)]));
   return `<div class="card"><h2>${A.title} <span>average of audit scores, by interaction date</span></h2><div class="scroll"><table>${headRow(month)}<tbody>${body}</tbody></table></div>${feedback(key, mk, sel, low)}</div>`;
 }
 
