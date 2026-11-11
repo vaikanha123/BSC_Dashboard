@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-10 10:14:16 (data for 2026-11-09))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-11 10:14:16 (data for 2026-11-10))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–9 Nov"
+   "range": "1–10 Nov"
   }
  ],
  "stores": {
@@ -62,6 +62,11 @@
     11,
     0,
     3
+   ],
+   "2026-11": [
+    0,
+    1,
+    0
    ]
   },
   "Kalaghoda, Fort": {
@@ -93,7 +98,7 @@
     1
    ],
    "2026-11": [
-    3,
+    5,
     0,
     0
    ]
@@ -144,8 +149,8 @@
     0
    ],
    "2026-11": [
-    6,
-    0,
+    7,
+    1,
     2
    ]
   },
@@ -178,9 +183,9 @@
     1
    ],
    "2026-11": [
-    4,
+    6,
     1,
-    1
+    2
    ]
   },
   "Inorbit Mall Malad West": {
@@ -253,7 +258,7 @@
     2
    ],
    "2026-11": [
-    5,
+    7,
     0,
     1
    ]
@@ -287,7 +292,7 @@
     6
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -338,9 +343,9 @@
     4
    ],
    "2026-11": [
-    4,
+    5,
     0,
-    2
+    3
    ]
   },
   "Jaipur": {
@@ -372,7 +377,7 @@
     2
    ],
    "2026-11": [
-    5,
+    6,
     0,
     0
    ]
@@ -391,7 +396,7 @@
    "2026-11": [
     2,
     0,
-    1
+    2
    ]
   },
   "Pali Hill, Khar": {
@@ -423,7 +428,7 @@
     4
    ],
    "2026-11": [
-    4,
+    5,
     1,
     1
    ]
@@ -440,9 +445,9 @@
     0
    ],
    "2026-11": [
-    4,
+    5,
     0,
-    0
+    1
    ]
   },
   "Inorbit mall": {
@@ -474,7 +479,7 @@
     3
    ],
    "2026-11": [
-    10,
+    11,
     2,
     1
    ]
@@ -492,7 +497,7 @@
    ],
    "2026-11": [
     3,
-    0,
+    1,
     0
    ]
   },
@@ -525,7 +530,7 @@
     1
    ],
    "2026-11": [
-    4,
+    5,
     0,
     1
    ]
@@ -542,7 +547,7 @@
     2
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -1242,6 +1247,15 @@
      "IND-442615",
      "+919769584112",
      "Glacier Blue Mid-Rise Stretch Jeans (Light Blue / 32); Midnight Indigo Mid-Rise Stretch Jeans (Mid Indigo / 36)"
+    ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-10",
+     "IND-447078",
+     "+919879788844",
+     "Soft Washed Linen Shirt - Olive; Soft Washed Linen Shirt - Brown; Munich - Manhattan Farbriano Bespoke; Malaga - Manhattan Farbriano Bespoke; Markwell - Manhattan Farbriano Bespoke; Soft Washed Linen Shirt - Pearl Grey; Soktas Twill Shirt - White"
     ]
    ]
   },
@@ -2112,6 +2126,20 @@
      "IND-453230",
      "+919426079909",
      "Pink Cotton Linen Popover Kurta (Pink / 40)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455319",
+     "+919967145197",
+     "Imperial Corduroy Ready-to-Wear Chinos - Olive (Olive / 30); Urban Stretch Washed Shorts - Light Green (Green / 30)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-454577",
+     "+917507381074",
+     "Luthai Wrinkle-Free Herringbone Shirt - Blue"
     ]
    ]
   },
@@ -3228,6 +3256,20 @@
      "IND-450948",
      "+919632655007",
      "Elevate Everyday Stretch Chinos - Pearl Grey (Pearl Grey / 32); Washed Oxford Shirt - Navy"
+    ],
+    [
+     1,
+     "2026-11-10",
+     "IND-454379",
+     "+917639557762",
+     "Marlowe Twill Relaxed Neapolitan Pants - Brown (Brown / 38); Montreux  Houndstooth Relaxed Neapolitan Pants - Charcoal (Charcoal / 38)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-448970",
+     "+919886357793",
+     "Wrinkle-Free Stretch Satin Shirt - White; Wrinkle-Free Stretch Satin Shirt - Black; Wrinkle-free Bamboo-Blend Twill Shirt - Pink"
     ]
    ]
   },
@@ -3958,6 +4000,27 @@
      "IND-452212",
      "+918055260505",
      "Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455750",
+     "+919374713635",
+     "Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - Grey"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-448986",
+     "+919820130294",
+     "Giza Cotton Glen Plaid Checked Shirt - Navy; Brushed Twill Shirt - Beige; Giza Cotton Bengal Striped Shirt - Grey; Easy-Care Stretch Cotton Dobby Shirt - Dark Blue; Cotton Dobby Shirt - Dark Blue; Cotton Poplin Shirt - Black; Denim Shirt - Black"
+    ],
+    [
+     2,
+     "2026-11-10",
+     "IND-439969",
+     "+919004309719",
+     "The Imperial Twill Nehru Jacket - Dark Blue (Dark Blue / 40)"
     ]
    ]
   },
@@ -5324,6 +5387,20 @@
      "IND-455834",
      "+919153142596",
      "Ink Blue Mid-Rise Stretch Jeans (Blue / 36)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455280",
+     "+916363622740",
+     "Signature Classic Button Polo - Black (Black / XS); Signature Classic Button Polo - Chocolate Brown (Chocolate Brown / XS)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-454126",
+     "+919620203318",
+     "Elevate Everyday Stretch Chinos - Navy (Navy / 30); Elevate Everyday Stretch Chinos - Black (Black / 30)"
     ]
    ]
   },
@@ -5914,6 +5991,13 @@
      "IND-452429",
      "+918830394607",
      "Washed Oxford Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455782",
+     "+917030351715",
+     "The Best Dressed Guest (Antibino SRT21146); The Best Dressed Guest (Napier - SRT11651)"
     ]
    ]
   },
@@ -6932,6 +7016,20 @@
      "IND-445400",
      "+919892886444",
      "Markwell - Manhattan Farbriano Bespoke; Exquisite Blended Wool Dress Pants - Navy (Navy / 40); Luthai Dark Grey Cotton Striped Shirt (Dark Grey / 44)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-454757",
+     "+919820653111",
+     "Aspen Mid-Rise Corduroy Lounge Pants - Dark Brown (Dark Brown / 36)"
+    ],
+    [
+     2,
+     "2026-11-10",
+     "IND-453696",
+     "+918779121719",
+     "Midnight Indigo Mid-Rise Stretch Jeans (Mid Indigo / 30)"
     ]
    ]
   },
@@ -7361,6 +7459,13 @@
      "IND-452990",
      "+919000312551",
      "Signature Classic Button Polo - Olive (Olive / S); Signature Classic Button Polo - White (White / S)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-453591",
+     "+919885711786",
+     "2-Ply Soft Herringbone Shirt - White; Cotton Linen Shirt - White"
     ]
    ]
   },
@@ -7593,6 +7698,13 @@
      "IND-451253",
      "+919819982088",
      "Baruche Giza Cotton Satin Shirt - Dark Blue; Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Navy; Stretch Twill Checked Shirt - Navy & Yellow; Bexford Twill Striped Shirt - Grey & White; Aquarius Poplin Striped Shirt - Blue & White"
+    ],
+    [
+     2,
+     "2026-11-10",
+     "IND-455081",
+     "+919748803999",
+     "Black Half-Sleeve Vintage Washed Denim Shirt (Black / 38); Sunscape Relaxed Linen Pants - Dark Grey (Dark Grey / 28); Grey Dobby Half-Sleeve Shirt (Grey / 38)"
     ]
    ]
   },
@@ -8463,6 +8575,13 @@
      "IND-451506",
      "+919867698333",
      "Wrinkle-Free Bamboo-Blend Stretch Dobby Shirt - Light Blue; MFW9438 - Greenock  - Manhattan Farbriano Bespoke; Flux 4-way Stretch Dress Pants - Black (Black / 34); Flux 4-way Stretch Dress Pants - Grey (Grey / 34)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-451681",
+     "+919923886917",
+     "Ellara Herringbone Shirt - Pink"
     ]
    ]
   },
@@ -8765,6 +8884,20 @@
      "IND-452309",
      "+919163695783",
      "Giza Cotton Houndstooth Shirt - Maroon; Easy-Care Orange & Light Blue Glen-Plaid Checked Shirt (Orange / 40)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-453836",
+     "+919173320868",
+     "Mid Blue Textured Twill Shirt (Mid Blue / 40); Ivoro 100% Linen Relaxed Neapolitan Pants - Ecru (Ecru / 32)"
+    ],
+    [
+     2,
+     "2026-11-10",
+     "IND-449888",
+     "+919831647631",
+     "Giza Cotton Glen Plaid Checked Shirt - Light Blue; Cotton Twill Shirt - Blue & White"
     ]
    ]
   },
@@ -9628,6 +9761,13 @@
      "IND-451825",
      "+919586391686",
      "TIMELESS TAJ TIRAMISU; BEACHY BLUEBERRY CHEESE CAKE; PALIHILL PISTACHIO; GYMKHANA- PROTEIN BELGIAN CHOCOLATE x3; VICTORIA VANILLA"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-452381",
+     "+919825048296",
+     "Soft Washed Linen Shirt - Brick; Soft Washed Linen Shirt - Sage Green; Cotton Linen Shirt - White; Giza Cotton Herringbone Shirt - White; Elevate Everyday Stretch Chinos - Beige (Beige / 36); 100% Linen Striped Shirt - Pink; Easy-Care Stretch Cotton Dobby Shirt - Dark Blue; Cotton Twill Shirt - Light Grey"
     ]
    ]
   },
@@ -9881,6 +10021,13 @@
      "IND-450682",
      "+919910400659",
      "Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / XL); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / XL)"
+    ],
+    [
+     1,
+     "2026-11-10",
+     "IND-450455",
+     "+919911555506",
+     "Giza Cotton Micro-Checked Shirt - Light Blue; Giza Cotton Gingham Checked Shirt - Green"
     ]
    ]
   },
@@ -10212,6 +10359,13 @@
      "IND-451580",
      "+919901176204",
      "Markwell - Manhattan Farbriano Bespoke x2; Luthai Wrinkle-Free Herringbone Shirt - Blue; Mantua - Manhattan Farbriano Bespoke; Marseille - Manhattan Farbriano Bespoke; Memnon - 40349 SOKTAS BESPOKE; Marleston - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455537",
+     "+919591217795",
+     "White Luxe Satin Tuxedo Shirt (white / 40)"
     ]
    ]
   },
@@ -10367,6 +10521,13 @@
      "IND-450087",
      "+919495288533",
      "White Luxe Satin Shirt (White / 42)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455713",
+     "+919526963261",
+     "Navy Cotton Linen Side Pleated Kurta (Navy / 40)"
     ]
    ]
   },

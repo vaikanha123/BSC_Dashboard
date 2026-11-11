@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-10 10:14:16 (data for 2026-11-09))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-11 10:14:16 (data for 2026-11-10))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–9 Nov"
+   "range": "1–10 Nov"
   }
  ],
  "stores": {
@@ -207,7 +207,7 @@
     1
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -316,7 +316,7 @@
     1
    ],
    "2026-11": [
-    0,
+    1,
     1,
     0
    ]
@@ -393,6 +393,11 @@
    "2026-10": [
     3,
     0,
+    0
+   ],
+   "2026-11": [
+    0,
+    1,
     0
    ]
   },
@@ -503,7 +508,7 @@
    ],
    "2026-11": [
     0,
-    0,
+    1,
     1
    ]
   },
@@ -550,7 +555,7 @@
     0
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -1689,6 +1694,13 @@
      "IND-446806",
      "+919830076149",
      "Luthai Wrinkle-Free Herringbone Shirt - White; Soktas Checked Dobby Shirt - White; Soft Cotton Blend Twill Shirt - Pink; Soktas Striped Dobby Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-430787",
+     "+919836088855",
+     "Luthai Wrinkle-Free Bold Twill Shirt - White; Luthai Wrinkle-Free Herringbone Shirt - White; Wrinkle-Free Oxford Shirt - White; Luthai Wrinkle-Free Herringbone Shirt - Blue; Luthai Wrinkle-Free Broad Herringbone Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Lavender"
     ]
    ]
   },
@@ -2210,6 +2222,13 @@
      "IND-447130",
      "+919539310000",
      "Signature Classic Button Polo - Dark Wine (Dark Wine / L)"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-451907",
+     "+919447085257",
+     "Giza Cotton Glen Plaid Checked Shirt - Light Grey; Munich - Manhattan Farbriano Bespoke"
     ]
    ]
   },
@@ -2610,6 +2629,15 @@
      "IND-442242",
      "+918850947767",
      "Cotton Washed Oxford Shirt - Light Blue"
+    ]
+   ],
+   "2026-11": [
+    [
+     1,
+     "2026-11-10",
+     "IND-454444",
+     "+919845522616",
+     "Rochefort Pinstripe Mid-Rise Dress Pants - Charcoal (Charcoal / 40)"
     ]
    ]
   },
@@ -3028,6 +3056,13 @@
      "IND-449566",
      "+919560454640",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Pink; Munich - Manhattan Farbriano Bespoke"
+    ],
+    [
+     1,
+     "2026-11-10",
+     "IND-446240",
+     "+918447736467",
+     "Giza Cotton Houndstooth Shirt - Brown; Cotton Striped Shirt - Dark Blue; Giza Cotton Glen Plaid Checked Shirt - Green; Performance Stretch Cotton Striped Shirt - Grey & White"
     ]
    ]
   },
@@ -3164,6 +3199,13 @@
      "IND-452467",
      "+918770489005",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Light blue"
+    ],
+    [
+     0,
+     "2026-11-10",
+     "IND-455214",
+     "+918074861878",
+     "MTM Shirt - off the rack (White / 40)"
     ]
    ]
   }
