@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-11 10:14:16 (data for 2026-11-10))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-12 10:14:15 (data for 2026-11-11))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–10 Nov"
+   "range": "1–11 Nov"
   }
  ],
  "stores": {
@@ -79,6 +79,11 @@
     7,
     1,
     1
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Sharath City": {
@@ -243,7 +248,7 @@
    "2026-11": [
     2,
     0,
-    0
+    1
    ]
   },
   "South Ex.": {
@@ -333,7 +338,7 @@
     1
    ],
    "2026-11": [
-    1,
+    2,
     0,
     1
    ]
@@ -526,7 +531,7 @@
    "2026-11": [
     1,
     0,
-    0
+    1
    ]
   },
   "Jayanagar": {
@@ -974,6 +979,15 @@
      "IND-445635",
      "+917029070707",
      "Flux 4-way Stretch Dress Pants - Beige (Beige / 32); 100% Merino Wool Polo - Olive (Olive / M); Flux 4-way Stretch Dress Pants - Navy (Navy / 32); Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Dark Grey; 100% Merino Wool Polo - Burgundy (Red / M); 100% Merino Wool Polo - Beige (Beige / M); Luthai Wrinkle-Free Herringbone Shirt - Blue; Paramount Dress Pants - Black (Black / 32); Paramount Dress Pants - Light Grey (Light Grey / 32); Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Navy"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-11",
+     "IND-456015",
+     "+918056235131",
+     "Easy-Care Cotton Oxford Shirt - Grey - Uniform"
     ]
    ]
   },
@@ -1913,6 +1927,13 @@
      "IND-454456",
      "+917080501802",
      "Wrinkle-Free Oxford Shirt - Blue; Lorenzo Twill Dress Pants - Dark Olive (Dark Olive / 34)"
+    ],
+    [
+     2,
+     "2026-11-11",
+     "IND-449815",
+     "+917567274121",
+     "Cotton Dobby Shirt - Black; Paramount Dress Pants - Navy (Navy / 38); Soft Easy-Care Cotton Twill Shirt - White; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 38); Lorenzo Twill Dress Pants - Dark Olive (Dark Olive / 38); Cotton Twill Shirt - Light Grey; Stretch Poplin Striped Shirt - Pink & White"
     ]
    ]
   },
@@ -2321,6 +2342,13 @@
      "IND-453411",
      "+919987403420",
      "Driftscape Relaxed Linen Pants - Brown (Brown / 32); Dark Olive Washed Dobby Shirt (Dark Olive / 40); Sunscape Relaxed Linen Pants - Beige (Beige / 32); Sunscape Relaxed Linen Pants - Dark Grey (Dark Grey / 32); Signature Classic Button Polo - Olive (Olive / M); Signature Classic Button Polo - Navy (Navy / M); Signature Classic Button Polo - Black (Black / M); Sunscape Relaxed Linen Pants - Navy (Navy / 32); Grey Washed Half-Sleeve Twill Shirt (Grey / 40)"
+    ],
+    [
+     0,
+     "2026-11-11",
+     "IND-453407",
+     "+919833070448",
+     "Cotton Linen Shirt - Green; Washed Oxford Shirt - Yellow; Washed Oxford Shirt - Olive; Washed Oxford Shirt - Bluish Grey; Oxford Striped Shirt - Dark Blue; Cotton Linen Shirt - Beige; Cotton Linen Shirt - Grey; Cotton Linen Shirt - Black; Cotton Linen Shirt - Light Grey; Cotton Linen Shirt - Navy"
     ]
    ]
   },
@@ -3106,6 +3134,13 @@
      "IND-450175",
      "+919044470777",
      "Oxford Striped Shirt - Lime Green; Brushed Twill Shirt - Green"
+    ],
+    [
+     2,
+     "2026-11-11",
+     "IND-455616",
+     "+918948213141",
+     "White Popover Linen-Lyocell Shirt (White / 40); The Salvatore Relaxed Linen Pants - Dark Brown (Dark Brown / 32)"
     ]
    ]
   },
