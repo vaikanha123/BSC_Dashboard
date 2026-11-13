@@ -141,6 +141,9 @@ def build_prev_month_baselines(prev_month_sales):
     for day_num, g in offline.groupby('Day_num'):
         prev_month_daily_region[str(int(day_num))] = g.groupby('Region')['Revenue'].sum().round(2).to_dict()
 
+    # Online's day-by-day revenue (day-of-month -> Rs), for the Region-wise tab's Online row.
+    prev_month_daily_online = {str(int(k)): round(v, 2) for k, v in online.groupby('Day_num')['Revenue'].sum().items()}
+
     prev_month_daily_category_units = {}
     for day_num, g in offline.groupby('Day_num'):
         d = g.groupby('Category')['Qty'].sum().to_dict()
@@ -176,6 +179,7 @@ def build_prev_month_baselines(prev_month_sales):
         'prevMonthDailyRegion': prev_month_daily_region,
         'prevMonthDailyCategoryUnits': prev_month_daily_category_units,
         'prevMonthOnlineRevenue': prev_month_online_revenue,
+        'prevMonthDailyOnline': prev_month_daily_online,
     }
 
 

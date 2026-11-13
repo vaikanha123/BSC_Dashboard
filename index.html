@@ -744,7 +744,7 @@ const BASELINE = {
   // Same month LAST YEAR (key name is historical -- it holds whatever month is 12 before the one
   // shown; refreshed by update_main_dashboard.py --new-month from data/sales_history_daily.csv).
   // Only month totals are kept, so last-year comparisons are pro-rated by day-count (flagged in the UI).
-  aug25: {"total": 113863057, "days": 30, "region": {"North": 31065816, "South": 31496594, "West": 51300647}},
+  aug25: {"total": 113863057, "days": 30, "region": {"North": 31065816, "South": 31496594, "West": 51300647}, "online": 20764812},
   // Same month last year, per-store revenue -- used for SSSG. Missing stores are new since then
   // (no comparable base), so SSSG shows "New store" for those rather than a misleading %.
   aug25StoreRevenue: {"Ambience Vasant Kunj": 2162111, "Andheri": 2855917, "Express Avenue": 2230838, "Gurugram": 4802681, "Indiranagar": 4089653, "Inorbit mall Hyderabad": 2098670, "Jaipur Store": 2476112, "Jayanagar": 1148812, "Jubilee Hills": 9437822, "Juhu Store": 3718300, "Kalaghoda, Fort": 7732637, "Kemps Corner": 8509433, "Khan Market": 3978571, "Kochi Store": 1101010, "Koregaon Park": 5428503, "Lavelle Road": 3939107, "Mall of India, Noida": 2781916, "Oberoi Mall Store": 3442108, "Oberoi Sky City": 2231703, "Pali Hill, Bandra": 7792904, "Phoenix Marketcity Kurla": 2383453, "Phoenix Marketcity, Whitefield": 1931365, "Phoenix Palassio": 2184989, "R.K. Salai": 1918070, "Sarath City-Hyderabad": 3601247, "Select City": 2478977, "Shakespearesarani": 5235871, "Sindhu Bhavan Marg": 4710008, "South Ex.": 3856531, "Vegas Dwarka": 1108059, "Viviana Mall": 2495679},
@@ -766,6 +766,8 @@ const BASELINE = {
   // prevMonthDailyRegion/prevMonthCategory above are offline-only by design (see build_prev_month_baselines
   // in scripts/update_main_dashboard.py), so this fills the online half of the August revenue picture.
   prevMonthOnlineRevenue: 20153725.23,
+  // Previous month online revenue by day-of-month (same online definition), for the Region-wise tab's Online row.
+  prevMonthDailyOnline: {"1": 585027.07, "2": 735911.06, "3": 546628.32, "4": 715589.39, "5": 606113.8, "6": 574390.41, "7": 563123.54, "8": 424000.12, "9": 548460.64, "10": 612058.66, "11": 1002936.97, "12": 672974.54, "13": 632619.92, "14": 568986.62, "15": 532332.84, "16": 514468.47, "17": 728883.22, "18": 857352.1, "19": 667632.71, "20": 707478.97, "21": 678239.09, "22": 598140.62, "23": 428998.8, "24": 731797.6, "25": 1116528.14, "26": 760237.37, "27": 649893.38, "28": 578358.8, "29": 610410.97, "30": 567670.23, "31": 636480.86},
 };
 
 // ---------- storage ----------
@@ -2962,6 +2964,14 @@ function renderStores(body, days){
 function renderRegions(body, days){
   const totals = computeStoreTotals(d => days.includes(d));
   const regionTotals = computeRegionTotals(totals);
+  // Online = every POS location outside REGION_MAP (Online, Virtual Stylist, Corporate Orders), same
+  // definition as the Daily trend tab. Its target is ONLINE_DAILY_TARGETS, shown only when every day has one.
+  const onlineTargetsAll = days.length > 0 && days.every(dk => onlineTargetForDay(dk) !== null);
+  const onlineTot = {actual: 0, target: onlineTargetsAll ? days.reduce((a, dk) => a + onlineTargetForDay(dk), 0) : 0};
+  days.forEach(dk => { const revs = state.days[dk] || {};
+    Object.keys(revs).forEach(st => { if(!offlineRegion(st)) onlineTot.actual += revs[st]; }); });
+  const REG4 = ['North','South','West','Online'];
+  const regTot = reg => reg === 'Online' ? onlineTot : regionTotals[reg];
 
   const grid = document.createElement('div');
   grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:24px; padding-top:8px;';
@@ -2984,7 +2994,22 @@ function renderRegions(body, days){
       <div style="font-size:12.5px; color:var(--text-mute); margin-top:8px; padding-top:8px; border-top:0.5px solid var(--line);">NPS: <span style="color:var(--text); font-weight:600;" class="bsc-mono">${regNps!==null?regNps.toFixed(1):'\u2014'}</span></div>`;
     grid.appendChild(card);
   });
+  {
+    const ach = onlineTargetsAll ? achOf(onlineTot.actual, onlineTot.target) : null;
+    const onNps = state.npsData && state.npsData.online ? state.npsData.online.nps : null;
+    const card = document.createElement('div');
+    card.style.cssText = 'position:relative; background:var(--panel); border-radius:10px; padding:16px;';
+    card.innerHTML = `<div style="font-size:14.5px; font-weight:600; color:var(--brass); margin-bottom:10px;">Online</div>
+      <div style="font-size:24px; font-weight:600; color:${ach!==null?achColor(ach):'var(--text)'};" class="bsc-mono">${ach!==null?fmtPct(ach):fmtINR(onlineTot.actual)}</div>
+      <div style="font-size:13.5px; color:var(--text-mute); margin-top:6px;">${ach!==null?fmtINR(onlineTot.actual)+' of '+fmtINR(onlineTot.target):'no online target loaded for this month'}</div>
+      <div style="font-size:12.5px; color:var(--text-mute); margin-top:8px; padding-top:8px; border-top:0.5px solid var(--line);">NPS: <span style="color:var(--text); font-weight:600;" class="bsc-mono">${onNps!==null&&onNps!==undefined?Number(onNps).toFixed(1):'—'}</span></div>`;
+    grid.appendChild(card);
+  }
   body.appendChild(grid);
+  const rankNote = document.createElement('div');
+  rankNote.style.cssText = 'font-size:12.5px; color:var(--text-mute); margin:-14px 0 20px;';
+  rankNote.textContent = 'Online = Online + Virtual Stylist + Corporate Orders, against the online target. Medals rank the three store regions only.';
+  body.appendChild(rankNote);
 
   // Each region's best store by achievement (offline stores with a target in these days)
   const champs = ['North','South','West'].map(reg => {
@@ -3027,10 +3052,10 @@ function renderRegions(body, days){
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['North','South','West'],
+        labels: REG4,
         datasets: [
-          {label:'Target', data:['North','South','West'].map(r=>Math.round(regionTotals[r].target)), backgroundColor:'#383e49', borderRadius:4},
-          {label:'Actual', data:['North','South','West'].map(r=>Math.round(regionTotals[r].actual)), backgroundColor:'#c9a15b', borderRadius:4},
+          {label:'Target', data:REG4.map(r=>(r === 'Online' && !onlineTargetsAll) ? null : Math.round(regTot(r).target)), backgroundColor:'#383e49', borderRadius:4},
+          {label:'Actual', data:REG4.map(r=>Math.round(regTot(r).actual)), backgroundColor:'#c9a15b', borderRadius:4},
         ]
       },
       options: {
@@ -3056,16 +3081,15 @@ function renderRegions(body, days){
   trendHead.textContent = 'Daily trend by region';
   body.appendChild(trendHead);
 
-  const regionColors = {North:'#c9a15b', South:'#5ea982', West:'#7c9bc9'};
-  const dailyByRegion = {North:[], South:[], West:[]};
+  const regionColors = {North:'#c9a15b', South:'#5ea982', West:'#7c9bc9', Online:'#b07cc9'};
+  const dailyByRegion = {North:[], South:[], West:[], Online:[]};
   days.forEach(dk => {
     const revs = state.days[dk] || {};
-    const regDay = {North:0, South:0, West:0};
+    const regDay = {North:0, South:0, West:0, Online:0};
     Object.keys(revs).forEach(store => {
-      const reg = offlineRegion(store);
-      if(reg) regDay[reg] += revs[store];
+      regDay[offlineRegion(store) || 'Online'] += revs[store];
     });
-    ['North','South','West'].forEach(reg => dailyByRegion[reg].push(regDay[reg]));
+    REG4.forEach(reg => dailyByRegion[reg].push(regDay[reg]));
   });
 
   const trendCanvasWrap = document.createElement('div');
@@ -3080,7 +3104,7 @@ function renderRegions(body, days){
       type: 'line',
       data: {
         labels: days.map(dayLabel),
-        datasets: ['North','South','West'].map(reg => ({
+        datasets: REG4.map(reg => ({
           label: reg, data: dailyByRegion[reg].map(v=>Math.round(v)),
           borderColor: regionColors[reg], backgroundColor: regionColors[reg]+'22',
           pointRadius:3, tension:0.15,
@@ -3112,9 +3136,12 @@ function renderRegions(body, days){
   // Last month (August 2026): sum actual daily data for day 1..maxDayNum
   const julyDaily = BASELINE.prevMonthDailyRegion || {};
   const lastMonthRegion = {North:0, South:0, West:0};
+  const onDaily = BASELINE.prevMonthDailyOnline || null;  // older month archives don't carry it
+  lastMonthRegion.Online = onDaily ? 0 : null;
   for(let d=1; d<=maxDayNum; d++){
     const dayData = julyDaily[String(d)] || julyDaily[d] || {};
     ['North','South','West'].forEach(reg => { lastMonthRegion[reg] += dayData[reg] || 0; });
+    if(onDaily) lastMonthRegion.Online += onDaily[String(d)] || 0;
   }
   const lastMonthHasData = maxDayNum > 0 && Object.values(lastMonthRegion).some(v=>v>0);
 
@@ -3123,6 +3150,7 @@ function renderRegions(body, days){
   ['North','South','West'].forEach(reg => {
     lastYearRegion[reg] = BASELINE.aug25.region[reg] * (maxDayNum / BASELINE.aug25.days);
   });
+  lastYearRegion.Online = BASELINE.aug25.online ? BASELINE.aug25.online * (maxDayNum / BASELINE.aug25.days) : null;
 
   const compTable = document.createElement('table');
   compTable.style.cssText = 'font-size:14.5px;';
@@ -3130,8 +3158,8 @@ function renderRegions(body, days){
     '<td style="padding:6px 10px;">Region</td><td style="padding:6px 10px; text-align:right;">This period</td>' +
     '<td style="padding:6px 10px; text-align:right;">' + prevMonthInfo().full + ' (same dates)</td><td style="padding:6px 10px; text-align:right;">vs ' + prevMonthInfo().short + '</td>' +
     '<td style="padding:6px 10px; text-align:right;">' + lastYearInfo().full + ' (pro-rated)</td><td style="padding:6px 10px; text-align:right;">vs ' + lastYearInfo().short + '\u2019' + lastYearInfo().yearShort + '</td></tr>';
-  ['North','South','West'].forEach(reg => {
-    const now = regionTotals[reg].actual;
+  REG4.forEach(reg => {
+    const now = regTot(reg).actual;
     const lm = lastMonthHasData ? lastMonthRegion[reg] : null;
     const ly = lastYearRegion[reg];
     const vsLm = lm ? (now-lm)/lm*100 : null;
@@ -3141,7 +3169,7 @@ function renderRegions(body, days){
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(now)}</td>
       <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${lm!==null?fmtINR(lm):'\u2014'}</td>
       <td style="padding:8px 10px; text-align:right; color:${vsLm===null?'var(--text-mute)':(vsLm>=0?'var(--good)':'var(--bad)')}; font-weight:600;" class="bsc-mono">${vsLm!==null?((vsLm>=0?'+':'')+vsLm.toFixed(1)+'%'):'\u2014'}</td>
-      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${fmtINR(ly)}</td>
+      <td style="padding:8px 10px; text-align:right;" class="bsc-mono">${ly!==null?fmtINR(ly):'—'}</td>
       <td style="padding:8px 10px; text-align:right; color:${vsLy===null?'var(--text-mute)':(vsLy>=0?'var(--good)':'var(--bad)')}; font-weight:600;" class="bsc-mono">${vsLy!==null?((vsLy>=0?'+':'')+vsLy.toFixed(1)+'%'):'\u2014'}</td>
     </tr>`;
   });

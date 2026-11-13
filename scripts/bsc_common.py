@@ -490,7 +490,10 @@ def last_year_baseline(month_key, history_csv='data/sales_history_daily.csv'):
     off = h[h['region'].notna()]
     days = pd.Period(prefix).days_in_month
     ly = {'total': int(round(off['rev'].sum())), 'days': days,
-          'region': {k: int(round(v)) for k, v in off.groupby('region')['rev'].sum().items()}}
+          'region': {k: int(round(v)) for k, v in off.groupby('region')['rev'].sum().items()},
+          # Online = every location outside REGION_MAP (Online, Virtual Stylist, Corporate Orders),
+          # the dashboard's own definition; shown as a fourth row on the Region-wise tab.
+          'online': int(round(h[h['region'].isna()]['rev'].sum()))}
     store_rev = {k: int(round(v)) for k, v in off.groupby('loc')['rev'].sum().items()}
     return ly, store_rev
 
