@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-12 10:14:15 (data for 2026-11-11))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-13 10:14:14 (data for 2026-11-12))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–11 Nov"
+   "range": "1–12 Nov"
   }
  ],
  "stores": {
@@ -30,7 +30,7 @@
     0
    ],
    "2026-11": [
-    5,
+    6,
     1,
     1
    ]
@@ -47,7 +47,7 @@
     1
    ],
    "2026-11": [
-    1,
+    3,
     1,
     1
    ]
@@ -64,9 +64,9 @@
     3
    ],
    "2026-11": [
-    0,
+    3,
     1,
-    0
+    1
    ]
   },
   "Kalaghoda, Fort": {
@@ -132,7 +132,7 @@
     2
    ],
    "2026-11": [
-    3,
+    4,
     1,
     1
    ]
@@ -149,7 +149,7 @@
     0
    ],
    "2026-11": [
-    8,
+    10,
     1,
     2
    ]
@@ -343,7 +343,7 @@
     4
    ],
    "2026-11": [
-    5,
+    7,
     0,
     4
    ]
@@ -429,7 +429,7 @@
    ],
    "2026-11": [
     5,
-    1,
+    2,
     1
    ]
   },
@@ -480,7 +480,7 @@
    ],
    "2026-11": [
     12,
-    2,
+    3,
     1
    ]
   },
@@ -496,7 +496,7 @@
     3
    ],
    "2026-11": [
-    3,
+    4,
     1,
     0
    ]
@@ -598,7 +598,7 @@
     3
    ],
    "2026-11": [
-    2,
+    3,
     1,
     0
    ]
@@ -890,6 +890,13 @@
      "IND-450575",
      "+919560173633",
      "The Paramount Blazer - Navy (Uniform) (Navy / 38)"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-453731",
+     "+919650297193",
+     "Navy Luxe Satin Grosgrain Shirt (Navy / 40); The Exquisite Blended Wool Blazer - Dark Grey (Dark Grey / 42); Dark Teal Satin Shirt (Teal / 40); The Sinclair Striped Relaxed Neapolitan Pants - Brown (Brown / 34); The Exquisite Blended Wool Blazer - Grey (Grey / 42); Navy Abstract Pixel Print Shirt (Navy / 40); The Exquisite Blended Wool Blazer - Navy (Navy / 42); The Sinclair Striped Formal Blazer - Brown (Brown / 42); Blue & Black Yarn-Dyed Dobby Shirt (Blue / 40)"
     ]
    ]
   },
@@ -1052,6 +1059,20 @@
      "IND-450848",
      "+919811801102",
      "Wrinkle-Free Bamboo-Blend Stretch Broad Twill Shirt - Grey"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-448466",
+     "+919810562254",
+     "Easy-Care Cotton Checked Shirt - Light Blue & White; Giza Cotton Glen Plaid Checked Shirt - Navy"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-451753",
+     "+919873775128",
+     "ESQUIRE - SOKTAS BESPOKE x2; Malaga - Manhattan Farbriano Bespoke"
     ]
    ]
   },
@@ -1263,6 +1284,34 @@
      "IND-447078",
      "+919879788844",
      "Soft Washed Linen Shirt - Olive; Soft Washed Linen Shirt - Brown; Munich - Manhattan Farbriano Bespoke; Malaga - Manhattan Farbriano Bespoke; Markwell - Manhattan Farbriano Bespoke; Soft Washed Linen Shirt - Pearl Grey; Soktas Twill Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-454076",
+     "+919711006887",
+     "Olive Luxe Satin Shirt (Olive / 38); Pink Wrinkle-Free Stretch Twill Shirt (Pink / 40)"
+    ],
+    [
+     2,
+     "2026-11-12",
+     "IND-454785",
+     "+919967712917",
+     "Flux 4-way Stretch Dress Pants - Black (Black / 36)"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-453080",
+     "+919324134023",
+     "2-Ply Egyptian Cotton Textured White Dobby Shirt (White / 38)"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-454745",
+     "+918850027770",
+     "Luxe Cotton Oversized T-shirt - Charcoal Grey (Charcoal / M)"
     ]
    ]
   },
@@ -2877,6 +2926,13 @@
      "IND-447050",
      "+919840714984",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Dark Blue; Flux 4-way Stretch Dress Pants - Navy (Navy / 44); The Paramount Blazer - Dark Grey (Dark Grey / 46); Giza Cotton Gingham Checked Shirt - Light Blue"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-456331",
+     "+919789881663",
+     "Salerno Checked Mid-Rise Dress Pants - Brown (Brown / 36); Stretch Cotton Dobby Checked Shirt - Brown & White"
     ]
    ]
   },
@@ -3305,6 +3361,20 @@
      "IND-456059",
      "+918105698580",
      ""
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-454313",
+     "+918160031801",
+     "Brushed Twill Shirt - Light Grey"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-454093",
+     "+919811380029",
+     "Paramount Dress Pants - Navy (Navy / 30); Paramount Dress Pants - Dark Grey (Dark Grey / 30)"
     ]
    ]
   },
@@ -7100,6 +7170,20 @@
      "IND-449422",
      "+919821356777",
      "NORFOLK - 50652 SOKTAS BESPOKE"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-454622",
+     "+919820538188",
+     "Soft Washed Linen Shirt - Khaki; Navy Popover Linen-Lyocell Shirt (Navy / 40); Sunscape Relaxed Linen Pants - Brown (Brown / 34)"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-452879",
+     "+918433505373",
+     "Alteration - Measurement Change x4"
     ]
    ]
   },
@@ -8673,6 +8757,13 @@
      "IND-451681",
      "+919923886917",
      "Ellara Herringbone Shirt - Pink"
+    ],
+    [
+     1,
+     "2026-11-12",
+     "IND-454475",
+     "+919930860305",
+     "Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / L); Pink Bold Twill Cotton-Lyocell Shirt (Pink / 40); Giza Cotton Micro-Checked Shirt - Light Blue"
     ]
    ]
   },
@@ -9873,6 +9964,13 @@
      "IND-456096",
      "+919824015433",
      "Signature Flat Knit Long Sleeve  Polo - Beige (Beige / M); Urban Ease Ready-to-Wear Chinos - Beige (Beige / 34); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / M)"
+    ],
+    [
+     1,
+     "2026-11-12",
+     "IND-455306",
+     "+919824000036",
+     "Pearl White Solid Twill Shirt (White / 40); Easy-Care Orange & Light Blue Glen-Plaid Checked Shirt (Orange / 40)"
     ]
    ]
   },
@@ -10133,6 +10231,13 @@
      "IND-450455",
      "+919911555506",
      "Giza Cotton Micro-Checked Shirt - Light Blue; Giza Cotton Gingham Checked Shirt - Green"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-452730",
+     "+918279794653",
+     "Grey Dobby Gatsby Shirt (Grey / 40); Mid Blue Gatsby Shirt (Mid Blue / 40)"
     ]
    ]
   },
@@ -11077,6 +11182,13 @@
      "IND-449399",
      "+916264836668",
      "Easy-Care Stretch Cotton Striped Shirt - Grey & White"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-454161",
+     "+918447701492",
+     "Brushed Twill Shirt - Blue; Giza Cotton Bengal Striped Shirt - Grey"
     ]
    ]
   }

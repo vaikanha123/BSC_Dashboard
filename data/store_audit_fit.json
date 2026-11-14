@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-12 10:14:15 (data for 2026-11-11))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-13 10:14:14 (data for 2026-11-12))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–11 Nov"
+   "range": "1–12 Nov"
   }
  ],
  "stores": {
@@ -65,7 +65,7 @@
    ],
    "2026-11": [
     3,
-    1,
+    2,
     2
    ]
   },
@@ -212,7 +212,7 @@
     1
    ],
    "2026-11": [
-    2,
+    3,
     0,
     0
    ]
@@ -230,7 +230,7 @@
    ],
    "2026-11": [
     2,
-    1,
+    2,
     0
    ]
   },
@@ -386,7 +386,7 @@
    "2026-11": [
     2,
     0,
-    0
+    1
    ]
   },
   "PMC Whitefield": {
@@ -513,7 +513,7 @@
    ],
    "2026-11": [
     0,
-    1,
+    2,
     1
    ]
   },
@@ -882,6 +882,13 @@
      "IND-455227",
      "+918652240704",
      "Dark Grey Cotton Corduroy Shirt (Dark Grey / 40); Maroon 8-Wales Corduroy Shirt (Maroon / 44)"
+    ],
+    [
+     1,
+     "2026-11-12",
+     "IND-452725",
+     "+917303680716",
+     "Sunscape Relaxed Linen Pants - Dark Grey (Dark Grey / 32); Cotton Dobby Shirt - Navy; Easy-Iron Stretch Cotton Striped Shirt - Green & White; Wrinkle-free Bamboo-Blend Twill Shirt - Navy"
     ]
    ]
   },
@@ -1715,6 +1722,13 @@
      "IND-430787",
      "+919836088855",
      "Luthai Wrinkle-Free Bold Twill Shirt - White; Luthai Wrinkle-Free Herringbone Shirt - White; Wrinkle-Free Oxford Shirt - White; Luthai Wrinkle-Free Herringbone Shirt - Blue; Luthai Wrinkle-Free Broad Herringbone Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Lavender"
+    ],
+    [
+     0,
+     "2026-11-12",
+     "IND-455780",
+     "+919674289526",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Olive"
     ]
    ]
   },
@@ -1786,6 +1800,13 @@
      "IND-449461",
      "+918008123788",
      "Wrinkle-Free Stretch Satin Shirt - Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Green"
+    ],
+    [
+     1,
+     "2026-11-12",
+     "IND-456681",
+     "+918008792239",
+     "Giza Cotton White & Navy Striped Shirt (Navy / 40)"
     ]
    ]
   },
@@ -2609,6 +2630,13 @@
      "IND-446975",
      "+917411755695",
      "Giza Cotton Graph Checked Shirt - Light Blue; Giza Cotton Bengal Striped Shirt - Pink; Giza Cotton Bengal Striped Shirt - Light Blue; Giza Cotton Bengal Striped Shirt - Dark Blue; Giza Cotton Bengal Striped Shirt - Green; Giza Cotton Graph Checked Shirt - Dark Blue; Giza Cotton Glen Plaid Checked Shirt - Navy"
+    ],
+    [
+     2,
+     "2026-11-12",
+     "IND-454164",
+     "+919902166667",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Dark Blue"
     ]
    ]
   },
@@ -3091,6 +3119,13 @@
      "IND-446240",
      "+918447736467",
      "Giza Cotton Houndstooth Shirt - Brown; Cotton Striped Shirt - Dark Blue; Giza Cotton Glen Plaid Checked Shirt - Green; Performance Stretch Cotton Striped Shirt - Grey & White"
+    ],
+    [
+     1,
+     "2026-11-12",
+     "IND-450709",
+     "+919818035870",
+     "Maldon - Manhattan Farbriano Bespoke x2; Luthai Wrinkle-Free Broad Herringbone Shirt - White; Marseille - Manhattan Farbriano Bespoke x3; Markwell - Manhattan Farbriano Bespoke"
     ]
    ]
   },
