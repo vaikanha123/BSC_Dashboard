@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-13 10:14:14 (data for 2026-11-12))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-15 10:14:14 (data for 2026-11-14))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–12 Nov"
+   "range": "1–13 Nov"
   }
  ],
  "stores": {
@@ -246,7 +246,7 @@
     2
    ],
    "2026-11": [
-    2,
+    3,
     0,
     1
    ]
@@ -428,6 +428,11 @@
     0,
     1,
     0
+   ],
+   "2026-11": [
+    0,
+    0,
+    1
    ]
   },
   "Lavelle Road": {
@@ -1955,6 +1960,13 @@
      "IND-449815",
      "+917567274121",
      "Cotton Dobby Shirt - Black; Paramount Dress Pants - Navy (Navy / 38); Soft Easy-Care Cotton Twill Shirt - White; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 38); Lorenzo Twill Dress Pants - Dark Olive (Dark Olive / 38); Cotton Twill Shirt - Light Grey; Stretch Poplin Striped Shirt - Pink & White"
+    ],
+    [
+     0,
+     "2026-11-13",
+     "IND-456973",
+     "+919033666671",
+     "Olive Grove Mid-Rise Stretch Jeans (Olive / 34); Ink Blue Mid-Rise Stretch Jeans (Blue / 34); Signature Flat Knit Long Sleeve  Polo - Black (Black / XL); Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / XL)"
     ]
    ]
   },
@@ -2790,6 +2802,15 @@
      "IND-436567",
      "+918105234222",
      "Wrinkle-Free Oxford Shirt - White; Luthai Cotton Lyocell Twill Shirt - White"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-13",
+     "IND-456904",
+     "+919823829481",
+     "2-Ply Egyptian Cotton Navy Herringbone Shirt (Navy / 40)"
     ]
    ]
   },
