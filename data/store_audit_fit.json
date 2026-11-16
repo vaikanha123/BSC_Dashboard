@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-15 10:14:14 (data for 2026-11-14))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-16 10:14:15 (data for 2026-11-15))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–13 Nov"
+   "range": "1–15 Nov"
   }
  ],
  "stores": {
@@ -98,7 +98,7 @@
     1
    ],
    "2026-11": [
-    0,
+    1,
     1,
     0
    ]
@@ -117,7 +117,7 @@
    "2026-11": [
     2,
     0,
-    1
+    2
    ]
   },
   "Pali Hill, Khar": {
@@ -133,7 +133,7 @@
    ],
    "2026-11": [
     2,
-    0,
+    1,
     1
    ]
   },
@@ -146,6 +146,11 @@
    "2026-10": [
     1,
     3,
+    1
+   ],
+   "2026-11": [
+    0,
+    0,
     1
    ]
   },
@@ -161,7 +166,7 @@
     2
    ],
    "2026-11": [
-    1,
+    2,
     1,
     0
    ]
@@ -195,7 +200,7 @@
     1
    ],
    "2026-11": [
-    5,
+    6,
     0,
     0
    ]
@@ -289,7 +294,7 @@
    "2026-11": [
     1,
     0,
-    0
+    1
    ]
   },
   "Jubilee Hills": {
@@ -464,7 +469,7 @@
     0
    ],
    "2026-11": [
-    1,
+    2,
     0,
     0
    ]
@@ -1085,6 +1090,13 @@
      "IND-449911",
      "+919014515160",
      "The Mayfield Dobby Casual Blazer - Dark Sand (Khakhi / 40)"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-453342",
+     "+918121858042",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Navy; Soft Washed Linen Shirt - Green; Elevate Everyday Stretch Chinos - White (White / 32); Flux 4-way Stretch Dress Pants - Navy (Navy / 32); 100% Linen Shirt - Dark Purple; 100% Linen Shirt - Rust; Wrinkle-free Bamboo-Blend Twill Shirt - Black; Elevate Everyday Stretch Chinos - Dark Khakhi (Dark Khakhi / 32); Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32)"
     ]
    ]
   },
@@ -1219,6 +1231,13 @@
      "IND-448601",
      "+919145320701",
      "Cotton Twill Checked Shirt - Purple; Pearl White Textured Dobby Bandhgala Shirt (Pearl White / 40); Cotton Satin Floral Self Printed Shirt - White"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-449263",
+     "+919560701172",
+     "Luthai Cotton Lyocell Twill Shirt - White"
     ]
    ]
   },
@@ -1339,6 +1358,13 @@
      "IND-454263",
      "+919930756376",
      "Cotton Twill Shirt - Blue & White"
+    ],
+    [
+     1,
+     "2026-11-15",
+     "IND-454139",
+     "+919870193736",
+     "Washed Oxford Shirt - Bluish Grey; Cotton Oxford Striped Shirt - Grey & White; Oxford Striped Shirt - Green"
     ]
    ]
   },
@@ -1423,6 +1449,15 @@
      "+917810999007",
      "Cotton Striped Shirt - Mid Blue; Japanese Brushed Twill Checked Shirt - Brown & Blue; Cotton Dobby Shirt - Navy"
     ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-15",
+     "IND-457575",
+     "+919810046955",
+     ""
+    ]
    ]
   },
   "Inorbit Mall Malad West": {
@@ -1493,6 +1528,13 @@
      "IND-452962",
      "+919820764614",
      "Canvas Ecru Mid-Rise Stretch Jeans (Ecru / 36)"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-454549",
+     "+919912244000",
+     "Montreux Houndstooth Relaxed Neapolitan Pants - Brown (Brown / 28)"
     ]
    ]
   },
@@ -1656,6 +1698,13 @@
      "IND-455423",
      "+918879856545",
      "Waffel - 39317 SOKTAS BESPOKE"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-457802",
+     "+919137722490",
+     "Light Yellow Blended Linen Soft Washed Shirt (Light Yellow / 44)"
     ]
    ]
   },
@@ -2162,6 +2211,13 @@
      "IND-449782",
      "+919314459217",
      "Giza Cotton Glen Plaid Checked Shirt - Light Blue"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-457452",
+     "+919205962138",
+     "Black Wrinkle-Free Bamboo Blend Satin Shirt (Black / 42)"
     ]
    ]
   },
@@ -2925,6 +2981,13 @@
      "IND-455643",
      "+919967236363",
      "Washed Oxford Shirt - White; Elevate Everyday Stretch Chinos - Dark Blue (Dark Blue / 32)"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-453304",
+     "+919920012295",
+     "Soft Washed Linen Shirt - Navy; Soft Washed Linen Shirt - Pearl Grey"
     ]
    ]
   },
