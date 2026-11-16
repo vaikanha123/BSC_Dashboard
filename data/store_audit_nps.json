@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-15 10:14:14 (data for 2026-11-14))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-16 10:14:15 (data for 2026-11-15))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–14 Nov"
+   "range": "1–15 Nov"
   }
  ],
  "stores": {
@@ -81,9 +81,9 @@
     4
    ],
    "2026-11": [
-    8,
+    9,
     0,
-    1
+    2
    ]
   },
   "Sky City Borivali": {
@@ -132,7 +132,7 @@
     2
    ],
    "2026-11": [
-    4,
+    5,
     1,
     1
    ]
@@ -200,7 +200,7 @@
     1
    ],
    "2026-11": [
-    4,
+    5,
     1,
     2
    ]
@@ -226,7 +226,7 @@
    "2026-11": [
     2,
     2,
-    2
+    3
    ]
   },
   "Khan Market": {
@@ -258,7 +258,7 @@
     2
    ],
    "2026-11": [
-    7,
+    8,
     0,
     2
    ]
@@ -275,7 +275,7 @@
     5
    ],
    "2026-11": [
-    0,
+    1,
     0,
     2
    ]
@@ -362,7 +362,7 @@
    "2026-11": [
     3,
     0,
-    0
+    2
    ]
   },
   "Sharath City": {
@@ -413,7 +413,7 @@
    "2026-11": [
     8,
     0,
-    3
+    4
    ]
   },
   "PMC Kurla": {
@@ -445,7 +445,7 @@
     0
    ],
    "2026-11": [
-    6,
+    7,
     0,
     2
    ]
@@ -480,7 +480,7 @@
    ],
    "2026-11": [
     12,
-    3,
+    4,
     3
    ]
   },
@@ -548,7 +548,7 @@
    ],
    "2026-11": [
     4,
-    0,
+    1,
     0
    ]
   },
@@ -581,7 +581,7 @@
     1
    ],
    "2026-11": [
-    5,
+    7,
     0,
     1
    ]
@@ -1747,6 +1747,20 @@
      "IND-450168",
      "+919819967373",
      "Cotton Twill Shirt - Blue & White"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-456175",
+     "+919820008210",
+     "Brown Cotton Linen Shirt (Brown / 42); Blue Half-Sleeve Jacquard Flat Knit Shirt (Blue / 42)"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-456027",
+     "+919811059670",
+     "Japanese Dobby Mid-Rise Stretch Jeans - Deep Indigo (Deep Indigo / 36)"
     ]
    ]
   },
@@ -2940,6 +2954,13 @@
      "IND-456331",
      "+919789881663",
      "Salerno Checked Mid-Rise Dress Pants - Brown (Brown / 36); Stretch Cotton Dobby Checked Shirt - Brown & White"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-452998",
+     "+919786216555",
+     "Tailored 4-Way Stretch Nylon Smart Pants - Olive (Olive / 30); Olive Luxe Satin Shirt (Olive / 38); Malaga - Manhattan Farbriano Bespoke"
     ]
    ]
   },
@@ -4477,6 +4498,13 @@
      "IND-454850",
      "+918879986294",
      "Ecru Cable  Knit Shirt (Ecru / 44)"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-454633",
+     "+919870577105",
+     "The Blackwood Velveteen Bandhgala Formal Blazer - Black (Black / 40); Easy-Care Bamboo-Blend Twill Shirt - Light Blue"
     ]
    ]
   },
@@ -5056,6 +5084,13 @@
      "IND-457521",
      "+919885050550",
      "Pescara Mid-Rise Dress Pants - Navy (Navy / 36)"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-453188",
+     "+919743919999",
+     "Cotton Dobby Shirt - Black; Easy-Care Stretch Cotton Dobby Shirt - Dark Blue; Cotton Poplin Shirt - Ice Blue; Cotton Herringbone Shirt - Olive; Cotton Twill Shirt - Light Grey; Cotton Twill Shirt - Blue & White; Cotton Dobby Shirt - Dark Blue"
     ]
    ]
   },
@@ -5548,6 +5583,13 @@
      "IND-454440",
      "+918088347744",
      "Cotton Poplin Striped Shirt - Navy & Red"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-434910",
+     "+919393872187",
+     "Wrinkle-Free Stretch Satin Shirt - White x2"
     ]
    ]
   },
@@ -5815,6 +5857,13 @@
      "IND-453708",
      "+919266685830",
      "Oxford Striped Shirt - Light Grey"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-455166",
+     "+919899058826",
+     "Signature Flat Knit Long Sleeve  Polo - Khaki (Khaki / M); Brown Cotton Linen Shirt (Brown / 40); Brushed Twill Shirt - Green; Brown Textured Twill Shirt (Brown / 40)"
     ]
    ]
   },
@@ -7211,7 +7260,7 @@
      "2026-11-12",
      "IND-454622",
      "+919820538188",
-     "Soft Washed Linen Shirt - Khaki; Navy Popover Linen-Lyocell Shirt (Navy / 40); Sunscape Relaxed Linen Pants - Brown (Brown / 34)"
+     "Sunscape Relaxed Linen Pants - Brown (Brown / 34); Soft Washed Linen Shirt - Khaki; Navy Popover Linen-Lyocell Shirt (Navy / 40)"
     ],
     [
      0,
@@ -7325,6 +7374,20 @@
      "IND-453879",
      "+919569570675",
      "Brick Linen Lyocell Shirt (RUST / 42)"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-455179",
+     "+918909988778",
+     "Cotton Linen Shirt - White; Cotton Linen Shirt - Light Blue"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-455230",
+     "+919829070450",
+     "Paramount Dress Pants - Navy (Navy / 32); Exquisite Blended Wool Dress Pants - Beige (Beige / 32)"
     ]
    ]
   },
@@ -8553,6 +8616,13 @@
      "IND-443857",
      "+919821336097",
      "Baruche Giza Cotton Twill Checked Shirt - Light Brown; The Paramount Suit Blazer - Dark Grey (Dark Grey / 40); Wrinkle-free Bamboo-Blend Twill Shirt - Grey; Paramount Dress Pants - Dark Grey (Dark Grey / 32)"
+    ],
+    [
+     2,
+     "2026-11-15",
+     "IND-454855",
+     "+919920448917",
+     "2-Ply Soft Herringbone Shirt - White; Cotton Poplin Shirt - Ice Blue; Wrinkle-Free Stretch Satin Shirt - White"
     ]
    ]
   },
@@ -9136,6 +9206,13 @@
      "IND-387037",
      "+917003767667",
      "White Stretch twill Shirt ( party) - Uniform"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-452705",
+     "+919830956342",
+     "Cotton Linen Shirt - Beige"
     ]
    ]
   },
@@ -10048,6 +10125,13 @@
      "IND-452643",
      "+917874478196",
      "The Blackwood Velveteen Bandhgala Formal Blazer - Black (Black / 40); Aspen Mid-Rise Corduroy Lounge Pants - Dark Brown (Dark Brown / 34)"
+    ],
+    [
+     1,
+     "2026-11-15",
+     "IND-454491",
+     "+917976579653",
+     "Paramount Dress Pants - Grey (Grey / 34); Giza Cotton Herringbone Shirt - Black"
     ]
    ]
   },
@@ -10836,6 +10920,13 @@
      "IND-455713",
      "+919526963261",
      "Navy Cotton Linen Side Pleated Kurta (Navy / 40)"
+    ],
+    [
+     1,
+     "2026-11-15",
+     "IND-455144",
+     "+919447316311",
+     "Cotton Linen Shirt - White x2"
     ]
    ]
   },
@@ -11090,6 +11181,20 @@
      "IND-456949",
      "+916392841852",
      "Giza Cotton Navy Checked Shirt (Navy / 44)"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-450938",
+     "+919619619988",
+     "Soft Washed Linen Shirt - Sage Green; The Carlisle Corduroy Casual Blazer - Green (Green / 48)"
+    ],
+    [
+     0,
+     "2026-11-15",
+     "IND-455100",
+     "+919936796078",
+     "Japanese Brushed Twill Checked Shirt - Grey & Red; Somelos Stretch Striped Shirt - Mid Blue & White"
     ]
    ]
   },
