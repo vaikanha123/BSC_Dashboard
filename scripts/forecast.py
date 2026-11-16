@@ -46,7 +46,7 @@ import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from bsc_common import REGION_MAP, read_sales_csv, replace_const  # noqa: E402
+from bsc_common import REGION_MAP, drop_excluded_orders, read_sales_csv, replace_const  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, 'data')
@@ -74,7 +74,7 @@ def aggregate_sales(path):
     cols = ['Day', 'Order name', 'Order or return', 'POS location name', 'Gross sales', 'Taxes', 'Shipping charges',
             'Quantity ordered']
     df = read_sales_csv(path, usecols=cols, low_memory=False)
-    df = df[df['Order or return'] == 'order']
+    df = drop_excluded_orders(df[df['Order or return'] == 'order'])
     df['date'] = df['Day'].str[:10]
     # revenue basis -- same formula as bsc_common.prepare_sales_df
     df['rev'] = df['Gross sales'].fillna(0) + df['Taxes'].fillna(0) + df['Shipping charges'].fillna(0)

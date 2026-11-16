@@ -119,6 +119,12 @@ def categorize(product_type, sku):
 - Comparison numbers between the two dashboards are **pooled** (sum revenue ÷ sum bills across the whole cohort), not a simple average of each stylist's individual AOV. A separate "% of stylists individually improved" stat also exists on both — that one *is* a simple per-stylist headcount. Don't conflate the two.
 - **Rest of Network** = everyone NOT in the relevant cohort (Batch 1 excludes Batch 1 members; Batch 2 excludes Batch 2 members — these are computed independently, not nested).
 
+### Cancelled orders are left out of every figure (since 2026-11-16)
+
+- Every loader keeps only `order` rows. A cancellation arrives as `reversal` rows on the day it is cancelled, so it is dropped too, and a cancelled order would otherwise stay counted as a sale for good.
+- When the user says an order was cancelled in full, add it to `EXCLUDED_ORDERS` in `scripts/bsc_common.py` (order name → a short note), then rerun the refresh. `prepare_sales_df` (dashboard, tracker, SM cohort, briefing, West MTD) and `forecast.py`'s `aggregate_sales` drop it from every day and month. Store totals, bills, units and stylist figures all lose it.
+- First case: IND-459580, Kalaghoda, Fort, Nov 15 2026, a ₹5.41L bespoke order (21 units, Mohammed Ammar).
+
 ### Staff-uniform orders are left out of stylist figures (since 2026-10-12)
 
 - An order is a uniform order if any line's "Product title at time of sale" contains "uniform". They are billed at zero value: no revenue, but a bill and units, which pulls a stylist's AOV down.

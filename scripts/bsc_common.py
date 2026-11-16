@@ -164,6 +164,21 @@ def normalize_order_col(df):
     return df
 
 
+# Orders cancelled in full and left out of every sales figure (store, stylist, cohort, forecast,
+# briefing). The sales export only keeps 'order' rows, and a cancellation arrives as 'reversal' rows,
+# which every loader drops -- so without this a cancelled order would stay counted for good.
+# Refunds/credit notes still come from the refund file. Add an order here when the user says it was
+# cancelled; it is dropped from every day and month it appears in.
+EXCLUDED_ORDERS = {
+    'IND-459580': 'Kalaghoda, Fort, Nov 15 2026, Rs4.56L bespoke order, cancelled in full (user, 2026-11-16)',
+}
+
+
+def drop_excluded_orders(df):
+    """Drop EXCLUDED_ORDERS rows from a raw or prepared sales df."""
+    return df[~df['Order name'].isin(EXCLUDED_ORDERS)]
+
+
 def read_sales_csv(path, usecols=None, **kw):
     """pd.read_csv for a Shopify sales export that accepts either name of the order/return column."""
     if usecols is not None:
@@ -185,7 +200,7 @@ def prepare_sales_df(df):
     """load_sales_csv's transforms, for a raw export already in memory (e.g. a month sliced out of
     a multi-year file)."""
     df = normalize_order_col(df)
-    df = df[df['Order or return'] == 'order'].copy()
+    df = drop_excluded_orders(df[df['Order or return'] == 'order']).copy()
     df['Day_str'] = df['Day'].str[:10]
     # Revenue basis (since 2026-10-05, per Vaibhav): Gross sales + Taxes + Shipping charges. Keep
     # forecast.py's aggregate_sales() and index.html's handleFiles() on the same formula.
