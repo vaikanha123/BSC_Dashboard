@@ -1,0 +1,80 @@
+{
+ "orders": [
+  {
+   "order": "IND-430995",
+   "date": "2026-09-15",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-365896",
+   "date": "2026-09-17",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-433779",
+   "date": "2026-09-18",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-436255",
+   "date": "2026-09-24",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-438732",
+   "date": "2026-09-28",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-438186",
+   "date": "2026-09-29",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-432323",
+   "date": "2026-10-02",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-439598",
+   "date": "2026-10-05",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-441306",
+   "date": "2026-10-07",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-440402",
+   "date": "2026-10-09",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-444667",
+   "date": "2026-10-19",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-447557",
+   "date": "2026-10-24",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-449905",
+   "date": "2026-11-01",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-453696",
+   "date": "2026-11-11",
+   "source": "NPS"
+  },
+  {
+   "order": "IND-456904",
+   "date": "2026-11-14",
+   "source": "NPS"
+  }
+ ],
+ "note": "Replies the CX team tagged \"tagged unlikely by mistake\" in the Master File Escalation sheet; update_nps.py counts a matching negative reply as a promoter / very satisfied."
+}

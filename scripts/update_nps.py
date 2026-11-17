@@ -63,6 +63,34 @@ FIT_SLOT = {'Very satisfied': 0, 'Neutral': 1, 'Not satisfied': 2}
 FIRST_MONTH = '2026-09'          # August starts on the 26th; it is left off, as before
 FROZEN_MONTHS = {'2026-09'}      # see the docstring
 MIN_GAP_DAYS = 3
+# Replies the CX team tagged "tagged unlikely by mistake" (scripts/nps_mistag.py) count as promoters / very
+# satisfied: a negative reply flips when one of the customer's orders was tagged on the reply day or up to
+# MISTAG_WINDOW days after it (user's rule, 2026-11-17; HO's Sep reasons workbook did the same).
+MISTAG_JSON = os.path.join(ROOT, 'data', 'nps_mistag.json')
+MISTAG_WINDOW = 21
+_MISTAG = None
+
+
+def mistag():
+    global _MISTAG
+    if _MISTAG is None:
+        _MISTAG = collections.defaultdict(list)
+        if os.path.exists(MISTAG_JSON):
+            with open(MISTAG_JSON, encoding='utf-8') as f:
+                for e in json.load(f)['orders']:
+                    _MISTAG[e['order']].append(e['date'])
+    return _MISTAG
+
+
+def counted_slot(slot, orders, day):
+    """slot, or 0 (promoter) for a negative reply CX tagged as given by mistake."""
+    if slot != 2:
+        return slot
+    hi = (dt.date.fromisoformat(day) + dt.timedelta(days=MISTAG_WINDOW)).isoformat()
+    mt = mistag()
+    if any(day <= d <= hi for _, o, _ in orders for d in mt.get(o, ())):
+        return 0
+    return slot
 SHEET_HEAD = ['user_id', 'campaign_id', 'event_date', 'event_name', 'button_label', 'button_type',
               'response_time', 'email', 'first_name', 'last_name', 'phone']
 
@@ -197,7 +225,10 @@ def build(rows, by_email, campaign=NPS_CAMPAIGN, slots=SLOT):
             report['repeat answers for the same order (older ones dropped)'] += 1
             if latest[key][0] >= r[6]:
                 continue
-        latest[key] = (r[6], day, pos, slots[r[4]])
+        slot = counted_slot(slots[r[4]], by_email.get(email, []), day)
+        if slot != slots[r[4]]:
+            report['negative replies counted as positive (CX: tagged unlikely by mistake), ' + campaign] += 1
+        latest[key] = (r[6], day, pos, slot)
     counts = collections.defaultdict(lambda: collections.defaultdict(lambda: [0, 0, 0]))
     dates = collections.defaultdict(list)
     for _, day, pos, slot in latest.values():
@@ -238,7 +269,8 @@ def raw_rows(rows, by_email, details, mk, campaign=NPS_CAMPAIGN, slots=SLOT):
             ist = r[6]
         d = details.get(m[1], {}) if m else {}
         store = 'Not matched' if m is None else (m[2] or 'Online')
-        table.append([day, ist, ('%s %s' % (r[8], r[9])).strip(), email, r[10], r[4], NPS_GROUP[slots[r[4]]],
+        table.append([day, ist, ('%s %s' % (r[8], r[9])).strip(), email, r[10], r[4],
+                      NPS_GROUP[counted_slot(slots[r[4]], by_email.get(email, []), day)],
                       'Yes' if latest[key][1] == i else 'No (older answer, same order)',
                       m[1] if m else '', m[0] if m else '',
                       (dt.date.fromisoformat(day) - dt.date.fromisoformat(m[0])).days if m else '',
@@ -254,7 +286,7 @@ def nps_detail(table, slots=SLOT):
     out = collections.defaultdict(list)
     for t in table:
         if t[7] == 'Yes' and t[11] in REGION_MAP:
-            out[NPS_STORES.get(t[11], t[11])].append([slots[t[5]], t[0], t[8], t[4], t[15]])
+            out[NPS_STORES.get(t[11], t[11])].append([NPS_GROUP.index(t[6]), t[0], t[8], t[4], t[15]])
     return out
 
 
@@ -399,6 +431,9 @@ def main():
                                                     for mk, c in sorted(counts.items())}}, f, ensure_ascii=False, indent=1)
     for k, v in sorted(report.items()):
         print('  %5d  %s' % (v, k))
+    for k, v in sorted(freport.items()):
+        if 'mistake' in k:
+            print('  %5d  fit: %s' % (v, k))
     print('store_audit_nps.json months: %s' % ', '.join('%s (%s)' % (m['key'], m['range']) for m in data['months']))
     print('store_audit_fit.json months: %s; %s' % (', '.join('%s (%s)' % (m['key'], m['range']) for m in fit['months']),
           ', '.join('%s %d' % (mk, sum(sum(c) for p, c in v.items() if p in REGION_MAP)) for mk, v in sorted(fcounts.items()))))
