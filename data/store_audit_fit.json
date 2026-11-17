@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-16 10:14:15 (data for 2026-11-15))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-17 10:14:15 (data for 2026-11-16))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–15 Nov"
+   "range": "1–16 Nov"
   }
  ],
  "stores": {
@@ -99,7 +99,7 @@
    ],
    "2026-11": [
     1,
-    1,
+    2,
     0
    ]
   },
@@ -390,7 +390,7 @@
    ],
    "2026-11": [
     2,
-    0,
+    1,
     1
    ]
   },
@@ -561,6 +561,11 @@
     2,
     1,
     0
+   ],
+   "2026-11": [
+    0,
+    0,
+    1
    ]
   },
   "Ambience Vasnt Kunj": {
@@ -877,7 +882,7 @@
      "2026-11-09",
      "IND-454837",
      "+919870452433",
-     "Giza Cotton Navy Micro Houndstooth Shirt (Navy / 38); Giza Cotton Navy Twill Striped Shirt (Navy / 36); Light Blue & White Checked Banker Shirt (Blue / 38); Luthai Light Blue Textured Striped Shirt (Light Blue / 36); Blue Wrinkle-Free Stretch Twill Shirt (Blue / 36); Navy Wrinkle-Free Stretch Twill Shirt (Navy / 36); Luthai Light Blue Textured Striped Shirt (Light Blue / 38); Giza Cotton Navy Micro Houndstooth Shirt (Navy / 36); Brick Blended Linen Washed Shirt (Brick / 36); White Popover Linen-Lyocell Shirt (White / 36)"
+     "Brick Blended Linen Washed Shirt (Brick / 36); White Popover Linen-Lyocell Shirt (White / 36); Luthai Light Blue Textured Striped Shirt (Light Blue / 36); Giza Cotton Navy Micro Houndstooth Shirt (Navy / 38); Navy Wrinkle-Free Stretch Twill Shirt (Navy / 36); Luthai Light Blue Textured Striped Shirt (Light Blue / 38); Giza Cotton Navy Twill Striped Shirt (Navy / 36); Giza Cotton Navy Micro Houndstooth Shirt (Navy / 36); Blue Wrinkle-Free Stretch Twill Shirt (Blue / 36); Light Blue & White Checked Banker Shirt (Blue / 38)"
     ],
     [
      2,
@@ -1097,6 +1102,13 @@
      "IND-453342",
      "+918121858042",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Navy; Soft Washed Linen Shirt - Green; Elevate Everyday Stretch Chinos - White (White / 32); Flux 4-way Stretch Dress Pants - Navy (Navy / 32); 100% Linen Shirt - Dark Purple; 100% Linen Shirt - Rust; Wrinkle-free Bamboo-Blend Twill Shirt - Black; Elevate Everyday Stretch Chinos - Dark Khakhi (Dark Khakhi / 32); Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32)"
+    ],
+    [
+     1,
+     "2026-11-16",
+     "IND-449738",
+     "+919390856789",
+     "Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - White; Tailored 4-Way Stretch Nylon Smart Pants - Dark Grey (Dark Grey / 34); Wrinkle-free Bamboo-Blend Twill Shirt - Olive; Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - Navy; Tailored 4-Way Stretch Nylon Smart Pants - Navy (Navy / 34); Tailored 4-Way Stretch Nylon Smart Pants - Beige (Beige / 34); Tailored 4-Way Stretch Nylon Smart Pants - Black (Black / 34)"
     ]
    ]
   },
@@ -1364,7 +1376,7 @@
      "2026-11-15",
      "IND-454139",
      "+919870193736",
-     "Washed Oxford Shirt - Bluish Grey; Cotton Oxford Striped Shirt - Grey & White; Oxford Striped Shirt - Green"
+     "Oxford Striped Shirt - Green; Washed Oxford Shirt - Bluish Grey; Cotton Oxford Striped Shirt - Grey & White"
     ]
    ]
   },
@@ -1994,7 +2006,7 @@
      "2026-11-06",
      "IND-454409",
      "+919998338266",
-     "Paramount Dress Pants - Black (Black / 34); FLORA FOUNTAIN FERRERO; Giza Cotton Gingham Checked Shirt - Navy; Flux 4-way Stretch Dress Pants - Beige (Beige / 34); Cotton Dobby Shirt - Light Blue"
+     "Giza Cotton Gingham Checked Shirt - Navy; Flux 4-way Stretch Dress Pants - Beige (Beige / 34); FLORA FOUNTAIN FERRERO; Paramount Dress Pants - Black (Black / 34); Cotton Dobby Shirt - Light Blue"
     ],
     [
      0,
@@ -2015,7 +2027,7 @@
      "2026-11-13",
      "IND-456973",
      "+919033666671",
-     "Olive Grove Mid-Rise Stretch Jeans (Olive / 34); Ink Blue Mid-Rise Stretch Jeans (Blue / 34); Signature Flat Knit Long Sleeve  Polo - Black (Black / XL); Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / XL)"
+     "Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / XL); Signature Flat Knit Long Sleeve  Polo - Black (Black / XL); Olive Grove Mid-Rise Stretch Jeans (Olive / 34); Ink Blue Mid-Rise Stretch Jeans (Blue / 34)"
     ]
    ]
   },
@@ -2705,6 +2717,13 @@
      "IND-454164",
      "+919902166667",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Dark Blue"
+    ],
+    [
+     1,
+     "2026-11-16",
+     "IND-451479",
+     "+919958882351",
+     "Windsor - SRT20156 Reid & Taylor Bespoke; Japanese Brushed Twill Checked Shirt - Brown & Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Black; SRT20569 - Reid & Taylor Bespoke; Munich - Manhattan Farbriano Bespoke; Dark Blue Cotton Denim Shirt (Blue / 40); SCARLET - REID & TAYLOR\tBESPOKE; Denim Shirt - Light Blue"
     ]
    ]
   },
@@ -3259,7 +3278,7 @@
      "2026-11-11",
      "IND-455616",
      "+918948213141",
-     "White Popover Linen-Lyocell Shirt (White / 40); The Salvatore Relaxed Linen Pants - Dark Brown (Dark Brown / 32)"
+     "The Salvatore Relaxed Linen Pants - Dark Brown (Dark Brown / 32); White Popover Linen-Lyocell Shirt (White / 40)"
     ]
    ]
   },
@@ -3305,6 +3324,15 @@
      "IND-447826",
      "+919999699789",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-Free Oxford Shirt - Blue"
+    ]
+   ],
+   "2026-11": [
+    [
+     2,
+     "2026-11-16",
+     "IND-455506",
+     "+919167432090",
+     "Japanese Dobby Mid-Rise Stretch Jeans - Deep Indigo (Deep Indigo / 34); Wilton Structured Mid-Rise Dress Pants - Grey (Grey / 36); Caelan Dobby Stretch Dress Pants - Charcoal (Grey / 36)"
     ]
    ]
   },
