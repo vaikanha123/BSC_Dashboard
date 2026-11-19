@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-18 10:14:16 (data for 2026-11-17))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-19 10:14:15 (data for 2026-11-18))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–17 Nov"
+   "range": "1–18 Nov"
   }
  ],
  "stores": {
@@ -30,7 +30,7 @@
     0
    ],
    "2026-11": [
-    6,
+    7,
     1,
     2
    ]
@@ -64,7 +64,7 @@
     3
    ],
    "2026-11": [
-    3,
+    4,
     1,
     1
    ]
@@ -100,7 +100,7 @@
    "2026-11": [
     8,
     0,
-    0
+    2
    ]
   },
   "Viviana Mall": {
@@ -115,8 +115,8 @@
     0
    ],
    "2026-11": [
-    10,
-    2,
+    11,
+    3,
     0
    ]
   },
@@ -149,9 +149,9 @@
     0
    ],
    "2026-11": [
-    13,
+    14,
     1,
-    2
+    3
    ]
   },
   "KNK Chennai": {
@@ -200,7 +200,7 @@
     1
    ],
    "2026-11": [
-    6,
+    7,
     1,
     2
    ]
@@ -230,8 +230,8 @@
    ],
    "2026-11": [
     2,
-    2,
-    3
+    3,
+    4
    ]
   },
   "Khan Market": {
@@ -246,7 +246,7 @@
     1
    ],
    "2026-11": [
-    3,
+    4,
     0,
     1
    ]
@@ -365,7 +365,7 @@
     0
    ],
    "2026-11": [
-    3,
+    4,
     0,
     2
    ]
@@ -400,7 +400,7 @@
    ],
    "2026-11": [
     3,
-    0,
+    1,
     2
    ]
   },
@@ -416,7 +416,7 @@
     1
    ],
    "2026-11": [
-    9,
+    10,
     0,
     4
    ]
@@ -433,7 +433,7 @@
     4
    ],
    "2026-11": [
-    6,
+    7,
     2,
     1
    ]
@@ -467,7 +467,7 @@
     0
    ],
    "2026-11": [
-    6,
+    7,
     1,
     1
    ]
@@ -484,7 +484,7 @@
     3
    ],
    "2026-11": [
-    12,
+    13,
     4,
     3
    ]
@@ -501,7 +501,7 @@
     2
    ],
    "2026-11": [
-    6,
+    7,
     1,
     0
    ]
@@ -909,6 +909,13 @@
      "IND-457281",
      "+919891438835",
      "Rowan Striped Cotton Dobby Shacket - Beige (Beige / 40); Light Blue Cotton Denim Shirt (Blue / 38)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-458728",
+     "+919910732438",
+     "Giza Cotton Grey & Black Striped Shirt (Grey / 40)"
     ]
    ]
   },
@@ -1324,6 +1331,13 @@
      "IND-454745",
      "+918850027770",
      "Luxe Cotton Oversized T-shirt - Charcoal Grey (Charcoal / M)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-450131",
+     "+919821027766",
+     "Soktas Micro Dobby Shirt - White; ESQUIRE - SOKTAS BESPOKE x2; Markwell - Manhattan Farbriano Bespoke"
     ]
    ]
   },
@@ -2250,6 +2264,20 @@
      "IND-456906",
      "+918200021672",
      "Luxe Journey Zipper Hoodie - Black (Black / M)"
+    ],
+    [
+     2,
+     "2026-11-18",
+     "IND-454655",
+     "+919004795904",
+     "Monrovia - Manhattan Farbriano Bespoke"
+    ],
+    [
+     2,
+     "2026-11-18",
+     "IND-453334",
+     "+919930832244",
+     "Cotton Linen Shirt - Navy"
     ]
    ]
   },
@@ -2699,6 +2727,20 @@
      "IND-454586",
      "+919820328789",
      "Luxe Journey Zipper Hoodie - Beige (Beige / M); Paramount Dress Pants - Navy (Navy / 36); Wrinkle-Free Stretch Satin Shirt - Blue; Marseille - Manhattan Farbriano Bespoke; Luxe Journey Joggers - Beige (Beige / M)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-455717",
+     "+919324367918",
+     "Luthai Cotton Lyocell Twill Shirt - Black"
+    ],
+    [
+     1,
+     "2026-11-18",
+     "IND-455715",
+     "+919892797153",
+     "Giza Cotton Gingham Checked Shirt - Light Blue"
     ]
    ]
   },
@@ -3485,6 +3527,20 @@
      "IND-455688",
      "+919980531439",
      "Elevate Everyday Stretch Chinos - Black (Black / 34); Elevate Everyday Stretch Chinos - Dark Olive (Dark Olive / 34); Elevate Everyday Stretch Chinos - Green (Green / 34)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-453518",
+     "+919538037378",
+     "Denim Shirt - Black; Cotton Oxford Checked Shirt - Navy & Dark Blue; Oxford Striped Shirt - Salmon Pink; Oxford Striped Shirt - Light Blue; Washed Oxford Shirt - Light Grey; Oxford Striped Shirt - Light Grey; Oxford Striped Shirt - Dark Blue"
+    ],
+    [
+     2,
+     "2026-11-18",
+     "IND-456116",
+     "+919448474775",
+     "Lorenzo Twill Dress Pants - Beige (Beige / 34); Elevate Everyday Stretch Chinos - Dark Beige (Dark Beige / 32)"
     ]
    ]
   },
@@ -4608,6 +4664,13 @@
      "IND-455597",
      "+919769945495",
      "Easy-Care Light Blue & Red Checked Stretch Shirt (Light Blue / 44)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-457237",
+     "+919920479560",
+     "Aspen Mid-Rise Corduroy Lounge Pants - Black (Black / 32); Maroon Textured Dobby Shirt (Maroon / 40)"
     ]
    ]
   },
@@ -5203,6 +5266,20 @@
      "IND-453188",
      "+919743919999",
      "Cotton Dobby Shirt - Black; Easy-Care Stretch Cotton Dobby Shirt - Dark Blue; Cotton Poplin Shirt - Ice Blue; Cotton Herringbone Shirt - Olive; Cotton Twill Shirt - Light Grey; Cotton Twill Shirt - Blue & White; Cotton Dobby Shirt - Dark Blue"
+    ],
+    [
+     2,
+     "2026-11-18",
+     "IND-457580",
+     "+919000111899",
+     "Signature Classic Button Polo - Navy (Navy / 4XL); Signature Classic Button Polo - Black (Black / 4XL)"
+    ],
+    [
+     1,
+     "2026-11-18",
+     "IND-450684",
+     "+918801028088",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-Free Stretch Satin Shirt - Black"
     ]
    ]
   },
@@ -5393,6 +5470,13 @@
      "IND-447414",
      "+919818373304",
      "Urban Ease Ready-to-Wear Chinos - Light Green (Light Green / 34); Munich - Manhattan Farbriano Bespoke x2; City Pace Ready-to-Wear Chinos - Navy (Navy / 34); Markwell - Manhattan Farbriano Bespoke x5; Elevate Everyday Stretch Chinos - Coffee (Coffee / 34)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-455735",
+     "+919944974337",
+     "Giza Cotton Glen Plaid Checked Shirt - Navy; Cotton Lyocell Flannel Checked Shirt - Black & Beige"
     ]
    ]
   },
@@ -7549,6 +7633,13 @@
      "IND-455230",
      "+919829070450",
      "Paramount Dress Pants - Navy (Navy / 32); Exquisite Blended Wool Dress Pants - Beige (Beige / 32)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-456775",
+     "+918320137348",
+     "Luxe Supima Cotton T-shirt - White (White / M); Luxe Supima Cotton T-shirt - Black (Black / M)"
     ]
    ]
   },
@@ -8139,6 +8230,13 @@
      "IND-448515",
      "+919920583136",
      "Signature Flat Knit Long Sleeve  Polo - Ecru (Ecru / M)"
+    ],
+    [
+     1,
+     "2026-11-18",
+     "IND-458739",
+     "+919892000152",
+     "Hadleigh Checked Dress Pants - Mid Grey (Mid Grey / 40); Waldorf Checked Dress Pants - Light Brown (Light Brown / 40); Giza Cotton Houndstooth Shirt - Pink"
     ]
    ]
   },
@@ -8798,6 +8896,13 @@
      "IND-458517",
      "+917777072257",
      "Sterling Metal Cufflinks - Silver"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-458703",
+     "+919820066615",
+     "Soft Washed Linen Shirt - Brown; Paramount Dress Pants - Light Grey (Light Grey / 38); Haircut; Soft Washed Linen Shirt - Mid Blue"
     ]
    ]
   },
@@ -9058,6 +9163,13 @@
      "IND-451431",
      "+919972363431",
      "Marleston - Manhattan Farbriano Bespoke x2; Wrinkle-free Bamboo-Blend Twill Shirt - Dark Blue"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-453749",
+     "+918879338185",
+     "Soktas Soft Twill Shirt - Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Navy; Wrinkle-free Bamboo-Blend Twill Shirt - White; Soktas Satin Shirt - Pink"
     ]
    ]
   },
@@ -9767,6 +9879,13 @@
      "IND-453216",
      "+917702023111",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White; Concord Dress Pants - Deep Black (Black / 34)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-457014",
+     "+919849018515",
+     "Navy Popover Linen-Lyocell Shirt (Navy / 40)"
     ]
    ]
   },
@@ -10328,6 +10447,13 @@
      "IND-454491",
      "+917976579653",
      "Paramount Dress Pants - Grey (Grey / 34); Giza Cotton Herringbone Shirt - Black"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-429894",
+     "+919825031422",
+     "Cotton Twill Emblem Printed Shirt - Grey & Black; Stretch Floral Printed Shirt - Red & Blue; Cotton Linen Shirt - Grey; Soft Washed Linen Shirt - Brown; Medellin - Manhattan Farbriano Bespoke; Elevate Everyday Stretch Chinos - Pearl Grey (Pearl Grey / 36); Wrinkle-free Bamboo-Blend Twill Shirt - Grey; Aven Cotton Linen Shacket - Navy (Navy / 42)"
     ]
    ]
   },
@@ -10609,6 +10735,13 @@
      "IND-454136",
      "+919969220654",
      "Elevate Everyday Stretch Chinos - Coffee (Coffee / 32); GRANVILLE - SOKTAS BESPOKE; Mainz - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-458807",
+     "+919990048700",
+     "Twill Craft Denim Shacket - Light Blue (Light Blue / 42)"
     ]
    ]
   },

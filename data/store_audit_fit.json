@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-18 10:14:16 (data for 2026-11-17))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-19 10:14:15 (data for 2026-11-18))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–17 Nov"
+   "range": "1–18 Nov"
   }
  ],
  "stores": {
@@ -64,7 +64,7 @@
     1
    ],
    "2026-11": [
-    3,
+    4,
     2,
     2
    ]
@@ -166,9 +166,9 @@
     2
    ],
    "2026-11": [
-    2,
+    3,
     1,
-    1
+    2
    ]
   },
   "Juhu": {
@@ -251,8 +251,8 @@
     2
    ],
    "2026-11": [
-    3,
-    0,
+    4,
+    1,
     1
    ]
   },
@@ -539,7 +539,7 @@
     0
    ],
    "2026-11": [
-    1,
+    2,
     0,
     1
    ]
@@ -904,6 +904,13 @@
      "IND-452725",
      "+917303680716",
      "Sunscape Relaxed Linen Pants - Dark Grey (Dark Grey / 32); Cotton Dobby Shirt - Navy; Easy-Iron Stretch Cotton Striped Shirt - Green & White; Wrinkle-free Bamboo-Blend Twill Shirt - Navy"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-456643",
+     "+919833508999",
+     "Luxe Drift T-Shirt - Mid Blue (Mid Blue / L)"
     ]
    ]
   },
@@ -1568,6 +1575,20 @@
      "IND-455578",
      "+919819525558",
      "Elevate Everyday Stretch Chinos - Beige (Beige / 38); Cotton Linen Shirt - Light Blue"
+    ],
+    [
+     2,
+     "2026-11-18",
+     "IND-458431",
+     "+917977114263",
+     "Rust Cotton Striped Shirt (Rust / 42)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-453753",
+     "+917303876501",
+     "Ivoro 100% Linen Relaxed Neapolitan Pants - Beige (Beige / 32); Brick Blended Linen Washed Shirt (Brick / 40); The Cortona 100% Linen Double-Breasted Casual Blazer - Beige (Beige / 38)"
     ]
    ]
   },
@@ -2063,6 +2084,20 @@
      "IND-456973",
      "+919033666671",
      "Olive Grove Mid-Rise Stretch Jeans (Olive / 34); Ink Blue Mid-Rise Stretch Jeans (Blue / 34); Signature Flat Knit Long Sleeve  Polo - Black (Black / XL); Signature Flat Knit Long Sleeve  Polo - Sage Green (Green / XL)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-458750",
+     "+919825802504",
+     "Black & White Polka Dot Print Shirt (Black / 42)"
+    ],
+    [
+     1,
+     "2026-11-18",
+     "IND-456070",
+     "+919081456725",
+     "Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - Navy; Exquisite Blended Wool Dress Pants - Dark Grey (Dark Grey / 40); Wrinkle-Free Stretch Satin Shirt - Blue; Exquisite Blended Wool Dress Pants - Black (Black / 40); The Exquisite Blended Wool Blazer - Dark Grey (Dark Grey / 44); Luthai Cotton Lyocell Twill Shirt - Olive; Exquisite Blended Wool Dress Pants - Beige (Beige / 40)"
     ]
    ]
   },
@@ -3335,6 +3370,13 @@
      "IND-455616",
      "+918948213141",
      "White Popover Linen-Lyocell Shirt (White / 40); The Salvatore Relaxed Linen Pants - Dark Brown (Dark Brown / 32)"
+    ],
+    [
+     0,
+     "2026-11-18",
+     "IND-457435",
+     "+919336062093",
+     "Navy Textured Dobby Shirt (Navy / 38)"
     ]
    ]
   },
