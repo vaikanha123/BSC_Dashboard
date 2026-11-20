@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-19 10:14:15 (data for 2026-11-18))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-20 10:14:15 (data for 2026-11-19))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–18 Nov"
+   "range": "1–19 Nov"
   }
  ],
  "stores": {
@@ -83,7 +83,7 @@
    "2026-11": [
     10,
     0,
-    2
+    3
    ]
   },
   "Sky City Borivali": {
@@ -98,9 +98,9 @@
     1
    ],
    "2026-11": [
-    8,
+    10,
     0,
-    2
+    3
    ]
   },
   "Viviana Mall": {
@@ -115,7 +115,7 @@
     0
    ],
    "2026-11": [
-    11,
+    13,
     3,
     0
    ]
@@ -200,9 +200,9 @@
     1
    ],
    "2026-11": [
-    7,
+    8,
     1,
-    2
+    3
    ]
   },
   "R.K. Salai": {
@@ -263,7 +263,7 @@
     2
    ],
    "2026-11": [
-    8,
+    9,
     0,
     2
    ]
@@ -282,7 +282,7 @@
    "2026-11": [
     1,
     0,
-    3
+    4
    ]
   },
   "Phoenix Viman Nagar": {
@@ -297,7 +297,7 @@
     6
    ],
    "2026-11": [
-    4,
+    5,
     0,
     0
    ]
@@ -399,7 +399,7 @@
     1
    ],
    "2026-11": [
-    3,
+    4,
     1,
     2
    ]
@@ -450,7 +450,7 @@
     0
    ],
    "2026-11": [
-    8,
+    9,
     0,
     2
    ]
@@ -467,7 +467,7 @@
     0
    ],
    "2026-11": [
-    7,
+    8,
     1,
     1
    ]
@@ -484,8 +484,8 @@
     3
    ],
    "2026-11": [
-    13,
-    4,
+    14,
+    5,
     3
    ]
   },
@@ -1794,6 +1794,13 @@
      "IND-441257",
      "+919820279126",
      "Paramount Dress Pants - Light Grey (Light Grey / 32); Flux 4-way Stretch Dress Pants - Navy (Navy / 32); Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32)"
+    ],
+    [
+     2,
+     "2026-11-19",
+     "IND-454978",
+     "+919233572640",
+     "Giza Cotton Glen Plaid Checked Shirt - Light Blue; Soft Cotton Blend Twill Shirt - Pink"
     ]
    ]
   },
@@ -2278,6 +2285,27 @@
      "IND-453334",
      "+919930832244",
      "Cotton Linen Shirt - Navy"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-456803",
+     "+919867872957",
+     "Dark Brown Blended Linen Washed Shirt (Brown / 40)"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-456100",
+     "+918655416882",
+     "Cotton Linen Shirt - Light Blue"
+    ],
+    [
+     2,
+     "2026-11-19",
+     "IND-456173",
+     "+919820757162",
+     "Urban Ease Ready-to-Wear Chinos - Brown (Brown / 42); Elevate Everyday Stretch Chinos - White (White / 42)"
     ]
    ]
   },
@@ -2741,6 +2769,20 @@
      "IND-455715",
      "+919892797153",
      "Giza Cotton Gingham Checked Shirt - Light Blue"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-455265",
+     "+919619521738",
+     "Cotton Twill Shirt - Light Grey; Cotton Checked Shirt - Blue & White"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-457439",
+     "+919619761923",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - White"
     ]
    ]
   },
@@ -4671,6 +4713,20 @@
      "IND-457237",
      "+919920479560",
      "Aspen Mid-Rise Corduroy Lounge Pants - Black (Black / 32); Maroon Textured Dobby Shirt (Maroon / 40)"
+    ],
+    [
+     2,
+     "2026-11-19",
+     "IND-455156",
+     "+917208449651",
+     "Soktas Twill Shirt - White; Soktas Satin Shirt - Pink; Whitaker Twill Relaxed Neapolitan Pants - Navy (Navy / 30)"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-457801",
+     "+919820083704",
+     "Brick Linen Lyocell Shirt (RUST / 38); Mauve Linen Lyocell Shirt (LAVENDER / 38)"
     ]
    ]
   },
@@ -5793,6 +5849,13 @@
      "IND-434910",
      "+919393872187",
      "Wrinkle-Free Stretch Satin Shirt - White x2"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-456511",
+     "+919600156749",
+     "Ink Blue Mid-Rise Stretch Jeans (Blue / 36)"
     ]
    ]
   },
@@ -6074,6 +6137,13 @@
      "IND-452892",
      "+919717297606",
      "Soft Washed Linen Shirt - Black; Cotton Linen Shirt - Green"
+    ],
+    [
+     2,
+     "2026-11-19",
+     "IND-453606",
+     "+918587899069",
+     "Denim Shirt - Mid Blue; Giza Cotton Glen Plaid Checked Shirt - Navy"
     ]
    ]
   },
@@ -6418,6 +6488,13 @@
      "IND-458268",
      "+918983636793",
      "Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / M)"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-457263",
+     "+918888891150",
+     "Giza Cotton Houndstooth Shirt - Brown; Luthai Cotton Lyocell Twill Shirt - Olive"
     ]
    ]
   },
@@ -8237,6 +8314,13 @@
      "IND-458739",
      "+919892000152",
      "Hadleigh Checked Dress Pants - Mid Grey (Mid Grey / 40); Waldorf Checked Dress Pants - Light Brown (Light Brown / 40); Giza Cotton Houndstooth Shirt - Pink"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-454253",
+     "+919594686786",
+     "2-Ply Soft Herringbone Shirt - White"
     ]
    ]
   },
@@ -9514,6 +9598,13 @@
      "IND-455567",
      "+919830025760",
      "Luthai Wrinkle-Free Bold Twill Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-456210",
+     "+919331806623",
+     "Light Blue Dobby Checked Shirt (Light Blue / 38); Giza Cotton Grey Checked Shirt (Grey / 38)"
     ]
    ]
   },
@@ -9886,6 +9977,13 @@
      "IND-457014",
      "+919849018515",
      "Navy Popover Linen-Lyocell Shirt (Navy / 40)"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-454317",
+     "+919701909999",
+     "The Best Dressed Guest (Liverpool Plus  SRT21136); Memnon - 40349 SOKTAS BESPOKE; Giza Cotton Glen Plaid Checked Shirt - Navy; Merton - 40720 SOKTAS BESPOKE; Wrinkle-free Bamboo-Blend Twill Shirt - Olive; The Best Dressed Guest (Luton 51619); Easy-Care Stretch Cotton Striped Shirt - Grey & White; The Best Dressed Guest  (Napier  SRT11624); Wrinkle-Free Stretch Satin Shirt - Blue"
     ]
    ]
   },
@@ -10454,6 +10552,20 @@
      "IND-429894",
      "+919825031422",
      "Cotton Twill Emblem Printed Shirt - Grey & Black; Stretch Floral Printed Shirt - Red & Blue; Cotton Linen Shirt - Grey; Soft Washed Linen Shirt - Brown; Medellin - Manhattan Farbriano Bespoke; Elevate Everyday Stretch Chinos - Pearl Grey (Pearl Grey / 36); Wrinkle-free Bamboo-Blend Twill Shirt - Grey; Aven Cotton Linen Shacket - Navy (Navy / 42)"
+    ],
+    [
+     1,
+     "2026-11-19",
+     "IND-457362",
+     "+919825179925",
+     "The Salvatore Dobby Soft Tailored Blazer - Dark Brown (Dark Brown / 40)"
+    ],
+    [
+     0,
+     "2026-11-19",
+     "IND-454792",
+     "+919893042288",
+     "Massie - Manhattan Farbriano Bespoke; Monrovia - Manhattan Farbriano Bespoke; Soktas Poplin Shirt - White x3; Markwell - Manhattan Farbriano Bespoke; The Best Dressed Guest  (Vancouver  SRT22142)"
     ]
    ]
   },
