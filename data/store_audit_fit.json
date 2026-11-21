@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-20 10:14:15 (data for 2026-11-19))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-21 10:14:15 (data for 2026-11-20))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–19 Nov"
+   "range": "1–20 Nov"
   }
  ],
  "stores": {
@@ -30,7 +30,7 @@
     1
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -47,8 +47,8 @@
     1
    ],
    "2026-11": [
-    2,
-    0,
+    3,
+    1,
     1
    ]
   },
@@ -669,6 +669,13 @@
      "IND-451254",
      "+918855994800",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Light blue; 4-Way Stretch Shirt - Navy"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-459954",
+     "+919767697566",
+     "BSC X Rid Burman Overshirt - Pale Gold (Pale Gold / 38)"
     ]
    ]
   },
@@ -789,6 +796,20 @@
      "IND-451923",
      "+919821325445",
      "Lyocell Wool Stretch Johnny Polo - Jet Black (Black / L); Luxe Supima Cotton T-shirt - White (White / L); Lyocell Wool Stretch Johnny Polo - Coffee Brown (Brown / L); Luxe Supima Cotton T-shirt - Brown (Brown / L); Luxe Supima Cotton T-shirt - Navy (Navy / 4XL); Luxe Supima Cotton T-shirt - Black (Black / L) x4"
+    ],
+    [
+     1,
+     "2026-11-20",
+     "IND-454544",
+     "+919896989031",
+     "SCALA - REID & TAYLOR BESPOKE; Waffel - 39317 SOKTAS BESPOKE"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-459987",
+     "+917350778644",
+     "Blue Wrinkle-Free Stretch Twill Shirt (Blue / 38)"
     ]
    ]
   },

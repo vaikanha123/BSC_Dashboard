@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-20 10:14:15 (data for 2026-11-19))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-21 10:14:15 (data for 2026-11-20))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–19 Nov"
+   "range": "1–20 Nov"
   }
  ],
  "stores": {
@@ -115,7 +115,7 @@
     0
    ],
    "2026-11": [
-    13,
+    15,
     3,
     0
    ]
@@ -132,7 +132,7 @@
     2
    ],
    "2026-11": [
-    5,
+    6,
     2,
     1
    ]
@@ -331,7 +331,7 @@
     5
    ],
    "2026-11": [
-    2,
+    3,
     1,
     1
    ]
@@ -503,7 +503,7 @@
    "2026-11": [
     7,
     1,
-    0
+    1
    ]
   },
   "Lakeshore mall, Kukatpally": {
@@ -569,7 +569,7 @@
     3
    ],
    "2026-11": [
-    1,
+    2,
     0,
     1
    ]
@@ -2783,6 +2783,20 @@
      "IND-457439",
      "+919619761923",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-459412",
+     "+919987042727",
+     "Navy Wrinkle-Free Stretch Twill Shirt (Navy / 40)"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-457694",
+     "+919967210807",
+     "Aspen Mid-Rise Corduroy Lounge Pants - Dark Brown (Dark Brown / 38)"
     ]
    ]
   },
@@ -3106,6 +3120,13 @@
      "IND-439554",
      "+917299332331",
      "Cotton white Poplin Shirt - Trial"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-456733",
+     "+919884710106",
+     "Charcoal Grindle Flat Knit Shirt (Charcoal / 38); Brown Textured Twill Shirt (Brown / 40); Black Textured Dobby Shirt (Black / 40); Giza Cotton Blue & Pink Striped Shirt (blue & pink / 40); Grey Dobby Half-Sleeve Shirt (Grey / 40); Teal Washed Dobby Denim Shirt (Blue / 40); Light Blue Bold Twill Cotton-Lyocell Shirt (Light Blue / 40)"
     ]
    ]
   },
@@ -7253,6 +7274,13 @@
      "IND-451669",
      "+919319090239",
      "Trevano 4-Way Stretch Relaxed Neapolitan Dress Pants – Beige (Beige / 32)"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-454266",
+     "+919320395469",
+     "The Best Dressed Guest  (Gold Coast  SRT2517); Marleston - Manhattan Farbriano Bespoke; Cotton Lyocell Oxford Striped Shirt - Green & Grey"
     ]
    ]
   },
@@ -10854,6 +10882,13 @@
      "IND-458807",
      "+919990048700",
      "Twill Craft Denim Shacket - Light Blue (Light Blue / 42)"
+    ],
+    [
+     2,
+     "2026-11-20",
+     "IND-456448",
+     "+919810500111",
+     "Giza Cotton Bengal Striped Shirt - Light Blue"
     ]
    ]
   },
@@ -11502,6 +11537,13 @@
      "IND-458243",
      "+917838439692",
      "Light Yellow Blended Linen Soft Washed Shirt (Light Yellow / 40)"
+    ],
+    [
+     0,
+     "2026-11-20",
+     "IND-455208",
+     "+919839577220",
+     "Giza Cotton Dobby Houndstooth Shirt - Green"
     ]
    ]
   },
