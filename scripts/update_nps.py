@@ -50,7 +50,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bsc_common import REGION_MAP, extract_const, read_sales_csv, replace_const, syntax_check_html_js  # noqa: E402
-from build_store_audit import NPS_STORES, MONTH_NAMES, PAGE  # noqa: E402
+from build_store_audit import NPS_STORES, MONTH_NAMES, PAGE, stamp_page  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NPS_JSON = os.path.join(ROOT, 'data', 'store_audit_nps.json')
@@ -352,15 +352,8 @@ def write_audit_nps(counts, dates, source, detail=None, path=NPS_JSON, key='nps'
     audit[key] = data
     with open(AUDIT_JS, 'w', encoding='utf-8', newline='') as f:
         f.write(js[:m.start(1)] + json.dumps(audit, ensure_ascii=False, separators=(',', ':')) + ';\n')
-    # Version the data file's URL (as build_store_audit.py does) so browsers drop yesterday's cached copy.
-    with open(PAGE, encoding='utf-8') as f:
-        page = f.read()
-    page, n = re.subn(r'src="data/store_audit_data\.js(\?v=[^"]*)?"',
-                      'src="data/store_audit_data.js?v=%s"' % dt.date.today().isoformat(), page)
-    if n != 1:
-        sys.exit('STOP: data script tag not found in store-audit.html')
-    with open(PAGE, 'w', encoding='utf-8', newline='') as f:
-        f.write(page)
+    # Version the data file's URL by its contents (shared with build_store_audit.py) so browsers drop a cached copy.
+    stamp_page()
     return data
 
 
