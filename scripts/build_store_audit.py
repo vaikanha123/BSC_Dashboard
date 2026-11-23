@@ -63,7 +63,7 @@ COMP_PARAMS = ['Footfall', 'NPS Calling', 'At Store Calling', 'Delay Calling', '
                'Alteration', 'Staff Grooming', 'Calling']
 # From November 2026 the tracker logs one 'Calling' parameter (calls done / calls due) in place of
 # NPS / At Store / Delay Calling. It is appended so earlier months' cells keep their positions.
-# Rows the tracker pre-fills before the week is audited carry max 1; those are left out.
+# Every tracker row counts as entered (user, 2026-11-23), including Nov W1's 0 out of 1 rows.
 CALLING_PI = COMP_PARAMS.index('Calling')
 # Parameters scored 0 / 0.5 / 1 per row: a row the auditor scored but whose Max Score cell is still
 # blank (seen in Nov W3) counts with max 1.
@@ -195,9 +195,6 @@ def build(raw_dir, pulled):
         if s is not None and m is None and key in BINARY_PARAMS and s in (0, 0.5, 1):
             m = 1.0
             report['tracker rows with no Max Score, counted out of 1: ' + r[3].strip()] += 1
-        if pi == CALLING_PI and m == 1:
-            report['Calling rows pre-filled 0/1, left out: ' + r[3].strip()] += 1
-            s = None
         if s is not None and m is not None:
             cell = comp.setdefault(per[0], {}).setdefault(store, {}).setdefault(per[1], [None] * len(COMP_PARAMS))
             cell[pi] = [(cell[pi] or [0, 0])[0] + s, (cell[pi] or [0, 0])[1] + m]
