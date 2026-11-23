@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-21 10:14:15 (data for 2026-11-20))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-22 10:14:15 (data for 2026-11-21))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–20 Nov"
+   "range": "1–21 Nov"
   }
  ],
  "stores": {
@@ -82,7 +82,7 @@
    ],
    "2026-11": [
     1,
-    0,
+    1,
     0
    ]
   },
@@ -132,7 +132,7 @@
     0
    ],
    "2026-11": [
-    5,
+    6,
     1,
     1
    ]
@@ -1054,9 +1054,16 @@
     [
      0,
      "2026-11-11",
-     "IND-456015",
+     "IND-452681",
      "+918056235131",
-     "Easy-Care Cotton Oxford Shirt - Grey - Uniform"
+     "The Paramount Blazer - Black (Uniform) (Black / 44)"
+    ],
+    [
+     1,
+     "2026-11-21",
+     "IND-454963",
+     "+919842721337",
+     "Soktas Checked Dobby Shirt - White; Luxor - 51575 SOKTAS BESPOKE; ESQUIRE - SOKTAS BESPOKE; Maldon - Manhattan Farbriano Bespoke; Washed Oxford Shirt - White"
     ]
    ]
   },
@@ -1452,6 +1459,13 @@
      "IND-457323",
      "+919867700030",
      "Exquisite Blended Wool Dress Pants - Dark Grey (Dark Grey / 36)"
+    ],
+    [
+     0,
+     "2026-11-21",
+     "IND-460300",
+     "+918779360503",
+     "White Blended Linen Soft Washed Shirt (White / 44); Black Blended Linen Soft Washed Shirt (Black / 44); Light Yellow Blended Linen Soft Washed Shirt (Light Yellow / 44); Navy Blended Linen Soft Washed Shirt (Navy / 44); Ecru Blended Linen Soft Washed Shirt (Ecru / 44)"
     ]
    ]
   },
