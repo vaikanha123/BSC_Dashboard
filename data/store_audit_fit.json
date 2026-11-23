@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-22 10:14:15 (data for 2026-11-21))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-23 10:14:15 (data for 2026-11-22))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–21 Nov"
+   "range": "1–22 Nov"
   }
  ],
  "stores": {
@@ -309,7 +309,7 @@
     0
    ],
    "2026-11": [
-    3,
+    4,
     0,
     0
    ]
@@ -389,7 +389,7 @@
     1
    ],
    "2026-11": [
-    4,
+    5,
     1,
     1
    ]
@@ -488,7 +488,7 @@
    "2026-11": [
     0,
     0,
-    1
+    2
    ]
   },
   "DLF Midtown": {
@@ -2467,6 +2467,13 @@
      "IND-452401",
      "+917729066666",
      "VISCOUNT - SOKTAS BESPOKE; Matong - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-448232",
+     "+919229677777",
+     "Tailored 4-Way Stretch Nylon Smart Pants - Dark Grey (Dark Grey / 36); Tailored 4-Way Stretch Nylon Smart Pants - Navy (Navy / 36); Driftscape Relaxed Linen Pants - Navy (Navy / 36); Tailored 4-Way Stretch Nylon Smart Pants - Olive (Olive / 36); LOMBARDO LS4101 - LS4121 - Cotonificio Lombardo x3; Luthai Wrinkle-Free Twill Shirt - White x2; Wrinkle-Free Oxford Shirt - Blue; Tailored 4-Way Stretch Nylon Smart Pants - Black (Black / 36); Wrinkle-free Bamboo-Blend Twill Shirt - Grey"
     ]
    ]
   },
@@ -2904,6 +2911,13 @@
      "IND-456359",
      "+919845006846",
      "Soft Washed Linen Shirt - Black; 100% Linen Shirt - Black x2"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-454542",
+     "+919059718210",
+     "Markwell - Manhattan Farbriano Bespoke; Mainz - Manhattan Farbriano Bespoke; Matong - Manhattan Farbriano Bespoke; Rochefort Pinstripe Mid-Rise Dress Pants - Navy (Navy / 32); Hadleigh Checked Dress Pants - Navy (Navy / 32); Valmont Two-Tone Structured Dress Pants - Navy (Navy / 32); Emberis Stretch Dress Pants - Navy (Navy / 32); Exquisite Blended Wool Dress Pants - Dark Grey (Dark Grey / 32); SWINDON - Reid & Taylor Bespoke; Cotton Dobby Shirt - Light Blue; Wrinkle-Free Bamboo-Blend Stretch Herringbone Shirt - Black; Wilton Structured Mid-Rise Dress Pants - Grey (Grey / 32); Elevate Everyday Stretch Chinos - Beige (Beige / 32)"
     ]
    ]
   },
@@ -3258,6 +3272,13 @@
      "IND-451346",
      "+919603617143",
      "Signature Classic Button Polo - Chocolate Brown (Chocolate Brown / M); Signature Classic Button Polo - Forest Green (Dark Green / M)"
+    ],
+    [
+     2,
+     "2026-11-22",
+     "IND-456405",
+     "+919339866666",
+     "Washed Oxford Shirt - White (Knipex Tool India Pvt Ltd); Washed Oxford Shirt - Light Blue"
     ]
    ]
   },

@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-22 10:14:15 (data for 2026-11-21))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-23 10:14:15 (data for 2026-11-22))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–21 Nov"
+   "range": "1–22 Nov"
   }
  ],
  "stores": {
@@ -81,9 +81,9 @@
     4
    ],
    "2026-11": [
-    11,
+    12,
     0,
-    3
+    4
    ]
   },
   "Sky City Borivali": {
@@ -167,7 +167,7 @@
    ],
    "2026-11": [
     7,
-    0,
+    1,
     0
    ]
   },
@@ -213,7 +213,7 @@
    ],
    "2026-11": [
     1,
-    0,
+    1,
     0
    ]
   },
@@ -298,7 +298,7 @@
    ],
    "2026-11": [
     5,
-    0,
+    1,
     0
    ]
   },
@@ -314,7 +314,7 @@
     4
    ],
    "2026-11": [
-    6,
+    7,
     2,
     3
    ]
@@ -350,7 +350,7 @@
    "2026-11": [
     9,
     0,
-    4
+    5
    ]
   },
   "Jaipur": {
@@ -433,7 +433,7 @@
     4
    ],
    "2026-11": [
-    7,
+    8,
     2,
     1
    ]
@@ -450,7 +450,7 @@
     0
    ],
    "2026-11": [
-    9,
+    10,
     0,
     2
    ]
@@ -535,7 +535,7 @@
     1
    ],
    "2026-11": [
-    7,
+    8,
     1,
     1
    ]
@@ -552,7 +552,7 @@
     2
    ],
    "2026-11": [
-    4,
+    5,
     1,
     0
    ]
@@ -1808,6 +1808,20 @@
      "IND-460252",
      "+919820529690",
      "GYMKHANA- PROTEIN BELGIAN CHOCOLATE; PALIHILL PISTACHIO"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-432236",
+     "+919819668711",
+     "Soktas Satin Shirt - White x2; Munich - Manhattan Farbriano Bespoke x2"
+    ],
+    [
+     2,
+     "2026-11-22",
+     "IND-445911",
+     "+919820321500",
+     "Giza Cotton Houndstooth Shirt - Navy; Giza Cotton Glen Plaid Checked Shirt - Light Blue; Giza Cotton Houndstooth Shirt - Maroon"
     ]
    ]
   },
@@ -3850,6 +3864,13 @@
      "IND-451709",
      "+919965515458",
      "Wrinkle-Free Stretch Satin Shirt - Black; Brushed Twill Shirt - Brown; Paramount Dress Pants - Dark Grey (Dark Grey / 32)"
+    ],
+    [
+     1,
+     "2026-11-22",
+     "IND-450683",
+     "+919865509999",
+     "Westcott Checked Mid-Rise Dress Pants - Grey (Grey / 34); Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32)"
     ]
    ]
   },
@@ -4803,6 +4824,13 @@
      "IND-454942",
      "+919600168406",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Lavender"
+    ],
+    [
+     1,
+     "2026-11-22",
+     "IND-456338",
+     "+919940032786",
+     "Washed Oxford Shirt - Olive; Washed Oxford Shirt - Navy; Giza Cotton Bengal Striped Shirt - Pink; Soktas Micro Dobby Shirt - White; Washed Oxford Shirt - Pink; Cotton Linen Shirt - Light Blue; Washed Oxford Shirt - White"
     ]
    ]
   },
@@ -6523,6 +6551,13 @@
      "IND-457263",
      "+918888891150",
      "Giza Cotton Houndstooth Shirt - Brown; Luthai Cotton Lyocell Twill Shirt - Olive"
+    ],
+    [
+     1,
+     "2026-11-22",
+     "IND-455734",
+     "+919708081010",
+     "Waldorf Checked Dress Pants - Light Brown (Light Brown / 32); Soft Washed Linen Shirt - White"
     ]
    ]
   },
@@ -6972,6 +7007,13 @@
      "IND-444393",
      "+919404688016",
      "Trevano 4-Way Stretch Relaxed Neapolitan Dress Pants – Jet Black (Jet Black / 32); Wrinkle-free Bamboo-Blend Twill Shirt - Grey"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-456114",
+     "+919028312353",
+     "Cotton Dobby Shirt - Light Blue"
     ]
    ]
   },
@@ -7625,6 +7667,13 @@
      "IND-453586",
      "+919773407405",
      "Paramount Dress Pants - Light Grey (Light Grey / 46); Luthai Wrinkle Free Dobby Shirt - White"
+    ],
+    [
+     2,
+     "2026-11-22",
+     "IND-460632",
+     "+919769440861",
+     "Signature Flat Knit Long Sleeve Polo T-shirt - Navy (Navy / L)"
     ]
    ]
   },
@@ -9289,6 +9338,13 @@
      "IND-453749",
      "+918879338185",
      "Soktas Soft Twill Shirt - Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Navy; Wrinkle-free Bamboo-Blend Twill Shirt - White; Soktas Satin Shirt - Pink"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-455396",
+     "+919764444550",
+     "Soktas Dobby Shirt - Off White"
     ]
    ]
   },
@@ -9640,6 +9696,13 @@
      "IND-456210",
      "+919331806623",
      "Light Blue Dobby Checked Shirt (Light Blue / 38); Giza Cotton Grey Checked Shirt (Grey / 38)"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-453711",
+     "+918240958235",
+     "Exquisite Blended Wool Dress Pants - Black (Black / 32); The Belluno 100% Linen Casual Blazer - Ecru (Ecru / 40); Wrinkle-free Bamboo-Blend Twill Shirt - Black"
     ]
    ]
   },
@@ -11283,6 +11346,13 @@
      "IND-442739",
      "+919845649267",
      "Sylven Houndstooth Dress Pants - Navy (Navy / 36); Exquisite Blended Wool Dress Pants - Grey (Grey / 36); Cotton Dobby Striped Shirt - Blue & White; SRT20724 - Reid & Taylor Bespoke"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-460691",
+     "+919886017744",
+     "Floral Line Printed Shirt - Navy"
     ]
    ]
   },
@@ -11452,6 +11522,13 @@
      "IND-455144",
      "+919447316311",
      "Cotton Linen Shirt - White x2"
+    ],
+    [
+     0,
+     "2026-11-22",
+     "IND-457009",
+     "+918129534942",
+     "Cotton Dobby Shirt - Navy"
     ]
    ]
   },
