@@ -140,7 +140,10 @@ const AUDITS = {
   sal: {title:'Sales Audit', unit:'calls', scoredOnly:true, params:['Opening & Personalisation','Customer Understanding','Product & Offer Communication','Purchase Invitation & Conversion','Follow-up & Call Closure',
     'Greeting and Introduction','Customer connection','Need discovery','Personalized recommendation','Store visit conversion','Objection handling','Communication skills','Closing','Documentation']}
 };
-const COMP_CORE = 7; // all seven compliance parameters, Staff Grooming included, make up the Avg
+// Every compliance parameter scored in the month, Staff Grooming included, makes up the Avg.
+// From Nov 2026 one 'Calling' parameter replaces NPS / At Store / Delay Calling, so the card lists
+// only the parameters the tracker scored that month (anywhere in the network).
+const compScored = mk => D.compParams.map((p, pi) => pi).filter(pi => Object.values(D.comp[mk] || {}).some(st => Object.values(st).some(w => w[pi])));
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cls = p => p == null ? 'x' : p >= 80 ? 'g' : p >= 60 ? 'w' : 'b';
@@ -157,7 +160,7 @@ function compPct(mk, stores, weeks, pi){
   stores.forEach(st => weeks.forEach(w => { const c = at('comp', mk, st, w); if (c && c[pi]){ s += c[pi][0]; m += c[pi][1]; } }));
   return m > 0 ? s / m * 100 : null;
 }
-const compAvg = (mk, stores, weeks) => mean([...Array(COMP_CORE).keys()].map(pi => compPct(mk, stores, weeks, pi)));
+const compAvg = (mk, stores, weeks) => mean(compScored(mk).map(pi => compPct(mk, stores, weeks, pi)));
 
 // Call and behaviour audits: mean of the per-audit percentages. pi = -1 gives the audit's final score.
 function auditPct(key, mk, stores, weeks, pi){
@@ -194,9 +197,9 @@ function compCard(mk, month, sel){
   const stores = storesFor(sel);
   const row = (label, f, c) => `<tr class="${c || ''}"><td>${esc(label)}</td>${WEEKS.map(w => cell(f([w]))).join('')}${cell(f(WEEKS), 'avg')}</tr>`;
   let body = '';
-  for (let pi = 0; pi < COMP_CORE; pi++) body += row(D.compParams[pi], ws => compPct(mk, stores, ws, pi));
+  compScored(mk).forEach(pi => { body += row(D.compParams[pi], ws => compPct(mk, stores, ws, pi)); });
   body += row('Avg', ws => compAvg(mk, stores, ws), 'total');
-  const low = lowest(D.compParams.map((p, pi) => [p, compPct(mk, stores, WEEKS, pi)]));
+  const low = lowest(compScored(mk).map(pi => [D.compParams[pi], compPct(mk, stores, WEEKS, pi)]));
   return `<div class="card"><h2>Compliance <span>score ÷ max score</span></h2><div class="scroll"><table>${headRow(month)}<tbody>${body}</tbody></table></div>${feedback('comp', mk, sel, low)}</div>`;
 }
 
@@ -278,7 +281,7 @@ function svList(kind, stores){
 
 function tiles(mk, stores){
   const t = (k, p, n) => `<div class="tile"><div class="k">${k}</div><div class="v ${cls(p)}">${fmt(p)}</div><div class="n">${n}</div></div>`;
-  let h = t('Compliance', compAvg(mk, stores, WEEKS), 'average of seven parameters');
+  let h = t('Compliance', compAvg(mk, stores, WEEKS), `average of ${compScored(mk).length} parameters`);
   ['ba', 'inb', 'sal'].forEach(k => { const n = auditCount(k, mk, stores, WEEKS); h += t(AUDITS[k].title, auditPct(k, mk, stores, WEEKS, -1), n ? `${n} ${n === 1 ? AUDITS[k].unit.slice(0, -1) : AUDITS[k].unit}` : 'none this month'); });
   ['nps', 'fit'].forEach(kind => {
     const V = SURVEYS[kind], c = svCounts(kind, stores, [mk]), nm = V.S.months.find(m => m.key === mk);
