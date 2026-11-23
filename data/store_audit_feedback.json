@@ -6,28 +6,18 @@
     },
     "Andheri": {
       "comp": ["Four alterations sitting in progress: IND-435522 since 30 Sep, IND-438236 since 3 Oct, IND-427689 since 4 Oct, IND-439115 since 5 Oct."],
-      "inb": [
-        "Samir's call (48%): the customer had been calling the store for three days with no answer, was left on an open line for over two minutes, and could hear staff chatting about leaving early.",
-        "On the same call a callback was promised although Enigma already showed the alteration in progress. Give the status on the call and come back only with a confirmed shipping date.",
-        "Shraddha and Adnan (72% each): no proper opening or closing."
-      ]
+      "inb": ["Samir's call (48%): the customer had been calling the store for three days with no answer, was left on an open line for over two minutes, and could hear staff chatting about leaving early.", "On the same call a callback was promised although Enigma already showed the alteration in progress. Give the status on the call and come back only with a confirmed shipping date.", "Shraddha and Adnan (72% each): no proper opening or closing."]
     },
     "DLF Midtown": {
       "comp": ["IND-424808 has been in alteration since 28 Sep with no update."],
-      "ba": [
-        "Nitish Sharma was not in complete attire.",
-        "Mohammad Meharwan opened the conversation and then stepped back while the store manager handled the customer. They need more energy and confidence in their approach."
-      ],
+      "ba": ["Nitish Sharma was not in complete attire.", "Mohammad Meharwan opened the conversation and then stepped back while the store manager handled the customer. They need more energy and confidence in their approach."],
       "inb": ["Nitish's call (72%) had no proper opening or closing."]
     },
     "Express Avenue": {
       "comp": ["IND-425995 was delivered to the store on 7 Oct and has not moved since."]
     },
     "Gurugram": {
-      "comp": [
-        "Longest-pending alterations in the network: IND-374980 in progress for 30 days, IND-269717 and IND-368028 in alter request for 29 days, IND-332118 for 20 days.",
-        "Also open: IND-435551 (9 days), IND-427436 and IND-435556 (7 days), IND-431444 (5 days), IND-440888 (4 days), IND-431435 (2 days)."
-      ]
+      "comp": ["Longest-pending alterations in the network: IND-374980 in progress for 30 days, IND-269717 and IND-368028 in alter request for 29 days, IND-332118 for 20 days.", "Also open: IND-435551 (9 days), IND-427436 and IND-435556 (7 days), IND-431444 (5 days), IND-440888 (4 days), IND-431435 (2 days)."]
     },
     "Indiranagar": {
       "comp": ["IND-432636 has been in alteration since 24 Sep; IND-426653 has been in alter request for 7 days."]
@@ -40,43 +30,25 @@
     },
     "Jaipur": {
       "comp": ["IND-292174 has been in alteration at Jubilee Hills for a long time; get an update."],
-      "inb": [
-        "Yogesh's call (44%): a customer callback was answered with \"What?\" and the phone was handed over on an open mic. This is well below the expected tone.",
-        "The customer was only told the shirt had arrived. Store hours, trial availability and dispatch options were not offered."
-      ]
+      "inb": ["Yogesh's call (44%): a customer callback was answered with \"What?\" and the phone was handed over on an open mic. This is well below the expected tone.", "The customer was only told the shirt had arrived. Store hours, trial availability and dispatch options were not offered."]
     },
     "Jubilee Hills": {
       "inb": ["Seneen's call (72%): no proper opening or closing, and no apology for the confusion caused by a split delivery before giving the tracking ETA."]
     },
     "Juhu": {
-      "comp": [
-        "Alterations in progress: IND-434794 since 29 Sep, IND-398873 since 1 Oct, IND-433369 since 4 Oct; IND-442120 in alter request for 2 days.",
-        "IND-438107 and IND-432879: CCP delivered to the store on 1 Oct and still not closed."
-      ],
+      "comp": ["Alterations in progress: IND-434794 since 29 Sep, IND-398873 since 1 Oct, IND-433369 since 4 Oct; IND-442120 in alter request for 2 days.", "IND-438107 and IND-432879: CCP delivered to the store on 1 Oct and still not closed."],
       "inb": ["Sushant's call (72%) had no proper opening or closing."]
     },
     "Kalaghoda, Fort": {
-      "comp": [
-        "Stuck since mid-September: IND-182787 (in progress since 16 Sep) and IND-324821 (received at factory since 16 Sep).",
-        "Also open: IND-423376 at the factory since 28 Sep, IND-426332 in alter request for 2 days, IND-420387 CCP delivered to store and not closed."
-      ],
-      "inb": [
-        "Mohammed Ammar's call (52%): exchange IND-437230 reached the factory on 29 Sep and was still not dispatched by 11 Oct, three days after the customer called. Nobody followed up.",
-        "Yasin's call (76%) had no proper opening or closing."
-      ]
+      "comp": ["Stuck since mid-September: IND-182787 (in progress since 16 Sep) and IND-324821 (received at factory since 16 Sep).", "Also open: IND-423376 at the factory since 28 Sep, IND-426332 in alter request for 2 days, IND-420387 CCP delivered to store and not closed."],
+      "inb": ["Mohammed Ammar's call (52%): exchange IND-437230 reached the factory on 29 Sep and was still not dispatched by 11 Oct, three days after the customer called. Nobody followed up.", "Yasin's call (76%) had no proper opening or closing."]
     },
     "Kemps Corner": {
-      "comp": [
-        "IND-430493 (since 24 Sep) and IND-436132 (since 25 Sep) were flagged on both audits and are still in progress.",
-        "Also in progress: IND-421149 since 29 Sep, IND-391076 and IND-388120 since 2 Oct, IND-172779 since 6 Oct."
-      ],
+      "comp": ["IND-430493 (since 24 Sep) and IND-436132 (since 25 Sep) were flagged on both audits and are still in progress.", "Also in progress: IND-421149 since 29 Sep, IND-391076 and IND-388120 since 2 Oct, IND-172779 since 6 Oct."],
       "inb": ["Rashi's call (72%) had no proper opening or closing."]
     },
     "Khan Market": {
-      "comp": [
-        "IND-430026: CCP has been in process at the factory since 10 Sep. IND-436205: reverse pickup not done since 27 Sep.",
-        "IND-416687 in alter request for 6 days and IND-437469 for 4 days."
-      ]
+      "comp": ["IND-430026: CCP has been in process at the factory since 10 Sep. IND-436205: reverse pickup not done since 27 Sep.", "IND-416687 in alter request for 6 days and IND-437469 for 4 days."]
     },
     "KNK Chennai": {
       "comp": ["IND-435969 in alteration since 3 Oct. IND-411275 is waiting for fabric; confirm when it is expected."]
@@ -86,10 +58,7 @@
       "inb": ["Nimmy had no proper opening or closing on both audited calls (72% each)."]
     },
     "Koregaon Park": {
-      "comp": [
-        "IND-164472 and IND-439844 in alter request for 3 days; IND-376978 for 3 days.",
-        "IND-405052 moved from request to in progress only after four days; IND-431418 is taking unusually long."
-      ],
+      "comp": ["IND-164472 and IND-439844 in alter request for 3 days; IND-376978 for 3 days.", "IND-405052 moved from request to in progress only after four days; IND-431418 is taking unusually long."],
       "inb": ["Kris (72%) and Omkar (76%): no proper opening or closing."]
     },
     "Lavelle Road": {
@@ -97,82 +66,44 @@
       "inb": ["Sachin's call (76%) had no proper opening or closing."]
     },
     "Mall of India": {
-      "inb": [
-        "Arman's call (64%): other floor staff were shouting and talking right next to the phone for much of the call.",
-        "Arman and Akash Kumar (72%) both had no proper opening or closing."
-      ]
+      "inb": ["Arman's call (64%): other floor staff were shouting and talking right next to the phone for much of the call.", "Arman and Akash Kumar (72%) both had no proper opening or closing."]
     },
     "Oberoi Mall": {
-      "inb": [
-        "Mustaq's call (40%): the customer had been promised early delivery of a trial shirt, but was given the standard timeline. If unsure, check and call back with a proper update.",
-        "Abdul Aziz's call (68%): no proper opening or closing, and no apology for a shirt delayed by a fabric shortage."
-      ]
+      "inb": ["Mustaq's call (40%): the customer had been promised early delivery of a trial shirt, but was given the standard timeline. If unsure, check and call back with a proper update.", "Abdul Aziz's call (68%): no proper opening or closing, and no apology for a shirt delayed by a fabric shortage."]
     },
     "Pali Hill, Khar": {
       "comp": ["IND-422961 in alter request for 4 days; IND-427210 in progress since 3 Oct."],
-      "inb": [
-        "Vikas's call (48%): no empathy or ownership for a garment given for alteration a week earlier. The customer was left with \"in progress\" and no delivery date.",
-        "The stylist should have checked the shipping date with the factory and called back. Irfan's call (76%) had no proper closing."
-      ]
+      "inb": ["Vikas's call (48%): no empathy or ownership for a garment given for alteration a week earlier. The customer was left with \"in progress\" and no delivery date.", "The stylist should have checked the shipping date with the factory and called back. Irfan's call (76%) had no proper closing."]
     },
     "Phoenix Lucknow": {
       "inb": ["Amay's call (72%) had no proper opening or closing."]
     },
     "Phoenix Viman Nagar": {
       "comp": ["IND-439666 in alteration since 2 Oct."],
-      "inb": [
-        "Aaryan's call (72%): no proper opening or closing, and no apology for the delay.",
-        "Firoz's call (68%): no proper opening or closing, and no discovery questions asked."
-      ]
+      "inb": ["Aaryan's call (72%): no proper opening or closing, and no apology for the delay.", "Firoz's call (68%): no proper opening or closing, and no discovery questions asked."]
     },
     "PMC Kurla": {
-      "inb": [
-        "Saquib Sultan's call (16%): the order showed \"at store\", so the customer could have been told it was ready. Instead they went to check with the stylist who took the order.",
-        "Shwet's call (68%): no proper opening or closing, and no discovery questions asked."
-      ]
+      "inb": ["Saquib Sultan's call (16%): the order showed \"at store\", so the customer could have been told it was ready. Instead they went to check with the stylist who took the order.", "Shwet's call (68%): no proper opening or closing, and no discovery questions asked."]
     },
     "PMC Whitefield": {
       "comp": ["IND-432666 was flagged twice and has now been in alter request for 6 days. IND-435480: reverse pickup pending for a long time."]
     },
     "Select City Mall": {
-      "comp": [
-        "IND-431875 flagged on both audits, now 5 days in alter request; IND-344371 for 4 days. IND-241299 is stuck with no status.",
-        "IND-425257 and IND-377280: CCP delivered to the store on 20 Sep and still not closed."
-      ],
-      "ba": [
-        "Customer approaching is the main gap: one of Ritika Rana's interactions (54%) had no approach at all, and Sahil's (60%) needs to be better.",
-        "Ritika looked rigid at first and waited for the customer to start. They should initiate.",
-        "Twice, garments were handed to the customer instead of being hung in the trial room."
-      ],
-      "inb": [
-        "Ritika's call (64%): no proper opening or closing.",
-        "When an item was sold out nationwide they did not suggest other colours or styles, and did not apologise when the customer said other stores were unreachable."
-      ]
+      "comp": ["IND-431875 flagged on both audits, now 5 days in alter request; IND-344371 for 4 days. IND-241299 is stuck with no status.", "IND-425257 and IND-377280: CCP delivered to the store on 20 Sep and still not closed."],
+      "ba": ["Customer approaching is the main gap: one of Ritika Rana's interactions (54%) had no approach at all, and Sahil's (60%) needs to be better.", "Ritika looked rigid at first and waited for the customer to start. They should initiate.", "Twice, garments were handed to the customer instead of being hung in the trial room."],
+      "inb": ["Ritika's call (64%): no proper opening or closing.", "When an item was sold out nationwide they did not suggest other colours or styles, and did not apologise when the customer said other stores were unreachable."]
     },
     "Shakespear Sarani": {
-      "inb": [
-        "Augustine (60%) and Suchita (64%): no proper opening or closing, and no apology on delivery delays or for a confusing system email about a split dispatch.",
-        "Background noise from the floor was audible on Suchita's call."
-      ]
+      "inb": ["Augustine (60%) and Suchita (64%): no proper opening or closing, and no apology on delivery delays or for a confusing system email about a split dispatch.", "Background noise from the floor was audible on Suchita's call."]
     },
     "Sharath City": {
-      "inb": [
-        "Mohammed's call (36%) was a lost sale: they did not ask about measurements, timeline or colour, gave contradictory answers on trial garments, and did not explain how custom T-shirt sizing works.",
-        "They were dismissive (\"in other option we don't have, sir\"), did not check with colleagues or Jubilee Hills, and did not take the customer's details.",
-        "Vankudoth's call (68%): no proper opening or closing. They promised to send pictures without confirming the WhatsApp number or a time."
-      ]
+      "inb": ["Mohammed's call (36%) was a lost sale: they did not ask about measurements, timeline or colour, gave contradictory answers on trial garments, and did not explain how custom T-shirt sizing works.", "They were dismissive (\"in other option we don't have, sir\"), did not check with colleagues or Jubilee Hills, and did not take the customer's details.", "Vankudoth's call (68%): no proper opening or closing. They promised to send pictures without confirming the WhatsApp number or a time."]
     },
     "Sindhu Bhavan Marg": {
-      "comp": [
-        "IND-425934: reverse pickup pending for a month; close it.",
-        "IND-428297: CCP delivered to store since 29 Sep. IND-434762: received at store on 2 Oct, no update."
-      ]
+      "comp": ["IND-425934: reverse pickup pending for a month; close it.", "IND-428297: CCP delivered to store since 29 Sep. IND-434762: received at store on 2 Oct, no update."]
     },
     "Sky City Borivali": {
-      "ba": [
-        "Pranita Meshram (41%): when a second customer asked for help they switched attention and the first customer left. Ask the second customer to wait a moment.",
-        "Arbaaz (55% and 58%): poor start to the interaction and weak customer approach on both audits."
-      ],
+      "ba": ["Pranita Meshram (41%): when a second customer asked for help they switched attention and the first customer left. Ask the second customer to wait a moment.", "Arbaaz (55% and 58%): poor start to the interaction and weak customer approach on both audits."],
       "inb": ["Arbaaz's call (72%) had no proper opening or closing."]
     },
     "South Ex.": {
@@ -184,11 +115,171 @@
     },
     "Viviana Mall": {
       "comp": ["IND-434864 in alteration since 3 Oct with no update."],
-      "inb": [
-        "Tarannum's call (0%): the customer reported a wrong monogram (MF instead of MK) on all three shirts of order 440611, for the second order running. The store blamed the factory, but the order sheet shows the stylist entered the wrong initials.",
-        "The customer was also put on an unmuted hold while staff discussed it on the floor.",
-        "Aaquib's call (76%) had no proper opening or closing."
-      ]
+      "inb": ["Tarannum's call (0%): the customer reported a wrong monogram (MF instead of MK) on all three shirts of order 440611, for the second order running. The store blamed the factory, but the order sheet shows the stylist entered the wrong initials.", "The customer was also put on an unmuted hold while staff discussed it on the floor.", "Aaquib's call (76%) had no proper opening or closing."]
+    }
+  },
+  "2026-11": {
+    "Ambience Vasnt Kunj": {
+      "ba": ["Deepak (53%): work on the greeting and on starting a conversation with the customer.", "Sahadat (67%): stay near the trial room so the customer doesn't have to come out looking for help."],
+      "inb": ["Naveen's call (52%, IND-451303): the customer was left on a silent line for 2 minutes, and was told a shirt had been delivered when it had only shipped. Check the tracking before giving a status.", "Deepak (72%): no proper closing."],
+      "sal": ["Sarjan's call (20%): loud colleague chatter throughout; asked for positive feedback before checking how the fit and fabric turned out; missed own name, store, customer name and permission to speak.", "Naveen (73%, 53%): skipped checking whether the customer could talk, and ended on \"just for information\" with no next step. Close with a visit invitation or an offer to send the Winter Wear / Best Dressed Guest lookbook on WhatsApp."]
+    },
+    "Andheri": {
+      "comp": ["Alterations: IND-389548 (at factory since 29 Oct), IND-139912 (in progress since 25 Oct), IND-428222 (in progress since 3 Nov) need updates."],
+      "inb": ["Bilal (60%): very casual tone; set accurate expectations on womenswear replication and fabric matching.", "Amit (60%): apologise for missed callbacks and share the next steps after approval.", "Both calls: no proper opening or closing."],
+      "sal": ["Samir (76%): said \"I'm just pinging you on WhatsApp\" instead of asking, and the customer pushed back. Always ask before messaging, and keep background chatter down while the call rings.", "Samir (73%): no proper opening; skipped checking availability."]
+    },
+    "DLF Midtown": {
+      "inb": ["Jasmeet (76%, 72%): no proper opening or closing."],
+      "sal": ["Jasmeet's call on 8 Nov (30%): the mic was so muffled the customer couldn't make out the brand, store or pitch. Check the headset before calling.", "Jasmeet (54–71% on four other calls): skipped checking availability, no time-of-day greeting, and no lookbook or store details offered on WhatsApp after the pitch. Name the specific collections.", "Rohan (78%): colleague chatter audible while ringing; mention the customer's previous order or preferred fit before pitching."]
+    },
+    "Express Avenue": {
+      "inb": ["Abdul's call on 19 Nov (16%): left the customer on an unmuted line for about 2 min 40 sec with no check-ins until they hung up. Offer a quick callback instead of a long hold.", "Kaviya and Abdul (76% each, earlier calls): no proper opening or closing."],
+      "sal": ["Abdul (33%): fast, unclear pitch, hesitated on the store location, and didn't name the Hyderabad store or offer WhatsApp details when the customer said they were based there.", "Vijay (50%): no own name, no permission to speak, and a broad Diwali pitch with no specific fabrics or lookbook.", "Syed (77%) and Kaviya (67%): no proper opening or closing, skipped checking availability; a lot of background noise on Syed's call."]
+    },
+    "Gurugram": {
+      "comp": ["IND-437483 (in progress since 2 Nov) and IND-374993 (at factory since 4 Nov) were flagged in both W2 and W3 with no progress.", "Also flagged in W1: IND-431138 (at factory since 31 Oct), IND-426210 (in progress since 31 Oct)."],
+      "inb": ["Himanshu (68%): said \"no customisation\" and then \"customisation and all\" in the same call, so the customer had to ask twice.", "Urvashi (72%): loud staff conversation audible when the call was picked up.", "All three calls (incl. Abhishek, 72%): no proper opening or closing."],
+      "sal": ["Himanshu (40%): checking Enigma first would have shown unused store credit and a cancelled wedding order. Lead with empathy; don't laugh it off or jump straight to redeeming credit.", "Himanshu (45%): no proper closing, skipped checking availability; name the specific collections."]
+    },
+    "Indiranagar": {
+      "comp": ["IND-449628: alteration request open for 3 days with no update."],
+      "inb": ["Hidayathulla's call on 21 Nov (0%): after 6+ IVR loops, the customer was left on an unmuted line for about 5 min 30 sec with one brief check-in while walk-ins were served.", "Hidayathulla (68%): no probing, and the customer waited almost a minute for an answer. Raj (72%): no proper opening or closing."],
+      "sal": ["Rupini (15%): no own name or permission to speak, no product details, a passive invitation with no visit date or WhatsApp preview, and an abrupt \"Yeah, thank you\" ending."]
+    },
+    "Inorbit mall": {
+      "inb": ["Mohammed (60%): first said only a display piece was available and then confirmed a fresh one; said the exchange couldn't be done instantly, then that it could. Check before answering.", "Nagaraj (72%): no proper opening or closing."],
+      "sal": ["Nagaraj (51–78% over five calls): speaks too fast and unclearly, so customers ask for repeats; skips own name, customer name and permission to speak; colleague chatter audible. Step into a quiet spot before dialling.", "Mohammed (67%): skipped checking availability; name the specific collections."]
+    },
+    "Inorbit Mall Malad West": {
+      "ba": ["Rajesh (58%, 53%): approach with a smile and energy and say what BSC is; was seen fidgeting while the customer browsed; hang garments in the trial room instead of handing them over.", "Inderjit (50%) and Mushir (66%): open the conversation with more energy and impact."],
+      "inb": ["Inderjit (64%): lead with empathy on travel deadlines, and use mute/hold with timely check-ins. No proper opening or closing."],
+      "sal": ["Rajesh (67–74%) and Inderjit (49%): direct collection announcements with no discovery questions (upcoming weddings or parties) and no reference to past purchases or visits; colleague chatter audible on Rajesh's calls."]
+    },
+    "Jaipur": {
+      "inb": ["Manish (76%): no proper opening or closing."]
+    },
+    "Jubilee Hills": {
+      "inb": ["Seneen (52%): put the customer on hold without telling them.", "Seneen (76%): the first stylist didn't give their name and shouted across the showroom on an unmuted line. On another call, didn't tell the customer that gift cards are valid for one year and can't be extended.", "All three calls: no proper opening or closing."],
+      "sal": ["Mohammed Abdul (44%): explained why they called but didn't invite the customer in or offer an appointment; no own name, casual ending.", "Giduthuri (64%): once the customer showed interest, lock in an appointment; keep background chatter down.", "Seneen (35%): when a customer is in a rush, switch quickly to a WhatsApp follow-up and close properly."]
+    },
+    "Juhu": {
+      "comp": ["IND-443409: at the factory since 28 Oct, flagged in both W1 and W2.", "IND-428084: took from 11 to 17 Nov to move from factory to alteration in progress."],
+      "inb": ["Adnan (72%, both calls): no proper opening or closing."],
+      "sal": ["Adnan (49%, 54%): no proper closing, skipped checking availability. Practise the exact collection name (\"Best Dressed Guest\") with one highlight, and close with the full sign-off.", "Amar (71%): no proper opening; a lot of background noise."]
+    },
+    "Kalaghoda, Fort": {
+      "comp": ["W1 had a long alteration backlog: IND-448257, IND-431573, IND-449263, IND-448622, IND-446175, IND-436944 and IND-438005 in progress since mid/late Oct, and IND-430471 at store since 15 Oct.", "W2: IND-452124 in progress since 7 Nov."],
+      "inb": ["Mohammed Ammar (76%): no proper opening or closing."]
+    },
+    "Kemps Corner": {
+      "comp": ["Alterations in progress without updates: IND-413471, IND-453564 (W2); IND-455406, IND-456460 (W3). IND-452356 has been at the factory since 11 Nov without the alteration starting."],
+      "inb": ["Rashi (0%): took a store call while not at the store and hadn't logged out of Superfone.", "Rahul (72%): left the handset unmuted on the counter for 2 minutes while checking cufflink stock, so the caller heard another customer's consultation.", "Rahul (64%): the customer had been chasing an update for two days and got no apology. No proper opening or closing on either call."],
+      "sal": ["Manav (74%): name the exact past item (e.g. \"the formal shirts you picked up last time\") and ask a quick discovery question, rather than \"I can see you've taken some product\"."]
+    },
+    "Khan Market": {
+      "comp": ["IND-447453 (in progress since 5 Nov) and IND-271984 (since 2 Nov) need updates."],
+      "inb": ["Pari Singh (32%): the customer wanted an exchange update and a number change on the profile; the call was cut short to serve a walk-in with a 10-minute callback promised, and no callback was logged in Superfone.", "Anand (72%): no proper opening or closing."],
+      "sal": ["Pari (72%): pitched the new collection right after the customer said a shirt was loose and another was still pending, and only checked the order when they raised it again. Resolve the issue before pitching.", "Anand (61%): low outgoing volume, skipped checking availability, no proper closing. Pari Singh (50%): name the specific collections."]
+    },
+    "KNK Chennai": {
+      "inb": ["Sushmita (68%): no probing. Mudasir and Vijay Kumar (76% each): no proper opening or closing."],
+      "sal": ["Mudasir (58%, 69%): no permission to speak; got a weekend visit commitment but didn't fix the day; didn't set a reminder for the customer's December return; informal endings.", "Mudasir (20%): \"just letting you know\" with no invitation; when the customer mentioned a recent shirt, ask how the fit turned out and invite them back."]
+    },
+    "Kochi": {
+      "inb": ["Nimmy (64%): left the handset unmuted for a minute with floor chatter after taking the number.", "Nimmy (56%): when the caller said they had never shopped with BSC, ended the call instead of checking whether a family member used the number or introducing BSC.", "All three calls: no proper opening or closing."],
+      "sal": ["Nimmy (60%, 71%): skipped checking availability; lead with empathy before explaining policy, and name the specific collections."]
+    },
+    "Koregaon Park": {
+      "comp": ["W1: IND-451249 alteration request since 3 Nov; reverse pickups for IND-441368 and IND-443601 pending; IND-441116, IND-443895 and IND-331577 in progress since late Oct.", "W2: IND-361680, IND-418354 in progress; IND-309260 at factory since 7 Nov. W3: IND-454405 in progress since 15 Nov."],
+      "inb": ["Kris (68%): no follow-up with the customer on orders at store since 16 Oct, and the call lacked empathy.", "Omkar (72%): apologise sincerely when a customer has had to chase missed callbacks.", "All three calls: no proper opening or closing."]
+    },
+    "Lakeshore mall, Kukatpally": {
+      "ba": ["Naresh (41%): hang garments in the trial room instead of handing them over, stay near the trial room, and start with more energy.", "Mohammed Ahmed (57%): more energy at the start. Mohd Sadath (86%): good, energetic start with intent."],
+      "inb": ["Sadath (64%): left the mic live while calling across the floor for a colleague, so the customer had to repeat their number and sat through about 55 seconds of dead air.", "Suraj (68%): listen actively and apologise for missed store updates. No proper opening or closing on any of the three calls."],
+      "sal": ["Naresh (42–66% over six calls): regularly skips own name, customer name and permission to speak; broad \"shirts and trousers\" pitch with no collection names or offers (e.g. 6+1); background music/noise; abrupt endings. Name collections, offer a WhatsApp preview, and set a follow-up after the customer's travel."]
+    },
+    "Lavelle Road": {
+      "comp": ["IND-400372: at the factory since 5 Nov with no update."],
+      "inb": ["Sachin (36%): on a new-arrivals call, didn't know about the BSC x Rid Burman capsule, kept pushing Best Dressed Guest and questioned the customer, who had to point them to the website.", "Sylvester (68%, 72%): no proper opening or closing."],
+      "sal": ["Sachin (20%): no store name or permission to speak, no visit invitation or catalogue, and when the line showed as \"Airtel Spam\" offered to call from a personal number. Use the store line and flag the spam tag to HO instead.", "Nagasesha (14%): no own name, a generic \"new collection\" pitch, no visit window or WhatsApp lookbook, and no proper sign-off.", "Sachin (49%) and Sunil (72%): no proper opening or closing, muffled mic and background noise; personalise the new arrivals to past purchases."]
+    },
+    "Mall of India": {
+      "comp": ["IND-447576 and IND-445479 (W2) and IND-454415 (W3): alterations in progress without updates."],
+      "inb": ["Arman (68–72%, three calls): no proper opening or closing, and no probing."],
+      "sal": ["Akash Kumar (57%, 66%): stumbled through the explanation with repeated fillers; skipped checking availability; offer a digital catalogue when the customer is travelling.", "Akash Kumar (76%): add a time-of-day greeting, the customer's name and permission to speak. For an older garment, mention upfront if alteration charges may apply."]
+    },
+    "Oberoi Mall": {
+      "comp": ["Alteration requests open for IND-307310 (2 days) and IND-447719 (4 days)."],
+      "inb": ["Azharuddin (68%): didn't probe or verify order details. No proper opening or closing on all three calls."],
+      "sal": ["Azharuddin (73%): when the customer said they'd already worn the trousers twice, add a reason to visit (new shirts and trousers in store) and make sure the closing is audible.", "Abdul Aziz (59%): no proper opening or closing, skipped checking availability; step away from store chatter."]
+    },
+    "Pali Hill, Khar": {
+      "comp": ["IND-450256 and IND-449604 in progress since 1–2 Nov; IND-388687 out of the factory since 17 Oct and not traced."],
+      "inb": ["Arjun (68%, both calls): no proper opening or closing."]
+    },
+    "Phoenix Lucknow": {
+      "inb": ["Shilpa (72%) and Kuldeep (76%): no proper closing."],
+      "sal": ["Kuldeep (74%): went straight into the pitch without checking the customer had a moment."]
+    },
+    "Phoenix Viman Nagar": {
+      "comp": ["IND-443300 in progress since 2 Nov, flagged in W2 and W3; IND-454462 alteration request since 17 Nov."],
+      "inb": ["Firoz (64%): no probing. Ashish (68%): take ownership of rush feasibility checks and capture contact details. No proper opening or closing on either call."],
+      "sal": ["Ashish (60%): say the store branch in the first sentence and confirm it when locking in a visit; use the customer's name and ask permission; step away from chatter.", "Krishna (55%, two calls): no proper opening, skipped checking availability; ask what they're shopping for and name specific new arrivals."]
+    },
+    "PMC Kurla": {
+      "comp": ["IND-443641: alteration request open for 3 days."],
+      "inb": ["Saquib Sultan's call on 3 Nov (0%): stepped away to fetch a colleague and left the customer on dead air for over 70 seconds until the call dropped.", "Saquib Sultan (56%): refused to shorten ready-made shirts although RTW shirts can be altered lengthwise in store; left a 65-second unmuted silence.", "Mohiz (44%): got defensive when the customer flagged a timeline slip. Lead with empathy and ownership."],
+      "sal": ["Saquib Sultan (15%): opening with \"it's been a year since you shopped\" sounds accusatory and triggered a no.", "Saquib Sultan (66%, 62%): apologise for the returned polo's fabric issue before pitching; name collections; a lot of background noise.", "Moiz (62%): skipped checking availability, vague \"so many new options\", no proper closing."]
+    },
+    "PMC Whitefield": {
+      "comp": ["IND-323407 (2 days) and IND-241679 (since 7 Nov): alteration requests without updates."],
+      "inb": ["Anjali (51%): argued \"shipped, not delivered\" for nearly a minute instead of checking why the tracking ID showed invalid, then left the handset unmuted for 1 min 25 sec with staff chatter.", "Niranjan (72%) and Anjali (76%): no proper opening or closing."],
+      "sal": ["Niranjan (19%): skipped checking availability, heavy chatter, weak pitch with no collection details or store invitation.", "Surendra (48%, 52%): no proper opening or closing; when the customer says \"I'll check online\", send a WhatsApp link and the nearest store."]
+    },
+    "R.K. Salai": {
+      "inb": ["Gowsic (76%, 72%) and Sathish (76%): no proper opening or closing."],
+      "sal": ["Gowsic (44%, 39%) and another stylist (45%): calls were only an invitation to see the renovated store. Personalise them with new collections and fabrics, and give your name when calling from the store number.", "Krishnakumar (71%): the customer agreed to come in for an alteration and see the collection, so ask when they'll visit."]
+    },
+    "Select City Mall": {
+      "comp": ["IND-439187 (in progress since 5 Nov) and IND-449566 (request open 3 days) need updates."],
+      "inb": ["Sahil (48%): answered the store line from outside the showroom amid street noise and promised an update in 10 minutes; no callback logged in Superfone.", "Ritika (68%): addressed the caller as \"sir\" by mistake; a lot of background staff chatter."],
+      "sal": ["Ritika (57%): name a couple of winter highlights, offer a WhatsApp lookbook, and pause before the closing."]
+    },
+    "Shakespear Sarani": {
+      "comp": ["CCP delivered to store and not closed: IND-439855 (since 31 Oct), IND-445797 and IND-442872."],
+      "inb": ["Suchita (76%): no proper opening or closing."],
+      "sal": ["Suchita (21%, 64%): no permission to speak; \"new collection aaya tha\" is too vague, so name the collection and categories; offer the WhatsApp lookbook when the customer is out of town.", "Suchita (47%) and Augustine (52%, 57%): broad categories with no discovery questions or link to past purchases. Augustine should add their name, store and the customer's name upfront."]
+    },
+    "Sharath City": {
+      "comp": ["IND-449628: alteration request open for 3 days."],
+      "inb": ["Aleem (68–76%, three calls): no proper opening or closing."],
+      "sal": ["Aleem (22%): when the customer complained about past stitching quality, didn't apologise or probe the defect, and disconnected when they pushed back.", "Mohammed (13–55%, three calls): mumbled the opening so the customer asked twice for the company name; vague \"new collection\" pitch; share the exact Black Friday offer details with a WhatsApp preview.", "Vankudoth (77%): no proper closing, skipped checking availability."]
+    },
+    "Sindhu Bhavan Marg": {
+      "comp": ["Alterations keep piling up: IND-389129 (request since Oct), IND-442078 (16 days), IND-450494 (since 6 Nov), IND-454456 (7 days), IND-452313 (at store since 16 Nov).", "W1 also had IND-438906 reverse pickup pending, and CCP delivered to store for IND-446121, IND-441966 and IND-443823."],
+      "ba": ["Rahul (33%): didn't greet the customer and seemed uninterested in helping.", "Harsh (43%): no warm welcome and very little conversation through the visit.", "Hari Krishn (81%): good continuous interaction. Ananya (84%): great start, but lost steam later."],
+      "inb": ["Hiten (64%): no probing. Rahul (68%) and Harsh (72%): no proper opening or closing."]
+    },
+    "Sky City Borivali": {
+      "comp": ["IND-366897 (in progress since 5 Nov) and IND-451591 (since 15 Nov) need updates."],
+      "inb": ["Abhishek (68%): no proper opening or closing, and no probing."],
+      "sal": ["Abhishek (62–76%, three calls): add a time-of-day greeting and permission to speak; check recent orders in Enigma first so the call can be about fit on the Diwali pieces; mention a past item; avoid generic \"formals and casual shirts\"."]
+    },
+    "South Ex.": {
+      "comp": ["IND-451302: alteration request open for 3 days."],
+      "inb": ["Vijay (80%): no proper opening or closing."],
+      "sal": ["Vijay (75%): strong opening with name, brand, store and permission. Next: use the customer's name, set a follow-up after the WhatsApp lookbook, and end with the full sign-off instead of \"Done sir, thank you\"."]
+    },
+    "Vegas Mall Dwarka": {
+      "comp": ["IND-446485: in progress since 2 Nov with no update."],
+      "ba": ["Panku (53%): seemed uninterested and was chatting with a colleague.", "Vikas (57%): no enthusiasm at the start.", "Manisha (62%): when another customer walked in, the first one left. Practise handling two customers at once."],
+      "inb": ["Vikas (68%): order reached the store on 26 Oct, and no at-store call was made for 8 days until the customer called.", "Vikas (56%, IND-455506): three shipments on the order; the status could have been resolved on the call. Lacked empathy.", "Vikas (60%): the customer wanted 6–7 custom shirts and a home measurement visit, but their name and area weren't taken and the 6+1 offer wasn't pitched."],
+      "sal": ["Manisha (49–74%, three calls): skipped checking availability; when the customer shows interest, lock in an appointment; no proper closing.", "Vikas (72%): the customer had to remind them they'd already said they'd be back in Delhi after December. Navjot (74%): check the customer is free before asking about the order."]
+    },
+    "Viviana Mall": {
+      "inb": ["Tarannum, Aaquib and Vinayak (72–76%): no proper opening or closing."],
+      "sal": ["Tarannum (62–74%, four calls): ask permission to speak and respect \"I'm not available\" straight away; ask a discovery question and mention a past item from the order history; no proper closing."]
     }
   }
 }
