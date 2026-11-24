@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-23 10:14:15 (data for 2026-11-22))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-24 10:14:15 (data for 2026-11-23))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–22 Nov"
+   "range": "1–23 Nov"
   }
  ],
  "stores": {
@@ -166,7 +166,7 @@
     2
    ],
    "2026-11": [
-    3,
+    4,
     1,
     2
    ]
@@ -292,7 +292,7 @@
     3
    ],
    "2026-11": [
-    1,
+    2,
     0,
     1
    ]
@@ -1052,18 +1052,18 @@
    ],
    "2026-11": [
     [
-     0,
-     "2026-11-11",
-     "IND-452681",
-     "+918056235131",
-     "The Paramount Blazer - Black (Uniform) (Black / 44)"
-    ],
-    [
      1,
      "2026-11-21",
      "IND-454963",
      "+919842721337",
      "Soktas Checked Dobby Shirt - White; Luxor - 51575 SOKTAS BESPOKE; ESQUIRE - SOKTAS BESPOKE; Maldon - Manhattan Farbriano Bespoke; Washed Oxford Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-452681",
+     "+918056235131",
+     "The Paramount Blazer - Black (Uniform) (Black / 44)"
     ]
    ]
   },
@@ -1657,6 +1657,13 @@
      "IND-453753",
      "+917303876501",
      "Ivoro 100% Linen Relaxed Neapolitan Pants - Beige (Beige / 32); Brick Blended Linen Washed Shirt (Brick / 40); The Cortona 100% Linen Double-Breasted Casual Blazer - Beige (Beige / 38)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-456662",
+     "+919867741752",
+     "Soft Cotton Blend Twill Shirt - Pink"
     ]
    ]
   },
@@ -2375,6 +2382,13 @@
      "IND-457452",
      "+919205962138",
      "Black Wrinkle-Free Bamboo Blend Satin Shirt (Black / 42)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-459814",
+     "+919319529011",
+     "Pink Wrinkle-Free Stretch Twill Shirt (Pink / 40)"
     ]
    ]
   },

@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-23 10:14:15 (data for 2026-11-22))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-24 10:14:15 (data for 2026-11-23))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–22 Nov"
+   "range": "1–23 Nov"
   }
  ],
  "stores": {
@@ -98,7 +98,7 @@
     1
    ],
    "2026-11": [
-    10,
+    11,
     0,
     3
    ]
@@ -149,7 +149,7 @@
     0
    ],
    "2026-11": [
-    14,
+    15,
     1,
     3
    ]
@@ -166,7 +166,7 @@
     0
    ],
    "2026-11": [
-    7,
+    8,
     1,
     0
    ]
@@ -212,9 +212,9 @@
     2
    ],
    "2026-11": [
+    2,
     1,
-    1,
-    0
+    1
    ]
   },
   "Jubilee Hills": {
@@ -229,7 +229,7 @@
     6
    ],
    "2026-11": [
-    2,
+    3,
     3,
     4
    ]
@@ -248,7 +248,7 @@
    "2026-11": [
     4,
     0,
-    1
+    2
    ]
   },
   "PMC Whitefield": {
@@ -263,7 +263,7 @@
     2
    ],
    "2026-11": [
-    9,
+    10,
     0,
     2
    ]
@@ -332,8 +332,8 @@
    ],
    "2026-11": [
     3,
-    1,
-    1
+    2,
+    2
    ]
   },
   "Oberoi Mall": {
@@ -433,7 +433,7 @@
     4
    ],
    "2026-11": [
-    8,
+    9,
     2,
     1
    ]
@@ -450,7 +450,7 @@
     0
    ],
    "2026-11": [
-    10,
+    12,
     0,
     2
    ]
@@ -467,7 +467,7 @@
     0
    ],
    "2026-11": [
-    8,
+    10,
     1,
     1
    ]
@@ -484,7 +484,7 @@
     3
    ],
    "2026-11": [
-    14,
+    15,
     5,
     3
    ]
@@ -501,7 +501,7 @@
     2
    ],
    "2026-11": [
-    7,
+    8,
     1,
     1
    ]
@@ -586,7 +586,7 @@
     1
    ],
    "2026-11": [
-    7,
+    8,
     0,
     1
    ]
@@ -603,7 +603,7 @@
     3
    ],
    "2026-11": [
-    3,
+    4,
     1,
     0
    ]
@@ -2327,6 +2327,13 @@
      "IND-456173",
      "+919820757162",
      "Urban Ease Ready-to-Wear Chinos - Brown (Brown / 42); Elevate Everyday Stretch Chinos - White (White / 42)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-456674",
+     "+919967638430",
+     "VISCOUNT - SOKTAS BESPOKE; 100% Silk Paisley Printed Pocket Square - Maroon & Blue"
     ]
    ]
   },
@@ -3625,6 +3632,13 @@
      "IND-456116",
      "+919448474775",
      "Lorenzo Twill Dress Pants - Beige (Beige / 34); Elevate Everyday Stretch Chinos - Dark Beige (Dark Beige / 32)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-459262",
+     "+919844464413",
+     "Signature Flat Knit Long Sleeve  Polo - Black (Black / M); Stonebridge Cotton Dobby Shacket - Olive (Olive / 40)"
     ]
    ]
   },
@@ -3871,6 +3885,13 @@
      "IND-450683",
      "+919865509999",
      "Westcott Checked Mid-Rise Dress Pants - Grey (Grey / 34); Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 32)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-461987",
+     "+919840540421",
+     "Tailored 4-Way Stretch Twill Smart Pants - Dark Grey (Dark Grey / 36); Tailored 4-Way Stretch Twill Smart Pants - Olive (Olive / 36); White Cotton Twill Shirt (White / 42)"
     ]
    ]
   },
@@ -4831,6 +4852,20 @@
      "IND-456338",
      "+919940032786",
      "Washed Oxford Shirt - Olive; Washed Oxford Shirt - Navy; Giza Cotton Bengal Striped Shirt - Pink; Soktas Micro Dobby Shirt - White; Washed Oxford Shirt - Pink; Cotton Linen Shirt - Light Blue; Washed Oxford Shirt - White"
+    ],
+    [
+     2,
+     "2026-11-23",
+     "IND-454854",
+     "+919566004660",
+     "Soft Washed Linen Shirt - Olive; Soft Washed Linen Shirt - Pearl Grey; 100% Linen Shirt - Dark Brown"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-458399",
+     "+919677017970",
+     "Mustard Half-Sleeve Textured Dobby Shirt (Yellow / 40)"
     ]
    ]
   },
@@ -5392,6 +5427,13 @@
      "IND-450684",
      "+918801028088",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-Free Stretch Satin Shirt - Black"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-457094",
+     "+918125091111",
+     "Brompton Mid-Rise Dress Pants - Black (Black / 38); Laurent Twill Dress Pants - Navy (Navy / 38)"
     ]
    ]
   },
@@ -5589,6 +5631,13 @@
      "IND-455735",
      "+919944974337",
      "Giza Cotton Glen Plaid Checked Shirt - Navy; Cotton Lyocell Flannel Checked Shirt - Black & Beige"
+    ],
+    [
+     2,
+     "2026-11-23",
+     "IND-459634",
+     "+919810066903",
+     "Signature Flat Knit Long Sleeve  Polo - Beige (Beige / L); Signature Flat Knit Long Sleeve  Polo - Brown (Brown / L)"
     ]
    ]
   },
@@ -5912,6 +5961,13 @@
      "IND-456511",
      "+919600156749",
      "Ink Blue Mid-Rise Stretch Jeans (Blue / 36)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-457101",
+     "+919840098115",
+     "Soft Washed Linen Shirt - Light Ecru"
     ]
    ]
   },
@@ -7330,6 +7386,20 @@
      "IND-454266",
      "+919320395469",
      "The Best Dressed Guest  (Gold Coast  SRT2517); Marleston - Manhattan Farbriano Bespoke; Cotton Lyocell Oxford Striped Shirt - Green & Grey"
+    ],
+    [
+     2,
+     "2026-11-23",
+     "IND-452394",
+     "+919958419997",
+     "Marleston - Manhattan Farbriano Bespoke; Giza Cotton Houndstooth Shirt - Brown"
+    ],
+    [
+     1,
+     "2026-11-23",
+     "IND-456356",
+     "+919953627016",
+     "Black Wrinkle-Free Stretch Twill Shirt (Black / 40); Cavello Houndstooth Stretch Dress Pants - Black (Black / 38)"
     ]
    ]
   },
@@ -9345,6 +9415,13 @@
      "IND-455396",
      "+919764444550",
      "Soktas Dobby Shirt - Off White"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-456656",
+     "+918766448601",
+     "Flux 4-way Stretch Dress Pants - Grey (Grey / 44); Wrinkle-Free Oxford Shirt - Blue"
     ]
    ]
   },
@@ -9703,6 +9780,20 @@
      "IND-453711",
      "+918240958235",
      "Exquisite Blended Wool Dress Pants - Black (Black / 32); The Belluno 100% Linen Casual Blazer - Ecru (Ecru / 40); Wrinkle-free Bamboo-Blend Twill Shirt - Black"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-460993",
+     "+919836040822",
+     "Washed Oxford Shirt - Olive"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-455725",
+     "+919434039581",
+     "Japanese Brushed Twill Checked Shirt - Grey & Red"
     ]
    ]
   },
@@ -10082,6 +10173,20 @@
      "IND-454317",
      "+919701909999",
      "The Best Dressed Guest (Liverpool Plus  SRT21136); Memnon - 40349 SOKTAS BESPOKE; Giza Cotton Glen Plaid Checked Shirt - Navy; Merton - 40720 SOKTAS BESPOKE; Wrinkle-free Bamboo-Blend Twill Shirt - Olive; The Best Dressed Guest (Luton 51619); Easy-Care Stretch Cotton Striped Shirt - Grey & White; The Best Dressed Guest  (Napier  SRT11624); Wrinkle-Free Stretch Satin Shirt - Blue"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-455860",
+     "+919393553611",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Green; Flux 4-way Stretch Dress Pants - Jet Black (Jet Black / 38); Wrinkle-free Bamboo-Blend Twill Shirt - Grey; Wrinkle-free Bamboo-Blend Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Lavender; Flux 4-way Stretch Dress Pants - Navy (Navy / 38); Wrinkle-free Bamboo-Blend Twill Shirt - Black"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-456361",
+     "+919849350532",
+     "Cotton Twill Shirt - Blue & White"
     ]
    ]
   },
@@ -10664,6 +10769,13 @@
      "IND-454792",
      "+919893042288",
      "Massie - Manhattan Farbriano Bespoke; Monrovia - Manhattan Farbriano Bespoke; Soktas Poplin Shirt - White x3; Markwell - Manhattan Farbriano Bespoke; The Best Dressed Guest  (Vancouver  SRT22142)"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-461018",
+     "+919313496865",
+     "Caramel & Beige Broad Striped Shirt (Beige / 38)"
     ]
    ]
   },
@@ -10959,6 +11071,13 @@
      "IND-456448",
      "+919810500111",
      "Giza Cotton Bengal Striped Shirt - Light Blue"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-456169",
+     "+918826682646",
+     "Wrinkle-free Bamboo-Blend Twill Shirt - Dark Blue; Wrinkle-free Bamboo-Blend Twill Shirt - Lavender"
     ]
    ]
   },
@@ -11811,6 +11930,13 @@
      "IND-455100",
      "+919936796078",
      "Japanese Brushed Twill Checked Shirt - Grey & Red; Somelos Stretch Striped Shirt - Mid Blue & White"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-459512",
+     "+917991206605",
+     "Giza Cotton Maroon Micro Houndstooth Shirt (Maroon / 38)"
     ]
    ]
   },
@@ -12001,6 +12127,13 @@
      "IND-454161",
      "+918447701492",
      "Brushed Twill Shirt - Blue; Giza Cotton Bengal Striped Shirt - Grey"
+    ],
+    [
+     0,
+     "2026-11-23",
+     "IND-459869",
+     "+918588805452",
+     "Ashcroft Washed Twill Shacket - Royal Blue (Royal Blue / 42)"
     ]
    ]
   }
