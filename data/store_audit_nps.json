@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-24 10:14:15 (data for 2026-11-23))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-25 10:14:15 (data for 2026-11-24))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–23 Nov"
+   "range": "1–24 Nov"
   }
  ],
  "stores": {
@@ -30,7 +30,7 @@
     0
    ],
    "2026-11": [
-    7,
+    9,
     1,
     2
    ]
@@ -47,7 +47,7 @@
     1
    ],
    "2026-11": [
-    3,
+    4,
     1,
     1
    ]
@@ -98,7 +98,7 @@
     1
    ],
    "2026-11": [
-    11,
+    12,
     0,
     3
    ]
@@ -115,7 +115,7 @@
     0
    ],
    "2026-11": [
-    15,
+    16,
     3,
     0
    ]
@@ -263,7 +263,7 @@
     2
    ],
    "2026-11": [
-    10,
+    11,
     0,
     2
    ]
@@ -400,7 +400,7 @@
    ],
    "2026-11": [
     4,
-    1,
+    2,
     2
    ]
   },
@@ -416,7 +416,7 @@
     1
    ],
    "2026-11": [
-    10,
+    11,
     0,
     4
    ]
@@ -450,7 +450,7 @@
     0
    ],
    "2026-11": [
-    12,
+    13,
     0,
     2
    ]
@@ -484,7 +484,7 @@
     3
    ],
    "2026-11": [
-    15,
+    18,
     5,
     3
    ]
@@ -916,6 +916,20 @@
      "IND-458728",
      "+919910732438",
      "Giza Cotton Grey & Black Striped Shirt (Grey / 40)"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-458018",
+     "+919871833366",
+     "Signature Flat Knit Long Sleeve  Polo - Maroon (Maroon / S)"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461414",
+     "+919517277354",
+     "Black Wrinkle-Free Stretch Twill Shirt (Black / 46)"
     ]
    ]
   },
@@ -1092,6 +1106,13 @@
      "IND-451753",
      "+919873775128",
      "ESQUIRE - SOKTAS BESPOKE x2; Malaga - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-460285",
+     "+919999738373",
+     "Signature Classic Button Polo - Navy (Navy / XL); Signature Classic Button Polo - Black (Black / XL)"
     ]
    ]
   },
@@ -2334,6 +2355,13 @@
      "IND-456674",
      "+919967638430",
      "VISCOUNT - SOKTAS BESPOKE; 100% Silk Paisley Printed Pocket Square - Maroon & Blue"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-457034",
+     "+918433980703",
+     "Exquisite Blended Wool Dress Pants - Beige (Beige / 32); Valmont Two-Tone Structured Dress Pants - Navy (Navy / 32); Giza Cotton Maroon Micro Houndstooth Shirt (Maroon / 40); Langston Twill Dress Pants - Navy (Navy / 32); White Wrinkle-Free Bamboo Blend Satin Shirt (White / 40); Giza Cotton Navy Checked Shirt (Navy / 40); Navy Cotton Poplin Shirt (Navy / 40); Giza Cotton Light Blue Broad Herringbone Shirt (Light Blue / 40)"
     ]
    ]
   },
@@ -2825,6 +2853,13 @@
      "IND-457694",
      "+919967210807",
      "Aspen Mid-Rise Corduroy Lounge Pants - Dark Brown (Dark Brown / 38)"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-440135",
+     "+919833325265",
+     "Wrinkle-Free Bamboo-Blend Stretch Oxford Shirt - Dark Grey; Wrinkle-Free Bamboo-Blend Strech Broad Twill Shirt - White; Wrinkle-free Bamboo-Blend Twill Shirt - Pink"
     ]
    ]
   },
@@ -5968,6 +6003,13 @@
      "IND-457101",
      "+919840098115",
      "Soft Washed Linen Shirt - Light Ecru"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461466",
+     "+917760452593",
+     "Light Blue Oxford  Uniform Shirt - MTM; White Oxford Uniform Shirt - MTM"
     ]
    ]
   },
@@ -8475,6 +8517,13 @@
      "IND-454253",
      "+919594686786",
      "2-Ply Soft Herringbone Shirt - White"
+    ],
+    [
+     1,
+     "2026-11-24",
+     "IND-449602",
+     "+919820020209",
+     "Brown Textured Twill Shirt (Brown / 42); Soft Washed Linen Shirt - Green; Giza Cotton Houndstooth Shirt - Light Grey; Navy Popover Linen-Lyocell Shirt (Navy / 42); Signature Flat Knit Long Sleeve  Polo - Black (Black / L); Light Yellow Blended Linen Soft Washed Shirt (Light Yellow / 42); Signature Classic Button Polo - Golden Brown (Beige / L)"
     ]
    ]
   },
@@ -9141,6 +9190,13 @@
      "IND-458703",
      "+919820066615",
      "Paramount Dress Pants - Light Grey (Light Grey / 38); Soft Washed Linen Shirt - Brown; Soft Washed Linen Shirt - Mid Blue; Haircut"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461344",
+     "+919824137754",
+     "Alteration - Measurement Change x3"
     ]
    ]
   },
@@ -9794,6 +9850,13 @@
      "IND-455725",
      "+919434039581",
      "Japanese Brushed Twill Checked Shirt - Grey & Red"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-457361",
+     "+919831030327",
+     "Aurelis Houndstooth Stretch Dress Pants - Grey (Grey / 30); Brushed Twill Shirt - Green"
     ]
    ]
   },
@@ -10776,6 +10839,27 @@
      "IND-461018",
      "+919313496865",
      "Caramel & Beige Broad Striped Shirt (Beige / 38)"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461488",
+     "+917285080808",
+     "VICTORIA VANILLA x2; PALIHILL PISTACHIO x2"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461489",
+     "+919898889821",
+     "GYMKHANA- PROTEIN BELGIAN CHOCOLATE x2; GETWAY GOLD LOTUS BISCOFF"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461303",
+     "+919033238799",
+     "Rochefort Pinstripe Mid-Rise Dress Pants - Charcoal (Charcoal / 36); Soft Washed Linen Shirt - Brick"
     ]
    ]
   },
@@ -11059,13 +11143,6 @@
      "Mainz - Manhattan Farbriano Bespoke; Elevate Everyday Stretch Chinos - Coffee (Coffee / 32); GRANVILLE - SOKTAS BESPOKE"
     ],
     [
-     0,
-     "2026-11-18",
-     "IND-458807",
-     "+919990048700",
-     "Twill Craft Denim Shacket - Light Blue (Light Blue / 42)"
-    ],
-    [
      2,
      "2026-11-20",
      "IND-456448",
@@ -11078,6 +11155,13 @@
      "IND-456169",
      "+918826682646",
      "Wrinkle-free Bamboo-Blend Twill Shirt - Lavender; Wrinkle-free Bamboo-Blend Twill Shirt - Dark Blue"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-458807",
+     "+919990048700",
+     "Twill Craft Denim Shacket - Light Blue (Light Blue / 42)"
     ]
    ]
   },

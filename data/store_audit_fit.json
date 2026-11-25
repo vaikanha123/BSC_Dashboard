@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-24 10:14:15 (data for 2026-11-23))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-25 10:14:15 (data for 2026-11-24))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–23 Nov"
+   "range": "1–24 Nov"
   }
  ],
  "stores": {
@@ -30,7 +30,7 @@
     1
    ],
    "2026-11": [
-    4,
+    5,
     0,
     0
    ]
@@ -64,7 +64,7 @@
     1
    ],
    "2026-11": [
-    4,
+    5,
     2,
     2
    ]
@@ -408,7 +408,7 @@
    "2026-11": [
     0,
     2,
-    0
+    1
    ]
   },
   "Oberoi Mall": {
@@ -452,7 +452,7 @@
     0
    ],
    "2026-11": [
-    1,
+    2,
     1,
     0
    ]
@@ -513,6 +513,11 @@
     2,
     0,
     0
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Select City Mall": {
@@ -527,7 +532,7 @@
     4
    ],
    "2026-11": [
-    0,
+    1,
     2,
     1
    ]
@@ -676,6 +681,13 @@
      "IND-459954",
      "+919767697566",
      "BSC X Rid Burman Overshirt - Pale Gold (Pale Gold / 38)"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-460379",
+     "+919823129428",
+     "Midnight Blue Mid-Rise Stretch Jeans (Blue / 30)"
     ]
    ]
   },
@@ -951,6 +963,13 @@
      "IND-456643",
      "+919833508999",
      "Luxe Drift T-Shirt - Mid Blue (Mid Blue / L)"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-460984",
+     "+919790963118",
+     "Navy Popover Linen-Lyocell Shirt (Navy / 40); White Wrinkle-Free Stretch Twill Shirt (White / 40)"
     ]
    ]
   },
@@ -2996,6 +3015,13 @@
      "IND-455012",
      "+919008578095",
      "Stretch Floral Printed Shirt - Red & Blue"
+    ],
+    [
+     2,
+     "2026-11-24",
+     "IND-458501",
+     "+919846852256",
+     "Sunscape Relaxed Linen Pants - Beige (Beige / 34); Cotton Linen Shirt - Beige; Sunscape Relaxed Linen Pants - Dark Grey (Dark Grey / 34); Giza Cotton Gingham Checked Shirt - Navy"
     ]
    ]
   },
@@ -3165,6 +3191,13 @@
      "IND-446983",
      "+919845061599",
      "SCALA - REID & TAYLOR BESPOKE; Marleston - Manhattan Farbriano Bespoke; Exquisite Blended Wool Dress Pants - Black (Black / 36); Langford Merino Wool Glen Plaid Dress Pants - Charcoal (Charcoal / 36); SANREMO - REID & TAYLOR BESPOKE; Carlton Merino Wool Structured Dress Pants - Beige (Beige / 36); Markwell - Manhattan Farbriano Bespoke; Munich - Manhattan Farbriano Bespoke x2; Harlow - 51816 SOKTAS BESPOKE"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-456212",
+     "+919019319870",
+     "Vellfire - LL1102 Leggiuno Bespoke"
     ]
    ]
   },
@@ -3355,6 +3388,15 @@
      "+917014004373",
      "Navy Wrinkle-Free Stretch Twill Shirt (Navy / 42)"
     ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-24",
+     "IND-458090",
+     "+919829212771",
+     "Signature Flat Knit Long Sleeve  Polo - Ecru (Ecru / XL); Signature Flat Knit Long Sleeve  Polo - Blue Melange (Light Blue / XL)"
+    ]
    ]
   },
   "Select City Mall": {
@@ -3460,6 +3502,13 @@
      "IND-450709",
      "+919818035870",
      "Maldon - Manhattan Farbriano Bespoke x2; Luthai Wrinkle-Free Broad Herringbone Shirt - White; Marseille - Manhattan Farbriano Bespoke x3; Markwell - Manhattan Farbriano Bespoke"
+    ],
+    [
+     0,
+     "2026-11-24",
+     "IND-461083",
+     "+919988716497",
+     "Langston Twill Dress Pants - Navy (Navy / 32); Hadleigh Checked Dress Pants - Black (Black / 32)"
     ]
    ]
   },
