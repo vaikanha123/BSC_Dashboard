@@ -40,6 +40,7 @@ OUT = os.path.join(REPO, 'data', 'store_audit_data.js')
 FEEDBACK = os.path.join(REPO, 'data', 'store_audit_feedback.json')
 NPS = os.path.join(REPO, 'data', 'store_audit_nps.json')
 FIT = os.path.join(REPO, 'data', 'store_audit_fit.json')
+REASONS = os.path.join(REPO, 'data', 'store_audit_reasons.json')   # written by nps_reasons.py
 PAGE = os.path.join(REPO, 'store-audit.html')
 
 # The survey file starts on 26 Aug 2026, so August is only six days; it is left off the page.
@@ -326,10 +327,14 @@ def build(raw_dir, pulled):
     if os.path.exists(FIT):
         with open(FIT, encoding='utf-8') as f:
             fit = json.load(f)
+    reasons = {}
+    if os.path.exists(REASONS):
+        with open(REASONS, encoding='utf-8') as f:
+            reasons = json.load(f)
 
     data = {'pulledAt': pulled.isoformat(), 'months': months, 'stores': sorted(stores, key=str.lower),
             'compParams': COMP_PARAMS, 'comp': comp, 'ba': audits['ba'], 'inb': audits['inb'], 'sal': audits['sal'],
-            'notes': notes, 'feedback': feedback, 'nps': nps, 'fit': fit}
+            'notes': notes, 'feedback': feedback, 'nps': nps, 'fit': fit, 'reasons': reasons}
     return data, report
 
 
