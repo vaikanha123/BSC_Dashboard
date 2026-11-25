@@ -7,6 +7,9 @@ connector (get_values on A1:U<rows>) and pass the saved JSON results:
 
   python scripts/nps_reasons.py --sheet-json master_2026.json nov_onwards.json
 
+Reasons already in data/store_audit_reasons.json are kept (a fresh match replaces one), so the daily
+run passes only the "Nov 2026 onwards" tab.
+
 Columns by position, as in the sheet's header: A Source (only "NPS" rows, i.e. the WhatsApp survey),
 B Ticket ID ("TECH" = NPS survey, "FIT ASSES" = fit survey), C Customer Name, D Date (D-M-YYYY),
 G Phone, H Order ID, M Escalation, P Final Update, T Type of Escalation (the reason).
@@ -94,7 +97,12 @@ def main():
         for o in e['orders']:
             by_order.setdefault(o, []).append(e)
 
-    out = {}
+    # Keep reasons found on earlier runs, so the daily run need only pull "Nov 2026 onwards".
+    out = {'nps': {}, 'fit': {}}
+    if os.path.exists(OUT):
+        with open(OUT, encoding='utf-8') as f:
+            old = json.load(f)
+        out = {k: dict(old.get(k, {})) for k in out}
     for kind, path in SURVEYS.items():
         with open(path, encoding='utf-8') as f:
             detail = json.load(f).get('detail', {})
@@ -109,9 +117,10 @@ def main():
                     cand = {id(e): e for e in by_phone.get(phone10(phone), []) + by_order.get(order, [])}.values()
                     cand = [e for e in cand if -3 <= (e['day'] - d).days <= 30]
                     if not cand:
+                        got[mk] = got.get(mk, 0) + ('%s|%s' % (day, order) in out[kind])
                         continue
                     e = min(cand, key=lambda e: (e['kind'] != kind, abs((e['day'] - d).days)))
-                    out.setdefault(kind, {})['%s|%s' % (day, order)] = [e['type'], e['said'], e['outcome']]
+                    out[kind]['%s|%s' % (day, order)] = [e['type'], e['said'], e['outcome']]
                     got[mk] = got.get(mk, 0) + 1
         for mk in sorted(total):
             print('%s %s: reasons for %d of %d negative replies' % (kind, mk, got.get(mk, 0), total[mk]))
