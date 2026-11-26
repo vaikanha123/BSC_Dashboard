@@ -229,12 +229,12 @@
 "2026-11-05|IND-451589": [
 "No response",
 "No Answer WA Sent",
-""
+"No response hence closing the case"
 ],
 "2026-11-07|IND-450751": [
-"No response",
+"Delayed Delivery",
 "No Answer WA Sent",
-""
+"As per email sent by customer he has not received the product. Due to diwali festival customer receivedd the order very late on 10th November"
 ],
 "2026-11-18|IND-456116": [
 "Delayed Delivery",
@@ -269,12 +269,12 @@
 "2026-11-09|IND-452212": [
 "Fit issue",
 "He has aissue with the sizing (Long sleeve). He will share the images after which we need to arrange a pickup",
-""
+"- Alter garment shipped today"
 ],
 "2026-11-10|IND-439969": [
-"No response",
+"Fit issue",
 "Switched off WA Sent",
-""
+"No response hence closing the case"
 ],
 "2026-09-01|IND-428686": [
 "Defective/ Damage",
@@ -322,7 +322,7 @@
 "Cust has received all the shirts after alteration"
 ],
 "2026-11-23|IND-454854": [
-"No response",
+"Fit issue",
 "No Answer WA Sent",
 ""
 ],
@@ -449,7 +449,7 @@
 "2026-11-03|IND-448530": [
 "Fit issue",
 "The customer has the size issue and will connect with us after Diwali as he is not in town and informed the store team as well",
-""
+"- The order was delivered to the customer and he ishappy now"
 ],
 "2026-11-11|IND-454440": [
 "Fit issue",
@@ -602,7 +602,7 @@
 ""
 ],
 "2026-11-17|IND-444393": [
-"No response",
+"Delayed Delivery",
 "No Answer WA Sent",
 ""
 ],
@@ -697,14 +697,14 @@
 "Cust did not like the colour of the product and hence wanted CN for the ame."
 ],
 "2026-11-01|IND-450473": [
-"Fit issue",
+"Missed Customization",
 "Cust had placed order on 27th September and he still has not received his shirts he has visited the store 8-9 times and still he has not received a single shirt. There were issue with fit customization like spread collars were missing pockets missing…",
-""
+"Customer has received all the shirts and there is no issue with the any shirts"
 ],
 "2026-11-06|IND-450919": [
 "Fit issue",
 "He has size issue and will visit the store next week to process the alteration. As per the customer there is some minor alteration.",
-""
+"Garment received at factory and the alteration is in progress"
 ],
 "2026-11-11|IND-449422": [
 "Reconnect with the cust",
@@ -717,7 +717,7 @@
 ""
 ],
 "2026-11-22|IND-460632": [
-"No response",
+"Delivery related",
 "No Answer WA Sent",
 ""
 ],
@@ -814,7 +814,7 @@
 "2026-11-10|IND-455081": [
 "No response",
 "No Answer WA Sent",
-""
+"No response hence closing the case"
 ],
 "2026-09-02|IND-416608": [
 "Fit issue",
@@ -889,7 +889,7 @@
 "2026-11-09|IND-451506": [
 "No response",
 "No Answer WA Sent",
-""
+"No response hence closing the case"
 ],
 "2026-09-12|IND-429959": [
 "Fit issue",
@@ -904,7 +904,7 @@
 "2026-11-10|IND-449888": [
 "Reconnect with the cust",
 "Cust is busy will call us back tomorrow",
-""
+"No response hence closing the case"
 ],
 "2026-11-13|IND-387037": [
 "General Feedback",
@@ -934,7 +934,7 @@
 "2026-11-05|IND-450428": [
 "No response",
 "No Answer WA Sent",
-""
+"No response hence closing the case"
 ],
 "2026-09-14|IND-418135": [
 "Delayed Delivery",
@@ -977,7 +977,7 @@
 ""
 ],
 "2026-11-14|IND-452643": [
-"No response",
+"General Feedback",
 "No Answer WA Sent",
 ""
 ],
@@ -1110,6 +1110,16 @@
 "No response",
 "No Answer WA Sent",
 "No Answer hence closing the case"
+],
+"2026-10-31|IND-447937": [
+"General Feedback",
+"Cust had ordered a Blazer and received it in double fold his friend had also ordered the blazers from us and hence he informed that the blazer comes in one fold only. We checked with the cust if there is any damage done due to the fold cust informed that he…",
+""
+],
+"2026-10-31|IND-448558": [
+"Fit issue",
+"Customer had fitting issue and he visited the store for alteration. Even after alteration the shirt was not fitting right and hence the shirt was sent for a remake and the shirt was available was remade and sent back to the store. However as the customer was…",
+""
 ]
 },
 "fit": {
@@ -1149,14 +1159,14 @@
 "Customer had fitting issue with the pant, he visited the store for alteration and the pant fitting issue was resolved"
 ],
 "2026-11-09|IND-451394": [
-"Wrong Product",
+"No response",
 "No Answer WA Sent",
-""
+"No response hence closing the case"
 ],
 "2026-11-09|IND-455227": [
 "Delayed Delivery",
 "As per the customer the store team had informed cust that the delivery of the shirts will be done on or before 5th however the product was delivered on 10th and cust wanted to gift the product to her friend who had flown back to US on 8th and now cust does…",
-""
+"Customer called back and informed that she wants to exchange one out of the 2 as she has given it to someone and hence she will visit the Kurla store today to get it exchanged"
 ],
 "2026-10-17|IND-440994": [
 "Reconnect with the cust",
@@ -1439,9 +1449,9 @@
 ""
 ],
 "2026-11-04|IND-451346": [
-"Reconnect with the cust",
+"General Feedback",
 "Cust said he is busy and will call us back",
-""
+"Cust said that he wanted to share feedback regarding the fit of the Tshirt as per him the upper portion is alright and down at the bottom it is loose and he has started wearing it as well hence just wanted to share the feedback"
 ],
 "2026-11-22|IND-456405": [
 "No response",
@@ -1496,7 +1506,7 @@
 "2026-11-05|IND-449566": [
 "Fit issue",
 "Cust has received only 1 shirt out of the 2 and fitting is very bad and hence informed the cust that we will get it altered . Informed cust to let the order be delivered and check the fitting of the same if there is any issue with the 2nd shirt as well we…",
-""
+"Customer received the altered shirt and he was happy with the shirt"
 ],
 "2026-09-26|IND-426789": [
 "No response",
