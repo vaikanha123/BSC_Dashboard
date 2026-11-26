@@ -1,5 +1,5 @@
 {
- "source": "WhatsApp survey sheet (Last refreshed: 2026-11-25 10:14:15 (data for 2026-11-24))",
+ "source": "WhatsApp survey sheet (Last refreshed: 2026-11-26 10:14:15 (data for 2026-11-25))",
  "months": [
   {
    "key": "2026-09",
@@ -14,7 +14,7 @@
   {
    "key": "2026-11",
    "label": "Nov",
-   "range": "1–24 Nov"
+   "range": "1–25 Nov"
   }
  ],
  "stores": {
@@ -64,7 +64,7 @@
     1
    ],
    "2026-11": [
-    5,
+    6,
     2,
     2
    ]
@@ -115,7 +115,7 @@
     3
    ],
    "2026-11": [
-    2,
+    3,
     0,
     2
    ]
@@ -202,7 +202,7 @@
    "2026-11": [
     6,
     0,
-    0
+    1
    ]
   },
   "Shakespear Sarani": {
@@ -358,6 +358,11 @@
     0,
     0,
     2
+   ],
+   "2026-11": [
+    1,
+    0,
+    0
    ]
   },
   "Gurugram": {
@@ -970,6 +975,13 @@
      "IND-460984",
      "+919790963118",
      "Navy Popover Linen-Lyocell Shirt (Navy / 40); White Wrinkle-Free Stretch Twill Shirt (White / 40)"
+    ],
+    [
+     0,
+     "2026-11-25",
+     "IND-458125",
+     "+917506762091",
+     "Ivoro 100% Linen Relaxed Neapolitan Pants - Ecru (Ecru / 28)"
     ]
    ]
   },
@@ -1330,6 +1342,13 @@
      "IND-449263",
      "+919560701172",
      "Luthai Cotton Lyocell Twill Shirt - White"
+    ],
+    [
+     0,
+     "2026-11-25",
+     "IND-458486",
+     "+919920745629",
+     "Wrinkle-Free Stretch Satin Shirt - Black"
     ]
    ]
   },
@@ -1853,6 +1872,13 @@
      "IND-457802",
      "+919137722490",
      "Light Yellow Blended Linen Soft Washed Shirt (Light Yellow / 44)"
+    ],
+    [
+     2,
+     "2026-11-25",
+     "IND-457758",
+     "+919833787287",
+     "Cotton Linen Shirt - Light Blue; Giza Cotton Bengal Striped Shirt - Grey; Paramount Dress Pants - Navy (Navy / 32); White Wrinkle-Free Bamboo Blend Satin Shirt (White / 44); Paramount Dress Pants - Black (Black / 32); Pink Bold Twill Cotton-Lyocell Shirt (Pink / 44); Giza Cotton Bengal Striped Shirt - Dark Blue"
     ]
    ]
   },
@@ -2697,6 +2723,15 @@
      "IND-437468",
      "+919599908718",
      "Wrinkle-free Bamboo-Blend Twill Shirt - White"
+    ]
+   ],
+   "2026-11": [
+    [
+     0,
+     "2026-11-25",
+     "IND-457799",
+     "+919999969909",
+     "The Bellini Chambray Soft Tailored Blazer - Mid Blue (Mid Blue / 44); The Bellini Chambray Relaxed Linen Pants -  Mid Blue (Mid Blue / 42)"
     ]
    ]
   },
